@@ -4,6 +4,11 @@ import { Route } from "react-router-dom";
 const LIST_ROUTES = [
   {
     path: "*",
+    component: React.lazy(() => import("../containers/Login")),
+  },
+
+  {
+    path: "/",
     component: React.lazy(() => import("../containers/Homepage")),
   },
 ];
