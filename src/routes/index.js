@@ -6,9 +6,8 @@ const LIST_ROUTES = [
     path: "*",
     component: React.lazy(() => import("../containers/Login")),
   },
-
   {
-    path: "/",
+    path: "/homepage",
     component: React.lazy(() => import("../containers/Homepage")),
   },
 ];
