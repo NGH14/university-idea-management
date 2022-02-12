@@ -1,0 +1,12 @@
+.loginpage-leftside {
+  width: 40%;
+  margin: 10px;
+}
+
+.leftside_logo {
+  width: 120px;
+  min-height: 50px;
+
+  margin: 15px auto 5rem 30px;
+  object-fit: cover;
+}

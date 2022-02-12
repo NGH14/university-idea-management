@@ -1,0 +1,25 @@
+.loginform {
+  margin-inline: 3rem;
+  max-width: 70%;
+  padding: 10px;
+}
+.loginform-textcontent {
+  margin-bottom: 3rem;
+}
+.loginform-subtext {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+
+  /* identical to box height */
+
+  color: #999999;
+}
+
+.loginform-heading {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 72px;
+}
