@@ -4,8 +4,9 @@ import Box from "@mui/material/Box";
 import { TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-
+import GoogleIcon from '@mui/icons-material/Google';
 import "./style.css";
+import GoogleLogin from "react-google-login";
 
 const CssTextField = styled(TextField)({
   "& .MuiInputBase-root": {
@@ -53,6 +54,9 @@ const LoginForm = () => {
   const handleChangePassword = (event) => {
     setPassword(event.target.value);
   };
+  const responseGoogle = (response) => {
+    console.log(response, 123);
+  }
 
   return (
     <div className="loginform">
@@ -83,9 +87,23 @@ const LoginForm = () => {
           fullWidth
           type="password"
         />
+        <div style={{width: "100%"}}>
+          <div style={{float:"right"}}>
+            <span className="loginform-subtext">Login account with  </span>
+            <GoogleLogin
+                buttonText={"Google"}
+                clientId="149599602064-503d6jfus46t0o24gik0eeinpmj6si33.apps.googleusercontent.com"
+                onSuccess={responseGoogle}
+                onFailure={responseGoogle}
+                cookiePolicy={'single_host_origin'}
+            />
+          </div>
+
+        </div>
         <ColorButton variant="contained" fullWidth>
           Sign in
         </ColorButton>
+
       </Box>
     </div>
   );
