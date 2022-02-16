@@ -1,5 +1,5 @@
 .loginpage-leftside {
-  width: 40%;
+  width: calc(30% + 15vw);
   margin: 10px;
 }
 
@@ -16,3 +16,4 @@
     width: 100%;
   }
 }
+

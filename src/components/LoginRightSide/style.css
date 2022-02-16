@@ -1,5 +1,5 @@
 .loginpage-rightside {
-  width: 60%;
+  width: calc(70% - 15vw);
   position: relative;
 }
 
