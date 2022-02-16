@@ -1,0 +1,19 @@
+.loginpage-leftside {
+  width: calc(30% + 15vw);
+  margin: 10px;
+}
+
+.leftside_logo {
+  width: 120px;
+  min-height: 50px;
+
+  margin: 15px auto 5rem 30px;
+  object-fit: cover;
+}
+
+@media only screen and (max-width: 900px) {
+  .loginpage-leftside {
+    width: 100%;
+  }
+}
+

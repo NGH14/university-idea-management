@@ -7,6 +7,14 @@ const LIST_ROUTES = [
     component: React.lazy(() => import("../containers/Login")),
   },
   {
+    path: "/login",
+    component: React.lazy(() => import("../containers/Login")),
+  },
+  {
+    path: "/signin",
+    component: React.lazy(() => import("../containers/Login")),
+  },
+  {
     path: "/homepage",
     component: React.lazy(() => import("../containers/Homepage")),
   },
