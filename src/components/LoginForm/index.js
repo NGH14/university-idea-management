@@ -1,5 +1,6 @@
 import "./style.css"
 
+<<<<<<< Updated upstream
 import { TextField } from "@mui/material"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
@@ -8,6 +9,17 @@ import axios from "axios"
 import React from "react"
 import GoogleLogin from "react-google-login"
 import ApiPath from "../../common"
+=======
+import { TextField } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
+import axios from "axios";
+import React from "react";
+import GoogleLogin from "react-google-login";
+import { CLIENT, API_PATH } from "../../common/API_PATH";
+import AppUse from "../../common/AppUse"
+>>>>>>> Stashed changes
 
 const CssTextField = styled(TextField)({
   "& .MuiInputBase-root": {
@@ -56,6 +68,7 @@ const LoginForm = () => {
     setPassword(event.target.value)
   }
   const responseGoogle = async (res) => {
+<<<<<<< Updated upstream
     const apiUrl = `${process.env.REACT_APP_SERVER_URL}${ApiPath.EXTERNAL_LOGIN}`
     let params = {
       provider: "google",
@@ -64,6 +77,14 @@ const LoginForm = () => {
     const postRes = await axios.post(apiUrl, params)
     console.log({ response: postRes })
   }
+=======
+    const postRes = await AppUse.PostAPi(API_PATH, {
+      provider: "google",
+      idToken: res.tokenId
+    })
+    console.log({ response: postRes });
+  };
+>>>>>>> Stashed changes
 
   return (
     <div className="loginform">
@@ -102,7 +123,11 @@ const LoginForm = () => {
               Google
             </ColorButton>
           )}
+<<<<<<< Updated upstream
           clientId={process.env.REACT_APP_CLIENT_ID}
+=======
+          clientId={CLIENT.GOOGLE_CLIENT_ID}
+>>>>>>> Stashed changes
           onSuccess={(response) => responseGoogle(response)}
           onFailure={() => console.log("failed")}
           cookiePolicy={"single_host_origin"}
