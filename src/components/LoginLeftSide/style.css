@@ -1,5 +1,5 @@
 .loginpage-leftside {
-  width: calc(30% + 15vw);
+  width: calc(40% + 5vw);
   margin: 10px;
 }
 
@@ -11,9 +11,8 @@
   object-fit: cover;
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 950px) {
   .loginpage-leftside {
     width: 100%;
   }
 }
-

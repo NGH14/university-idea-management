@@ -43,6 +43,7 @@ const ColorButton = styled(Button)(() => ({
   padding: "10px",
   "&:hover": { backgroundColor: "#000" },
 }));
+
 const LoginForm = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -73,6 +74,7 @@ const LoginForm = () => {
           margin="normal"
           fullWidth
         />
+
         <CssTextField
           id="Password"
           label="Password"
@@ -83,6 +85,7 @@ const LoginForm = () => {
           fullWidth
           type="password"
         />
+
         <ColorButton variant="contained" fullWidth>
           Sign in
         </ColorButton>
