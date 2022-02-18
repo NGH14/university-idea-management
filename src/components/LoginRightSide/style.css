@@ -1,5 +1,5 @@
 .loginpage-rightside {
-  width: calc(70% - 15vw);
+  width: calc(70% - 5vw);
   position: relative;
 }
 
@@ -52,7 +52,7 @@
   text-align: center;
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 950px) {
   .loginpage-rightside {
     width: 0;
     display: none;
