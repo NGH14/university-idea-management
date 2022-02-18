@@ -1,12 +1,13 @@
-import React from "react";
+import "./style.css"
 
-import Box from "@mui/material/Box";
-import { TextField } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
-import GoogleIcon from '@mui/icons-material/Google';
-import "./style.css";
-import GoogleLogin from "react-google-login";
+import { TextField } from "@mui/material"
+import Box from "@mui/material/Box"
+import Button from "@mui/material/Button"
+import { styled } from "@mui/material/styles"
+import axios from "axios"
+import React from "react"
+import GoogleLogin from "react-google-login"
+import ApiPath from "../../common"
 
 const CssTextField = styled(TextField)({
   "& .MuiInputBase-root": {
@@ -36,26 +37,32 @@ const CssTextField = styled(TextField)({
       border: "1px solid #000000",
     },
   },
-});
+})
 
 const ColorButton = styled(Button)(() => ({
   marginTop: "3rem",
   backgroundColor: "#333",
   padding: "10px",
   "&:hover": { backgroundColor: "#000" },
-}));
+}))
 const LoginForm = () => {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [email, setEmail] = React.useState("")
+  const [password, setPassword] = React.useState("")
 
   const handleChangeEmail = (event) => {
-    setEmail(event.target.value);
-  };
+    setEmail(event.target.value)
+  }
   const handleChangePassword = (event) => {
-    setPassword(event.target.value);
-  };
-  const responseGoogle = (response) => {
-    console.log(response, 123);
+    setPassword(event.target.value)
+  }
+  const responseGoogle = async (res) => {
+    const apiUrl = `${process.env.REACT_APP_SERVER_URL}${ApiPath.EXTERNAL_LOGIN}`
+    let params = {
+      provider: "google",
+      idToken: res.tokenId
+    }
+    const postRes = await axios.post(apiUrl, params)
+    console.log({ response: postRes })
   }
 
   return (
@@ -71,7 +78,7 @@ const LoginForm = () => {
         <CssTextField
           id="Email"
           label="Email"
-          placeholder="E.g. vuhuua@gmail.com"
+          placeholder="E.g., vuhuua@gmail.com"
           value={email}
           onChange={handleChangeEmail}
           margin="normal"
@@ -87,26 +94,27 @@ const LoginForm = () => {
           fullWidth
           type="password"
         />
-        <div style={{width: "100%"}}>
-          <div style={{float:"right"}}>
-            <span className="loginform-subtext">Login account with  </span>
-            <GoogleLogin
-                buttonText={"Google"}
-                clientId="149599602064-503d6jfus46t0o24gik0eeinpmj6si33.apps.googleusercontent.com"
-                onSuccess={responseGoogle}
-                onFailure={responseGoogle}
-                cookiePolicy={'single_host_origin'}
-            />
-          </div>
 
-        </div>
+        <GoogleLogin
+          buttonText="Google"
+          render={renderProps => (
+            <ColorButton onClick={renderProps.onClick} variant="contained" fullWidth>
+              Google
+            </ColorButton>
+          )}
+          clientId={process.env.REACT_APP_CLIENT_ID}
+          onSuccess={(response) => responseGoogle(response)}
+          onFailure={() => console.log("failed")}
+          cookiePolicy={"single_host_origin"}
+        />
+
         <ColorButton variant="contained" fullWidth>
           Sign in
         </ColorButton>
 
       </Box>
     </div>
-  );
-};
+  )
+}
 
-export default React.memo(LoginForm);
+export default React.memo(LoginForm)
