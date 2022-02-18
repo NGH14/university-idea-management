@@ -8,6 +8,7 @@ import axios from "axios";
 import React from "react";
 import GoogleLogin from "react-google-login";
 import { CLIENT, API_PATH } from "../../common/API_PATH";
+import AppUse from "../../common/AppUse"
 
 const CssTextField = styled(TextField)({
   "& .MuiInputBase-root": {
@@ -57,12 +58,10 @@ const LoginForm = () => {
     setPassword(event.target.value);
   };
   const responseGoogle = async (res) => {
-    const apiUrl = `${CLIENT.REACT_APP_SERVER_URL}${API_PATH.EXTERNAL_LOGIN}`;
-    let params = {
+    const postRes = await AppUse.PostAPi(API_PATH, {
       provider: "google",
-      idToken: res.tokenId,
-    };
-    const postRes = await axios.post(apiUrl, params);
+      idToken: res.tokenId
+    })
     console.log({ response: postRes });
   };
 
@@ -108,7 +107,7 @@ const LoginForm = () => {
               Google
             </ColorButton>
           )}
-          clientId={CLIENT.REACT_APP_CLIENT_ID}
+          clientId={CLIENT.GOOGLE_CLIENT_ID}
           onSuccess={(response) => responseGoogle(response)}
           onFailure={() => console.log("failed")}
           cookiePolicy={"single_host_origin"}
