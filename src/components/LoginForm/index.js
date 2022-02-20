@@ -1,5 +1,3 @@
-import "./style.css";
-
 import { TextField } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -7,18 +5,30 @@ import { styled } from "@mui/material/styles";
 import axios from "axios";
 import React from "react";
 import GoogleLogin from "react-google-login";
+import GoogleIcon from "@mui/icons-material/Google";
+import { useFormik } from "formik";
+import * as yup from "yup";
+
 import { CLIENT, API_PATH } from "../../common/API_PATH";
-import AppUse from "../../common/AppUse"
+import AppUse from "../../common/AppUse";
+
+import "./style.css";
 
 const CssTextField = styled(TextField)({
+  ".MuiFormHelperText-root": {
+    fontFamily: "Poppins",
+    fontSize: "14px",
+  },
   "& .MuiInputBase-root": {
     fontFamily: "Poppins",
     color: "#000",
+    fontSize: "16px",
   },
 
   "& .MuiFormLabel-root": {
     color: "#999",
     fontFamily: "Poppins",
+    fontSize: "16px",
   },
   "& label.Mui-focused": {
     color: "#000",
@@ -40,83 +50,120 @@ const CssTextField = styled(TextField)({
   },
 });
 
-const ColorButton = styled(Button)(() => ({
-  marginTop: "3rem",
-  backgroundColor: "#333",
+const ColorButton = styled(Button)(({ bgColor, hoverBgColor, textColor }) => ({
+  fontFamily: "Poppins",
+  fontSize: "13px",
+  fontWeight: "600",
+  textTransform: "none",
+  lineHeight: "30px",
+
+  color: textColor || "#fff",
+  margin: "1rem auto 1.75rem",
   padding: "10px",
-  "&:hover": { backgroundColor: "#000" },
+  backgroundColor: bgColor || "#333",
+
+  "&:hover": { backgroundColor: hoverBgColor || "#000" },
 }));
 
-const LoginForm = () => {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
+const validationSchema = yup.object({
+  email: yup
+    .string("Enter your email")
+    .email("Enter a valid email")
+    .required("Email is required"),
+  password: yup
+    .string("Enter your password")
+    .min(4, "Password should be of minimum 4 characters length")
+    .required("Password is required"),
+});
 
-  const handleChangeEmail = (event) => {
-    setEmail(event.target.value);
-  };
-  const handleChangePassword = (event) => {
-    setPassword(event.target.value);
-  };
+const LoginForm = () => {
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+    },
+  });
+
   const responseGoogle = async (res) => {
     const postRes = await AppUse.PostAPi(API_PATH, {
       provider: "google",
-      idToken: res.tokenId
-    })
+      idToken: res.tokenId,
+    });
     console.log({ response: postRes });
   };
 
   return (
     <div className="loginform">
-      <Box component="form" noValidate autoComplete="off">
-        <div className="loginform-textcontent">
-          <h1 className="loginform-heading">UIM Login</h1>
-          <span className="loginform-subtext">
-            Welcome to university idea management
-          </span>
-        </div>
+      <div className="loginform-textcontent">
+        <h1 className="loginform-heading">UIM Login</h1>
+        <span className="loginform-subtext">
+          Welcome to university idea management
+        </span>
+      </div>
+      <GoogleLogin
+        buttonText="Google"
+        render={(renderProps) => (
+          <ColorButton
+            startIcon={<GoogleIcon />}
+            onClick={renderProps.onClick}
+            variant="contained"
+            fullWidth
+            bgColor={"#fff"}
+            textColor={"#444"}
+            hoverBgColor={"#fff"}
+          >
+            Sign in with Google
+          </ColorButton>
+        )}
+        clientId={CLIENT.GOOGLE_CLIENT_ID}
+        onSuccess={(response) => responseGoogle(response)}
+        onFailure={() => console.log("failed")}
+        cookiePolicy={"single_host_origin"}
+      />
+      <div className="loginform-loginby">
+        <span className="textwithline">or Sign in with Email</span>
+      </div>
 
+      <form onSubmit={formik.handleSubmit}>
         <CssTextField
-          id="Email"
+          fullWidth
+          id="email"
           label="Email"
+          name="email"
           placeholder="E.g., vuhuua@gmail.com"
-          value={email}
-          onChange={handleChangeEmail}
           margin="normal"
-          fullWidth
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={formik.touched.email && Boolean(formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
         />
-
         <CssTextField
-          id="Password"
-          label="Password"
-          placeholder="Enter your password"
-          value={password}
-          margin="normal"
-          onChange={handleChangePassword}
           fullWidth
+          margin="normal"
+          placeholder="Enter your password"
+          id="password"
+          name="password"
+          label="Password"
           type="password"
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          helperText={formik.touched.password && formik.errors.password}
         />
-
-        <GoogleLogin
-          buttonText="Google"
-          render={(renderProps) => (
-            <ColorButton
-              onClick={renderProps.onClick}
-              variant="contained"
-              fullWidth
-            >
-              Google
-            </ColorButton>
-          )}
-          clientId={CLIENT.GOOGLE_CLIENT_ID}
-          onSuccess={(response) => responseGoogle(response)}
-          onFailure={() => console.log("failed")}
-          cookiePolicy={"single_host_origin"}
-        />
-
-        <ColorButton variant="contained" fullWidth>
+        <ColorButton
+          variant="contained"
+          type="submit"
+          disabled={!(formik.isValid && formik.dirty)}
+          fullWidth
+        >
           Sign in
         </ColorButton>
-      </Box>
+      </form>
     </div>
   );
 };
