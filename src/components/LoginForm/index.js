@@ -50,19 +50,19 @@ const CssTextField = styled(TextField)({
   },
 });
 
-const ColorButton = styled(Button)(({ bgColor, hoverBgColor, textColor }) => ({
+const ColorButton = styled(Button)(({ bgcolor, hoverbgcolor, textcolor }) => ({
   fontFamily: "Poppins",
   fontSize: "13px",
   fontWeight: "600",
   textTransform: "none",
   lineHeight: "30px",
 
-  color: textColor || "#fff",
+  color: textcolor || "#fff",
   margin: "1rem auto 1.75rem",
   padding: "10px",
-  backgroundColor: bgColor || "#333",
+  backgroundColor: bgcolor || "#333",
 
-  "&:hover": { backgroundColor: hoverBgColor || "#000" },
+  "&:hover": { backgroundColor: hoverbgcolor || "#000" },
   "&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
   "&:disabled:hover ": { backgroundColor: "rgba(0, 0, 0, 0.12)" },
 }));
@@ -110,13 +110,13 @@ const LoginForm = () => {
         buttonText="Google"
         render={(renderProps) => (
           <ColorButton
+            fullWidth
             startIcon={<GoogleIcon />}
             onClick={renderProps.onClick}
             variant="contained"
-            fullWidth
-            bgColor={"#fff"}
-            textColor={"#444"}
-            hoverBgColor={"#fff"}
+            bgcolor={"#fff"}
+            textcolor={"#444"}
+            hoverbgcolor={"#fff"}
           >
             Sign in with Google
           </ColorButton>
