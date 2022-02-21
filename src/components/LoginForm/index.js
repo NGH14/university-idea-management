@@ -63,6 +63,8 @@ const ColorButton = styled(Button)(({ bgColor, hoverBgColor, textColor }) => ({
   backgroundColor: bgColor || "#333",
 
   "&:hover": { backgroundColor: hoverBgColor || "#000" },
+  "&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
+  "&:disabled:hover ": { backgroundColor: "rgba(0, 0, 0, 0.12)" },
 }));
 
 const validationSchema = yup.object({
