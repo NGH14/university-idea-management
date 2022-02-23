@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import Box from "@mui/material/Box";
+
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
@@ -154,6 +154,7 @@ const LoginForm = () => {
           type="password"
           value={formik.values.password}
           onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
         />
