@@ -50,7 +50,8 @@ function UserManagement () {
         </div>
     }
 
-    const onDelete = (id) => { 
+    const onDelete = (id) => {
+        const res = AppUse.deleteApi(`/user-management/${id}`)
         if(res?.data?.success){
             setData({...data, visibleNotification: true, titleNotification: 'Delete user success', typeNotification: 'success'})
             loadData()
