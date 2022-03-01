@@ -10,7 +10,7 @@ export const AppContext = (props) => {
     })
     // useEffect(()=>{
     //     checkLogin()
-    // }, [state.login])
+    // }, [state.isLogin])
     // const checkLogin = async () =>{
     //     const res = await AppUse.postApi("/auth/info",{
     //         accessToken: localStorage.getItem("accessToken")
