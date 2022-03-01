@@ -9,7 +9,7 @@ function PublicRoute({children}){
         if(!state?.isLogin){
             navigate('/login')
         }
-    })
+    }, [])
     return children
 }
 export default PublicRoute;

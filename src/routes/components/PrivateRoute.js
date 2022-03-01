@@ -9,6 +9,6 @@ export function PrivateRoute({children}){
         if(state?.isLogin){
             navigate('/homepage')
         }
-    })
+    }, [])
     return children
 }
