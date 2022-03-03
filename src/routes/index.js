@@ -18,6 +18,10 @@ const LIST_ROUTES = [
     path: "/homepage",
     component: React.lazy(() => import("../containers/Homepage")),
   },
+  {
+    path: "/user-management",
+    component: React.lazy(() => import("../containers/UserManagement")),
+  },
 ];
 
 export const listRoute = () => {

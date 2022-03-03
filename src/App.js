@@ -3,10 +3,11 @@ import "./App.css";
 
 import { BrowserRouter, Routes } from "react-router-dom";
 import { listRoute } from "./routes";
+import {AppContext} from "./context/AppContext";
 
 function App() {
   return (
-    <>
+    <AppContext>
       <BrowserRouter>
         {/* <Header /> */}
 
@@ -15,7 +16,7 @@ function App() {
         {/* <Backtop />
         <Footer /> */}
       </BrowserRouter>
-    </>
+    </AppContext>
   );
 }
 
