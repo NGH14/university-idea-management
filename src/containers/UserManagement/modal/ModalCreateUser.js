@@ -10,16 +10,17 @@ import {
 } from "@mui/material";
 import Box from "@mui/material/Box";
 import { Input, Radio } from "@mui/icons-material";
-import LoginForm from "../../../components/LoginForm";
+import CreateUserForm from "../../../components/CreateUserForm";
 const style = {
   position: "absolute",
-  top: "40%",
+  top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "auto",
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
+  borderRadius: "5px",
 };
 const ModalCreateUser = (props) => {
   const { visible, onClose } = props;
@@ -31,7 +32,7 @@ const ModalCreateUser = (props) => {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <LoginForm />
+        <CreateUserForm />
       </Box>
     </Modal>
   );
