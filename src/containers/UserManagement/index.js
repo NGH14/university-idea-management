@@ -53,7 +53,7 @@ function UserManagement() {
     return (
       <div>
         <IconButton onClick={() => onShow(id)} color={"info"}>
-         <InfoOutlinedIcon />
+          <InfoOutlinedIcon />
         </IconButton>
         <IconButton onClick={() => onShow(id)} color={"secondary"}>
           <EditIcon />
