@@ -1,18 +1,19 @@
-import { TextField } from "@mui/material";
+import { TextField } from "@mui/material"
 
-import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
-import axios from "axios";
-import React from "react";
-import GoogleLogin from "react-google-login";
-import GoogleIcon from "@mui/icons-material/Google";
-import { useFormik } from "formik";
-import * as yup from "yup";
+import Button from "@mui/material/Button"
+import { styled } from "@mui/material/styles"
+import axios from "axios"
+import React, { useContext } from "react"
+import GoogleLogin from "react-google-login"
+import GoogleIcon from "@mui/icons-material/Google"
+import { useFormik } from "formik"
+import * as yup from "yup"
 
-import { CLIENT, API_PATH } from "../../common/API_PATH";
-import AppUse from "../../common/AppUse";
+import { AUTH, API_PATHS, STORAGE_VARS } from "../../common/env"
+import AppUse from "../../common/AppUse"
 
-import "./style.css";
+import "./style.css"
+import { UserContext } from "../../context/AppContext"
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
@@ -48,7 +49,7 @@ const CssTextField = styled(TextField)({
       border: "1px solid #000000",
     },
   },
-});
+})
 
 const ColorButton = styled(Button)(({ bgcolor, hoverbgcolor, textcolor }) => ({
   fontFamily: "Poppins",
@@ -65,7 +66,7 @@ const ColorButton = styled(Button)(({ bgcolor, hoverbgcolor, textcolor }) => ({
   "&:hover": { backgroundColor: hoverbgcolor || "#000" },
   "&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
   "&:disabled:hover ": { backgroundColor: "rgba(0, 0, 0, 0.12)" },
-}));
+}))
 
 const validationSchema = yup.object({
   email: yup
@@ -76,9 +77,10 @@ const validationSchema = yup.object({
     .string("Enter your password")
     .min(4, "Password should be of minimum 4 characters length")
     .required("Password is required"),
-});
+})
 
 const LoginForm = () => {
+  const { state, setState } = useContext(UserContext)
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -86,17 +88,30 @@ const LoginForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      onLogin(values)
     },
-  });
+  })
+  const onLogin = async (value) => {
+    const res = await AppUse.postApi(API_PATHS.LOGIN, value)
+    if (res?.data?.succeeded) {
+      localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token)
+      localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token)
+      setState({ ...state, isLogin: true, loading: true })
+    }
+  }
 
-  const responseGoogle = async (res) => {
-    const postRes = await AppUse.PostAPi(API_PATH, {
+  const responseGoogle = async (googleResponse) => {
+    const res = await AppUse.postApi(API_PATHS.EXTERNAL_LOGIN, {
       provider: "google",
-      idToken: res.tokenId,
-    });
-    console.log({ response: postRes });
-  };
+      id_token: googleResponse.tokenId,
+    })
+
+    if (res?.data?.succeeded) {
+      localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token)
+      localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token)
+      setState({ ...state, isLogin: true, loading: true })
+    }
+  }
 
   return (
     <div className="loginform">
@@ -121,7 +136,7 @@ const LoginForm = () => {
             Sign in with Google
           </ColorButton>
         )}
-        clientId={CLIENT.GOOGLE_CLIENT_ID}
+        clientId={AUTH.GOOGLE_CLIENT_ID}
         onSuccess={(response) => responseGoogle(response)}
         onFailure={() => console.log("failed")}
         cookiePolicy={"single_host_origin"}
@@ -168,7 +183,7 @@ const LoginForm = () => {
         </ColorButton>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default React.memo(LoginForm);
+export default React.memo(LoginForm)

@@ -31,6 +31,7 @@ const LIST_ROUTES_PRIVATE = [
 ];
 
 export const listRoute = () => {
+
   const publicRoute = () => {
     return LIST_ROUTES_PUBLIC.map((route, index) => {
       return (
@@ -69,6 +70,7 @@ export const listRoute = () => {
       );
     });
   };
+
   return (
     <>
       {publicRoute()}
