@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react"
 import AppUse from "../common/AppUse"
 import { API_PATHS, STORAGE_VARS } from "../common/env"
-import {CircularProgress} from "@mui/material";
+import { CircularProgress } from "@mui/material"
 
 export const UserContext = createContext()
 export const AppContext = (props) => {
@@ -16,20 +16,30 @@ export const AppContext = (props) => {
   }, [localStorage.getItem(STORAGE_VARS.JWT)])
 
   const checkAuth = async () => {
-    const res = await AppUse.getApi(API_PATHS.AUTH_INFO, {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`
-      }
-    })
+    try {
 
-    if (res?.data?.succeeded) {
-      setState({
-        ...state,
-        loading: false,
-        isLogin: true,
-        dataUser: res?.data?.result
+      const res = await AppUse.getApi(API_PATHS.AUTH_INFO, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`
+        }
       })
-    } else {
+
+      if (res?.data?.succeeded) {
+        setState({
+          ...state,
+          loading: false,
+          isLogin: true,
+          dataUser: res?.data?.result
+        })
+      } else {
+        setState({
+          ...state,
+          loading: false,
+          isLogin: false
+        })
+      }
+
+    } catch (error) {
       setState({
         ...state,
         loading: false,
@@ -37,8 +47,8 @@ export const AppContext = (props) => {
       })
     }
   }
-  if(state.loading){
-    return <div style={{textAlign: "center", marginTop: 80}}><CircularProgress /></div>
+  if (state.loading) {
+    return <div style={{ textAlign: "center", marginTop: 80 }}><CircularProgress /></div>
   }
   return (
     <UserContext.Provider value={{ state, setState }}>
