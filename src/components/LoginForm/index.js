@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
-import React from "react";
+import React, {useContext} from "react";
 import GoogleLogin from "react-google-login";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useFormik } from "formik";
@@ -13,6 +13,7 @@ import { CLIENT, API_PATH } from "../../common/API_PATH";
 import AppUse from "../../common/AppUse";
 
 import "./style.css";
+import {AppContext} from "../../context/AppContext";
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
@@ -79,6 +80,7 @@ const validationSchema = yup.object({
 });
 
 const LoginForm = () => {
+  const {state, setState} = useContext(AppContext)
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -86,9 +88,18 @@ const LoginForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      onLogin()
     },
   });
+
+  const onLogin = async () => {
+    const res = await AppUse.postApi('/auth/login',{
+
+    })
+    if(res?.data?.success){
+      setState({...state, isLogin: true})
+    } 
+  }
 
   const responseGoogle = async (res) => {
     const postRes = await AppUse.PostAPi(API_PATH, {
