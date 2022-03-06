@@ -10,22 +10,7 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import ModalCreateUser from "./modal/ModalCreateUser"
 import Button from "@mui/material/Button"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
-const rows = [
-  {
-    id: 1,
-    fullName: "Snow",
-    dateOfBirth: "12-9-2000",
-    department: "IT",
-    role: "admin",
-  },
-  {
-    id: 2,
-    fullName: "Snow",
-    dateOfBirth: "12-9-2000",
-    department: "IT",
-    role: "admin",
-  },
-]
+
 function UserManagement() {
   const [data, setData] = useState({
     dataUser: null,
@@ -35,6 +20,7 @@ function UserManagement() {
     typeNotification: "error", //error or success
     visibleModal: false,
   })
+
   const columns = [
     ...Column,
     {
@@ -71,7 +57,7 @@ function UserManagement() {
   }
 
   const onDelete = (id) => {
-    const res = AppUse.deleteApi(`/user-management/${id}`)
+    const res = AppUse.deleteApi(`user-management/user/${id}`)
     if (res?.data?.success) {
       setData({
         ...data,
@@ -89,14 +75,15 @@ function UserManagement() {
       })
     }
   }
-  const onUpdate = async (id) => {
-    const res = await AppUse.deleteApi(`/user-management/${id}`)
+  const onUpdate = async (id, value) => {
+    const res = await AppUse.putApi(`user-management/user/${id}`, value)
     if (res?.data?.success) {
       setData({
         ...data,
         visibleNotification: true,
         titleNotification: "Delete user success",
         typeNotification: "success",
+        visibleModal: false
       })
       loadData()
     } else {
@@ -108,19 +95,21 @@ function UserManagement() {
       })
     }
   }
-  // const onCreate = (id) => {
-  //     const res = AppUse.deleteApi(`/user-management/${id}`)
-  //     if(res?.data?.success){
-  //         setData({...data, visibleNotification: true, titleNotification: 'Delete user success', typeNotification: 'success'})
-  //         loadData()
-  //     } else {
-  //         setData({...data, visibleNotification: true, titleNotification: 'Delete user error', typeNotification: 'error'})
-  //     }
-  // }
+  const onCreate = (value) => {
+      const res = AppUse.deleteApi(`user-management`)
+      if(res?.data?.succeeded){
+          setData({...data, visibleNotification: true,
+            titleNotification: 'Create User Success',
+            typeNotification: 'success',
+            visibleModal: false})
+          loadData()
+      } else {
+          setData({...data, visibleNotification: true, titleNotification: 'Delete user error', typeNotification: 'error'})
+      }
+  }
   //
   const onShow = async (id) => {
-    console.log(id)
-    const res = await AppUse.getApi(`/user-management/${id}`)
+    const res = await AppUse.getApi(`user-management/user/${id}`)
     if (res?.data?.success) {
       setData({ ...data, initialValue: res?.data?.result, visibleModal: true })
     } else {
@@ -133,13 +122,13 @@ function UserManagement() {
     }
   }
 
-  // useEffect(()=>{
-  //     return loadData()
-  // }, [])
+  useEffect(()=>{
+      loadData()
+  }, [])
   const loadData = async () => {
-    const res = await AppUse.getApi("/user-management/user")
-    if (res?.data?.success) {
-      setData({ ...data, dataUser: res?.data?.result })
+    const res = await AppUse.getApi("user-management/users")
+    if (res?.data?.succeeded) {
+      setData({ ...data, dataUser: res?.data?.result?.rows })
     } else {
       setData({
         ...data,

@@ -3,7 +3,7 @@ import { TextField } from "@mui/material"
 import Button from "@mui/material/Button"
 import { styled } from "@mui/material/styles"
 import axios from "axios"
-import React from "react"
+import React, {useContext} from "react"
 import GoogleLogin from "react-google-login"
 import GoogleIcon from "@mui/icons-material/Google"
 import { useFormik } from "formik"
@@ -13,6 +13,7 @@ import { AUTH, API_PATHS, STORAGE_VARS } from "../../common/env"
 import AppUse from "../../common/AppUse"
 
 import "./style.css"
+import {UserContext} from "../../context/AppContext";
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
@@ -79,6 +80,7 @@ const validationSchema = yup.object({
 })
 
 const LoginForm = () => {
+  const {state, setState} = useContext(UserContext);
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -86,22 +88,29 @@ const LoginForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2))
+      onLogin(values)
     },
   })
+  const onLogin = async (value) => {
+    const res = await AppUse.postApi(API_PATHS.LOGIN, value)
+    if (res?.data?.succeeded) {
+      localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token)
+      localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token)
+      setState({...state, isLogin: true})
+    }
+  }
 
   const responseGoogle = async (googleResponse) => {
-
     const res = await AppUse.postApi(API_PATHS.EXTERNAL_LOGIN, {
       provider: "google",
       id_token: googleResponse.tokenId,
     })
 
-    if (res?.data?.result?.success) {
+    if (res?.data?.succeeded) {
       localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token)
       localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token)
+      setState({...state, isLogin: true})
     }
-
   }
 
   return (

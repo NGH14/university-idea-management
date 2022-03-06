@@ -11,5 +11,5 @@ export const API_PATHS = {
 
 export const STORAGE_VARS = {
   JWT: "access_token",
-  REFRESH: "refresh_oken",
+  REFRESH: "refresh_token",
 }
