@@ -1,16 +1,16 @@
-import { TextField } from "@mui/material";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
-import axios from "axios";
-import React from "react";
-import GoogleLogin from "react-google-login";
-import GoogleIcon from "@mui/icons-material/Google";
-import { useFormik } from "formik";
-import * as yup from "yup";
+import { TextField } from "@mui/material"
+import Box from "@mui/material/Box"
+import Button from "@mui/material/Button"
+import { styled } from "@mui/material/styles"
+import axios from "axios"
+import React from "react"
+import GoogleLogin from "react-google-login"
+import GoogleIcon from "@mui/icons-material/Google"
+import { useFormik } from "formik"
+import * as yup from "yup"
 
-import { CLIENT, API_PATH } from "../../common/API_PATH";
-import AppUse from "../../common/AppUse";
+import { AUTH, API_PATHS } from "../../common/env"
+import AppUse from "../../common/AppUse"
 
 // import "./style.css";
 
@@ -48,7 +48,7 @@ const CssTextField = styled(TextField)({
       border: "1px solid #000000",
     },
   },
-});
+})
 
 const ColorButton = styled(Button)(({ bgcolor, hoverbgcolor, textcolor }) => ({
   fontFamily: "Poppins",
@@ -65,7 +65,7 @@ const ColorButton = styled(Button)(({ bgcolor, hoverbgcolor, textcolor }) => ({
   "&:hover": { backgroundColor: hoverbgcolor || "#000" },
   "&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
   "&:disabled:hover ": { backgroundColor: "rgba(0, 0, 0, 0.12)" },
-}));
+}))
 
 const validationSchema = yup.object({
   email: yup
@@ -76,7 +76,7 @@ const validationSchema = yup.object({
     .string("Enter your password")
     .min(4, "Password should be of minimum 4 characters length")
     .required("Password is required"),
-});
+})
 
 const CreateUserForm = () => {
   const formik = useFormik({
@@ -86,17 +86,18 @@ const CreateUserForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      alert(JSON.stringify(values, null, 2))
+      responseGoogle()
     },
-  });
+  })
 
   const responseGoogle = async (res) => {
-    const postRes = await AppUse.PostAPi(API_PATH, {
+    const postRes = await AppUse.postApi(API_PATHS.EXTERNAL_LOGIN, {
       provider: "google",
       idToken: res.tokenId,
-    });
-    console.log({ response: postRes });
-  };
+    })
+    console.log({ response: postRes })
+  }
 
   return (
     <div className="loginform">
@@ -141,7 +142,7 @@ const CreateUserForm = () => {
         </ColorButton>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default React.memo(CreateUserForm);
+export default React.memo(CreateUserForm)

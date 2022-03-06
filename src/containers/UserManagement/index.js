@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
-import AppUse from "../../common/AppUse";
-import { Column } from "./model/Column";
-import { DataGrid } from "@mui/x-data-grid";
-import { IconButton, Snackbar } from "@mui/material";
-import { Notification } from "../../common/Notification";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ModalCreateUser from "./modal/ModalCreateUser";
-import Button from "@mui/material/Button";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { useEffect, useState } from "react"
+import AppUse from "../../common/AppUse"
+import { Column } from "./model/Column"
+import { DataGrid } from "@mui/x-data-grid"
+import { IconButton, Snackbar } from "@mui/material"
+import { Notification } from "../../common/Notification"
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
+import EditIcon from "@mui/icons-material/Edit"
+import DeleteIcon from "@mui/icons-material/Delete"
+import ModalCreateUser from "./modal/ModalCreateUser"
+import Button from "@mui/material/Button"
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 const rows = [
   {
     id: 1,
@@ -25,7 +25,7 @@ const rows = [
     department: "IT",
     role: "admin",
   },
-];
+]
 function UserManagement() {
   const [data, setData] = useState({
     dataUser: null,
@@ -34,7 +34,7 @@ function UserManagement() {
     titleNotification: "",
     typeNotification: "error", //error or success
     visibleModal: false,
-  });
+  })
   const columns = [
     ...Column,
     {
@@ -45,10 +45,10 @@ function UserManagement() {
       sortable: false,
       // flex: 1,
       renderCell: (value) => {
-        return renderButton(value.id);
+        return renderButton(value.id)
       },
     },
-  ];
+  ]
   const renderButton = (id) => {
     return (
       <div>
@@ -60,54 +60,54 @@ function UserManagement() {
         </IconButton>
         <IconButton
           onClick={() => {
-            onDelete(id);
+            onDelete(id)
           }}
           color={"error"}
         >
           <DeleteIcon />
         </IconButton>
       </div>
-    );
-  };
+    )
+  }
 
   const onDelete = (id) => {
-    const res = AppUse.deleteApi(`/user-management/${id}`);
+    const res = AppUse.deleteApi(`/user-management/${id}`)
     if (res?.data?.success) {
       setData({
         ...data,
         visibleNotification: true,
         titleNotification: "Delete user success",
         typeNotification: "success",
-      });
-      loadData();
+      })
+      loadData()
     } else {
       setData({
         ...data,
         visibleNotification: true,
         titleNotification: "Delete user error",
         typeNotification: "error",
-      });
+      })
     }
-  };
+  }
   const onUpdate = async (id) => {
-    const res = await AppUse.deleteApi(`/user-management/${id}`);
+    const res = await AppUse.deleteApi(`/user-management/${id}`)
     if (res?.data?.success) {
       setData({
         ...data,
         visibleNotification: true,
         titleNotification: "Delete user success",
         typeNotification: "success",
-      });
-      loadData();
+      })
+      loadData()
     } else {
       setData({
         ...data,
         visibleNotification: true,
         titleNotification: "Delete user error",
         typeNotification: "error",
-      });
+      })
     }
-  };
+  }
   // const onCreate = (id) => {
   //     const res = AppUse.deleteApi(`/user-management/${id}`)
   //     if(res?.data?.success){
@@ -119,48 +119,48 @@ function UserManagement() {
   // }
   //
   const onShow = async (id) => {
-    console.log(id);
-    const res = await AppUse.getApi(`/user-management/${id}`);
+    console.log(id)
+    const res = await AppUse.getApi(`/user-management/${id}`)
     if (res?.data?.success) {
-      setData({ ...data, initialValue: res?.data?.result, visibleModal: true });
+      setData({ ...data, initialValue: res?.data?.result, visibleModal: true })
     } else {
       setData({
         ...data,
         visibleNotification: true,
         titleNotification: "Error sever",
         typeNotification: "error",
-      });
+      })
     }
-  };
+  }
 
   // useEffect(()=>{
   //     return loadData()
   // }, [])
   const loadData = async () => {
-    const res = await AppUse.getApi("/user-management/user");
+    const res = await AppUse.getApi("/user-management/user")
     if (res?.data?.success) {
-      setData({ ...data, dataUser: res?.data?.result });
+      setData({ ...data, dataUser: res?.data?.result })
     } else {
       setData({
         ...data,
         visibleNotification: true,
         titleNotification: "System error",
         typeNotification: "error",
-      });
+      })
     }
-  };
+  }
   const onCloseNotification = () => {
-    setData({ ...data, visibleNotification: false });
-  };
+    setData({ ...data, visibleNotification: false })
+  }
   const onCloseModal = () => {
-    setData({ ...data, visibleModal: false });
-  };
+    setData({ ...data, visibleModal: false })
+  }
 
   const renderModal = () => {
     return (
       <ModalCreateUser visible={data.visibleModal} onClose={onCloseModal} />
-    );
-  };
+    )
+  }
   const renderContent = () => {
     return (
       <DataGrid
@@ -172,8 +172,8 @@ function UserManagement() {
         disableSelectionOnClick={false}
         isRowSelectable={false}
       />
-    );
-  };
+    )
+  }
   const renderTop = () => {
     return (
       <div style={{ textAlign: "right", marginBottom: 10 }}>
@@ -181,14 +181,14 @@ function UserManagement() {
           variant="contained"
           startIcon={<AddCircleOutlineIcon />}
           onClick={() => {
-            setData({ ...data, visibleModal: true });
+            setData({ ...data, visibleModal: true })
           }}
         >
           Create
         </Button>
       </div>
-    );
-  };
+    )
+  }
   return (
     <div
       style={{
@@ -208,6 +208,6 @@ function UserManagement() {
       />
       {data.visibleModal && renderModal()}
     </div>
-  );
+  )
 }
-export default UserManagement;
+export default UserManagement
