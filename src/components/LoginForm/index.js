@@ -96,7 +96,7 @@ const LoginForm = () => {
     if (res?.data?.succeeded) {
       localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token)
       localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token)
-      setState({...state, isLogin: true})
+      setState({...state, isLogin: true, loading: true})
     }
   }
 
@@ -109,7 +109,7 @@ const LoginForm = () => {
     if (res?.data?.succeeded) {
       localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token)
       localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token)
-      setState({...state, isLogin: true})
+      setState({...state, isLogin: true, loading: true})
     }
   }
 

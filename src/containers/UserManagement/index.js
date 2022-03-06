@@ -153,7 +153,7 @@ function UserManagement() {
   const renderContent = () => {
     return (
       <DataGrid
-        rows={data.dataUser || rows}
+        rows={data.dataUser}
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}

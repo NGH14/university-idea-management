@@ -38,7 +38,7 @@ export const AppContext = (props) => {
     }
   }
   if(state.loading){
-    return  <CircularProgress />
+    return <div style={{textAlign: "center", marginTop: 80}}><CircularProgress /></div>
   }
   return (
     <UserContext.Provider value={{ state, setState }}>
