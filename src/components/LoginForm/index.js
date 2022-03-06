@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
-import React from "react";
+import React, {useContext} from "react";
 import GoogleLogin from "react-google-login";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useFormik } from "formik";
@@ -13,6 +13,7 @@ import { CLIENT, API_PATH } from "../../common/API_PATH";
 import AppUse from "../../common/AppUse";
 
 import "./style.css";
+import {AppContext} from "../../context/AppContext";
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
@@ -79,6 +80,7 @@ const validationSchema = yup.object({
 });
 
 const LoginForm = () => {
+  const {state, setState} = useContext(AppContext);
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -86,7 +88,7 @@ const LoginForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      onLogin(values)
     },
   });
 
@@ -97,6 +99,15 @@ const LoginForm = () => {
     });
     console.log({ response: postRes });
   };
+
+  const onLogin = async (value) => {
+      const res =  await AppUse.postApi('/auth/login', value)
+      if(res?.data?.success){
+        localStorage.setItem("access_token", res?.data?.access_token?.token)
+        localStorage.setItem("refresh_token", res?.data?.refresh_token)
+        setState({login: true})
+      }
+  }
 
   return (
     <div className="loginform">
@@ -130,7 +141,7 @@ const LoginForm = () => {
         <span className="textwithline">or Sign in with Email</span>
       </div>
 
-      <form onSubmit={formik.handleSubmit}>
+      <form onSubmit={formik.handleSubmit} >
         <CssTextField
           fullWidth
           id="email"

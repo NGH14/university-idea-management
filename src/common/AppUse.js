@@ -1,7 +1,7 @@
 import axios from "axios";
 import {useState} from "react";
 import {Alert, Snackbar} from "@mui/material";
-const GlobalApi = "http://localhost:7024/api"
+const GlobalApi = "https://localhost:7024/api"
 export default class AppUse {
 
     static postApi = async (api, params) => {

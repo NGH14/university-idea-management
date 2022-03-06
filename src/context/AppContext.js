@@ -5,16 +5,15 @@ export const AppProvider = createContext();
 export const AppContext = (props) => {
     const [state, setState] = useState({
         login: null,
-        loading: true,
+        loading: false,
         dataUser: {}
     })
     useEffect(()=>{
         checkLogin()
     }, [state.login])
     const checkLogin = async () =>{
-        const res = await AppUse.postApi("/auth",{
-            accessToken: localStorage.getItem("accessToken")
-        })
+        const res = await AppUse.postApi("/auth/info",
+            localStorage.getItem("access_token"))
         if(res?.data?.success){
             setState({...state,
                 loading: false,
