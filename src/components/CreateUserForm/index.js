@@ -1,34 +1,33 @@
-import { TextField } from "@mui/material"
-import Box from "@mui/material/Box"
-import Button from "@mui/material/Button"
-import { styled } from "@mui/material/styles"
-import axios from "axios"
-import React from "react"
-import GoogleLogin from "react-google-login"
-import GoogleIcon from "@mui/icons-material/Google"
-import { useFormik } from "formik"
-import * as yup from "yup"
+import { TextField } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
+import InputLabel from "@mui/material/InputLabel";
+import { styled } from "@mui/material/styles";
+import Select from "@mui/material/Select";
+import React from "react";
+import DateFnsUtils from "@date-io/date-fns";
 
-import { AUTH, API_PATHS } from "../../common/env"
-import AppUse from "../../common/AppUse"
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
 
-// import "./style.css";
+import { useFormik } from "formik";
+import * as yup from "yup";
+
+import AppUse from "../../common/AppUse";
+
+import "./style.css";
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
     fontFamily: "Poppins",
-    fontSize: "14px",
+    fontSize: "12px",
   },
   "& .MuiInputBase-root": {
     fontFamily: "Poppins",
     color: "#000",
-    fontSize: "16px",
-  },
-
-  "& .MuiFormLabel-root": {
-    color: "#999",
-    fontFamily: "Poppins",
-    fontSize: "16px",
+    fontSize: "14px",
   },
   "& label.Mui-focused": {
     color: "#000",
@@ -38,7 +37,6 @@ const CssTextField = styled(TextField)({
   },
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
-      boxShadow: "0px 2px 0px rgba(0, 0, 0, 0.25)",
       borderRadius: "5px",
     },
     "&:hover fieldset": {
@@ -48,7 +46,7 @@ const CssTextField = styled(TextField)({
       border: "1px solid #000000",
     },
   },
-})
+});
 
 const ColorButton = styled(Button)(({ bgcolor, hoverbgcolor, textcolor }) => ({
   fontFamily: "Poppins",
@@ -56,93 +54,226 @@ const ColorButton = styled(Button)(({ bgcolor, hoverbgcolor, textcolor }) => ({
   fontWeight: "600",
   textTransform: "none",
   lineHeight: "30px",
-
+  display: "block",
   color: textcolor || "#fff",
-  margin: "1rem auto 1.75rem",
+  margin: "1rem 0 1.75rem auto",
   padding: "10px",
   backgroundColor: bgcolor || "#333",
 
   "&:hover": { backgroundColor: hoverbgcolor || "#000" },
   "&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
   "&:disabled:hover ": { backgroundColor: "rgba(0, 0, 0, 0.12)" },
-}))
+}));
+
+const initialValues = {
+  user_name: "",
+  full_name: "",
+  department: "",
+  email: "",
+  role: "",
+  password: "",
+  confirm_password: "",
+  date_of_birth: null,
+};
 
 const validationSchema = yup.object({
-  email: yup
-    .string("Enter your email")
-    .email("Enter a valid email")
-    .required("Email is required"),
+  user_name: yup.string().required("UserName is required"),
+  full_name: yup.string().required("Full Name is required"),
+  email: yup.string().email("Email is invalid").required("Email is required"),
+  // role: yup.string().required("Role is required"),
   password: yup
-    .string("Enter your password")
+    .string()
     .min(4, "Password should be of minimum 4 characters length")
     .required("Password is required"),
-})
+  department: yup.string().required("Password is required"),
+  confirm_password: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "Passwords must match")
+    .required("Password is required"),
+  date_of_birth: yup.date("Date invalid").nullable(),
+});
 
-const CreateUserForm = () => {
+function CreateUserForm() {
   const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
+    initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2))
-      responseGoogle()
+      alert(JSON.stringify(values, null, 2));
     },
-  })
-
-  const responseGoogle = async (res) => {
-    const postRes = await AppUse.postApi(API_PATHS.EXTERNAL_LOGIN, {
-      provider: "google",
-      idToken: res.tokenId,
-    })
-    console.log({ response: postRes })
-  }
+  });
 
   return (
-    <div className="loginform">
-      <div className="loginform-loginby">
-        <span className="textwithline">or Sign in with Email</span>
-      </div>
+    <div className="createuserform">
+      <h2 className="createuserform-tittle">Create New User</h2>
+      <br />
 
-      <form onSubmit={formik.handleSubmit}>
-        <CssTextField
-          fullWidth
-          id="email"
-          label="Email"
-          name="email"
-          placeholder="E.g., vuhuua@gmail.com"
-          margin="normal"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.email && Boolean(formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
-        />
-        <CssTextField
-          fullWidth
-          margin="normal"
-          placeholder="Enter your password"
-          id="password"
-          name="password"
-          label="Password"
-          type="password"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-        />
+      <form className="form_grid" onSubmit={formik.handleSubmit}>
+        <div className="form_group">
+          <div className="form_content">
+            <InputLabel required htmlFor="full_name">
+              Full Name
+            </InputLabel>
+            <CssTextField
+              fullWidth
+              margin="normal"
+              id="full_name"
+              name="full_name"
+              value={formik.values.full_name}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.full_name && Boolean(formik.errors.full_name)
+              }
+              helperText={formik.touched.full_name && formik.errors.full_name}
+            />
+          </div>
+          <div className="form_content">
+            <InputLabel required htmlFor="user_name">
+              Username
+            </InputLabel>
+            <CssTextField
+              fullWidth
+              margin="normal"
+              id="user_name"
+              name="user_name"
+              value={formik.values.user_name}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.user_name && Boolean(formik.errors.user_name)
+              }
+              helperText={formik.touched.user_name && formik.errors.user_name}
+            />
+          </div>
+        </div>
+
+        <div className="form_group">
+          <div>
+            <InputLabel required htmlFor="email">
+              Email
+            </InputLabel>
+            <CssTextField
+              fullWidth
+              variant="outlined"
+              id="email"
+              name="email"
+              margin="normal"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
+            />
+          </div>
+        </div>
+
+        <div className="form_group">
+          <div className="form_content">
+            <InputLabel required htmlFor="password">
+              Password
+            </InputLabel>
+            <CssTextField
+              fullWidth
+              margin="normal"
+              id="password"
+              name="password"
+              type="password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
+            />
+          </div>
+          <div className="form_content">
+            <InputLabel required htmlFor="confirm_password">
+              Confirm Password
+            </InputLabel>
+            <CssTextField
+              fullWidth
+              margin="normal"
+              type="password"
+              name="confirm_password"
+              value={formik.values.confirm_password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.confirm_password &&
+                Boolean(formik.errors.confirm_password)
+              }
+              helperText={
+                formik.touched.confirm_password &&
+                formik.errors.confirm_password
+              }
+            />
+          </div>
+        </div>
+
+        <div className="form_group">
+          <div className="form_content">
+            <InputLabel htmlFor="department">Department</InputLabel>
+            <Select
+              fullWidth
+              labelId="department"
+              id="department"
+              name="department"
+              value={formik.values.department}
+              onChange={formik.handleChange}
+              native
+            >
+              <option value={"IT"}>IT</option>
+              <option value={"HR"}>HR</option>
+            </Select>
+          </div>
+
+          <div className="form_content">
+            <InputLabel htmlFor="role">Role</InputLabel>
+            <Select
+              fullWidth
+              labelId="role"
+              id="role"
+              name="role"
+              value={formik.values.role}
+              onChange={formik.handleChange}
+              native
+            >
+              <option value={"Admin"}>Admin</option>
+              <option value={"HR"}>HR</option>
+            </Select>
+          </div>
+          <div className="form_content">
+            <MuiPickersUtilsProvider utils={DateFnsUtils}>
+              <InputLabel htmlFor="date_of_birth">DoB</InputLabel>
+              <KeyboardDatePicker
+                inputVariant="outlined"
+                name="date_of_birth"
+                id="date_of_birth"
+                fullWidth
+                onChange={(val) => {
+                  formik.setFieldValue("date_of_birth", val);
+                }}
+                value={formik.values.date_of_birth}
+                format="dd/MM/yyyy"
+                error={
+                  formik.errors.date_of_birth && formik.touched.date_of_birth
+                }
+                helperText={
+                  formik.errors.date_of_birth && formik.touched.date_of_birth
+                }
+              />
+            </MuiPickersUtilsProvider>
+          </div>
+        </div>
         <ColorButton
           variant="contained"
           type="submit"
           disabled={!(formik.isValid && formik.dirty)}
-          fullWidth
         >
-          Sign in
+          Create
         </ColorButton>
       </form>
     </div>
-  )
+  );
 }
 
-export default React.memo(CreateUserForm)
+export default React.memo(CreateUserForm);

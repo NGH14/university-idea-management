@@ -12,15 +12,17 @@ import Box from "@mui/material/Box";
 import { Input, Radio } from "@mui/icons-material";
 import CreateUserForm from "../../../components/CreateUserForm";
 const style = {
-  position: "absolute",
+  position: "relative",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "auto",
+  width: "50vw",
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
   borderRadius: "5px",
+  overflow: "auto",
+  maxHeight: "100%",
 };
 const ModalCreateUser = (props) => {
   const { visible, onClose } = props;
