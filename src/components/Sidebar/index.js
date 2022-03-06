@@ -10,8 +10,7 @@ function Sidebar() {
 
   const onLogout = () => {
 
-    localStorage.removeItem(STORAGE_VARS.JWT)
-    localStorage.removeItem(STORAGE_VARS.REFRESH)
+    localStorage.clear()
     setState({...state, isLogin: false, loading: true})
 
   }
