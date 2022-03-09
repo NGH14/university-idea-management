@@ -1,19 +1,20 @@
-import { TextField } from "@mui/material"
+import { TextField } from "@mui/material";
 
-import Button from "@mui/material/Button"
-import { styled } from "@mui/material/styles"
-import axios from "axios"
-import React, {useContext, useState} from "react"
-import GoogleLogin from "react-google-login"
-import GoogleIcon from "@mui/icons-material/Google"
-import { useFormik } from "formik"
-import * as yup from "yup"
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
+import axios from "axios";
+import React, { useContext, useState } from "react";
+import GoogleLogin from "react-google-login";
+import GoogleIcon from "@mui/icons-material/Google";
+import { useFormik } from "formik";
+import * as yup from "yup";
 
-import { AUTH, API_PATHS, STORAGE_VARS } from "../../common/env"
-import AppUse from "../../common/AppUse"
+import { AUTH, API_PATHS, STORAGE_VARS } from "../../common/env";
+import AppUse from "../../common/AppUse";
 
-import "./style.css"
-import { UserContext } from "../../context/AppContext"
+import "./style.css";
+import { UserContext } from "../../context/AppContext";
+import { Notification } from "../../common/Notification";
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
@@ -49,7 +50,7 @@ const CssTextField = styled(TextField)({
       border: "1px solid #000000",
     },
   },
-})
+});
 
 const ColorButton = styled(Button)(({ bgcolor, hoverbgcolor, textcolor }) => ({
   fontFamily: "Poppins",
@@ -66,7 +67,7 @@ const ColorButton = styled(Button)(({ bgcolor, hoverbgcolor, textcolor }) => ({
   "&:hover": { backgroundColor: hoverbgcolor || "#000" },
   "&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
   "&:disabled:hover ": { backgroundColor: "rgba(0, 0, 0, 0.12)" },
-}))
+}));
 
 const validationSchema = yup.object({
   email: yup
@@ -77,16 +78,17 @@ const validationSchema = yup.object({
     .string("Enter your password")
     .min(4, "Password should be of minimum 4 characters length")
     .required("Password is required"),
-})
+});
 
 const LoginForm = () => {
-  const [data, setData]=useState({
-    disableButton: false,
+  const { state, setState } = useContext(UserContext);
+  const [disable, setDisable] = useState(false);
+
+  const [data, setData] = useState({
     visibleNotification: false,
-    titleNotification: "Password or username wrong",
+    titleNotification: "Email or password is invalid, Please try again",
     typeNotification: "error", //error or success
-  })
-  const { state, setState } = useContext(UserContext)
+  });
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -94,42 +96,55 @@ const LoginForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      onLogin(values)
+      setDisable(!disable);
+      onLogin(values);
     },
-  })
+  });
+  const onCloseNotification = () => {
+    setData({ ...data, visibleNotification: false });
+  };
   const onLogin = async (value) => {
-    try{
-      const res = await AppUse.postApi(API_PATHS.LOGIN, value)
+    try {
+      const res = await AppUse.postApi(API_PATHS.LOGIN, value);
       if (res?.data?.succeeded) {
-        localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token)
-        localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token)
-        setState({ ...state, isLogin: true, loading: true })
-      } else{
-        setData({...data, visibleNotification: true, disableButton: true})
-        setTimeout(()=>{setData({...data, disableButton: false})}, 200)
+        localStorage.setItem(
+          STORAGE_VARS.JWT,
+          res?.data?.result?.access_token?.token
+        );
+        localStorage.setItem(
+          STORAGE_VARS.REFRESH,
+          res?.data?.result?.refresh_token
+        );
+        setDisable((pre) => !pre);
+        setState({ ...state, isLogin: true, loading: true });
+      } else {
+        setDisable((pre) => !pre);
+        setData({ ...data, visibleNotification: true });
       }
     } catch {
-      setData({...data, visibleNotification: true, disableButton: true})
-      setTimeout(()=>{setData({...data, disableButton: false})}, 200)
+      setDisable((pre) => !pre);
+      setData({ ...data, visibleNotification: true });
     }
+  };
 
-    const onCloseNotification = () => {
-      setData({...data, visibleNotification: false})
-    }
-
-
-    const responseGoogle = async (googleResponse) => {
+  const responseGoogle = async (googleResponse) => {
     const res = await AppUse.postApi(API_PATHS.EXTERNAL_LOGIN, {
       provider: "google",
       id_token: googleResponse.tokenId,
-    })
+    });
 
     if (res?.data?.succeeded) {
-      localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token)
-      localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token)
-      setState({ ...state, isLogin: true, loading: true })
+      localStorage.setItem(
+        STORAGE_VARS.JWT,
+        res?.data?.result?.access_token?.token
+      );
+      localStorage.setItem(
+        STORAGE_VARS.REFRESH,
+        res?.data?.result?.refresh_token
+      );
+      setState({ ...state, isLogin: true, loading: true });
     }
-  }
+  };
 
   return (
     <div className="loginform">
@@ -191,24 +206,27 @@ const LoginForm = () => {
           error={formik.touched.password && Boolean(formik.errors.password)}
           helperText={formik.touched.password && formik.errors.password}
         />
+
+        {console.log(disable)}
         <ColorButton
           variant="contained"
           type="submit"
-          disabled={!(formik.isValid && formik.dirty)}
+          disabled={!(formik.isValid && formik.dirty && !disable)}
           fullWidth
-          disable={data.disable ? true: false}
         >
           Sign in
         </ColorButton>
       </form>
-      {data.visibleNotification && < Notification
+      {data.visibleNotification && (
+        <Notification
           visible={data.visibleNotification}
           message={data.titleNotification}
           type={data.typeNotification}
           onClose={onCloseNotification}
-      />}
+        />
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default React.memo(LoginForm)
+export default React.memo(LoginForm);

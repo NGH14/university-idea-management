@@ -31,7 +31,6 @@ const LIST_ROUTES_PRIVATE = [
 ];
 
 export const listRoute = () => {
-
   const publicRoute = () => {
     return LIST_ROUTES_PUBLIC.map((route, index) => {
       return (
@@ -39,7 +38,11 @@ export const listRoute = () => {
           key={index}
           path={route.path}
           element={
-            <React.Suspense fallback={<div style={{ height: "100vh" }}></div>}>
+            <React.Suspense
+              fallback={
+                <div style={{ height: "100vh", background: "red" }}></div>
+              }
+            >
               <PublicRoute>
                 <Sidebar />
                 <div className="main-content">
