@@ -3,7 +3,7 @@ import { TextField } from "@mui/material"
 import Button from "@mui/material/Button"
 import { styled } from "@mui/material/styles"
 import axios from "axios"
-import React, { useContext } from "react"
+import React, {useContext, useState} from "react"
 import GoogleLogin from "react-google-login"
 import GoogleIcon from "@mui/icons-material/Google"
 import { useFormik } from "formik"
@@ -14,6 +14,7 @@ import AppUse from "../../common/AppUse"
 
 import "./style.css"
 import { UserContext } from "../../context/AppContext"
+import {Notification} from "../../common/Notification";
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
@@ -81,6 +82,11 @@ const validationSchema = yup.object({
 
 const LoginForm = () => {
   const { state, setState } = useContext(UserContext)
+  const [data, setData]=useState({
+    visibleNotification: false,
+    titleNotification: "Password or username wrong",
+    typeNotification: "error", //error or success
+  })
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -91,13 +97,23 @@ const LoginForm = () => {
       onLogin(values)
     },
   })
+  const onCloseNotification = () => {
+    setData({...data, visibleNotification: false})
+  }
   const onLogin = async (value) => {
-    const res = await AppUse.postApi(API_PATHS.LOGIN, value)
-    if (res?.data?.succeeded) {
-      localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token)
-      localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token)
-      setState({ ...state, isLogin: true, loading: true })
+    try{
+      const res = await AppUse.postApi(API_PATHS.LOGIN, value)
+      if (res?.data?.succeeded) {
+        localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token)
+        localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token)
+        setState({ ...state, isLogin: true, loading: true })
+      } else{
+        setData({...data, visibleNotification: true})
+      }
+    } catch {
+      setData({...data, visibleNotification: true})
     }
+
   }
 
   const responseGoogle = async (googleResponse) => {
@@ -181,7 +197,14 @@ const LoginForm = () => {
         >
           Sign in
         </ColorButton>
+
       </form>
+      {data.visibleNotification && < Notification
+        visible={data.visibleNotification}
+        message={data.titleNotification}
+        type={data.typeNotification}
+        onClose={onCloseNotification}
+        />}
     </div>
   )
 }
