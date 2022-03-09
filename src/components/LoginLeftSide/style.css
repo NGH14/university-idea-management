@@ -1,6 +1,7 @@
 .loginpage-leftside {
   width: calc(40% + 5vw);
   margin: 10px;
+  overflow-y: auto;
 
   height: 100%;
 }
