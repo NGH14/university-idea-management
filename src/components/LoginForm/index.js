@@ -3,7 +3,7 @@ import { TextField } from "@mui/material"
 import Button from "@mui/material/Button"
 import { styled } from "@mui/material/styles"
 import axios from "axios"
-import React, { useContext } from "react"
+import React, {useContext, useState} from "react"
 import GoogleLogin from "react-google-login"
 import GoogleIcon from "@mui/icons-material/Google"
 import { useFormik } from "formik"
@@ -80,6 +80,12 @@ const validationSchema = yup.object({
 })
 
 const LoginForm = () => {
+  const [data, setData]=useState({
+    disableButton: false,
+    visibleNotification: false,
+    titleNotification: "Password or username wrong",
+    typeNotification: "error", //error or success
+  })
   const { state, setState } = useContext(UserContext)
   const formik = useFormik({
     initialValues: {
@@ -92,15 +98,27 @@ const LoginForm = () => {
     },
   })
   const onLogin = async (value) => {
-    const res = await AppUse.postApi(API_PATHS.LOGIN, value)
-    if (res?.data?.succeeded) {
-      localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token)
-      localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token)
-      setState({ ...state, isLogin: true, loading: true })
+    try{
+      const res = await AppUse.postApi(API_PATHS.LOGIN, value)
+      if (res?.data?.succeeded) {
+        localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token)
+        localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token)
+        setState({ ...state, isLogin: true, loading: true })
+      } else{
+        setData({...data, visibleNotification: true, disableButton: true})
+        setTimeout(()=>{setData({...data, disableButton: false})}, 200)
+      }
+    } catch {
+      setData({...data, visibleNotification: true, disableButton: true})
+      setTimeout(()=>{setData({...data, disableButton: false})}, 200)
     }
-  }
 
-  const responseGoogle = async (googleResponse) => {
+    const onCloseNotification = () => {
+      setData({...data, visibleNotification: false})
+    }
+
+
+    const responseGoogle = async (googleResponse) => {
     const res = await AppUse.postApi(API_PATHS.EXTERNAL_LOGIN, {
       provider: "google",
       id_token: googleResponse.tokenId,
@@ -178,10 +196,17 @@ const LoginForm = () => {
           type="submit"
           disabled={!(formik.isValid && formik.dirty)}
           fullWidth
+          disable={data.disable ? true: false}
         >
           Sign in
         </ColorButton>
       </form>
+      {data.visibleNotification && < Notification
+          visible={data.visibleNotification}
+          message={data.titleNotification}
+          type={data.typeNotification}
+          onClose={onCloseNotification}
+      />}
     </div>
   )
 }
