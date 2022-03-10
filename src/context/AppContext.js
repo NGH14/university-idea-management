@@ -1,8 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import AppUse from "../common/AppUse";
 import { API_PATHS, STORAGE_VARS } from "../common/env";
-import { CircularProgress } from "@mui/material";
-
+import LoadingSpinner from "../components/LoadingSpinner";
 export const UserContext = createContext();
 export const AppContext = (props) => {
   const [state, setState] = useState({
@@ -46,11 +45,7 @@ export const AppContext = (props) => {
     }
   };
   if (state.loading) {
-    return (
-      <div style={{ textAlign: "center", marginTop: 80 }}>
-        <CircularProgress />
-      </div>
-    );
+    return <LoadingSpinner></LoadingSpinner>;
   }
   return (
     <UserContext.Provider value={{ state, setState }}>

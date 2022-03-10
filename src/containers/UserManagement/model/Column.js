@@ -1,9 +1,3 @@
-import Button from "@mui/material/Button";
-import { IconButton } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import InfoIcon from "@mui/icons-material/Info";
-
 export const Column = [
   {
     field: "full_name",

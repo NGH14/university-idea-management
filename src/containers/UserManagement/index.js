@@ -133,6 +133,7 @@ function UserManagement() {
   useEffect(() => {
     loadData();
   }, []);
+
   const loadData = async () => {
     const res = await AppUse.getApi("user-management/users");
     if (res?.data?.succeeded) {
@@ -155,7 +156,7 @@ function UserManagement() {
 
   const renderModal = () => {
     return (
-      <ModalCreateUser visible={data.visibleModal} onClose={onCloseModal} />
+      <ModalCreateUser visible={data.visibleModal} onClose={onCloseModal}/>
     );
   };
   const renderContent = () => {

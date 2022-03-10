@@ -1,6 +1,7 @@
 import { TextField } from "@mui/material";
 
-import Button from "@mui/material/Button";
+import SendIcon from "@mui/icons-material/Send";
+import Button from "@mui/lab/LoadingButton";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import React, { useContext, useState } from "react";
@@ -82,7 +83,9 @@ const validationSchema = yup.object({
 
 const LoginForm = () => {
   const { state, setState } = useContext(UserContext);
-  const [disable, setDisable] = useState(false);
+  const [buttonState, setButtonState] = useState({
+    disable: false,
+  });
 
   const [data, setData] = useState({
     visibleNotification: false,
@@ -96,7 +99,7 @@ const LoginForm = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      setDisable(!disable);
+      setButtonState({ ...buttonState, loading: true, disable: true });
       onLogin(values);
     },
   });
@@ -115,14 +118,16 @@ const LoginForm = () => {
           STORAGE_VARS.REFRESH,
           res?.data?.result?.refresh_token
         );
-        setDisable((pre) => !pre);
+        setButtonState({ ...buttonState, loading: false, disable: false });
         setState({ ...state, isLogin: true, loading: true });
       } else {
-        setDisable((pre) => !pre);
+        setButtonState({ ...buttonState, loading: false, disable: false });
+
         setData({ ...data, visibleNotification: true });
       }
     } catch {
-      setDisable((pre) => !pre);
+      setButtonState({ ...buttonState, loading: false, disable: false });
+
       setData({ ...data, visibleNotification: true });
     }
   };
@@ -207,11 +212,13 @@ const LoginForm = () => {
           helperText={formik.touched.password && formik.errors.password}
         />
 
-        {console.log(disable)}
         <ColorButton
           variant="contained"
           type="submit"
-          disabled={!(formik.isValid && formik.dirty && !disable)}
+          endIcon={<SendIcon />}
+          loading={"" || buttonState?.loading}
+          loadingPosition="end"
+          disabled={!(formik.isValid && formik.dirty && !buttonState.disable)}
           fullWidth
         >
           Sign in

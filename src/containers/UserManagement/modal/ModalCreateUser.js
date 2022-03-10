@@ -1,14 +1,6 @@
-import {
-  FormControl,
-  FormControlLabel,
-  FormHelperText,
-  FormLabel,
-  InputLabel,
-  Modal,
-  RadioGroup,
-  Typography,
-} from "@mui/material";
+import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
+import * as React from "react";
 import { Input, Radio } from "@mui/icons-material";
 import CreateUserForm from "../../../components/CreateUserForm";
 const style = {
@@ -23,6 +15,9 @@ const style = {
   borderRadius: "5px",
   overflow: "auto",
   maxHeight: "100%",
+  " @media (max-width: 600px)": {
+    width: "100%",
+  },
 };
 const ModalCreateUser = (props) => {
   const { visible, onClose } = props;
@@ -34,9 +29,9 @@ const ModalCreateUser = (props) => {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <CreateUserForm />
+        <CreateUserForm onClose={() => onClose()} />
       </Box>
     </Modal>
   );
 };
-export default ModalCreateUser;
+export default React.memo(ModalCreateUser);
