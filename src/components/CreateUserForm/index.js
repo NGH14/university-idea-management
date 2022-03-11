@@ -92,12 +92,12 @@ const validationSchema = yup.object({
 });
 
 function CreateUserForm(prop) {
-  const { onClose } = prop;
+  const { onClose, onCreate } = prop;
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      onCreate(values)
     },
   });
 

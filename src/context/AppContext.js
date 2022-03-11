@@ -5,8 +5,8 @@ import LoadingSpinner from "../components/LoadingSpinner";
 export const UserContext = createContext();
 export const AppContext = (props) => {
   const [state, setState] = useState({
-    isLogin: false,
-    loading: true,
+    isLogin: true,
+    loading: false,
     dataUser: {},
   });
 
@@ -15,34 +15,34 @@ export const AppContext = (props) => {
   }, [localStorage.getItem(STORAGE_VARS.JWT)]);
 
   const checkAuth = async () => {
-    try {
-      const res = await AppUse.getApi(API_PATHS.AUTH_INFO, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
-        },
-      });
-
-      if (res?.data?.succeeded) {
-        setState({
-          ...state,
-          loading: false,
-          isLogin: true,
-          dataUser: res?.data?.result,
-        });
-      } else {
-        setState({
-          ...state,
-          loading: false,
-          isLogin: false,
-        });
-      }
-    } catch (error) {
-      setState({
-        ...state,
-        loading: false,
-        isLogin: false,
-      });
-    }
+    // try {
+    //   const res = await AppUse.getApi(API_PATHS.AUTH_INFO, {
+    //     headers: {
+    //       Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
+    //     },
+    //   });
+    //
+    //   if (res?.data?.succeeded) {
+    //     setState({
+    //       ...state,
+    //       loading: false,
+    //       isLogin: true,
+    //       dataUser: res?.data?.result,
+    //     });
+    //   } else {
+    //     setState({
+    //       ...state,
+    //       loading: false,
+    //       isLogin: false,
+    //     });
+    //   }
+    // } catch (error) {
+    //   setState({
+    //     ...state,
+    //     loading: false,
+    //     isLogin: false,
+    //   });
+    // }
   };
   if (state.loading) {
     return <LoadingSpinner></LoadingSpinner>;

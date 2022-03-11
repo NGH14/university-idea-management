@@ -3,12 +3,13 @@ import Box from "@mui/material/Box";
 import * as React from "react";
 import { Input, Radio } from "@mui/icons-material";
 import CreateUserForm from "../../../components/CreateUserForm";
+import EditUserForm from "../../../components/EditUserForm";
 const style = {
   position: "relative",
-  top: "50%",
+  top: "35%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "50vw",
+  width: "1000px",
   bgcolor: "background.paper",
   boxShadow: 24,
   p: 4,
@@ -19,8 +20,8 @@ const style = {
     width: "100%",
   },
 };
-const ModalCreateUser = (props) => {
-  const { visible, onClose } = props;
+const ModalUserManagement = (props) => {
+  const { visible, onClose, onCreate, onUpdate, statusEdit, initialValue } = props;
   return (
     <Modal
       open={visible}
@@ -29,9 +30,13 @@ const ModalCreateUser = (props) => {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        <CreateUserForm onClose={() => onClose()} />
+        {
+          statusEdit ? <EditUserForm onClose={() => onClose()} onUpdate={onUpdate} initialValue={initialValue}/> :
+              <CreateUserForm onClose={() => onClose()} onCreate={onCreate}/>
+        }
+
       </Box>
     </Modal>
   );
 };
-export default React.memo(ModalCreateUser);
+export default React.memo(ModalUserManagement);

@@ -85,9 +85,10 @@ const LoginForm = () => {
   const { state, setState } = useContext(UserContext);
   const [buttonState, setButtonState] = useState({
     disable: false,
+    loading: false
   });
 
-  const [data, setData] = useState({
+  const [notification, setNotification] = useState({
     visibleNotification: false,
     titleNotification: "Email or password is invalid, Please try again",
     typeNotification: "error", //error or success
@@ -104,7 +105,7 @@ const LoginForm = () => {
     },
   });
   const onCloseNotification = () => {
-    setData({ ...data, visibleNotification: false });
+    setNotification({ ...notification, visibleNotification: false });
   };
   const onLogin = async (value) => {
     try {
@@ -122,32 +123,38 @@ const LoginForm = () => {
         setState({ ...state, isLogin: true, loading: true });
       } else {
         setButtonState({ ...buttonState, loading: false, disable: false });
-
-        setData({ ...data, visibleNotification: true });
+        setNotification({ ...notification, visibleNotification: true });
       }
     } catch {
       setButtonState({ ...buttonState, loading: false, disable: false });
-
-      setData({ ...data, visibleNotification: true });
+      setNotification({ ...notification, visibleNotification: true });
     }
   };
 
   const responseGoogle = async (googleResponse) => {
-    const res = await AppUse.postApi(API_PATHS.EXTERNAL_LOGIN, {
-      provider: "google",
-      id_token: googleResponse.tokenId,
-    });
-
-    if (res?.data?.succeeded) {
-      localStorage.setItem(
-        STORAGE_VARS.JWT,
-        res?.data?.result?.access_token?.token
-      );
-      localStorage.setItem(
-        STORAGE_VARS.REFRESH,
-        res?.data?.result?.refresh_token
-      );
-      setState({ ...state, isLogin: true, loading: true });
+    try {
+      const res = await AppUse.postApi(API_PATHS.EXTERNAL_LOGIN, {
+        provider: "google",
+        id_token: googleResponse.tokenId,
+      });
+      if (res?.data?.succeeded) {
+        localStorage.setItem(
+            STORAGE_VARS.JWT,
+            res?.data?.result?.access_token?.token
+        );
+        localStorage.setItem(
+            STORAGE_VARS.REFRESH,
+            res?.data?.result?.refresh_token
+        );
+        setButtonState({ ...buttonState, loading: false, disable: false });
+        setState({ ...state, isLogin: true, loading: true });
+      } else {
+        setButtonState({ ...buttonState, loading: false, disable: false });
+        setNotification({ ...notification, visibleNotification: true });
+      }
+    } catch {
+      setButtonState({ ...buttonState, loading: false, disable: false });
+      setNotification({ ...notification, visibleNotification: true });
     }
   };
 
@@ -216,7 +223,7 @@ const LoginForm = () => {
           variant="contained"
           type="submit"
           endIcon={<SendIcon />}
-          loading={"" || buttonState?.loading}
+          loading={buttonState?.loading}
           loadingPosition="end"
           disabled={!(formik.isValid && formik.dirty && !buttonState.disable)}
           fullWidth
@@ -224,11 +231,11 @@ const LoginForm = () => {
           Sign in
         </ColorButton>
       </form>
-      {data.visibleNotification && (
+      {notification.visibleNotification && (
         <Notification
-          visible={data.visibleNotification}
-          message={data.titleNotification}
-          type={data.typeNotification}
+          visible={notification.visibleNotification}
+          message={notification.titleNotification}
+          type={notification.typeNotification}
           onClose={onCloseNotification}
         />
       )}

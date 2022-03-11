@@ -7,10 +7,33 @@ import { Notification } from "../../common/Notification";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ModalCreateUser from "./modal/ModalCreateUser";
 import Button from "@mui/material/Button";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-
+import ModalUserManagement from "./modal/ModalUserManagement";
+const dataDemo = [
+  {
+    id: "123",
+    full_name: "Demo 01",
+    user_name: "Demo 01",
+    department: "Demo 01",
+    email: "Demo 01",
+    role: "Demo 01",
+    password: "Demo 01",
+    confirm_password: "Demo 01",
+    date_of_birth: null,
+  },
+  {
+    id: "1234",
+    full_name: "Demo 02",
+    user_name: "Demo 02",
+    department: "Demo 02",
+    email: "Demo 02",
+    role: "Demo 02",
+    password: "Demo 02",
+    confirm_password: "Demo 02",
+    date_of_birth: null,
+  }
+]
 function UserManagement() {
   const [data, setData] = useState({
     dataUser: null,
@@ -19,6 +42,7 @@ function UserManagement() {
     titleNotification: "",
     typeNotification: "error", //error or success
     visibleModal: false,
+    statusEdit: false
   });
 
   const columns = [
@@ -57,16 +81,25 @@ function UserManagement() {
   };
 
   const onDelete = (id) => {
-    const res = AppUse.deleteApi(`user-management/user/${id}`);
-    if (res?.data?.success) {
-      setData({
-        ...data,
-        visibleNotification: true,
-        titleNotification: "Delete user success",
-        typeNotification: "success",
-      });
-      loadData();
-    } else {
+    try{
+      const res = AppUse.deleteApi(`user-management/user/${id}`);
+      if (res?.data?.success) {
+        setData({
+          ...data,
+          visibleNotification: true,
+          titleNotification: "Delete user success",
+          typeNotification: "success",
+        });
+        loadData();
+      } else {
+        setData({
+          ...data,
+          visibleNotification: true,
+          titleNotification: "Delete user error",
+          typeNotification: "error",
+        });
+      }
+    } catch {
       setData({
         ...data,
         visibleNotification: true,
@@ -75,18 +108,28 @@ function UserManagement() {
       });
     }
   };
-  const onUpdate = async (id, value) => {
-    const res = await AppUse.putApi(`user-management/user/${id}`, value);
-    if (res?.data?.success) {
-      setData({
-        ...data,
-        visibleNotification: true,
-        titleNotification: "Delete user success",
-        typeNotification: "success",
-        visibleModal: false,
-      });
-      loadData();
-    } else {
+  const onUpdate = async (value) => {
+    console.log(value, 'value')
+    try{
+      const res = await AppUse.putApi(`user-management/user/${value?.id}`, value);
+      if (res?.data?.success) {
+        setData({
+          ...data,
+          visibleNotification: true,
+          titleNotification: "Delete user success",
+          typeNotification: "success",
+          visibleModal: false,
+        });
+        loadData();
+      } else {
+        setData({
+          ...data,
+          visibleNotification: true,
+          titleNotification: "Delete user error",
+          typeNotification: "error",
+        });
+      }
+    } catch {
       setData({
         ...data,
         visibleNotification: true,
@@ -94,35 +137,64 @@ function UserManagement() {
         typeNotification: "error",
       });
     }
+
   };
   const onCreate = (value) => {
-    const res = AppUse.deleteApi(`user-management`);
-    if (res?.data?.succeeded) {
+    try {
+      const res = AppUse.postApi(`user-management`, value);
+      if (res?.data?.succeeded) {
+        setData({
+          ...data,
+          visibleNotification: true,
+          titleNotification: "Create User Success",
+          typeNotification: "success",
+          visibleModal: false,
+        });
+        loadData();
+      } else {
+        setData({
+          ...data,
+          visibleModal: false,
+          visibleNotification: true,
+          titleNotification: "Delete user error",
+          typeNotification: "error",
+        });
+      }
+    } catch {
       setData({
         ...data,
-        visibleNotification: true,
-        titleNotification: "Create User Success",
-        typeNotification: "success",
         visibleModal: false,
-      });
-      loadData();
-    } else {
-      setData({
-        ...data,
         visibleNotification: true,
         titleNotification: "Delete user error",
         typeNotification: "error",
       });
     }
+
   };
   //
   const onShow = async (id) => {
-    const res = await AppUse.getApi(`user-management/user/${id}`);
-    if (res?.data?.success) {
-      setData({ ...data, initialValue: res?.data?.result, visibleModal: true });
-    } else {
+
+    try {
+      const res = await AppUse.getApi(`user-management/user/${id}`);
+      if (res?.data?.succeeded) {
+        setData({ ...data,
+          initialValue: res?.data?.result,
+          visibleModal: true,
+          statusEdit: true
+        });
+      } else {
+        setData({
+          ...data,
+          statusEdit: true,
+          visibleNotification: true,
+          titleNotification: "Error sever",
+          typeNotification: "error",
+        });
+      }
+    } catch {
       setData({
         ...data,
+        statusEdit: true,
         visibleNotification: true,
         titleNotification: "Error sever",
         typeNotification: "error",
@@ -151,18 +223,24 @@ function UserManagement() {
     setData({ ...data, visibleNotification: false });
   };
   const onCloseModal = () => {
-    setData({ ...data, visibleModal: false });
+    setData({ ...data, visibleModal: false, initialValue: null, statusEdit: false });
   };
 
   const renderModal = () => {
     return (
-      <ModalCreateUser visible={data.visibleModal} onClose={onCloseModal}/>
+      <ModalUserManagement visible={data.visibleModal}
+                           initialValue={data.initialValue}
+                           statusEdit={data.statusEdit}
+                           onClose={onCloseModal}
+                           onCreate={onCreate}
+                           onUpdate={onUpdate}
+      />
     );
   };
   const renderContent = () => {
     return (
       <DataGrid
-        rows={data.dataUser}
+        rows={data.dataUser || dataDemo}
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
