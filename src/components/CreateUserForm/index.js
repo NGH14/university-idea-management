@@ -6,6 +6,7 @@ import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
 import Select from "@mui/material/Select";
 import IconButton from "@mui/material/IconButton";
+import MenuItem from "@mui/material/MenuItem";
 
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
@@ -225,11 +226,11 @@ function CreateUserForm(prop) {
               onChange={formik.handleChange}
               native
             >
-              <option default value={null}>
-                None
-              </option>
-
-              <option value={"IT"}>IT</option>
+              <MenuItem value={null}>
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value={"Admin"}>Admin</MenuItem>
+              <MenuItem value={"HR"}>HR</MenuItem>
               <option value={"HR"}>HR</option>
             </Select>
           </div>
@@ -243,13 +244,12 @@ function CreateUserForm(prop) {
               name="role"
               value={formik.values.role}
               onChange={formik.handleChange}
-              native
             >
-              <option default value={null}>
-                None
-              </option>
-              <option value={"Admin"}>Admin</option>
-              <option value={"HR"}>HR</option>
+              <MenuItem value={null}>
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value={"Admin"}>Admin</MenuItem>
+              <MenuItem value={"HR"}>HR</MenuItem>
             </Select>
           </div>
           <div className="form_content">
