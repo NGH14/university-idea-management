@@ -11,7 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
-
+import FormHelperText from "@mui/material/FormHelperText";
 import enLocale from "date-fns/locale/en-GB";
 
 import { useFormik } from "formik";
@@ -66,26 +66,24 @@ const ColorButton = styled(Button)(() => ({
 }));
 
 const initialValues = {
-  user_name: "",
   full_name: "",
-  department: null,
+  department: "",
   email: "",
-  role: null,
+  role: "",
   password: "",
   confirm_password: "",
   date_of_birth: null,
 };
 
 const validationSchema = yup.object({
-  user_name: yup.string().required("UserName is required"),
   full_name: yup.string().required("Full Name is required"),
   email: yup.string().email("Email is invalid").required("Email is required"),
-  role: yup.string().nullable(),
+  role: yup.string().required("Role is required"),
   password: yup
     .string()
     .min(4, "Password should be of minimum 4 characters length")
     .required("Password is required"),
-  department: yup.string().nullable(),
+  department: yup.string().required("Department is required"),
   confirm_password: yup
     .string()
     .oneOf([yup.ref("password"), null], "Passwords must match")
@@ -134,27 +132,6 @@ function CreateUserForm(prop) {
             />
           </div>
           <div className="form_content">
-            <InputLabel required htmlFor="user_name">
-              Username
-            </InputLabel>
-            <CssTextField
-              fullWidth
-              margin="normal"
-              id="user_name"
-              name="user_name"
-              value={formik.values.user_name}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.user_name && Boolean(formik.errors.user_name)
-              }
-              helperText={formik.touched.user_name && formik.errors.user_name}
-            />
-          </div>
-        </div>
-
-        <div className="form_group">
-          <div>
             <InputLabel required htmlFor="email">
               Email
             </InputLabel>
@@ -216,44 +193,57 @@ function CreateUserForm(prop) {
 
         <div className="form_group">
           <div className="form_content">
-            <InputLabel htmlFor="department">Department</InputLabel>
-            <Select
+            <InputLabel required htmlFor="department">
+              Department
+            </InputLabel>
+            <TextField
+              select
               fullWidth
               labelId="department"
               id="department"
               name="department"
               value={formik.values.department}
               onChange={formik.handleChange}
-              native
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.department && Boolean(formik.errors.department)
+              }
+              helperText={formik.touched.department && formik.errors.department}
             >
-              <MenuItem value={null}>
-                <em>None</em>
+              <MenuItem disabled value="">
+                <em>Department</em>
               </MenuItem>
               <MenuItem value={"Admin"}>Admin</MenuItem>
               <MenuItem value={"HR"}>HR</MenuItem>
-              <option value={"HR"}>HR</option>
-            </Select>
+            </TextField>
           </div>
 
           <div className="form_content">
-            <InputLabel htmlFor="role">Role</InputLabel>
-            <Select
+            <InputLabel required htmlFor="role">
+              Role
+            </InputLabel>
+            <TextField
+              select
               fullWidth
               labelId="role"
               id="role"
               name="role"
               value={formik.values.role}
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.role && Boolean(formik.errors.role)}
+              helperText={formik.touched.role && formik.errors.role}
+              placeholder="E.g., vuhuua@gmail.com"
             >
-              <MenuItem value={null}>
-                <em>None</em>
+              <MenuItem disabled value="">
+                <em>Role</em>
               </MenuItem>
               <MenuItem value={"Admin"}>Admin</MenuItem>
               <MenuItem value={"HR"}>HR</MenuItem>
-            </Select>
+            </TextField>
           </div>
           <div className="form_content">
-            <InputLabel htmlFor="date_of_birth">DoB</InputLabel>
+            <InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
 
             <LocalizationProvider
               dateAdapter={AdapterDateFns}
