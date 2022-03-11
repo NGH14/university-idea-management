@@ -197,51 +197,65 @@ function CreateUserForm(prop) {
             <InputLabel required htmlFor="department">
               Department
             </InputLabel>
-            <TextField
+            <Select
               select
               fullWidth
+              displayEmpty
               labelId="department"
               id="department"
               name="department"
               value={formik.values.department}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+							renderValue={
+								formik.values.department !== ''
+									? undefined
+									: () => (
+											<placeholder>
+												<em style={{opacity:.6}}>-- department --</em>
+											</placeholder>
+									  )
+							}
               error={
                 formik.touched.department && Boolean(formik.errors.department)
               }
-              helperText={formik.touched.department && formik.errors.department}
             >
-              <MenuItem disabled value="">
-                <em>--Department--</em>
-              </MenuItem>
               <MenuItem value={"Admin"}>Admin</MenuItem>
               <MenuItem value={"HR"}>HR</MenuItem>
-            </TextField>
+            </Select>
+            <FormHelperText error>{formik.touched.department && formik.errors.department}</FormHelperText>
           </div>
 
           <div className="form_content">
             <InputLabel required htmlFor="role">
               Role
             </InputLabel>
-            <TextField
+            <Select
               select
               fullWidth
+              displayEmpty
               labelId="role"
               id="role"
               name="role"
               value={formik.values.role}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+							renderValue={
+								formik.values.role !== ''
+									? undefined
+									: () => (
+											<placeholder>
+												<em style={{opacity:.6}}>-- role --</em>
+											</placeholder>
+									  )
+							}
               error={formik.touched.role && Boolean(formik.errors.role)}
-              helperText={formik.touched.role && formik.errors.role}
               placeholder="E.g., vuhuua@gmail.com"
             >
-              <MenuItem disabled value="">
-                <em>--Role--</em>
-              </MenuItem>
               <MenuItem value={"Admin"}>Admin</MenuItem>
               <MenuItem value={"HR"}>HR</MenuItem>
-            </TextField>
+            </Select>
+            <FormHelperText error>{formik.touched.role && formik.errors.role}</FormHelperText>
           </div>
           <div className="form_content">
             <InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
