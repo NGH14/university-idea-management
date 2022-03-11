@@ -163,6 +163,7 @@ function CreateUserForm(prop) {
               type="password"
               value={formik.values.password}
               onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
               error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={formik.touched.password && formik.errors.password}
             />
@@ -211,7 +212,7 @@ function CreateUserForm(prop) {
               helperText={formik.touched.department && formik.errors.department}
             >
               <MenuItem disabled value="">
-                <em>Department</em>
+                <em>--Department--</em>
               </MenuItem>
               <MenuItem value={"Admin"}>Admin</MenuItem>
               <MenuItem value={"HR"}>HR</MenuItem>
@@ -236,7 +237,7 @@ function CreateUserForm(prop) {
               placeholder="E.g., vuhuua@gmail.com"
             >
               <MenuItem disabled value="">
-                <em>Role</em>
+                <em>--Role--</em>
               </MenuItem>
               <MenuItem value={"Admin"}>Admin</MenuItem>
               <MenuItem value={"HR"}>HR</MenuItem>
