@@ -1,12 +1,12 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import PublicRoute from "./components/PublicRoute";
-import { PrivateRoute } from "./components/PrivateRoute";
+import PrivateRoute from "./components/PrivateRoute";
 import Header from ".././components/Header";
 import Sidebar from "../components/Sidebar";
 import LoadingSpinner from "../components/LoadingSpinner";
 
-const LIST_ROUTES_PUBLIC = [
+const LIST_ROUTES_PRIVATE = [
   {
     path: "*",
     component: React.lazy(() => import("../containers/Homepage")),
@@ -20,7 +20,7 @@ const LIST_ROUTES_PUBLIC = [
     component: React.lazy(() => import("../containers/UserManagement")),
   },
 ];
-const LIST_ROUTES_PRIVATE = [
+const LIST_ROUTES_PUBLIC = [
   {
     path: "*",
     component: React.lazy(() => import("../containers/Login")),
@@ -45,11 +45,7 @@ export const listRoute = () => {
           element={
             <React.Suspense fallback={<LoadingSpinner />}>
               <PublicRoute>
-                <Sidebar />
-                <div className="main-content">
-                  <Header />
-                  <route.component />
-                </div>
+                <route.component />
               </PublicRoute>
             </React.Suspense>
           }
@@ -66,7 +62,11 @@ export const listRoute = () => {
           element={
             <React.Suspense fallback={<LoadingSpinner />}>
               <PrivateRoute>
-                <route.component />
+                <Sidebar />
+                <div className="main-content">
+                  <Header />
+                  <route.component />
+                </div>
               </PrivateRoute>
             </React.Suspense>
           }

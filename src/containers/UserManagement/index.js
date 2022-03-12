@@ -10,6 +10,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ModalUserManagement from "./modal/ModalUserManagement";
+import { STORAGE_VARS } from "../../common/env"
 const dataDemo = [
   {
     id: "123",
@@ -207,7 +208,13 @@ function UserManagement() {
   }, []);
 
   const loadData = async () => {
-    const res = await AppUse.getApi("user-management/users");
+
+    const res = await AppUse.getApi("user-management/users", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
+      },
+    });
+    
     if (res?.data?.succeeded) {
       setData({ ...data, dataUser: res?.data?.result?.rows });
     } else {
