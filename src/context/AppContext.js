@@ -18,12 +18,7 @@ export const AppContext = (props) => {
 
   const checkAuth = async () => {
     try {
-      const res = await RequestApi.getApi(API_PATHS.AUTH_INFO, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
-        },
-      })
-
+      const res = await RequestApi.getApi(API_PATHS.AUTH_INFO)
       if (res?.data?.succeeded) {
         setState({
           ...state,
