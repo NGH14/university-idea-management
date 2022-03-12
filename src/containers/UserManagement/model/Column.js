@@ -1,6 +1,21 @@
 export const Column = [
   {
+    field: "no",
+    headerName: "No.",
+    disableColumnMenu: true,
+    sortable: true,
+    width: "100%",
+    type: "string",
+    minWidth: 100,
+    flex: 1,
+
+    renderCell: (value) => {
+      return <div>{value.api.getRowIndex(value.id) + 1}</div>;
+    },
+  },
+  {
     field: "full_name",
+    headerAlign: "center",
     headerName: "Full name",
     disableColumnMenu: true,
     sortable: true,
@@ -11,6 +26,7 @@ export const Column = [
   },
   {
     field: "date_of_birth",
+    headerAlign: "center",
     headerName: "Birthday",
     disableColumnMenu: true,
     sortable: true,
@@ -22,6 +38,7 @@ export const Column = [
   {
     field: "email",
     headerName: "Email",
+    headerAlign: "center",
     disableColumnMenu: true,
     sortable: true,
     type: "email",
@@ -32,6 +49,7 @@ export const Column = [
   {
     field: "department",
     headerName: "Department",
+    headerAlign: "center",
     disableColumnMenu: true,
     sortable: true,
     type: "string",
@@ -42,6 +60,7 @@ export const Column = [
   {
     field: "role",
     headerName: "Role",
+    headerAlign: "center",
     disableColumnMenu: true,
     sortable: true,
     width: "auto",

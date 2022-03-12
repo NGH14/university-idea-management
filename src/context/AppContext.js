@@ -7,7 +7,7 @@ export const UserContext = createContext()
 export const AppContext = (props) => {
   const [state, setState] = useState({
     isLogin: false,
-    loading: false,
+    loading: true,
     dataUser: {},
   })
 

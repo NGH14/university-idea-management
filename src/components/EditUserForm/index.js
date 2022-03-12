@@ -116,24 +116,6 @@ function EditUserForm(props) {
             />
           </div>
           <div className="form_content">
-            <InputLabel required htmlFor="user_name">
-              User Name
-            </InputLabel>
-            <CssTextField
-              fullWidth
-              margin="normal"
-              id="user_name"
-              name="user_name"
-              value={formik.values.user_name}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.user_name && Boolean(formik.errors.user_name)
-              }
-              helperText={formik.touched.user_name && formik.errors.user_name}
-            />
-          </div>
-          <div className="form_content">
             <InputLabel required htmlFor="email">
               Email
             </InputLabel>

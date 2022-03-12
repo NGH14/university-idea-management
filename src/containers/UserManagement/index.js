@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import AppUse from "../../common/AppUse";
 import { Column } from "./model/Column";
-import { DataGrid } from "@mui/x-data-grid";
-import { IconButton, Snackbar } from "@mui/material";
+import { IconButton} from "@mui/material";
 import { Notification } from "../../common/Notification";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import EditIcon from "@mui/icons-material/Edit";
@@ -11,23 +10,30 @@ import Button from "@mui/material/Button";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ModalUserManagement from "./modal/ModalUserManagement";
 import { STORAGE_VARS } from "../../common/env";
-import { dataDemo } from "./FakeData.js";
+import { dataDemo } from "./FakeData";
+import {DataGridPro} from "@mui/x-data-grid-pro";
 
 function UserManagement() {
-  const [data, setData] = useState({
-    dataUser: null,
+  const [data, setData] = useState([]);
+  const [status, setStatus] = useState({
+    loading: true,
     initialValue: null,
     visibleNotification: false,
     titleNotification: "",
     typeNotification: "error", //error or success
     visibleModal: false,
     statusEdit: false,
-  });
+  })
+  const [pagination, setPagination] = useState({
+    pageSize: 10,
+    page: 0
+  })
 
   const columns = [
     ...Column,
     {
-      field: "id",
+      headerAlign: "center",
+      field: "actions",
       headerName: "Action",
       width: 150,
       disableColumnMenu: true,
@@ -38,6 +44,32 @@ function UserManagement() {
       },
     },
   ];
+
+  useEffect(() => {
+    loadData();
+  }, [pagination]);
+
+
+  const loadData = async () => {
+    try{
+      const res = await AppUse.getApi(`user-management/users?papesize=${pagination.pageSize}?page=${pagination.page+1}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
+        },
+      });
+      if (res?.data?.succeeded) {
+        setData(res?.data?.result?.rows)
+        setStatus({...status, loading: false})
+      }
+    } catch {
+      setStatus({
+        ...status,
+        visibleNotification: true,
+        titleNotification: "System error",
+        typeNotification: "error",
+      });
+    }
+  };
   const renderButton = (id) => {
     return (
       <div>
@@ -62,25 +94,18 @@ function UserManagement() {
   const onDelete = (id) => {
     try {
       const res = AppUse.deleteApi(`user-management/user/${id}`);
-      if (res?.data?.success) {
-        setData({
-          ...data,
+      if (res?.data?.succeeded) {
+        setStatus({
+          ...status,
           visibleNotification: true,
           titleNotification: "Delete user success",
           typeNotification: "success",
         });
         loadData();
-      } else {
-        setData({
-          ...data,
-          visibleNotification: true,
-          titleNotification: "Delete user error",
-          typeNotification: "error",
-        });
       }
     } catch {
-      setData({
-        ...data,
+      setStatus({
+        ...status,
         visibleNotification: true,
         titleNotification: "Delete user error",
         typeNotification: "error",
@@ -94,26 +119,19 @@ function UserManagement() {
         `user-management/user/${value?.id}`,
         value
       );
-      if (res?.data?.success) {
-        setData({
-          ...data,
+      if (res?.data?.succeeded) {
+        setStatus({
+          ...status,
           visibleNotification: true,
           titleNotification: "Delete user success",
           typeNotification: "success",
           visibleModal: false,
-        });
+        })
         loadData();
-      } else {
-        setData({
-          ...data,
-          visibleNotification: true,
-          titleNotification: "Delete user error",
-          typeNotification: "error",
-        });
       }
     } catch {
-      setData({
-        ...data,
+      setStatus({
+        ...status,
         visibleNotification: true,
         titleNotification: "Delete user error",
         typeNotification: "error",
@@ -124,26 +142,18 @@ function UserManagement() {
     try {
       const res = AppUse.postApi(`user-management`, value);
       if (res?.data?.succeeded) {
-        setData({
-          ...data,
+        setStatus({
+          ...status,
           visibleNotification: true,
           titleNotification: "Create User Success",
           typeNotification: "success",
           visibleModal: false,
         });
         loadData();
-      } else {
-        setData({
-          ...data,
-          visibleModal: false,
-          visibleNotification: true,
-          titleNotification: "Delete user error",
-          typeNotification: "error",
-        });
       }
     } catch {
-      setData({
-        ...data,
+      setStatus({
+        ...status,
         visibleModal: false,
         visibleNotification: true,
         titleNotification: "Delete user error",
@@ -156,24 +166,16 @@ function UserManagement() {
     try {
       const res = await AppUse.getApi(`user-management/user/${id}`);
       if (res?.data?.succeeded) {
-        setData({
-          ...data,
+        setStatus({
+          ...status,
           initialValue: res?.data?.result,
           visibleModal: true,
           statusEdit: true,
         });
-      } else {
-        setData({
-          ...data,
-          statusEdit: true,
-          visibleNotification: true,
-          titleNotification: "Error sever",
-          typeNotification: "error",
-        });
       }
     } catch {
-      setData({
-        ...data,
+      setStatus({
+        ...status,
         statusEdit: true,
         visibleNotification: true,
         titleNotification: "Error sever",
@@ -182,34 +184,13 @@ function UserManagement() {
     }
   };
 
-  useEffect(() => {
-    loadData();
-  }, []);
 
-  const loadData = async () => {
-    const res = await AppUse.getApi("user-management/users", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
-      },
-    });
-
-    if (res?.data?.succeeded) {
-      setData({ ...data, dataUser: res?.data?.result?.rows });
-    } else {
-      setData({
-        ...data,
-        visibleNotification: true,
-        titleNotification: "System error",
-        typeNotification: "error",
-      });
-    }
-  };
   const onCloseNotification = () => {
-    setData({ ...data, visibleNotification: false });
+    setStatus({ ...status, visibleNotification: false });
   };
   const onCloseModal = () => {
-    setData({
-      ...data,
+    setStatus({
+      ...status,
       visibleModal: false,
       initialValue: null,
       statusEdit: false,
@@ -219,43 +200,54 @@ function UserManagement() {
   const renderModal = () => {
     return (
       <ModalUserManagement
-        visible={data.visibleModal}
-        initialValue={data.initialValue}
-        statusEdit={data.statusEdit}
+        visible={status.visibleModal}
+        initialValue={status.initialValue}
+        statusEdit={status.statusEdit}
         onClose={onCloseModal}
         onCreate={onCreate}
         onUpdate={onUpdate}
       />
     );
   };
-  const renderContent = () => {
-    return (
-      <DataGrid
-        rows={data.dataUser || dataDemo}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        checkboxSelection={false}
-        disableSelectionOnClick={false}
-        isRowSelectable={false}
-      />
-    );
-  };
+  const onChangePagination =  (pageSize, page) => {
+    setPagination({page, pageSize})
+  }
   const renderTop = () => {
     return (
-      <div style={{ textAlign: "right", marginBottom: 10 }}>
-        <Button
-          variant="contained"
-          startIcon={<AddCircleOutlineIcon />}
-          onClick={() => {
-            setData({ ...data, visibleModal: true });
-          }}
-        >
-          Create
-        </Button>
-      </div>
+        <div style={{ textAlign: "right", marginBottom: 10 }}>
+          <Button
+              variant="contained"
+              startIcon={<AddCircleOutlineIcon />}
+              onClick={() => {
+                setStatus({ ...status, visibleModal: true });
+              }}
+          >
+            Create
+          </Button>
+        </div>
     );
   };
+  const renderContent = () => {
+    return (
+      <DataGridPro
+          rows={data || dataDemo}
+          columns={columns}
+          pagination={true}
+          columnHeader--alignCenter={'c'}
+          pageSize={pagination.pageSize}
+          page={pagination.page}
+          initialState={{ pinnedColumns: { right: ['actions']} }}
+          onPageSizeChange={(pageSize)=>{onChangePagination(pageSize, pagination.page)}}
+          onPageChange={(page)=>{onChangePagination( pagination.pageSize,page)}}
+          rowsPerPageOptions={[10, 25, 50, 100]}
+          // checkboxSelection={false}
+          // disableSelectionOnClick={false}
+          // isRowSelectable={false}
+          rowCount={50}
+      />
+    )
+  };
+
   return (
     <div
       style={{
@@ -268,12 +260,12 @@ function UserManagement() {
       {renderTop()}
       {renderContent()}
       <Notification
-        visible={data.visibleNotification}
-        message={data.titleNotification}
-        type={data.typeNotification}
+        visible={status.visibleNotification}
+        message={status.titleNotification}
+        type={status.typeNotification}
         onClose={onCloseNotification}
       />
-      {data.visibleModal && renderModal()}
+      {status.visibleModal && renderModal()}
     </div>
   );
 }
