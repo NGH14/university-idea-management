@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react"
 import AppUse from "../common/AppUse"
 import { API_PATHS, STORAGE_VARS } from "../common/env"
 import LoadingSpinner from "../components/LoadingSpinner"
+import RequestApi from "../common/AppUse";
 
 export const UserContext = createContext()
 export const AppContext = (props) => {
@@ -17,7 +18,7 @@ export const AppContext = (props) => {
 
   const checkAuth = async () => {
     try {
-      const res = await AppUse.getApi(API_PATHS.AUTH_INFO, {
+      const res = await RequestApi.getApi(API_PATHS.AUTH_INFO, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
         },

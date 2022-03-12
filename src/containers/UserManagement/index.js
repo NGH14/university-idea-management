@@ -12,6 +12,7 @@ import ModalUserManagement from "./modal/ModalUserManagement";
 import { STORAGE_VARS } from "../../common/env";
 import { dataDemo } from "./FakeData";
 import {DataGridPro} from "@mui/x-data-grid-pro";
+import RequestApi from "../../common/AppUse";
 
 function UserManagement() {
   const [data, setData] = useState([]);
@@ -52,11 +53,7 @@ function UserManagement() {
 
   const loadData = async () => {
     try{
-      const res = await AppUse.getApi(`user-management/users?papesize=${pagination.pageSize}?page=${pagination.page+1}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
-        },
-      });
+      const res = await RequestApi.getApi(`user-management/users?papesize=${pagination.pageSize}?page=${pagination.page+1}`);
       if (res?.data?.succeeded) {
         setData(res?.data?.result?.rows)
         setStatus({...status, loading: false})
@@ -93,7 +90,7 @@ function UserManagement() {
 
   const onDelete = (id) => {
     try {
-      const res = AppUse.deleteApi(`user-management/user/${id}`);
+      const res = RequestApi.deleteApi(`user-management/user/${id}`);
       if (res?.data?.succeeded) {
         setStatus({
           ...status,
@@ -115,7 +112,7 @@ function UserManagement() {
   const onUpdate = async (value) => {
     console.log(value, "value");
     try {
-      const res = await AppUse.putApi(
+      const res = await RequestApi.putApi(
         `user-management/user/${value?.id}`,
         value
       );
@@ -140,7 +137,7 @@ function UserManagement() {
   };
   const onCreate = (value) => {
     try {
-      const res = AppUse.postApi(`user-management`, value);
+      const res = RequestApi.postApi(`user-management`, value);
       if (res?.data?.succeeded) {
         setStatus({
           ...status,
@@ -164,7 +161,7 @@ function UserManagement() {
   //
   const onShow = async (id) => {
     try {
-      const res = await AppUse.getApi(`user-management/user/${id}`);
+      const res = await RequestApi.getApi(`user-management/user/${id}`);
       if (res?.data?.succeeded) {
         setStatus({
           ...status,
