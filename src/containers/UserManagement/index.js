@@ -378,11 +378,7 @@ function UserManagement() {
             ColumnSortedDescendingIcon: SortedDescendingIcon,
             ColumnSortedAscendingIcon: SortedAscendingIcon,
           }}
-          rows={
-            // data
-            // ||
-            dataDemo
-          }
+          rows={data || dataDemo}
           columns={columns}
           pagination={true}
           cell--textCenter
