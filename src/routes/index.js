@@ -44,9 +44,9 @@ export const listRoute = () => {
           path={route.path}
           element={
             <React.Suspense fallback={<LoadingSpinner />}>
-              <PublicRoute>
+              <PrivateRoute>
                 <route.component />
-              </PublicRoute>
+              </PrivateRoute>
             </React.Suspense>
           }
         />
@@ -61,13 +61,13 @@ export const listRoute = () => {
           path={route.path}
           element={
             <React.Suspense fallback={<LoadingSpinner />}>
-              <PrivateRoute>
+              <PublicRoute>
                 <Sidebar />
                 <div className="main-content">
                   <Header />
                   <route.component />
                 </div>
-              </PrivateRoute>
+              </PublicRoute>
             </React.Suspense>
           }
         />
