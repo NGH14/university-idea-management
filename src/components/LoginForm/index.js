@@ -85,7 +85,7 @@ const LoginForm = () => {
   const { state, setState } = useContext(UserContext);
   const [buttonState, setButtonState] = useState({
     disable: false,
-    loading: false
+    loading: false,
   });
 
   const [notification, setNotification] = useState({
@@ -139,12 +139,12 @@ const LoginForm = () => {
       });
       if (res?.data?.succeeded) {
         localStorage.setItem(
-            STORAGE_VARS.JWT,
-            res?.data?.result?.access_token?.token
+          STORAGE_VARS.JWT,
+          res?.data?.result?.access_token?.token
         );
         localStorage.setItem(
-            STORAGE_VARS.REFRESH,
-            res?.data?.result?.refresh_token
+          STORAGE_VARS.REFRESH,
+          res?.data?.result?.refresh_token
         );
         setButtonState({ ...buttonState, loading: false, disable: false });
         setState({ ...state, isLogin: true, loading: true });
@@ -225,7 +225,7 @@ const LoginForm = () => {
           endIcon={<SendIcon />}
           loading={buttonState?.loading}
           loadingPosition="end"
-          disabled={!(formik.isValid && formik.dirty && !buttonState.disable)}
+          disabled={!(formik.isValid && !buttonState.disable)}
           fullWidth
         >
           Sign in

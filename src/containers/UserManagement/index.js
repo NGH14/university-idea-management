@@ -10,31 +10,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ModalUserManagement from "./modal/ModalUserManagement";
-import { STORAGE_VARS } from "../../common/env"
-const dataDemo = [
-  {
-    id: "123",
-    full_name: "Demo 01",
-    user_name: "Demo 01",
-    department: "Demo 01",
-    email: "Demo 01",
-    role: "Demo 01",
-    password: "Demo 01",
-    confirm_password: "Demo 01",
-    date_of_birth: null,
-  },
-  {
-    id: "1234",
-    full_name: "Demo 02",
-    user_name: "Demo 02",
-    department: "Demo 02",
-    email: "Demo 02",
-    role: "Demo 02",
-    password: "Demo 02",
-    confirm_password: "Demo 02",
-    date_of_birth: null,
-  }
-]
+import { STORAGE_VARS } from "../../common/env";
+import { dataDemo } from "./FakeData.js";
+
 function UserManagement() {
   const [data, setData] = useState({
     dataUser: null,
@@ -43,7 +21,7 @@ function UserManagement() {
     titleNotification: "",
     typeNotification: "error", //error or success
     visibleModal: false,
-    statusEdit: false
+    statusEdit: false,
   });
 
   const columns = [
@@ -82,7 +60,7 @@ function UserManagement() {
   };
 
   const onDelete = (id) => {
-    try{
+    try {
       const res = AppUse.deleteApi(`user-management/user/${id}`);
       if (res?.data?.success) {
         setData({
@@ -110,9 +88,12 @@ function UserManagement() {
     }
   };
   const onUpdate = async (value) => {
-    console.log(value, 'value')
-    try{
-      const res = await AppUse.putApi(`user-management/user/${value?.id}`, value);
+    console.log(value, "value");
+    try {
+      const res = await AppUse.putApi(
+        `user-management/user/${value?.id}`,
+        value
+      );
       if (res?.data?.success) {
         setData({
           ...data,
@@ -138,7 +119,6 @@ function UserManagement() {
         typeNotification: "error",
       });
     }
-
   };
   const onCreate = (value) => {
     try {
@@ -170,18 +150,17 @@ function UserManagement() {
         typeNotification: "error",
       });
     }
-
   };
   //
   const onShow = async (id) => {
-
     try {
       const res = await AppUse.getApi(`user-management/user/${id}`);
       if (res?.data?.succeeded) {
-        setData({ ...data,
+        setData({
+          ...data,
           initialValue: res?.data?.result,
           visibleModal: true,
-          statusEdit: true
+          statusEdit: true,
         });
       } else {
         setData({
@@ -208,13 +187,12 @@ function UserManagement() {
   }, []);
 
   const loadData = async () => {
-
     const res = await AppUse.getApi("user-management/users", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
       },
     });
-    
+
     if (res?.data?.succeeded) {
       setData({ ...data, dataUser: res?.data?.result?.rows });
     } else {
@@ -230,17 +208,23 @@ function UserManagement() {
     setData({ ...data, visibleNotification: false });
   };
   const onCloseModal = () => {
-    setData({ ...data, visibleModal: false, initialValue: null, statusEdit: false });
+    setData({
+      ...data,
+      visibleModal: false,
+      initialValue: null,
+      statusEdit: false,
+    });
   };
 
   const renderModal = () => {
     return (
-      <ModalUserManagement visible={data.visibleModal}
-                           initialValue={data.initialValue}
-                           statusEdit={data.statusEdit}
-                           onClose={onCloseModal}
-                           onCreate={onCreate}
-                           onUpdate={onUpdate}
+      <ModalUserManagement
+        visible={data.visibleModal}
+        initialValue={data.initialValue}
+        statusEdit={data.statusEdit}
+        onClose={onCloseModal}
+        onCreate={onCreate}
+        onUpdate={onUpdate}
       />
     );
   };

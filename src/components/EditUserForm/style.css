@@ -6,9 +6,8 @@
 }
 
 .createuserform_footer {
-  display: block;
-  text-align: end;
-  padding: auto 10px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .form_grid {

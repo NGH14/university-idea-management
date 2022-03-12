@@ -6,7 +6,7 @@ import CreateUserForm from "../../../components/CreateUserForm";
 import EditUserForm from "../../../components/EditUserForm";
 const style = {
   position: "relative",
-  top: "35%",
+  top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
   width: "1000px",
@@ -21,7 +21,8 @@ const style = {
   },
 };
 const ModalUserManagement = (props) => {
-  const { visible, onClose, onCreate, onUpdate, statusEdit, initialValue } = props;
+  const { visible, onClose, onCreate, onUpdate, statusEdit, initialValue } =
+    props;
   return (
     <Modal
       open={visible}
@@ -30,11 +31,15 @@ const ModalUserManagement = (props) => {
       aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
-        {
-          statusEdit ? <EditUserForm onClose={() => onClose()} onUpdate={onUpdate} initialValue={initialValue}/> :
-              <CreateUserForm onClose={() => onClose()} onCreate={onCreate}/>
-        }
-
+        {statusEdit ? (
+          <EditUserForm
+            onClose={() => onClose()}
+            onUpdate={onUpdate}
+            initialValue={initialValue}
+          />
+        ) : (
+          <CreateUserForm onClose={() => onClose()} onCreate={onCreate} />
+        )}
       </Box>
     </Modal>
   );

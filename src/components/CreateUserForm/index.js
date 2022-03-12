@@ -59,7 +59,7 @@ const ColorButton = styled(Button)(() => ({
   minWidth: 200,
   display: "inline-block",
 
-  margin: "10px",
+  margin: "10px 0",
   padding: "10px",
 
   "&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
@@ -97,7 +97,7 @@ function CreateUserForm(prop) {
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      onCreate(values)
+      onCreate(values);
     },
   });
 
@@ -207,15 +207,17 @@ function CreateUserForm(prop) {
               value={formik.values.department}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-							renderValue={
-								formik.values.department !== ''
-									? undefined
-									: () => (
-											<placeholder>
-												<em style={{opacity:.6}}>-- department --</em>
-											</placeholder>
-									  )
-							}
+              renderValue={
+                formik.values.department !== ""
+                  ? undefined
+                  : () => (
+                      <placeholder>
+                        <em style={{ opacity: 0.6, fontSize: 14 }}>
+                          -- department --
+                        </em>
+                      </placeholder>
+                    )
+              }
               error={
                 formik.touched.department && Boolean(formik.errors.department)
               }
@@ -223,7 +225,9 @@ function CreateUserForm(prop) {
               <MenuItem value={"Admin"}>Admin</MenuItem>
               <MenuItem value={"HR"}>HR</MenuItem>
             </Select>
-            <FormHelperText error>{formik.touched.department && formik.errors.department}</FormHelperText>
+            <FormHelperText error>
+              {formik.touched.department && formik.errors.department}
+            </FormHelperText>
           </div>
 
           <div className="form_content">
@@ -240,22 +244,26 @@ function CreateUserForm(prop) {
               value={formik.values.role}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-							renderValue={
-								formik.values.role !== ''
-									? undefined
-									: () => (
-											<placeholder>
-												<em style={{opacity:.6}}>-- role --</em>
-											</placeholder>
-									  )
-							}
+              renderValue={
+                formik.values.role !== ""
+                  ? undefined
+                  : () => (
+                      <placeholder>
+                        <em style={{ opacity: 0.6, fontSize: 14 }}>
+                          -- role --
+                        </em>
+                      </placeholder>
+                    )
+              }
               error={formik.touched.role && Boolean(formik.errors.role)}
               placeholder="E.g., vuhuua@gmail.com"
             >
               <MenuItem value={"Admin"}>Admin</MenuItem>
               <MenuItem value={"HR"}>HR</MenuItem>
             </Select>
-            <FormHelperText error>{formik.touched.role && formik.errors.role}</FormHelperText>
+            <FormHelperText error>
+              {formik.touched.role && formik.errors.role}
+            </FormHelperText>
           </div>
           <div className="form_content">
             <InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
@@ -289,11 +297,7 @@ function CreateUserForm(prop) {
           <ColorButton variant="outlined" onClick={() => onClose()}>
             Cancel
           </ColorButton>
-          <ColorButton
-            variant="contained"
-            type="submit"
-            disabled={!(formik.isValid && formik.dirty)}
-          >
+          <ColorButton variant="contained" type="submit">
             Create User
           </ColorButton>
         </div>

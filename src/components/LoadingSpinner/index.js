@@ -1,11 +1,7 @@
 import React from "react";
 import { CircularProgress } from "@mui/material";
-import UniLogo from "../../assets/images/logo-500.jpg";
+import UniLogo from "../../assets/images/logo-500.webp";
 import "./style.css";
-import Fab from "@mui/material/Fab";
-import Box from "@mui/material/Box";
-import CheckIcon from "@mui/icons-material/Check";
-import SaveIcon from "@mui/icons-material/Save";
 
 function LoadingSpinner() {
   return (
