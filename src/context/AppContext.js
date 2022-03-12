@@ -1,8 +1,7 @@
 import { createContext, useEffect, useState } from "react"
-import AppUse from "../common/AppUse"
 import { API_PATHS, STORAGE_VARS } from "../common/env"
 import LoadingSpinner from "../components/LoadingSpinner"
-import RequestApi from "../common/AppUse";
+import {RequestApi} from "../common/AppUse";
 
 export const UserContext = createContext()
 export const AppContext = (props) => {

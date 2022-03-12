@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import AppUse from "../../common/AppUse";
+import {AppUse, RequestApi} from "../../common/AppUse";
 import { Column } from "./model/Column";
 import { IconButton} from "@mui/material";
 import { Notification } from "../../common/Notification";
@@ -12,7 +12,6 @@ import ModalUserManagement from "./modal/ModalUserManagement";
 import { STORAGE_VARS } from "../../common/env";
 import { dataDemo } from "./FakeData";
 import {DataGridPro} from "@mui/x-data-grid-pro";
-import RequestApi from "../../common/AppUse";
 
 function UserManagement() {
   const [data, setData] = useState([]);

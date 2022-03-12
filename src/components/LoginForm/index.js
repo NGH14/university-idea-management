@@ -11,7 +11,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 
 import { AUTH, API_PATHS, STORAGE_VARS } from "../../common/env";
-import AppUse from "../../common/AppUse";
+import {AppUse} from "../../common/AppUse";
 
 import "./style.css";
 import { UserContext } from "../../context/AppContext";
