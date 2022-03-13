@@ -10,7 +10,7 @@ function Sidebar() {
 
   const onLogout = () => {
     localStorage.clear();
-    setState({ ...state, isLogin: false, loading: true });
+    setState({ ...state, isLogin: false, loading: false });
   };
 
   return (

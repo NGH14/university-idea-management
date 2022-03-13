@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { TextField } from "@mui/material"
 
 import SendIcon from "@mui/icons-material/Send";
 import Button from "@mui/lab/LoadingButton";
@@ -10,12 +10,12 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { AUTH, API_PATHS, STORAGE_VARS } from "../../common/env";
-import {AppUse} from "../../common/AppUse";
+import { AUTH, URL_PATHS, STORAGE_VARS, API_PATHS } from "../../common/env"
+import { AnonRequest } from "../../common/AppUse"
 
-import "./style.css";
-import { UserContext } from "../../context/AppContext";
-import { Notification } from "../../common/Notification";
+import "./style.css"
+import { UserContext } from "../../context/AppContext"
+import { Notification } from "../../common/Notification"
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
@@ -109,7 +109,7 @@ const LoginForm = () => {
   };
   const onLogin = async (value) => {
     try {
-      const res = await AppUse.postApi(API_PATHS.LOGIN, value);
+      const res = await AnonRequest.post(API_PATHS.LOGIN, value);
       if (res?.data?.succeeded) {
         localStorage.setItem(
           STORAGE_VARS.JWT,
@@ -120,7 +120,7 @@ const LoginForm = () => {
           res?.data?.result?.refresh_token
         );
         setButtonState({ ...buttonState, loading: false, disable: false });
-        setState({ ...state, isLogin: true, loading: true });
+        setState({ ...state, isLogin: true, loading: false });
       } else {
         setButtonState({ ...buttonState, loading: false, disable: false });
         setNotification({ ...notification, visibleNotification: true });
@@ -133,7 +133,7 @@ const LoginForm = () => {
 
   const responseGoogle = async (googleResponse) => {
     try {
-      const res = await AppUse.postApi(API_PATHS.EXTERNAL_LOGIN, {
+      const res = await AnonRequest.post(API_PATHS.EXTERNAL_LOGIN, {
         provider: "google",
         id_token: googleResponse.tokenId,
       });
@@ -147,7 +147,7 @@ const LoginForm = () => {
           res?.data?.result?.refresh_token
         );
         setButtonState({ ...buttonState, loading: false, disable: false });
-        setState({ ...state, isLogin: true, loading: true });
+        setState({ ...state, isLogin: true, loading: false });
       } else {
         setButtonState({ ...buttonState, loading: false, disable: false });
         setNotification({ ...notification, visibleNotification: true });

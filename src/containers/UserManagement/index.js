@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { AppUse, RequestApi } from "../../common/AppUse";
 import Box from "@mui/material/Box";
 import { Column } from "./model/Column";
 import { IconButton } from "@mui/material";
@@ -22,6 +21,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
 import "./style.css";
+import { AuthRequest } from "../../common/AppUse"
 
 function CustomNoRowsOverlay() {
   const StyledGridOverlay = styled("div")(({ theme }) => ({
@@ -179,7 +179,7 @@ function UserManagement() {
 
   const loadData = async () => {
     try {
-      const res = await RequestApi.getApi(
+      const res = await AuthRequest.get(
         `user-management/users?papesize=${pagination.pageSize}?page=${
           pagination.page + 1
         }`
@@ -233,7 +233,7 @@ function UserManagement() {
   const onDelete = (id) => {
     handleClose();
     try {
-      const res = RequestApi.deleteApi(`user-management/user/${id}`);
+      const res = AuthRequest.deleteApi(`user-management/user/${id}`);
       if (res?.data?.succeeded) {
         setStatus({
           ...status,
@@ -256,7 +256,7 @@ function UserManagement() {
     handleClose();
     console.log(value, "value");
     try {
-      const res = await RequestApi.putApi(
+      const res = await AuthRequest.putApi(
         `user-management/user/${value?.id}`,
         value
       );
@@ -281,7 +281,7 @@ function UserManagement() {
   };
   const onCreate = (value) => {
     try {
-      const res = RequestApi.postApi(`user-management`, value);
+      const res = AuthRequest.postApi(`user-management`, value);
       if (res?.data?.succeeded) {
         setStatus({
           ...status,
@@ -305,7 +305,7 @@ function UserManagement() {
   //
   const onShow = async (id) => {
     try {
-      const res = await RequestApi.getApi(`user-management/user/${id}`);
+      const res = await AuthRequest.get(`user-management/user/${id}`);
       if (res?.data?.succeeded) {
         setStatus({
           ...status,

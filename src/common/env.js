@@ -9,6 +9,12 @@ export const API_PATHS = {
   AUTH_INFO: "auth/info",
 }
 
+export const URL_PATHS = {
+  LOGIN: "/login",
+  HOME: "/homepage",
+  USER_MANAGE: "/user-management",
+}
+
 export const STORAGE_VARS = {
   JWT: "access_token",
   REFRESH: "refresh_token",

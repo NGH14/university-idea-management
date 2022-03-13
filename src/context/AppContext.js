@@ -1,7 +1,7 @@
-import { createContext, useEffect, useState } from "react"
-import { API_PATHS, STORAGE_VARS } from "../common/env"
+import { createContext, useEffect, useLayoutEffect, useState } from "react"
+import { API_PATHS } from "../common/env"
 import LoadingSpinner from "../components/LoadingSpinner"
-import {RequestApi} from "../common/AppUse";
+import { AuthRequest } from "../common/AppUse"
 
 export const UserContext = createContext()
 export const AppContext = (props) => {
@@ -13,11 +13,11 @@ export const AppContext = (props) => {
 
   useEffect(() => {
     checkAuth()
-  }, [localStorage.getItem(STORAGE_VARS.JWT)])
+  }, [])
 
   const checkAuth = async () => {
     try {
-      const res = await RequestApi.getApi(API_PATHS.AUTH_INFO)
+      const res = await AuthRequest.get(API_PATHS.AUTH_INFO)
       if (res?.data?.succeeded) {
         setState({
           ...state,
@@ -42,6 +42,7 @@ export const AppContext = (props) => {
   }
 
   if (state.loading) {
+    console.log("isLoading")
     return <LoadingSpinner></LoadingSpinner>
   }
   return (
