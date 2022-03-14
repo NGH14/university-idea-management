@@ -14,7 +14,7 @@ div[style*="position: absolute; pointer-events: none; color: rgba(130, 130, 130,
   z-index: 999;
 }
 
-.main-content {
+/* .main-content {
   margin-left: 250px !important;
   padding: 0 10px;
 }
@@ -47,4 +47,4 @@ div[style*="position: absolute; pointer-events: none; color: rgba(130, 130, 130,
   .main-content {
     margin-left: 66px !important;
   }
-}
+} */

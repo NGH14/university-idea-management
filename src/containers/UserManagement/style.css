@@ -4,6 +4,7 @@
 }
 .MuiDataGrid-cell {
   /* border: none !important; */
+  background-color: #fff !important;
 }
 .MuiDataGrid-columnHeader {
   background-color: #f5f5f7;

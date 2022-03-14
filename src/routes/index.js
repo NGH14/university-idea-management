@@ -12,6 +12,10 @@ const LIST_ROUTES_PRIVATE = [
     component: React.lazy(() => import("../containers/Homepage")),
   },
   {
+    path: "/",
+    component: React.lazy(() => import("../containers/Homepage")),
+  },
+  {
     path: "/homepage",
     component: React.lazy(() => import("../containers/Homepage")),
   },
@@ -62,11 +66,9 @@ export const listRoute = () => {
           element={
             <React.Suspense fallback={<LoadingSpinner />}>
               <PublicRoute>
-                <Sidebar />
-                <div className="main-content">
-                  <Header />
+                <Sidebar>
                   <route.component />
-                </div>
+                </Sidebar>
               </PublicRoute>
             </React.Suspense>
           }

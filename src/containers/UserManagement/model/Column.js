@@ -52,7 +52,8 @@ export const Column = [
   {
     field: "role",
     headerName: "Role",
-    // headerAlign: "center",
+    align: "center",
+    headerAlign: "center",
     disableColumnMenu: true,
     sortable: true,
     width: "auto",
@@ -64,10 +65,11 @@ export const Column = [
     // headerAlign: "center",
     headerName: "Birthday",
     disableColumnMenu: true,
-    sortable: true,
-    type: "string",
+    sortable: false,
     width: "auto",
     minWidth: 200,
+    type: "date",
+
     flex: 1,
   },
 ];

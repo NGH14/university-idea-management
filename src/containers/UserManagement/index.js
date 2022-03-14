@@ -21,7 +21,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
 import "./style.css";
-import { AuthRequest } from "../../common/AppUse"
+import { AuthRequest } from "../../common/AppUse";
 
 function CustomNoRowsOverlay() {
   const StyledGridOverlay = styled("div")(({ theme }) => ({
@@ -192,7 +192,7 @@ function UserManagement() {
       setStatus({
         ...status,
         visibleNotification: true,
-        titleNotification: "System error",
+        titleNotification: "Something went wrong, Please Try Again ",
         typeNotification: "error",
       });
     }
@@ -200,10 +200,11 @@ function UserManagement() {
   const renderButton = (id) => {
     return (
       <div>
-        <IconButton id="useraction-menu" onClick={handleClick} disableElevation>
+        <IconButton id="useraction-menu" onClick={handleClick}>
           <MoreHorizTwoTone />
         </IconButton>
         <StyledMenu
+          disableElevation
           id="user-menu"
           anchorEl={actionUser}
           open={openUserAction}
@@ -319,7 +320,7 @@ function UserManagement() {
         ...status,
         statusEdit: true,
         visibleNotification: true,
-        titleNotification: "Error sever",
+        titleNotification: "Something went wrong, Please Try Again ",
         typeNotification: "error",
       });
     }
@@ -378,7 +379,10 @@ function UserManagement() {
             ColumnSortedDescendingIcon: SortedDescendingIcon,
             ColumnSortedAscendingIcon: SortedAscendingIcon,
           }}
-          rows={data || dataDemo}
+          rows={
+            // data ||
+            dataDemo
+          }
           columns={columns}
           pagination={true}
           cell--textCenter
@@ -394,8 +398,8 @@ function UserManagement() {
           rowsPerPageOptions={[10, 25, 50, 100]}
           autoHeight
           // checkboxSelection={false}
-          // disableSelectionOnClick={false}
-          isRowSelectable={false}
+          // disableSelectionOnClick={true}
+          // isRowSelectable={true}
 
           // rowCount={data.total}
         />
@@ -408,8 +412,7 @@ function UserManagement() {
       style={{
         height: 500,
         width: "100%",
-        margin: "80px 0px 100px 0px",
-        padding: "0 10px",
+        padding: "0 5px",
         fontFamily: "Poppins",
       }}
     >

@@ -1,3 +1,10 @@
-.sidebar {
-  border-right: 1px solid #999;
+.drawer_logo {
+  width: 100px;
+  height: 40px;
+  object-fit: cover;
+}
+.header_logo {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
 }
