@@ -177,10 +177,10 @@ export default function Sidebar(props) {
       >
         <CssBaseline />
 
-        <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Box>
+        <Toolbar sx={{ justifyContent: "flex-end" }}>
+          {/* <Box>
             <img className="header_logo" src={UniLogo} alt="" />
-          </Box>
+          </Box> */}
 
           <Box>
             <Box
