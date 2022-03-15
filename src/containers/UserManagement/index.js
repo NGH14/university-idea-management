@@ -393,9 +393,9 @@ function UserManagement() {
             onChangePagination(pagination.pageSize, page);
           }}
           // autoHeight={true}
-          style={{minHeight: 700}}
+          style={{ minHeight: 700 }}
           rowsPerPageOptions={[10, 25, 50, 100]}
-          // style={{minHeight: 620}}
+
           // checkboxSelection={false}
           // disableSelectionOnClick={true}
           // isRowSelectable={true}
@@ -409,7 +409,7 @@ function UserManagement() {
   return (
     <div
       style={{
-        height: '100vh',
+        height: "100vh",
         width: "100%",
         padding: "0 5px",
         fontFamily: "Poppins",

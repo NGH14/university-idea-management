@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import "./style.css";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { STORAGE_VARS } from "../../common/env";
-import _ from 'lodash'
+import _ from "lodash";
 import { UserContext } from "../../context/AppContext";
 import LogoutIcon from "@mui/icons-material/Logout";
-import UniLogo from "../../assets/images/logo-500.webp";
+
 import UniTextLogo from "../../assets/images/2021-Greenwich-Black-Eng.webp";
 
 import { styled, useTheme } from "@mui/material/styles";
@@ -120,12 +120,17 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Sidebar(props) {
-
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const { state, setState } = useContext(UserContext);
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  console.log(selectedIndex);
+
+  const handleListItemClick = (index) => {
+    setSelectedIndex(index);
+  };
 
   const UserMenu = [
     {
@@ -138,17 +143,27 @@ export default function Sidebar(props) {
     {
       text: "Home",
       icon: <HomeIcon />,
-      onClick: () => navigate("/"),
+
+      onClick: (index) => {
+        handleListItemClick(index);
+        navigate("/");
+      },
     },
     {
       text: "User Management",
       icon: <AssignmentIndIcon />,
-      onClick: () => navigate("/user-management"),
+      onClick: (index) => {
+        handleListItemClick(index);
+        navigate("/user-management");
+      },
     },
     {
       text: "Department",
       icon: <AssignmentIndIcon />,
-      onClick: () => navigate("/department-management"),
+      onClick: (index) => {
+        handleListItemClick(index);
+        navigate("/department-management");
+      },
     },
   ];
 
@@ -162,7 +177,7 @@ export default function Sidebar(props) {
   const onLogout = () => {
     localStorage.clear();
     setState({ ...state, isLogin: false, loading: false });
-    navigate("/login")
+    navigate("/login");
   };
 
   const handleDrawerCick = () => {
@@ -173,11 +188,11 @@ export default function Sidebar(props) {
     navigate("/");
   };
   const ConvertLastName = (fullName) => {
-    console.log(fullName,12312)
+    console.log(fullName, 12312);
     const lastName = fullName.split(" ");
-    console.log(lastName[_.size(lastName)-1],12312)
-    return lastName[_.size(lastName)-1]
-  }
+    console.log(lastName[_.size(lastName) - 1], 12312);
+    return lastName[_.size(lastName) - 1];
+  };
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -196,11 +211,7 @@ export default function Sidebar(props) {
       >
         <CssBaseline />
 
-        <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Box onClick={() => nagivateHomepage()}>
-            <img className="header_logo" src={UniLogo} alt="" />
-          </Box>
-
+        <Toolbar sx={{ justifyContent: "flex-end" }}>
           <Box>
             <Box
               sx={{
@@ -211,7 +222,14 @@ export default function Sidebar(props) {
               }}
             >
               <ColorButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={ConvertLastName(state.dataUser.full_name)} src="/static/images/avatar/2.jpg" />
+                <Avatar
+                  alt={
+                    state.dataUser.full_name
+                      ? ConvertLastName(state.dataUser.full_name)
+                      : "Nghia Vu"
+                  }
+                  src="/static/images/avatar/2.jpg"
+                />
 
                 <Stack className="avatar_text" spacing={0.5}>
                   <Typography
@@ -219,7 +237,9 @@ export default function Sidebar(props) {
                     fontSize={14}
                     fontFamily="Poppins"
                   >
-                    {state.dataUser.full_name}
+                    {state.dataUser.full_name
+                      ? ConvertLastName(state.dataUser.full_name)
+                      : "Nghia Vu"}
                     <ExpandMoreIcon
                       sx={{ width: "20px", height: "20px", paddingTop: "8px" }}
                     />
@@ -230,7 +250,7 @@ export default function Sidebar(props) {
                     fontSize={12}
                     fontFamily="Nunito"
                   >
-                    {state.dataUser.role}
+                    {state.dataUser.role || "Admin"}
                   </Typography>
                 </Stack>
               </ColorButton>
@@ -310,8 +330,10 @@ export default function Sidebar(props) {
         <List>
           {itemsList.map((item, index) => {
             const { text, icon, onClick } = item;
+
             return (
               <ListItemButton
+                selected={selectedIndex === index}
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? "initial" : "center",
@@ -319,7 +341,7 @@ export default function Sidebar(props) {
                 }}
                 button
                 key={text}
-                onClick={onClick}
+                onClick={() => onClick(index)}
               >
                 {icon && (
                   <ListItemIcon
