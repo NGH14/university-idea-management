@@ -1,10 +1,11 @@
-import React from "react";
-import { Route } from "react-router-dom";
+import React, {useContext} from "react";
+import {Route, Routes} from "react-router-dom";
 import PublicRoute from "./components/PublicRoute";
 import PrivateRoute from "./components/PrivateRoute";
 
 import Sidebar from "../components/Sidebar";
 import LoadingSpinner from "../components/LoadingSpinner";
+import {UserContext} from "../context/AppContext";
 
 const LIST_ROUTES_PRIVATE = [
   {
@@ -20,6 +21,10 @@ const LIST_ROUTES_PRIVATE = [
     component: React.lazy(() => import("../containers/Homepage")),
   },
   {
+    path: "/department-management",
+    component: React.lazy(() => import("../containers/DepartmentManagement")),
+  },
+  {
     path: "/user-management",
     component: React.lazy(() => import("../containers/UserManagement")),
   },
@@ -29,6 +34,7 @@ const LIST_ROUTES_PUBLIC = [
     path: "*",
     component: React.lazy(() => import("../containers/Login")),
   },
+
   {
     path: "/login",
     component: React.lazy(() => import("../containers/Login")),
@@ -39,7 +45,8 @@ const LIST_ROUTES_PUBLIC = [
   },
 ];
 
-export const listRoute = () => {
+export function ListRoute(){
+  const { state, setState } = useContext(UserContext)
   const publicRoute = () => {
     return LIST_ROUTES_PUBLIC.map((route, index) => {
       return (
@@ -76,11 +83,15 @@ export const listRoute = () => {
       );
     });
   };
-
+  if (state.loading) {
+    return <LoadingSpinner></LoadingSpinner>
+  }
   return (
     <>
-      {publicRoute()}
-      {privateRoute()}
+      <Routes>
+        {publicRoute()}
+        {privateRoute()}
+      </Routes>
     </>
   );
 };

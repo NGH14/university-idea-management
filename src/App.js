@@ -2,14 +2,14 @@ import "./reset.css";
 import "./App.css";
 import { useContext } from "react";
 import { BrowserRouter, Routes } from "react-router-dom";
-import { listRoute } from "./routes";
 import { AppContext } from "./context/AppContext";
+import {ListRoute} from "./routes";
 
 function App() {
   return (
     <AppContext>
       <BrowserRouter>
-        <Routes>{listRoute()}</Routes>
+        <ListRoute />
       </BrowserRouter>
     </AppContext>
   );

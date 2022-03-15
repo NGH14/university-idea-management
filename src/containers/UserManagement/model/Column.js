@@ -1,13 +1,13 @@
+import moment from "moment";
+
 export const Column = [
   {
     field: "no",
     headerName: "No.",
     disableColumnMenu: true,
     sortable: false,
-    width: "100%",
     type: "number",
-    minWidth: 100,
-    flex: 1,
+    width: 80,
     align: "center",
     headerAlign: "center",
 
@@ -24,6 +24,21 @@ export const Column = [
     width: "100%",
     type: "string",
     minWidth: 200,
+    flex: 1,
+  },
+  {
+    field: "date_of_birth",
+    // headerAlign: "center",
+    headerName: "Birthday",
+    disableColumnMenu: true,
+    sortable: false,
+    width: "auto",
+    minWidth: 200,
+    renderCell: (value) => {
+      console.log(value)
+      return <div>{value?.row?.date_of_birth ? moment(value?.row?.date_of_birth).format('DD/MM/YYYY hh:mm'):null}</div>
+    },
+    type: "date",
     flex: 1,
   },
 
@@ -56,20 +71,7 @@ export const Column = [
     headerAlign: "center",
     disableColumnMenu: true,
     sortable: true,
-    width: "auto",
-    minWidth: 200,
-    flex: 1,
+    width: 120,
   },
-  {
-    field: "date_of_birth",
-    // headerAlign: "center",
-    headerName: "Birthday",
-    disableColumnMenu: true,
-    sortable: false,
-    width: "auto",
-    minWidth: 200,
-    type: "date",
 
-    flex: 1,
-  },
 ];

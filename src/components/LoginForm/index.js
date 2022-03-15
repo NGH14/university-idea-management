@@ -16,6 +16,7 @@ import { AnonRequest } from "../../common/AppUse"
 import "./style.css"
 import { UserContext } from "../../context/AppContext"
 import { Notification } from "../../common/Notification"
+import {useNavigate} from "react-router-dom";
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
@@ -82,6 +83,7 @@ const validationSchema = yup.object({
 });
 
 const LoginForm = () => {
+  const navigate = useNavigate();
   const { state, setState } = useContext(UserContext);
   const [buttonState, setButtonState] = useState({
     disable: false,
@@ -120,10 +122,8 @@ const LoginForm = () => {
           res?.data?.result?.refresh_token
         );
         setButtonState({ ...buttonState, loading: false, disable: false });
-        setState({ ...state, isLogin: true, loading: false });
-      } else {
-        setButtonState({ ...buttonState, loading: false, disable: false });
-        setNotification({ ...notification, visibleNotification: true });
+        setState({ ...state, isLogin: true});
+        navigate("/")
       }
     } catch {
       setButtonState({ ...buttonState, loading: false, disable: false });
@@ -147,10 +147,7 @@ const LoginForm = () => {
           res?.data?.result?.refresh_token
         );
         setButtonState({ ...buttonState, loading: false, disable: false });
-        setState({ ...state, isLogin: true, loading: false });
-      } else {
-        setButtonState({ ...buttonState, loading: false, disable: false });
-        setNotification({ ...notification, visibleNotification: true });
+        setState({ ...state, isLogin: true});
       }
     } catch {
       setButtonState({ ...buttonState, loading: false, disable: false });

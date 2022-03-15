@@ -1,5 +1,5 @@
 import { createContext, useEffect, useLayoutEffect, useState } from "react"
-import { API_PATHS } from "../common/env"
+import {API_PATHS, STORAGE_VARS} from "../common/env"
 import LoadingSpinner from "../components/LoadingSpinner"
 import { AuthRequest } from "../common/AppUse"
 
@@ -25,12 +25,6 @@ export const AppContext = (props) => {
           isLogin: true,
           dataUser: res?.data?.result,
         })
-      } else {
-        setState({
-          ...state,
-          loading: false,
-          isLogin: false,
-        })
       }
     } catch (error) {
       setState({
@@ -41,10 +35,7 @@ export const AppContext = (props) => {
     }
   }
 
-  if (state.loading) {
-    console.log("isLoading")
-    return <LoadingSpinner></LoadingSpinner>
-  }
+
   return (
     <UserContext.Provider value={{ state, setState }}>
       {props.children}

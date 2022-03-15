@@ -10,7 +10,6 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import ModalUserManagement from "./modal/ModalUserManagement";
 import { STORAGE_VARS } from "../../common/env";
 import { dataDemo } from "./FakeData";
 import { DataGridPro } from "@mui/x-data-grid-pro";
@@ -20,8 +19,9 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
-import "./style.css";
+import "../UserManagement/style.css";
 import { AuthRequest } from "../../common/AppUse";
+import ModalDepartmentManagement from "./modal/ModalDepartmentManagement";
 
 function CustomNoRowsOverlay() {
   const StyledGridOverlay = styled("div")(({ theme }) => ({
@@ -134,7 +134,7 @@ const StyledMenu = styled((props) => (
   },
 }));
 
-function UserManagement() {
+function DepartmentManagement() {
   const [data, setData] = useState([]);
   const [status, setStatus] = useState({
     initialValue: null,
@@ -179,7 +179,7 @@ function UserManagement() {
   const loadData = async () => {
     try {
       const res = await AuthRequest.get(
-        `user-management/users?papesize=${pagination.pageSize}?page=${
+        `department-management/departments?papesize=${pagination.pageSize}?page=${
           pagination.page + 1
         }`
       );
@@ -232,12 +232,13 @@ function UserManagement() {
   const onDelete = async (id) => {
     handleClose();
     try {
-      const res = await AuthRequest.delete(`user-management/user/${id}`);
+      const res = await AuthRequest.delete(`department-management/department/${id}`);
       if (res?.data?.succeeded) {
+
         setStatus({
           ...status,
           visibleNotification: true,
-          titleNotification: "Delete user success",
+          titleNotification: "Delete Department success",
           typeNotification: "success",
         });
         loadData();
@@ -246,7 +247,7 @@ function UserManagement() {
       setStatus({
         ...status,
         visibleNotification: true,
-        titleNotification: "Delete user error",
+        titleNotification: "Delete Department error",
         typeNotification: "error",
       });
     }
@@ -255,14 +256,14 @@ function UserManagement() {
     handleClose();
     try {
       const res = await AuthRequest.put(
-        `user-management/user/${value?.id}`,
+        `department-management/department/${value?.id}`,
         value
       );
       if (res?.data?.succeeded) {
         setStatus({
           ...status,
           visibleNotification: true,
-          titleNotification: "Delete user success",
+          titleNotification: "Update Department success",
           typeNotification: "success",
           visibleModal: false,
         });
@@ -272,30 +273,29 @@ function UserManagement() {
       setStatus({
         ...status,
         visibleNotification: true,
-        titleNotification: "Delete user error",
+        titleNotification: "Update Department error",
         typeNotification: "error",
       });
     }
   };
   const onCreate = async (value) => {
     try {
-      const res = await AuthRequest.post(`user-management`, value);
+      const res = await AuthRequest.post(`department-management`, value);
       if (res?.data?.succeeded) {
         setStatus({
           ...status,
-          visibleNotification: true,
-          titleNotification: "Create User Success",
-          typeNotification: "success",
           visibleModal: false,
+          visibleNotification: true,
+          titleNotification: "Create Department Success",
+          typeNotification: "success",
         });
-        loadData();
+        await loadData();
       }
     } catch {
       setStatus({
         ...status,
-        visibleModal: false,
         visibleNotification: true,
-        titleNotification: "Delete user error",
+        titleNotification: "Create Department error",
         typeNotification: "error",
       });
     }
@@ -303,7 +303,7 @@ function UserManagement() {
   //
   const onShow = async (id) => {
     try {
-      const res = await AuthRequest.get(`user-management/user/${id}`);
+      const res = await AuthRequest.get(`category-management/category/${id}`);
       if (res?.data?.succeeded) {
         setStatus({
           ...status,
@@ -337,7 +337,7 @@ function UserManagement() {
 
   const renderModal = () => {
     return (
-      <ModalUserManagement
+      <ModalDepartmentManagement
         visible={status.visibleModal}
         initialValue={status.initialValue}
         statusEdit={status.statusEdit}
@@ -353,7 +353,7 @@ function UserManagement() {
   const renderTop = () => {
     return (
       <div className="managementuser_title">
-        <h2 className="managementuser_heading">Management User</h2>
+        <h2 className="managementuser_heading">Department manager</h2>
         <Button
           variant="contained"
           endIcon={<AddCircleOutlineIcon />}
@@ -376,10 +376,7 @@ function UserManagement() {
             ColumnSortedDescendingIcon: SortedDescendingIcon,
             ColumnSortedAscendingIcon: SortedAscendingIcon,
           }}
-          rows={
-            data
-            // dataDemo
-          }
+          rows={data }// dataDemo
           columns={columns}
           pagination={true}
           cell--textCenter
@@ -392,15 +389,9 @@ function UserManagement() {
           onPageChange={(page) => {
             onChangePagination(pagination.pageSize, page);
           }}
-          // autoHeight={true}
           style={{minHeight: 700}}
+          // autoHeight={true}
           rowsPerPageOptions={[10, 25, 50, 100]}
-          // style={{minHeight: 620}}
-          // checkboxSelection={false}
-          // disableSelectionOnClick={true}
-          // isRowSelectable={true}
-
-          // rowCount={data.total}
         />
       </div>
     );
@@ -427,4 +418,4 @@ function UserManagement() {
     </div>
   );
 }
-export default UserManagement;
+export default DepartmentManagement;

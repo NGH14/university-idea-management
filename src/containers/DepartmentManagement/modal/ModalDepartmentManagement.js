@@ -1,9 +1,8 @@
 import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import * as React from "react";
-import { Input, Radio } from "@mui/icons-material";
-import CreateUserForm from "../../../components/User/CreateUserForm";
-import EditUserForm from "../../../components/User/EditUserForm";
+import EditForm from "../../../components/Department/EditForm";
+import CreateForm from "../../../components/Department/CreateForm";
 const style = {
   position: "relative",
   top: "50%",
@@ -15,12 +14,12 @@ const style = {
   p: 4,
   borderRadius: "5px",
   overflow: "auto",
-  maxHeight: "100%",
+  maxHeight: 380,
   " @media (max-width: 600px)": {
     width: "100%",
   },
 };
-const ModalUserManagement = (props) => {
+const ModalDepartmentManagement = (props) => {
   const { visible, onClose, onCreate, onUpdate, statusEdit, initialValue } =
     props;
   return (
@@ -32,16 +31,16 @@ const ModalUserManagement = (props) => {
     >
       <Box sx={style}>
         {statusEdit ? (
-          <EditUserForm
+          <EditForm
             onClose={() => onClose()}
             onUpdate={onUpdate}
             initialValue={initialValue}
           />
         ) : (
-          <CreateUserForm onClose={() => onClose()} onCreate={onCreate} />
+          <CreateForm onClose={() => onClose()} onCreate={onCreate} />
         )}
       </Box>
     </Modal>
   );
 };
-export default React.memo(ModalUserManagement);
+export default React.memo(ModalDepartmentManagement);

@@ -86,7 +86,7 @@ function EditUserForm(props) {
   return (
     <div className="createuserform">
       <div className="createuserform_title">
-        <h2>Edit User</h2>
+        <h2>Update User</h2>
         <IconButton>
           <CloseIcon onClick={() => onClose()} />
         </IconButton>
@@ -237,7 +237,7 @@ function EditUserForm(props) {
             Cancel
           </ColorButton>
           <ColorButton variant="contained" type="submit">
-            Edit User
+            Update
           </ColorButton>
         </div>
       </form>
