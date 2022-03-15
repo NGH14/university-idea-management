@@ -161,11 +161,16 @@ export default function Sidebar(props) {
     setOpen((pre) => !pre);
   };
 
+  const nagivateHomepage = () => {
+    navigate("/");
+  };
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
 
       <AppBar
+        className="app_header"
         position="fixed"
         open={open}
         color="inherit"
@@ -177,14 +182,15 @@ export default function Sidebar(props) {
       >
         <CssBaseline />
 
-        <Toolbar sx={{ justifyContent: "flex-end" }}>
-          {/* <Box>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          <Box onClick={() => nagivateHomepage()}>
             <img className="header_logo" src={UniLogo} alt="" />
-          </Box> */}
+          </Box>
 
           <Box>
             <Box
               sx={{
+                alignSeft: "flex-end",
                 display: "flex",
                 justifyContent: "center",
                 gap: 5,
@@ -193,7 +199,7 @@ export default function Sidebar(props) {
               <ColorButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Nghia" src="/static/images/avatar/2.jpg" />
 
-                <Stack spacing={0.5}>
+                <Stack className="avatar_text" spacing={0.5}>
                   <Typography
                     fontWeight={500}
                     fontSize={14}
@@ -269,7 +275,14 @@ export default function Sidebar(props) {
           }}
           sx={{ mb: 5 }}
         >
-          {open && <img className="drawer_logo" src={UniTextLogo} alt="" />}
+          {open && (
+            <img
+              onClick={() => nagivateHomepage()}
+              className="drawer_logo"
+              src={UniTextLogo}
+              alt=""
+            />
+          )}
           <IconButton
             color="inherit"
             aria-label="open drawer"
