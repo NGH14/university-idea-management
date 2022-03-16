@@ -30,15 +30,17 @@ export const Column = [
   {
     field: "created_date",
     headerAlign: "center",
-    headerName: "Create At",
+    headerName: "Create at",
     disableColumnMenu: true,
     sortable: false,
     width: "auto",
     minWidth: 200,
     type: "date",
     renderCell: (value) => {
-      console.log(value)
-      return <div>{moment(value?.row?.created_date).format('DD/MM/YYYY hh:mm')}</div>
+      console.log(value);
+      return (
+        <div>{moment(value?.row?.created_date).format("DD/MM/YYYY hh:mm")}</div>
+      );
     },
     flex: 1,
   },

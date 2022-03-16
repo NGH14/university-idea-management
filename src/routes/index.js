@@ -1,11 +1,11 @@
-import React, {useContext} from "react";
-import {Route, Routes} from "react-router-dom";
+import React, { useContext } from "react";
+import { Route, Routes } from "react-router-dom";
 import PublicRoute from "./components/PublicRoute";
 import PrivateRoute from "./components/PrivateRoute";
 
 import Sidebar from "../components/Sidebar";
 import LoadingSpinner from "../components/LoadingSpinner";
-import {UserContext} from "../context/AppContext";
+import { UserContext } from "../context/AppContext";
 
 const LIST_ROUTES_PRIVATE = [
   {
@@ -45,8 +45,8 @@ const LIST_ROUTES_PUBLIC = [
   },
 ];
 
-export function ListRoute(){
-  const { state, setState } = useContext(UserContext)
+export function ListRoute() {
+  const { state, setState } = useContext(UserContext);
   const publicRoute = () => {
     return LIST_ROUTES_PUBLIC.map((route, index) => {
       return (
@@ -71,20 +71,20 @@ export function ListRoute(){
           key={index}
           path={route.path}
           element={
-            <React.Suspense fallback={<LoadingSpinner />}>
-              <PublicRoute>
-                <Sidebar>
+            <Sidebar>
+              <React.Suspense fallback={<LoadingSpinner />}>
+                <PublicRoute>
                   <route.component />
-                </Sidebar>
-              </PublicRoute>
-            </React.Suspense>
+                </PublicRoute>
+              </React.Suspense>
+            </Sidebar>
           }
         />
       );
     });
   };
   if (state.loading) {
-    return <LoadingSpinner></LoadingSpinner>
+    return <LoadingSpinner></LoadingSpinner>;
   }
   return (
     <>
@@ -94,4 +94,4 @@ export function ListRoute(){
       </Routes>
     </>
   );
-};
+}

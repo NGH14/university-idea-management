@@ -5,7 +5,7 @@ import { IconButton } from "@mui/material";
 import { Notification } from "../../common/Notification";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import MoreHorizTwoTone from "@mui/icons-material/MoreHorizTwoTone";
-
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
@@ -14,12 +14,19 @@ import ModalUserManagement from "./modal/ModalUserManagement";
 import { STORAGE_VARS } from "../../common/env";
 import { dataDemo } from "./FakeData";
 import { DataGridPro } from "@mui/x-data-grid-pro";
+import {
+  GridToolbarContainer,
+  GridToolbarColumnsButton,
+  GridToolbarFilterButton,
+  GridToolbarExport,
+  GridToolbarDensitySelector,
+} from "@mui/x-data-grid";
 import { styled, alpha } from "@mui/material/styles";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-
+import Tooltip from "@mui/material/Tooltip";
 import "./style.css";
 import { AuthRequest } from "../../common/AppUse";
 
@@ -30,6 +37,7 @@ function CustomNoRowsOverlay() {
     alignItems: "center",
     justifyContent: "center",
     height: "100%",
+
     "& .ant-empty-img-1": {
       fill: theme.palette.mode === "light" ? "#aeb8c2" : "#262626",
     },
@@ -150,7 +158,17 @@ function UserManagement() {
   });
 
   const [actionUser, setActionUser] = useState(null);
+  const [tableToolBar, setTableToolBar] = useState(false);
+
+  useEffect(() => {
+    loadData();
+  }, [pagination]);
+
   const openUserAction = Boolean(actionUser);
+  const handleOnClickToolBar = () => {
+    setTableToolBar((pre) => !pre);
+  };
+
   const handleClick = (event) => {
     setActionUser(event.currentTarget);
   };
@@ -171,10 +189,6 @@ function UserManagement() {
       },
     },
   ];
-
-  useEffect(() => {
-    loadData();
-  }, [pagination]);
 
   const loadData = async () => {
     try {
@@ -335,6 +349,18 @@ function UserManagement() {
     });
   };
 
+  const CustomToolbar = () => {
+    return (
+      <GridToolbarContainer
+        sx={{ fontWeight: 700, display: "flex", justifyContent: "ceter" }}
+      >
+        <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />
+        <GridToolbarExport printOptions={{ disableToolbarButton: true }} />
+      </GridToolbarContainer>
+    );
+  };
   const renderModal = () => {
     return (
       <ModalUserManagement
@@ -353,7 +379,15 @@ function UserManagement() {
   const renderTop = () => {
     return (
       <div className="managementuser_title">
-        <h2 className="managementuser_heading">Management User</h2>
+        <div className="managementuser_heading">
+          <h2>Management User</h2>
+          <Tooltip title="Table Tool Bar">
+            <IconButton onClick={handleOnClickToolBar}>
+              <MoreVertIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+
         <Button
           variant="contained"
           endIcon={<AddCircleOutlineIcon />}
@@ -375,6 +409,7 @@ function UserManagement() {
             NoRowsOverlay: CustomNoRowsOverlay,
             ColumnSortedDescendingIcon: SortedDescendingIcon,
             ColumnSortedAscendingIcon: SortedAscendingIcon,
+            Toolbar: tableToolBar && CustomToolbar,
           }}
           rows={
             // data
@@ -392,8 +427,7 @@ function UserManagement() {
           onPageChange={(page) => {
             onChangePagination(pagination.pageSize, page);
           }}
-          autoHeight={true}
-          style={{ minHeight: 600 }}
+          style={{ minHeight: "600px" }}
           rowsPerPageOptions={[10, 25, 50, 100]}
 
           // checkboxSelection={false}
@@ -409,7 +443,7 @@ function UserManagement() {
   return (
     <div
       style={{
-        height: "100vh",
+        minHeight: "700px",
         width: "100%",
         padding: "0 5px",
         fontFamily: "Poppins",

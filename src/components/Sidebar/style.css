@@ -5,13 +5,14 @@
   cursor: pointer;
 }
 
-.Mui-selected,
-.MuiListItemButton-root:hover {
-  border-radius: 50px !important;
+.sidebar_customize .Mui-selected,
+.sidebar_customize .MuiListItemButton-root:hover {
+  box-shadow: -5px 0px 0px 0px #235ee7;
 }
 
-.Mui-selected .MuiListItemText-root {
-  color: #000 !important;
+.sidebar_customize .Mui-selected .MuiListItemText-root,
+.sidebar_customize .Mui-selected .MuiSvgIcon-root {
+  color: #235ee7 !important;
 }
 
 @media screen and (max-width: 800px) {

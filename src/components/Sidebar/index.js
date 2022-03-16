@@ -38,8 +38,6 @@ import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 240;
 
-const itemsList2 = [];
-
 const ColorButton = styled(Button)(() => ({
   fontFamily: "Poppins",
   fontSize: "13px",
@@ -84,9 +82,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
-  left: `calc(${theme.spacing(7)} + 1px)`,
-  width: "97%",
-
   transition: theme.transitions.create(["width", "margin", "left"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -139,7 +134,8 @@ export default function Sidebar(props) {
       onClick: () => onLogout(),
     },
   ];
-  const itemsList = [
+
+  const itemsManagementList = [
     {
       text: "Home",
       icon: <HomeIcon />,
@@ -328,8 +324,8 @@ export default function Sidebar(props) {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List>
-          {itemsList.map((item, index) => {
+        <List className="sidebar_customize">
+          {itemsManagementList.map((item, index) => {
             const { text, icon, onClick } = item;
 
             return (
@@ -362,7 +358,6 @@ export default function Sidebar(props) {
                     fontFamily: "Poppins, sans-serif",
                     fontSize: "14px",
                     fontWeight: "700",
-                    color: "#888",
                     opacity: open ? 1 : 0,
                   }}
                 />
@@ -371,45 +366,8 @@ export default function Sidebar(props) {
           })}
         </List>
         <Divider />
-        <List>
-          {itemsList2.map((item, index) => {
-            const { text, icon, onClick } = item;
-            return (
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-                button
-                key={text}
-                onClick={onClick}
-              >
-                {icon && (
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {icon}
-                  </ListItemIcon>
-                )}
-                <ListItemText
-                  disableTypography
-                  primary={text}
-                  sx={{
-                    fontFamily: "Nunito, sans-serif",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    opacity: open ? 1 : 0,
-                  }}
-                />
-              </ListItemButton>
-            );
-          })}
-        </List>
+
+        <Divider />
       </Drawer>
       <Box
         component="main"
