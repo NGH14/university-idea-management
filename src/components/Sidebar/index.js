@@ -27,7 +27,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import MenuItem from "@mui/material/MenuItem";
-
+import CorporateFareIcon from "@mui/icons-material/CorporateFare";
 import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -159,7 +159,7 @@ export default function Sidebar(props) {
     },
     {
       text: "Department",
-      icon: <AssignmentIndIcon />,
+      icon: <CorporateFareIcon />,
       onClick: (index) => {
         handleListItemClick(index);
         navigate("/department-management");
@@ -185,6 +185,7 @@ export default function Sidebar(props) {
   };
 
   const nagivateHomepage = () => {
+    handleListItemClick(0);
     navigate("/");
   };
   const ConvertLastName = (fullName) => {
@@ -289,8 +290,8 @@ export default function Sidebar(props) {
                       primary={text}
                       sx={{
                         fontFamily: "Nunito, sans-serif",
-                        fontSize: "14px",
-                        fontWeight: 600,
+                        fontSize: "16px",
+                        fontWeight: 700,
                         mr: 3,
                       }}
                     />
@@ -358,10 +359,10 @@ export default function Sidebar(props) {
                   disableTypography
                   primary={text}
                   sx={{
-                    fontFamily: "Nunito, sans-serif",
-                    fontSize: "16px",
-
-                    fontWeight: "600",
+                    fontFamily: "Poppins, sans-serif",
+                    fontSize: "14px",
+                    fontWeight: "700",
+                    color: "#888",
                     opacity: open ? 1 : 0,
                   }}
                 />

@@ -361,7 +361,7 @@ function UserManagement() {
             setStatus({ ...status, visibleModal: true });
           }}
         >
-          Create
+          Add user
         </Button>
       </div>
     );
@@ -377,8 +377,8 @@ function UserManagement() {
             ColumnSortedAscendingIcon: SortedAscendingIcon,
           }}
           rows={
-            data
-            // dataDemo
+            // data
+            dataDemo
           }
           columns={columns}
           pagination={true}
@@ -392,8 +392,8 @@ function UserManagement() {
           onPageChange={(page) => {
             onChangePagination(pagination.pageSize, page);
           }}
-          // autoHeight={true}
-          style={{ minHeight: 700 }}
+          autoHeight={true}
+          style={{ minHeight: 600 }}
           rowsPerPageOptions={[10, 25, 50, 100]}
 
           // checkboxSelection={false}
