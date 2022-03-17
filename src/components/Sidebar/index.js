@@ -35,6 +35,7 @@ import Button from "@mui/material/Button";
 
 import HomeIcon from "@mui/icons-material/Home";
 import { useNavigate } from "react-router-dom";
+import {AutoStories} from "@mui/icons-material";
 
 const drawerWidth = 240;
 
@@ -159,6 +160,14 @@ export default function Sidebar(props) {
       onClick: (index) => {
         handleListItemClick(index);
         navigate("/department-management");
+      },
+    },
+    {
+      text: "Category",
+      icon: <AutoStories />,
+      onClick: (index) => {
+        handleListItemClick(index);
+        navigate("/category-management");
       },
     },
   ];

@@ -28,6 +28,10 @@ const LIST_ROUTES_PRIVATE = [
     path: "/user-management",
     component: React.lazy(() => import("../containers/UserManagement")),
   },
+  {
+    path: "/category-management",
+    component: React.lazy(() => import("../containers/CategoryManagement")),
+  },
 ];
 const LIST_ROUTES_PUBLIC = [
   {

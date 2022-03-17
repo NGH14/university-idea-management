@@ -1,10 +1,19 @@
 import axios from "axios"
 import {STORAGE_VARS} from "./env";
+import {styled} from "@mui/material/styles";
+import Box from "@mui/material/Box";
 
 const GlobalApi = "https://localhost:7024/api"
 const configs = {headers: {Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`}}
 
 export class AnonRequest {
+
+    static post = async (api, params, conf) => {
+        return await axios.post(`${GlobalApi}/${api}`, params, conf)
+    }
+
+}
+export class AppUse {
 
     static post = async (api, params, conf) => {
         return await axios.post(`${GlobalApi}/${api}`, params, conf)
