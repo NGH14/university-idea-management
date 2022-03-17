@@ -37,7 +37,6 @@ export const Column = [
     minWidth: 200,
     type: "date",
     renderCell: (value) => {
-      console.log(value);
       return (
         <div>{moment(value?.row?.created_date).format("DD/MM/YYYY hh:mm")}</div>
       );

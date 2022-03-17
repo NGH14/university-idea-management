@@ -78,7 +78,6 @@ function EditUserForm(props) {
     initialValues: initialValue || [],
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(123);
       onUpdate(values);
     },
   });

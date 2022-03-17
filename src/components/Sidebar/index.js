@@ -1,7 +1,5 @@
-import React, { useContext } from "react";
+import React, {useContext, useEffect} from "react";
 import "./style.css";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { STORAGE_VARS } from "../../common/env";
 import _ from "lodash";
 import { UserContext } from "../../context/AppContext";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -34,8 +32,9 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Button from "@mui/material/Button";
 
 import HomeIcon from "@mui/icons-material/Home";
-import { useNavigate } from "react-router-dom";
+import {useHistory, useNavigate, useParams} from "react-router-dom";
 import {AutoStories} from "@mui/icons-material";
+import {useLocation} from "react-router";
 
 const drawerWidth = 240;
 
@@ -121,12 +120,31 @@ export default function Sidebar(props) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const { state, setState } = useContext(UserContext);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = React.useState("home");
   console.log(selectedIndex);
 
-  const handleListItemClick = (index) => {
+  // const handleListItemClick = (index) => {
+  //   setSelectedIndex(index);
+  // };
+  const {pathname}= useLocation()
+
+  useEffect(()=>{
+    const index = setSelected(pathname)
     setSelectedIndex(index);
-  };
+  }, [pathname])
+
+  const setSelected = (path) => {
+    switch (path){
+      case "/user-management":
+        return 1
+      case "/department-management":
+        return 2
+      case "/category-management":
+        return 3
+      default :
+          return 0
+    }
+  }
 
   const UserMenu = [
     {
@@ -142,7 +160,6 @@ export default function Sidebar(props) {
       icon: <HomeIcon />,
 
       onClick: (index) => {
-        handleListItemClick(index);
         navigate("/");
       },
     },
@@ -150,7 +167,6 @@ export default function Sidebar(props) {
       text: "User Management",
       icon: <AssignmentIndIcon />,
       onClick: (index) => {
-        handleListItemClick(index);
         navigate("/user-management");
       },
     },
@@ -158,7 +174,6 @@ export default function Sidebar(props) {
       text: "Department",
       icon: <CorporateFareIcon />,
       onClick: (index) => {
-        handleListItemClick(index);
         navigate("/department-management");
       },
     },
@@ -166,7 +181,6 @@ export default function Sidebar(props) {
       text: "Category",
       icon: <AutoStories />,
       onClick: (index) => {
-        handleListItemClick(index);
         navigate("/category-management");
       },
     },
@@ -190,13 +204,10 @@ export default function Sidebar(props) {
   };
 
   const nagivateHomepage = () => {
-    handleListItemClick(0);
     navigate("/");
   };
   const ConvertLastName = (fullName) => {
-    console.log(fullName, 12312);
     const lastName = fullName.split(" ");
-    console.log(lastName[_.size(lastName) - 1], 12312);
     return lastName[_.size(lastName) - 1];
   };
 
@@ -279,7 +290,9 @@ export default function Sidebar(props) {
               onClose={handleCloseUserMenu}
             >
               {UserMenu.map((item, index) => {
+
                 const { text, icon, onClick } = item;
+                console.log(text, 'text')
                 return (
                   <ListItemButton
                     sx={{
@@ -336,7 +349,7 @@ export default function Sidebar(props) {
         <List className="sidebar_customize">
           {itemsManagementList.map((item, index) => {
             const { text, icon, onClick } = item;
-
+            console.log(text, 'textss')
             return (
               <ListItemButton
                 selected={selectedIndex === index}
