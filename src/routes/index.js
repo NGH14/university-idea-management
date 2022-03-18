@@ -10,7 +10,7 @@ import { UserContext } from "../context/AppContext";
 const LIST_ROUTES_PRIVATE = [
   {
     path: "*",
-    component: React.lazy(() => import("../containers/Homepage")),
+    component: React.lazy(() => import("../containers/NotMatchPage")),
   },
   {
     path: "/",
@@ -34,11 +34,6 @@ const LIST_ROUTES_PRIVATE = [
   },
 ];
 const LIST_ROUTES_PUBLIC = [
-  {
-    path: "*",
-    component: React.lazy(() => import("../containers/Login")),
-  },
-
   {
     path: "/login",
     component: React.lazy(() => import("../containers/Login")),
@@ -75,13 +70,13 @@ export function ListRoute() {
           key={index}
           path={route.path}
           element={
-            <Sidebar>
-              <React.Suspense fallback={<LoadingSpinner />}>
+            <React.Suspense fallback={<LoadingSpinner />}>
+              <Sidebar>
                 <PublicRoute>
                   <route.component />
                 </PublicRoute>
-              </React.Suspense>
-            </Sidebar>
+              </Sidebar>
+            </React.Suspense>
           }
         />
       );

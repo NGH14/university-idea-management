@@ -16,6 +16,7 @@ function LoadingSpinner() {
             // zIndex: 1,
           }}
         />
+
         <img className="loading_logo" src={UniLogo} alt="" />
       </div>
     </div>

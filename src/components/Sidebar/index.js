@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from "react";
+import React, { useContext, useEffect } from "react";
 import "./style.css";
 import _ from "lodash";
 import { UserContext } from "../../context/AppContext";
@@ -32,9 +32,9 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Button from "@mui/material/Button";
 
 import HomeIcon from "@mui/icons-material/Home";
-import {useHistory, useNavigate, useParams} from "react-router-dom";
-import {AutoStories} from "@mui/icons-material";
-import {useLocation} from "react-router";
+import { useHistory, useNavigate, useParams } from "react-router-dom";
+import { AutoStories } from "@mui/icons-material";
+import { useLocation } from "react-router";
 
 const drawerWidth = 240;
 
@@ -82,6 +82,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
+  width: "100%",
   transition: theme.transitions.create(["width", "margin", "left"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -93,6 +94,9 @@ const AppBar = styled(MuiAppBar, {
       duration: theme.transitions.duration.enteringScreen,
     }),
     left: `none`,
+    [theme.breakpoints.up("sm")]: {
+      width: "100%",
+    },
   }),
 }));
 
@@ -126,25 +130,25 @@ export default function Sidebar(props) {
   // const handleListItemClick = (index) => {
   //   setSelectedIndex(index);
   // };
-  const {pathname}= useLocation()
+  const { pathname } = useLocation();
 
-  useEffect(()=>{
-    const index = setSelected(pathname)
+  useEffect(() => {
+    const index = setSelected(pathname);
     setSelectedIndex(index);
-  }, [pathname])
+  }, [pathname]);
 
   const setSelected = (path) => {
-    switch (path){
+    switch (path) {
       case "/user-management":
-        return 1
+        return 1;
       case "/department-management":
-        return 2
+        return 2;
       case "/category-management":
-        return 3
-      default :
-          return 0
+        return 3;
+      default:
+        return 0;
     }
-  }
+  };
 
   const UserMenu = [
     {
@@ -290,9 +294,8 @@ export default function Sidebar(props) {
               onClose={handleCloseUserMenu}
             >
               {UserMenu.map((item, index) => {
-
                 const { text, icon, onClick } = item;
-                console.log(text, 'text')
+                console.log(text, "text");
                 return (
                   <ListItemButton
                     sx={{
@@ -349,7 +352,7 @@ export default function Sidebar(props) {
         <List className="sidebar_customize">
           {itemsManagementList.map((item, index) => {
             const { text, icon, onClick } = item;
-            console.log(text, 'textss')
+            console.log(text, "textss");
             return (
               <ListItemButton
                 selected={selectedIndex === index}

@@ -11,6 +11,7 @@ export default function Homepage() {
       cupiditate et corporis, recusandae voluptate, laborum natus suscipit? Odit
       esse perspiciatis blanditiis placeat exercitationem amet impedit adipisci
       tempora similique? Corporis, nemo!
+
     </div>
   );
 }
