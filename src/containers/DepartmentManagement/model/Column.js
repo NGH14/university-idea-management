@@ -11,7 +11,6 @@ export const Column = [
     // flex: 1,
     align: "center",
     headerAlign: "center",
-
     renderCell: (value) => {
       return <div>{value.api.getRowIndex(value.id) + 1}</div>;
     },

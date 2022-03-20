@@ -1,11 +1,11 @@
 import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import * as React from "react";
-import EditForm from "../../../components/Department/EditForm";
-import CreateForm from "../../../components/Department/CreateForm";
+import EditForm from "../../../components/Tag/EditForm";
+import CreateForm from "../../../components/Tag/CreateForm";
 import {useEffect, useState} from "react";
 import {AuthRequest} from "../../../common/AppUse";
-import DetailForm from "../../../components/Department/DetailForm";
+import DetailForm from "../../../components/Tag/DetailForm";
 const style = {
   position: "relative",
   top: "50%",
@@ -22,7 +22,7 @@ const style = {
     width: "100%",
   },
 };
-const ModalDepartmentManagement = (props) => {
+const ModalTagManagement = (props) => {
   const { visible, onClose, onCreate, onUpdate, action, rowId } = props;
   const [initialValue, setInitialValue] = useState([])
   useEffect(()=>{
@@ -32,7 +32,7 @@ const ModalDepartmentManagement = (props) => {
   }, [action])
   const loadData = async () => {
     try {
-      const res = await AuthRequest.get(`department-management/department/${rowId}`);
+      const res = await AuthRequest.get(`tag-management/tag/${rowId}`);
       if (res?.data?.succeeded) {
         setInitialValue( res?.data?.result);
       }
@@ -69,4 +69,4 @@ const ModalDepartmentManagement = (props) => {
     </Modal>
   );
 };
-export default React.memo(ModalDepartmentManagement);
+export default React.memo(ModalTagManagement);

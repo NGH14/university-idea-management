@@ -74,6 +74,7 @@ const validationSchema = yup.object({
 
 function EditUserForm(props) {
   const { onClose, onUpdate, initialValue } = props;
+  console.log(initialValue, 987)
   const formik = useFormik({
     initialValues: initialValue || [],
     validationSchema: validationSchema,

@@ -9,16 +9,17 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { DataGridPro } from "@mui/x-data-grid-pro";
+import {DataGridPro, GridActionsCellItem} from "@mui/x-data-grid-pro";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MenuItem from "@mui/material/MenuItem";
 
 import "../UserManagement/style.css";
 import { AuthRequest } from "../../common/AppUse";
-import ModalCategoryManagement from "./modal/ModalCategoryManagement";
 import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
 import {StyledMenu} from "../../components/Custom/StyledMenu";
+import * as React from "react";
+import ModalTagManagement from "./modal/ModalTagManagement";
 
 
 function SortedDescendingIcon() {
@@ -30,20 +31,23 @@ function SortedAscendingIcon() {
 
 
 
-function CategoryManagement() {
+function TagManagement() {
     const [data, setData] = useState([]);
+    const [rowId, setRowId] = useState(null);
     const [status, setStatus] = useState({
-        initialValue: null,
         visibleNotification: false,
         titleNotification: "",
         typeNotification: "error", //error or success
         visibleModal: false,
-        statusEdit: false,
+        action: "create", // create, update, detail
     });
     const [pagination, setPagination] = useState({
         pageSize: 10,
         page: 0,
     });
+    useEffect(() => {
+        loadData();
+    }, [pagination]);
 
     const [actionUser, setActionUser] = useState(null);
     const openUserAction = Boolean(actionUser);
@@ -62,25 +66,42 @@ function CategoryManagement() {
             width: 75,
             disableColumnMenu: true,
             sortable: false,
-            renderCell: (value) => {
-                return renderButton(value.id);
-            },
+            getActions: (params) => [
+                <GridActionsCellItem
+                    icon={<InfoOutlinedIcon color={"info"}  />}
+                    label="Detail"
+                    onClick={()=>onOpenModal(params.id,"detail")}
+                    showInMenu
+                />,
+                <GridActionsCellItem
+                    icon={<EditIcon color={"secondary"}/>}
+                    label="Update"
+                    onClick={()=>onOpenModal(params.id,"update")}
+                    showInMenu
+                />,
+                <GridActionsCellItem
+                    icon={<DeleteIcon />}
+                    label="Delete"
+                    onClick={()=>onDelete(params.id)}
+                    showInMenu
+                />,
+            ],
         },
     ];
 
-    useEffect(() => {
-        loadData();
-    }, [pagination]);
+
 
     const loadData = async () => {
         try {
             const res = await AuthRequest.get(
-                `category-management/categories?papesize=${pagination.pageSize}?page=${
+                `tag-management/tags?papesize=${pagination.pageSize}?page=${
                     pagination.page + 1
                 }`
             );
             if (res?.data?.succeeded) {
                 setData(res?.data?.result?.rows);
+                setRowId(null)
+
             }
         } catch {
             setStatus({
@@ -91,7 +112,7 @@ function CategoryManagement() {
             });
         }
     };
-    const renderButton = (id) => {
+    const renderActionButton = (id) => {
         return (
             <div>
                 <IconButton id="useraction-menu" onClick={handleClick}>
@@ -104,12 +125,12 @@ function CategoryManagement() {
                     open={openUserAction}
                     onClose={handleClose}
                 >
-                    <MenuItem onClick={() => onShow(id)}>
+                    <MenuItem onClick={() => onOpenModal(id, "detail")}>
                         <InfoOutlinedIcon color={"info"} />
                         Details
                     </MenuItem>
 
-                    <MenuItem onClick={() => onShow(id)}>
+                    <MenuItem onClick={() => onOpenModal(id, "update")}>
                         <EditIcon color={"secondary"}></EditIcon> Edit
                     </MenuItem>
                     <MenuItem
@@ -124,17 +145,23 @@ function CategoryManagement() {
             </div>
         );
     };
+    const onOpenModal = (id, action) => {
+        if(id){
+            setRowId(id)
+        }
+        setStatus({...status, visibleModal: true, action})
+    }
 
     const onDelete = async (id) => {
         handleClose();
         try {
-            const res = await AuthRequest.delete(`category-management/category/${id}`);
+            const res = await AuthRequest.delete(`tag-management/tag/${id}`);
             if (res?.data?.succeeded) {
 
                 setStatus({
                     ...status,
                     visibleNotification: true,
-                    titleNotification: "Delete category success",
+                    titleNotification: "Delete tag success",
                     typeNotification: "success",
                 });
                 loadData();
@@ -143,7 +170,7 @@ function CategoryManagement() {
             setStatus({
                 ...status,
                 visibleNotification: true,
-                titleNotification: "Delete category error",
+                titleNotification: "Delete tag error",
                 typeNotification: "error",
             });
         }
@@ -152,14 +179,15 @@ function CategoryManagement() {
         handleClose();
         try {
             const res = await AuthRequest.put(
-                `category-management/category/${value?.id}`,
+                `tag-management/tag/${value?.id}`,
                 value
             );
             if (res?.data?.succeeded) {
                 setStatus({
                     ...status,
+                    action: 'create',
                     visibleNotification: true,
-                    titleNotification: "Update category success",
+                    titleNotification: "Update tag success",
                     typeNotification: "success",
                     visibleModal: false,
                 });
@@ -169,20 +197,21 @@ function CategoryManagement() {
             setStatus({
                 ...status,
                 visibleNotification: true,
-                titleNotification: "Update category error",
+                titleNotification: "Update tag error",
                 typeNotification: "error",
             });
         }
     };
     const onCreate = async (value) => {
         try {
-            const res = await AuthRequest.post(`category-management`, value);
+            const res = await AuthRequest.post(`tag-management`, value);
             if (res?.data?.succeeded) {
                 setStatus({
                     ...status,
+                    action: "create",
                     visibleModal: false,
                     visibleNotification: true,
-                    titleNotification: "Create category Success",
+                    titleNotification: "Create tag Success",
                     typeNotification: "success",
                 });
                 await loadData();
@@ -190,30 +219,9 @@ function CategoryManagement() {
         } catch {
             setStatus({
                 ...status,
+                action: 'create',
                 visibleNotification: true,
-                titleNotification: "Create category error",
-                typeNotification: "error",
-            });
-        }
-    };
-    //
-    const onShow = async (id) => {
-        try {
-            const res = await AuthRequest.get(`category-management/category/${id}`);
-            if (res?.data?.succeeded) {
-                setStatus({
-                    ...status,
-                    initialValue: res?.data?.result,
-                    visibleModal: true,
-                    statusEdit: true,
-                });
-            }
-        } catch {
-            setStatus({
-                ...status,
-                statusEdit: true,
-                visibleNotification: true,
-                titleNotification: "Something went wrong, Please Try Again ",
+                titleNotification: "Create tag error",
                 typeNotification: "error",
             });
         }
@@ -226,18 +234,17 @@ function CategoryManagement() {
         setStatus({
             ...status,
             visibleModal: false,
-            initialValue: null,
-            statusEdit: false,
+            action: "create",
         });
     };
 
     const renderModal = () => {
         return (
-            <ModalCategoryManagement
+            <ModalTagManagement
                 visible={status.visibleModal}
-                initialValue={status.initialValue}
-                statusEdit={status.statusEdit}
+                action={status.action}
                 onClose={onCloseModal}
+                rowId={rowId}
                 onCreate={onCreate}
                 onUpdate={onUpdate}
             />
@@ -249,13 +256,11 @@ function CategoryManagement() {
     const renderTop = () => {
         return (
             <div className="managementuser_title">
-                <h2 className="managementuser_heading">Category manager</h2>
+                <h2 className="managementuser_heading">Tag manager</h2>
                 <Button
                     variant="contained"
                     endIcon={<AddCircleOutlineIcon />}
-                    onClick={() => {
-                        setStatus({ ...status, visibleModal: true });
-                    }}
+                    onClick={() => onOpenModal(null,"create")}
                 >
                     Create
                 </Button>
@@ -314,4 +319,4 @@ function CategoryManagement() {
         </div>
     );
 }
-export default CategoryManagement;
+export default TagManagement;

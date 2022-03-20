@@ -19,7 +19,7 @@ export const Column = [
   {
     field: "name",
     headerAlign: "center",
-    headerName: "Category",
+    headerName: "Tag",
     disableColumnMenu: true,
     sortable: true,
     width: "100%",

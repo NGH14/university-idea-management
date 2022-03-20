@@ -180,7 +180,6 @@ const LoginForm = () => {
         )}
         clientId={AUTH.GOOGLE_CLIENT_ID}
         onSuccess={(response) => responseGoogle(response)}
-        onFailure={() => console.log("failed")}
         cookiePolicy={"single_host_origin"}
       />
       <div className="loginform-loginby">

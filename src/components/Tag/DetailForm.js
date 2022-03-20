@@ -4,19 +4,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import Button from "@mui/material/Button";
 import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
-import Select from "@mui/material/Select";
 import IconButton from "@mui/material/IconButton";
-import MenuItem from "@mui/material/MenuItem";
-
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import DatePicker from "@mui/lab/DatePicker";
-import FormHelperText from "@mui/material/FormHelperText";
-import enLocale from "date-fns/locale/en-GB";
-
 import { useFormik } from "formik";
 import * as yup from "yup";
-
 import "../User/EditUserForm/style.css";
 
 const CssTextField = styled(TextField)({
@@ -67,7 +57,7 @@ const validationSchema = yup.object({
     name: yup.string().required("Full Name is required"),
 });
 
-function EditForm(props) {
+function DetailForm(props) {
     const { onClose, onUpdate, initialValue } = props;
     const formik = useFormik({
         initialValues: initialValue || [],
@@ -99,12 +89,10 @@ function EditForm(props) {
                             id="name"
                             name="name"
                             value={formik.values.name}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={
-                                formik.touched.full_name && Boolean(formik.errors.name)
-                            }
-                            helperText={formik.touched.name && formik.errors.name}
+                            variant="standard"
+                            InputProps={{
+                                readOnly: true,
+                            }}
                         />
                     </div>
                 </div>
@@ -121,4 +109,4 @@ function EditForm(props) {
     );
 }
 
-export default React.memo(EditForm);
+export default React.memo(DetailForm);

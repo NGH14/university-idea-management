@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import { Column } from "./model/Column";
-import { IconButton } from "@mui/material";
+import {IconButton, Modal} from "@mui/material";
 import { Notification } from "../../common/Notification";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import MoreHorizTwoTone from "@mui/icons-material/MoreHorizTwoTone";
@@ -11,9 +11,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ModalUserManagement from "./modal/ModalUserManagement";
-import { STORAGE_VARS } from "../../common/env";
 import { dataDemo } from "./FakeData";
-import { DataGridPro } from "@mui/x-data-grid-pro";
+import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
 import {
   GridToolbarContainer,
   GridToolbarColumnsButton,
@@ -31,6 +30,8 @@ import "./style.css";
 import { AuthRequest } from "../../common/AppUse";
 import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
 import {StyledMenu} from "../../components/Custom/StyledMenu";
+import * as React from "react";
+import {UserContext} from "../../context/AppContext";
 
 
 function SortedDescendingIcon() {
@@ -43,14 +44,15 @@ function SortedAscendingIcon() {
 
 
 function UserManagement() {
+  const { state, setState } = useContext(UserContext);
   const [data, setData] = useState([]);
+  const [rowId, setRowId] = useState(null);
   const [status, setStatus] = useState({
-    initialValue: null,
     visibleNotification: false,
     titleNotification: "",
     typeNotification: "error", //error or success
     visibleModal: false,
-    statusEdit: false,
+    action: "create", // create, update, detail
   });
   const [pagination, setPagination] = useState({
     pageSize: 10,
@@ -72,6 +74,7 @@ function UserManagement() {
   const handleClick = (event) => {
     setActionUser(event.currentTarget);
   };
+
   const handleClose = () => {
     setActionUser(null);
   };
@@ -82,11 +85,30 @@ function UserManagement() {
       field: "actions",
       headerName: "Action",
       width: 75,
+      type:'actions',
       disableColumnMenu: true,
       sortable: false,
-      renderCell: (value) => {
-        return renderButton(value.id);
-      },
+      getActions: (params) => [
+        <GridActionsCellItem
+            icon={<InfoOutlinedIcon color={"info"}  />}
+            label="Detail"
+            onClick={()=>onOpenModal(params.id,"detail")}
+            showInMenu
+        />,
+        <GridActionsCellItem
+            icon={<EditIcon color={"secondary"}/>}
+            label="Update"
+            onClick={()=>onOpenModal(params.id,"update")}
+            showInMenu
+        />,
+        <GridActionsCellItem
+            icon={<DeleteIcon />}
+            disabled={state?.dataUser?.id ===  params.id ? true : false}
+            label="Delete"
+            onClick={()=>onDelete(params.id)}
+            showInMenu
+        />,
+      ],
     },
   ];
 
@@ -99,6 +121,7 @@ function UserManagement() {
       );
       if (res?.data?.succeeded) {
         setData(res?.data?.result?.rows);
+        setRowId(null)
       }
     } catch {
       setStatus({
@@ -109,39 +132,13 @@ function UserManagement() {
       });
     }
   };
-  const renderButton = (id) => {
-    return (
-      <div>
-        <IconButton id="useraction-menu" onClick={handleClick}>
-          <MoreHorizTwoTone />
-        </IconButton>
-        <StyledMenu
-          disableElevation
-          id="user-menu"
-          anchorEl={actionUser}
-          open={openUserAction}
-          onClose={handleClose}
-        >
-          <MenuItem onClick={() => onShow(id)}>
-            <InfoOutlinedIcon color={"info"} />
-            Details
-          </MenuItem>
 
-          <MenuItem onClick={() => onShow(id)}>
-            <EditIcon color={"secondary"}></EditIcon> Edit
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              onDelete(id);
-            }}
-          >
-            <DeleteIcon color={"error"} />
-            Delete
-          </MenuItem>
-        </StyledMenu>
-      </div>
-    );
-  };
+  const onOpenModal = (id, action) => {
+    if(id){
+      setRowId(id)
+    }
+    setStatus({...status, visibleModal: true, action})
+  }
 
   const onDelete = async (id) => {
     handleClose();
@@ -214,38 +211,17 @@ function UserManagement() {
       });
     }
   };
-  //
-  const onShow = async (id) => {
-    try {
-      const res = await AuthRequest.get(`user-management/user/${id}`);
-      if (res?.data?.succeeded) {
-        setStatus({
-          ...status,
-          initialValue: res?.data?.result,
-          visibleModal: true,
-          statusEdit: true,
-        });
-      }
-    } catch {
-      setStatus({
-        ...status,
-        statusEdit: true,
-        visibleNotification: true,
-        titleNotification: "Something went wrong, Please Try Again ",
-        typeNotification: "error",
-      });
-    }
-  };
 
   const onCloseNotification = () => {
     setStatus({ ...status, visibleNotification: false });
   };
   const onCloseModal = () => {
+    if(rowId){
+      setRowId(null)
+    }
     setStatus({
       ...status,
       visibleModal: false,
-      initialValue: null,
-      statusEdit: false,
     });
   };
 
@@ -265,9 +241,9 @@ function UserManagement() {
     return (
       <ModalUserManagement
         visible={status.visibleModal}
-        initialValue={status.initialValue}
-        statusEdit={status.statusEdit}
+        action={status.action}
         onClose={onCloseModal}
+        rowId={rowId}
         onCreate={onCreate}
         onUpdate={onUpdate}
       />
@@ -291,9 +267,7 @@ function UserManagement() {
         <Button
           variant="contained"
           endIcon={<AddCircleOutlineIcon />}
-          onClick={() => {
-            setStatus({ ...status, visibleModal: true });
-          }}
+          onClick={() => onOpenModal(null, "create")}
         >
           Add user
         </Button>
@@ -312,8 +286,8 @@ function UserManagement() {
             Toolbar: tableToolBar && CustomToolbar,
           }}
           rows={
-            // data
-            dataDemo
+            data
+            // dataDemo
           }
           columns={columns}
           pagination={true}
@@ -329,12 +303,6 @@ function UserManagement() {
           }}
           style={{ minHeight: "600px" }}
           rowsPerPageOptions={[10, 25, 50, 100]}
-
-          // checkboxSelection={false}
-          // disableSelectionOnClick={true}
-          // isRowSelectable={true}
-
-          // rowCount={data.total}
         />
       </div>
     );

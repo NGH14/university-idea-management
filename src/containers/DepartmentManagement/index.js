@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import { Column } from "./model/Column";
 import { IconButton } from "@mui/material";
@@ -10,7 +10,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Button from "@mui/material/Button";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import { DataGridPro } from "@mui/x-data-grid-pro";
+import {DataGridPro, GridActionsCellItem} from "@mui/x-data-grid-pro";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MenuItem from "@mui/material/MenuItem";
@@ -20,6 +20,9 @@ import { AuthRequest } from "../../common/AppUse";
 import ModalDepartmentManagement from "./modal/ModalDepartmentManagement";
 import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
 import {StyledMenu} from "../../components/Custom/StyledMenu";
+import ModalUserManagement from "../UserManagement/modal/ModalUserManagement";
+import * as React from "react";
+import {UserContext} from "../../context/AppContext";
 
 
 function SortedDescendingIcon() {
@@ -32,19 +35,23 @@ function SortedAscendingIcon() {
 
 
 function DepartmentManagement() {
+
   const [data, setData] = useState([]);
+  const [rowId, setRowId] = useState(null);
   const [status, setStatus] = useState({
-    initialValue: null,
     visibleNotification: false,
     titleNotification: "",
     typeNotification: "error", //error or success
     visibleModal: false,
-    statusEdit: false,
+    action: "create", // create, update, detail
   });
   const [pagination, setPagination] = useState({
     pageSize: 10,
     page: 0,
   });
+  useEffect(() => {
+    loadData();
+  }, [pagination]);
 
   const [actionUser, setActionUser] = useState(null);
   const openUserAction = Boolean(actionUser);
@@ -63,15 +70,30 @@ function DepartmentManagement() {
       width: 75,
       disableColumnMenu: true,
       sortable: false,
-      renderCell: (value) => {
-        return renderButton(value.id);
-      },
+      getActions: (params) => [
+        <GridActionsCellItem
+            icon={<InfoOutlinedIcon color={"info"}  />}
+            label="Detail"
+            onClick={()=>onOpenModal(params.id,"detail")}
+            showInMenu
+        />,
+        <GridActionsCellItem
+            icon={<EditIcon color={"secondary"}/>}
+            label="Update"
+            onClick={()=>onOpenModal(params.id,"update")}
+            showInMenu
+        />,
+        <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={()=>onDelete(params.id)}
+            showInMenu
+        />,
+      ],
     },
   ];
 
-  useEffect(() => {
-    loadData();
-  }, [pagination]);
+
 
   const loadData = async () => {
     try {
@@ -82,6 +104,7 @@ function DepartmentManagement() {
       );
       if (res?.data?.succeeded) {
         setData(res?.data?.result?.rows);
+        setRowId(null)
       }
     } catch {
       setStatus({
@@ -92,7 +115,7 @@ function DepartmentManagement() {
       });
     }
   };
-  const renderButton = (id) => {
+  const renderActionButton = (id) => {
     return (
       <div>
         <IconButton id="useraction-menu" onClick={handleClick}>
@@ -105,12 +128,12 @@ function DepartmentManagement() {
           open={openUserAction}
           onClose={handleClose}
         >
-          <MenuItem onClick={() => onShow(id)}>
+          <MenuItem onClick={() => onOpenModal(id, "detail")}>
             <InfoOutlinedIcon color={"info"} />
             Details
           </MenuItem>
 
-          <MenuItem onClick={() => onShow(id)}>
+          <MenuItem onClick={() => onOpenModal(id, "update")}>
             <EditIcon color={"secondary"}></EditIcon> Edit
           </MenuItem>
           <MenuItem
@@ -125,6 +148,12 @@ function DepartmentManagement() {
       </div>
     );
   };
+  const onOpenModal = (id, action) => {
+    if(id){
+      setRowId(id)
+    }
+    setStatus({...status, visibleModal: true, action})
+  }
 
   const onDelete = async (id) => {
     handleClose();
@@ -159,6 +188,7 @@ function DepartmentManagement() {
       if (res?.data?.succeeded) {
         setStatus({
           ...status,
+          action: "create",
           visibleNotification: true,
           titleNotification: "Update Department success",
           typeNotification: "success",
@@ -182,6 +212,7 @@ function DepartmentManagement() {
         setStatus({
           ...status,
           visibleModal: false,
+          action: "create",
           visibleNotification: true,
           titleNotification: "Create Department Success",
           typeNotification: "success",
@@ -198,27 +229,7 @@ function DepartmentManagement() {
     }
   };
   //
-  const onShow = async (id) => {
-    try {
-      const res = await AuthRequest.get(`category-management/category/${id}`);
-      if (res?.data?.succeeded) {
-        setStatus({
-          ...status,
-          initialValue: res?.data?.result,
-          visibleModal: true,
-          statusEdit: true,
-        });
-      }
-    } catch {
-      setStatus({
-        ...status,
-        statusEdit: true,
-        visibleNotification: true,
-        titleNotification: "Something went wrong, Please Try Again ",
-        typeNotification: "error",
-      });
-    }
-  };
+
 
   const onCloseNotification = () => {
     setStatus({ ...status, visibleNotification: false });
@@ -227,21 +238,20 @@ function DepartmentManagement() {
     setStatus({
       ...status,
       visibleModal: false,
-      initialValue: null,
-      statusEdit: false,
+      action: "create",
     });
   };
 
   const renderModal = () => {
     return (
-      <ModalDepartmentManagement
-        visible={status.visibleModal}
-        initialValue={status.initialValue}
-        statusEdit={status.statusEdit}
-        onClose={onCloseModal}
-        onCreate={onCreate}
-        onUpdate={onUpdate}
-      />
+        <ModalDepartmentManagement
+            visible={status.visibleModal}
+            action={status.action}
+            onClose={onCloseModal}
+            rowId={rowId}
+            onCreate={onCreate}
+            onUpdate={onUpdate}
+        />
     );
   };
   const onChangePagination = (pageSize, page) => {
@@ -254,9 +264,7 @@ function DepartmentManagement() {
         <Button
           variant="contained"
           endIcon={<AddCircleOutlineIcon />}
-          onClick={() => {
-            setStatus({ ...status, visibleModal: true });
-          }}
+          onClick={() => onOpenModal(null,"create")}
         >
           Create
         </Button>
@@ -273,7 +281,7 @@ function DepartmentManagement() {
             ColumnSortedDescendingIcon: SortedDescendingIcon,
             ColumnSortedAscendingIcon: SortedAscendingIcon,
           }}
-          rows={data }// dataDemo
+          rows={data}// dataDemo
           columns={columns}
           pagination={true}
           cell--textCenter

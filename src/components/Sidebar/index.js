@@ -125,7 +125,6 @@ export default function Sidebar(props) {
   const [open, setOpen] = React.useState(true);
   const { state, setState } = useContext(UserContext);
   const [selectedIndex, setSelectedIndex] = React.useState("home");
-  console.log(selectedIndex);
 
   // const handleListItemClick = (index) => {
   //   setSelectedIndex(index);
@@ -143,7 +142,7 @@ export default function Sidebar(props) {
         return 1;
       case "/department-management":
         return 2;
-      case "/category-management":
+      case "/tag-management":
         return 3;
       default:
         return 0;
@@ -182,10 +181,10 @@ export default function Sidebar(props) {
       },
     },
     {
-      text: "Category",
+      text: "Tag",
       icon: <AutoStories />,
       onClick: (index) => {
-        navigate("/category-management");
+        navigate("/tag-management");
       },
     },
   ];
@@ -295,7 +294,6 @@ export default function Sidebar(props) {
             >
               {UserMenu.map((item, index) => {
                 const { text, icon, onClick } = item;
-                console.log(text, "text");
                 return (
                   <ListItemButton
                     sx={{
@@ -352,7 +350,6 @@ export default function Sidebar(props) {
         <List className="sidebar_customize">
           {itemsManagementList.map((item, index) => {
             const { text, icon, onClick } = item;
-            console.log(text, "textss");
             return (
               <ListItemButton
                 selected={selectedIndex === index}
