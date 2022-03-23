@@ -605,4 +605,4 @@ export const dataDemo = [
     confirm_password: "Demo 02",
     date_of_birth: "Jun 10 2021 05:55:13",
   },
-]
+];

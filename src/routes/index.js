@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
-import PublicRoute from "./components/PublicRoute";
-import PrivateRoute from "./components/PrivateRoute";
 
-import Sidebar from "../components/Sidebar";
+import { URL_PATHS } from "../common/env";
 import LoadingSpinner from "../components/LoadingSpinner";
+import Sidebar from "../components/Sidebar";
 import { UserContext } from "../context/AppContext";
+import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
 
 const LIST_ROUTES_PRIVATE = [
   {
@@ -17,29 +18,30 @@ const LIST_ROUTES_PRIVATE = [
     component: React.lazy(() => import("../containers/Homepage")),
   },
   {
-    path: "/homepage",
+    path: URL_PATHS.HOME,
     component: React.lazy(() => import("../containers/Homepage")),
   },
   {
-    path: "/department-management",
+    path: URL_PATHS.MANAGE_DEP,
     component: React.lazy(() => import("../containers/DepartmentManagement")),
   },
   {
-    path: "/user-management",
+    path: URL_PATHS.MANAGE_USER,
     component: React.lazy(() => import("../containers/UserManagement")),
   },
   {
-    path: "/tag-management",
+    path: URL_PATHS.MANAGE_TAG,
     component: React.lazy(() => import("../containers/TagManagement")),
   },
 ];
+
 const LIST_ROUTES_PUBLIC = [
   {
-    path: "/login",
+    path: URL_PATHS.LOGIN,
     component: React.lazy(() => import("../containers/Login")),
   },
   {
-    path: "/signin",
+    path: URL_PATHS.SIGNIN,
     component: React.lazy(() => import("../containers/Login")),
   },
 ];

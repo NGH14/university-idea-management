@@ -1,7 +1,9 @@
-import React from "react";
-import { CircularProgress } from "@mui/material";
-import UniLogo from "../../assets/images/logo-500.webp";
 import "./style.css";
+
+import { CircularProgress } from "@mui/material";
+import React from "react";
+
+import UniLogo from "../../assets/images/logo-500.webp";
 
 function LoadingSpinner() {
   return (

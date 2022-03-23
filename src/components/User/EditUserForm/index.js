@@ -1,23 +1,21 @@
-import React from "react";
-import { TextField } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import Button from "@mui/material/Button";
-import InputLabel from "@mui/material/InputLabel";
-import { styled } from "@mui/material/styles";
-import Select from "@mui/material/Select";
-import IconButton from "@mui/material/IconButton";
-import MenuItem from "@mui/material/MenuItem";
-
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import DatePicker from "@mui/lab/DatePicker";
-import FormHelperText from "@mui/material/FormHelperText";
-import enLocale from "date-fns/locale/en-GB";
-
-import { useFormik } from "formik";
-import * as yup from "yup";
-
 import "./style.css";
+
+import CloseIcon from "@mui/icons-material/Close";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import DatePicker from "@mui/lab/DatePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import { TextField } from "@mui/material";
+import Button from "@mui/material/Button";
+import FormHelperText from "@mui/material/FormHelperText";
+import IconButton from "@mui/material/IconButton";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import { styled } from "@mui/material/styles";
+import enLocale from "date-fns/locale/en-GB";
+import { useFormik } from "formik";
+import React from "react";
+import * as yup from "yup";
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
@@ -74,7 +72,7 @@ const validationSchema = yup.object({
 
 function EditUserForm(props) {
   const { onClose, onUpdate, initialValue } = props;
-  console.log(initialValue, 987)
+  console.log(initialValue, 987);
   const formik = useFormik({
     initialValues: initialValue || [],
     validationSchema: validationSchema,

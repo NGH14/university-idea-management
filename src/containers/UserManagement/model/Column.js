@@ -35,7 +35,13 @@ export const Column = [
     width: "auto",
     minWidth: 200,
     renderCell: (value) => {
-      return <div>{value?.row?.date_of_birth ? moment(value?.row?.date_of_birth).format('DD/MM/YYYY hh:mm'):null}</div>
+      return (
+        <div>
+          {value?.row?.date_of_birth
+            ? moment(value?.row?.date_of_birth).format("DD/MM/YYYY hh:mm")
+            : null}
+        </div>
+      );
     },
     type: "date",
     flex: 1,
@@ -72,5 +78,4 @@ export const Column = [
     sortable: true,
     width: 120,
   },
-
 ];

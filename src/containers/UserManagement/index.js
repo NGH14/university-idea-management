@@ -1,38 +1,32 @@
-import {useContext, useEffect, useState} from "react";
-import Box from "@mui/material/Box";
-import { Column } from "./model/Column";
-import {IconButton, Modal} from "@mui/material";
-import { Notification } from "../../common/Notification";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import MoreHorizTwoTone from "@mui/icons-material/MoreHorizTwoTone";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Button from "@mui/material/Button";
+import "./style.css";
+
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import ModalUserManagement from "./modal/ModalUserManagement";
-import { dataDemo } from "./FakeData";
-import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
-import {
-  GridToolbarContainer,
-  GridToolbarColumnsButton,
-  GridToolbarFilterButton,
-  GridToolbarExport,
-  GridToolbarDensitySelector,
-} from "@mui/x-data-grid";
-import { styled, alpha } from "@mui/material/styles";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { IconButton } from "@mui/material";
+import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
-import "./style.css";
-import { AuthRequest } from "../../common/AppUse";
-import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
-import {StyledMenu} from "../../components/Custom/StyledMenu";
+import {
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarDensitySelector,
+  GridToolbarExport,
+  GridToolbarFilterButton,
+} from "@mui/x-data-grid";
+import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
 import * as React from "react";
-import {UserContext} from "../../context/AppContext";
+import { useContext, useEffect, useState } from "react";
 
+import { AuthRequest } from "../../common/AppUse";
+import { Notification } from "../../common/Notification";
+import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
+import { UserContext } from "../../context/AppContext";
+import ModalUserManagement from "./modal/ModalUserManagement";
+import { Column } from "./model/Column";
 
 function SortedDescendingIcon() {
   return <ExpandMoreIcon className="icon" />;
@@ -40,8 +34,6 @@ function SortedDescendingIcon() {
 function SortedAscendingIcon() {
   return <ExpandLessIcon className="icon" />;
 }
-
-
 
 function UserManagement() {
   const { state, setState } = useContext(UserContext);
@@ -85,28 +77,28 @@ function UserManagement() {
       field: "actions",
       headerName: "Action",
       width: 75,
-      type:'actions',
+      type: "actions",
       disableColumnMenu: true,
       sortable: false,
       getActions: (params) => [
         <GridActionsCellItem
-            icon={<InfoOutlinedIcon color={"info"}  />}
-            label="Detail"
-            onClick={()=>onOpenModal(params.id,"detail")}
-            showInMenu
+          icon={<InfoOutlinedIcon color={"info"} />}
+          label="Detail"
+          onClick={() => onOpenModal(params.id, "detail")}
+          showInMenu
         />,
         <GridActionsCellItem
-            icon={<EditIcon color={"secondary"}/>}
-            label="Update"
-            onClick={()=>onOpenModal(params.id,"update")}
-            showInMenu
+          icon={<EditIcon color={"secondary"} />}
+          label="Update"
+          onClick={() => onOpenModal(params.id, "update")}
+          showInMenu
         />,
         <GridActionsCellItem
-            icon={<DeleteIcon />}
-            disabled={state?.dataUser?.id ===  params.id ? true : false}
-            label="Delete"
-            onClick={()=>onDelete(params.id)}
-            showInMenu
+          icon={<DeleteIcon />}
+          disabled={state?.dataUser?.id === params.id ? true : false}
+          label="Delete"
+          onClick={() => onDelete(params.id)}
+          showInMenu
         />,
       ],
     },
@@ -117,11 +109,11 @@ function UserManagement() {
       const res = await AuthRequest.get(
         `user-management/users?papesize=${pagination.pageSize}?page=${
           pagination.page + 1
-        }`
+        }`,
       );
       if (res?.data?.succeeded) {
         setData(res?.data?.result?.rows);
-        setRowId(null)
+        setRowId(null);
       }
     } catch {
       setStatus({
@@ -134,11 +126,11 @@ function UserManagement() {
   };
 
   const onOpenModal = (id, action) => {
-    if(id){
-      setRowId(id)
+    if (id) {
+      setRowId(id);
     }
-    setStatus({...status, visibleModal: true, action})
-  }
+    setStatus({ ...status, visibleModal: true, action });
+  };
 
   const onDelete = async (id) => {
     handleClose();
@@ -167,7 +159,7 @@ function UserManagement() {
     try {
       const res = await AuthRequest.put(
         `user-management/user/${value?.id}`,
-        value
+        value,
       );
       if (res?.data?.succeeded) {
         setStatus({
@@ -216,8 +208,8 @@ function UserManagement() {
     setStatus({ ...status, visibleNotification: false });
   };
   const onCloseModal = () => {
-    if(rowId){
-      setRowId(null)
+    if (rowId) {
+      setRowId(null);
     }
     setStatus({
       ...status,

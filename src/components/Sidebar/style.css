@@ -1,36 +1,38 @@
 .drawer_logo {
-  width: 100px;
-  height: 40px;
-  object-fit: cover;
-  cursor: pointer;
+	width: 100px;
+	height: 40px;
+	object-fit: cover;
+	cursor: pointer;
 }
 
 .sidebar_customize .Mui-selected,
 .sidebar_customize .MuiListItemButton-root:hover {
-  box-shadow: -5px 0px 0px 0px #235ee7;
+	box-shadow: -5px 0px 0px 0px #235ee7;
 }
 
 .sidebar_customize .Mui-selected .MuiListItemText-root,
 .sidebar_customize .Mui-selected .MuiSvgIcon-root {
-  color: #235ee7 !important;
+	color: #235ee7 !important;
 }
+
 .drawer_sidebar .MuiDrawer-paper {
-  border-right: none;
+	border-right: none;
 }
 
 @media screen and (max-width: 800px) {
-  .app_header {
-    left: 0 !important;
-    width: 100%;
-  }
+	.app_header {
+		left: 0 !important;
+		width: 100%;
+	}
 }
 
 @media screen and (max-width: 600px) {
-  .avatar_text {
-    display: none !important;
-  }
-  .app_header {
-    left: 0 !important;
-    width: 100%;
-  }
+	.avatar_text {
+		display: none !important;
+	}
+
+	.app_header {
+		left: 0 !important;
+		width: 100%;
+	}
 }

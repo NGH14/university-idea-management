@@ -1,12 +1,14 @@
-import {CircularProgress, Modal} from "@mui/material";
+import { CircularProgress, Modal } from "@mui/material";
 import Box from "@mui/material/Box";
-import * as React from "react";
-import CreateUserForm from "../../../components/User/CreateUserForm";
-import EditUserForm from "../../../components/User/EditUserForm";
-import {useEffect, useState} from "react";
-import {AuthRequest} from "../../../common/AppUse";
 import _ from "lodash";
+import * as React from "react";
+import { useEffect, useState } from "react";
+
+import { AuthRequest } from "../../../common/AppUse";
+import CreateUserForm from "../../../components/User/CreateUserForm";
 import DetailUserForm from "../../../components/User/DetailUserForm";
+import EditUserForm from "../../../components/User/EditUserForm";
+
 const style = {
   position: "relative",
   top: "50%",
@@ -25,54 +27,52 @@ const style = {
 };
 const ModalUserManagement = (props) => {
   const { visible, onClose, onCreate, onUpdate, action, rowId } = props;
-  const [initialValue, setInitialValue] = useState([])
-  useEffect(()=>{
-    if(action !== "create"){
-      loadData()
+  const [initialValue, setInitialValue] = useState([]);
+  useEffect(() => {
+    if (action !== "create") {
+      loadData();
     }
-  }, [action])
+  }, [action]);
   const loadData = async () => {
     try {
       const res = await AuthRequest.get(`user-management/user/${rowId}`);
       if (res?.data?.succeeded) {
-        setInitialValue( res?.data?.result);
+        setInitialValue(res?.data?.result);
       }
-    } catch {
-    }
-  }
+    } catch {}
+  };
   const renderForm = () => {
-    switch (action){
+    switch (action) {
       case "create":
-        return <CreateUserForm onClose={() => onClose()} onCreate={onCreate} />
+        return <CreateUserForm onClose={() => onClose()} onCreate={onCreate} />;
       case "update":
-        return <EditUserForm
+        return (
+          <EditUserForm
             onClose={() => onClose()}
             onUpdate={onUpdate}
             initialValue={initialValue}
-        />
+          />
+        );
       case "detail":
-        return <DetailUserForm
+        return (
+          <DetailUserForm
             onClose={() => onClose()}
             initialValue={initialValue}
-        />
+          />
+        );
     }
-  }
-  if(action !== "create" && _.isEmpty(initialValue)){
-    return <CircularProgress
-        size={100}
-    />
+  };
+  if (action !== "create" && _.isEmpty(initialValue)) {
+    return <CircularProgress size={100} />;
   }
   return (
-
     <Modal
       open={visible}
       onClose={() => onClose()}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
-        {renderForm()}
-      </Box>
+      <Box sx={style}>{renderForm()}</Box>
     </Modal>
   );
 };
