@@ -66,14 +66,13 @@ const closedMixin = (theme) => ({
   overflowX: "hidden",
   width: `calc(${theme.spacing(7)} + 1px)`,
   [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
+    width: `calc(${theme.spacing(9)} + 1px)`,
   },
 });
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
-
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
@@ -82,13 +81,14 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
+  zIndex: theme.zIndex.drawer + 1,
   width: "100%",
   transition: theme.transitions.create(["width", "margin", "left"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
+    // width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(["width", "margin", "left"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -224,20 +224,46 @@ export default function Sidebar(props) {
         open={open}
         color="inherit"
         style={{
-          backgroundColor: "#F8F9FE",
           boxShadow: "none",
-          borderBottom: "1px #333",
         }}
       >
         <CssBaseline />
 
-        <Toolbar sx={{ justifyContent: "flex-end" }}>
+        <Toolbar
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
+            borderBottom: "0.1px solid #e2e0e0",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerCick}
+              edge="start"
+            >
+              <MenuIcon />
+            </IconButton>
+            <img
+              onClick={() => nagivateHomepage()}
+              className="drawer_logo"
+              src={UniTextLogo}
+              alt=""
+            />
+          </Box>
           <Box>
             <Box
               sx={{
-                alignSeft: "flex-end",
                 display: "flex",
-                justifyContent: "center",
+                justifyContent: "space-between",
                 gap: 5,
               }}
             >
@@ -322,31 +348,8 @@ export default function Sidebar(props) {
           </Box>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader
-          style={{
-            justifyContent: open ? "space-between" : "flex-end",
-          }}
-          sx={{ mb: 5 }}
-        >
-          {open && (
-            <img
-              onClick={() => nagivateHomepage()}
-              className="drawer_logo"
-              src={UniTextLogo}
-              alt=""
-            />
-          )}
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerCick}
-            edge="start"
-          >
-            {open ? <ChevronLeftIcon /> : <MenuIcon />}
-          </IconButton>
-        </DrawerHeader>
-        <Divider />
+      <Drawer variant="permanent" open={open} className="drawer_sidebar">
+        <DrawerHeader></DrawerHeader>
         <List className="sidebar_customize">
           {itemsManagementList.map((item, index) => {
             const { text, icon, onClick } = item;
@@ -391,13 +394,13 @@ export default function Sidebar(props) {
 
         <Divider />
       </Drawer>
+
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          backgroundColor: "#F8F9FE",
-          fontFamily: "Poppins ",
+          p: 4,
+          fontFamily: "Poppins",
         }}
       >
         <DrawerHeader />

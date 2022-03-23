@@ -14,6 +14,9 @@
 .sidebar_customize .Mui-selected .MuiSvgIcon-root {
   color: #235ee7 !important;
 }
+.drawer_sidebar .MuiDrawer-paper {
+  border-right: none;
+}
 
 @media screen and (max-width: 800px) {
   .app_header {
