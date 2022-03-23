@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material"
+import { TextField } from "@mui/material";
 
 import SendIcon from "@mui/icons-material/Send";
 import Button from "@mui/lab/LoadingButton";
@@ -10,13 +10,13 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { useFormik } from "formik";
 import * as yup from "yup";
 
-import { AUTH, URL_PATHS, STORAGE_VARS, API_PATHS } from "../../common/env"
-import { AnonRequest } from "../../common/AppUse"
+import { AUTH, URL_PATHS, STORAGE_VARS, API_PATHS } from "../../common/env";
+import { AnonRequest } from "../../common/AppUse";
 
-import "./style.css"
-import { UserContext } from "../../context/AppContext"
-import { Notification } from "../../common/Notification"
-import {useNavigate} from "react-router-dom";
+import "./style.css";
+import { UserContext } from "../../context/AppContext";
+import { Notification } from "../../common/Notification";
+import { useNavigate } from "react-router-dom";
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
@@ -122,8 +122,8 @@ const LoginForm = () => {
           res?.data?.result?.refresh_token
         );
         setButtonState({ ...buttonState, loading: false, disable: false });
-        setState({ ...state, isLogin: true});
-        navigate("/")
+        setState({ ...state, isLogin: true });
+        navigate("/");
       }
     } catch {
       setButtonState({ ...buttonState, loading: false, disable: false });
@@ -147,7 +147,7 @@ const LoginForm = () => {
           res?.data?.result?.refresh_token
         );
         setButtonState({ ...buttonState, loading: false, disable: false });
-        setState({ ...state, isLogin: true});
+        setState({ ...state, isLogin: true });
       }
     } catch {
       setButtonState({ ...buttonState, loading: false, disable: false });
@@ -221,7 +221,7 @@ const LoginForm = () => {
           endIcon={<SendIcon />}
           loading={buttonState?.loading}
           loadingPosition="end"
-          disabled={!(formik.isValid && !buttonState.disable)}
+          disabled={buttonState.disable}
           fullWidth
         >
           Sign in
