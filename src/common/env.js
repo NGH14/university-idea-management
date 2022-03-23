@@ -4,15 +4,41 @@ export const AUTH = {
 };
 
 export const API_PATHS = {
-  EXTERNAL_LOGIN: "auth/login-ex",
-  LOGIN: "auth/login",
-  AUTH_INFO: "auth/info",
+  SHARED: {
+    AUTH: {
+      INFO: "auth/info",
+      LOGIN: "auth/login",
+      EX_LOGIN: "auth/login-ex",
+      UPDATE_PWD: "auth/update-password",
+      TOKEN_REVOKE: "auth/token/revoke",
+      TOKEN_ROTATE: "auth/token/rotate",
+    },
+    ROLE: "role",
+    TAG: "tag",
+    IDEA: "idea",
+    USER: "user",
+    SUB: "submission",
+    DEP: "department",
+  },
+  ADMIN: {
+    TAG: "tag-management",
+    IDEA: "idea-management",
+    USER: "user-management",
+    SUB: "submission-management",
+    DEP: "department-management",
+  },
 };
 
 export const URL_PATHS = {
+  ANY: "/",
+  HOME: "/homepage",
   LOGIN: "/login",
-  HOME: "/",
-  USER_MANAGE: "/user-management",
+  SIGNIN: "/signin",
+  MANAGE_USER: "/user-management",
+  MANAGE_DEP: "/department-management",
+  MANAGE_TAG: "/tag-management",
+  UPDATE_PWD: "/update-password",
+  UPDATE_PWD_VALIDATE: "/update-password/validate-auth",
 };
 
 export const STORAGE_VARS = {

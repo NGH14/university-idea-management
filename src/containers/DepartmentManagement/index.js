@@ -1,29 +1,25 @@
-import {useContext, useEffect, useState} from "react";
-import Box from "@mui/material/Box";
-import { Column } from "./model/Column";
-import { IconButton } from "@mui/material";
-import { Notification } from "../../common/Notification";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import MoreHorizTwoTone from "@mui/icons-material/MoreHorizTwoTone";
+import "../UserManagement/style.css";
 
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Button from "@mui/material/Button";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import {DataGridPro, GridActionsCellItem} from "@mui/x-data-grid-pro";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import MoreHorizTwoTone from "@mui/icons-material/MoreHorizTwoTone";
+import { IconButton } from "@mui/material";
+import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
-
-import "../UserManagement/style.css";
-import { AuthRequest } from "../../common/AppUse";
-import ModalDepartmentManagement from "./modal/ModalDepartmentManagement";
-import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
-import {StyledMenu} from "../../components/Custom/StyledMenu";
-import ModalUserManagement from "../UserManagement/modal/ModalUserManagement";
+import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
 import * as React from "react";
-import {UserContext} from "../../context/AppContext";
+import { useContext, useEffect, useState } from "react";
 
+import { AuthRequest } from "../../common/AppUse";
+import { Notification } from "../../common/Notification";
+import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
+import { StyledMenu } from "../../components/Custom/StyledMenu";
+import ModalDepartmentManagement from "./modal/ModalDepartmentManagement";
+import { Column } from "./model/Column";
 
 function SortedDescendingIcon() {
   return <ExpandMoreIcon className="icon" />;
@@ -32,10 +28,7 @@ function SortedAscendingIcon() {
   return <ExpandLessIcon className="icon" />;
 }
 
-
-
 function DepartmentManagement() {
-
   const [data, setData] = useState([]);
   const [rowId, setRowId] = useState(null);
   const [status, setStatus] = useState({
@@ -72,39 +65,37 @@ function DepartmentManagement() {
       sortable: false,
       getActions: (params) => [
         <GridActionsCellItem
-            icon={<InfoOutlinedIcon color={"info"}  />}
-            label="Detail"
-            onClick={()=>onOpenModal(params.id,"detail")}
-            showInMenu
+          icon={<InfoOutlinedIcon color={"info"} />}
+          label="Detail"
+          onClick={() => onOpenModal(params.id, "detail")}
+          showInMenu
         />,
         <GridActionsCellItem
-            icon={<EditIcon color={"secondary"}/>}
-            label="Update"
-            onClick={()=>onOpenModal(params.id,"update")}
-            showInMenu
+          icon={<EditIcon color={"secondary"} />}
+          label="Update"
+          onClick={() => onOpenModal(params.id, "update")}
+          showInMenu
         />,
         <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label="Delete"
-            onClick={()=>onDelete(params.id)}
-            showInMenu
+          icon={<DeleteIcon />}
+          label="Delete"
+          onClick={() => onDelete(params.id)}
+          showInMenu
         />,
       ],
     },
   ];
 
-
-
   const loadData = async () => {
     try {
       const res = await AuthRequest.get(
-        `department-management/departments?papesize=${pagination.pageSize}?page=${
-          pagination.page + 1
-        }`
+        `department-management/departments?papesize=${
+          pagination.pageSize
+        }?page=${pagination.page + 1}`,
       );
       if (res?.data?.succeeded) {
         setData(res?.data?.result?.rows);
-        setRowId(null)
+        setRowId(null);
       }
     } catch {
       setStatus({
@@ -149,18 +140,19 @@ function DepartmentManagement() {
     );
   };
   const onOpenModal = (id, action) => {
-    if(id){
-      setRowId(id)
+    if (id) {
+      setRowId(id);
     }
-    setStatus({...status, visibleModal: true, action})
-  }
+    setStatus({ ...status, visibleModal: true, action });
+  };
 
   const onDelete = async (id) => {
     handleClose();
     try {
-      const res = await AuthRequest.delete(`department-management/department/${id}`);
+      const res = await AuthRequest.delete(
+        `department-management/department/${id}`,
+      );
       if (res?.data?.succeeded) {
-
         setStatus({
           ...status,
           visibleNotification: true,
@@ -183,7 +175,7 @@ function DepartmentManagement() {
     try {
       const res = await AuthRequest.put(
         `department-management/department/${value?.id}`,
-        value
+        value,
       );
       if (res?.data?.succeeded) {
         setStatus({
@@ -230,7 +222,6 @@ function DepartmentManagement() {
   };
   //
 
-
   const onCloseNotification = () => {
     setStatus({ ...status, visibleNotification: false });
   };
@@ -244,14 +235,14 @@ function DepartmentManagement() {
 
   const renderModal = () => {
     return (
-        <ModalDepartmentManagement
-            visible={status.visibleModal}
-            action={status.action}
-            onClose={onCloseModal}
-            rowId={rowId}
-            onCreate={onCreate}
-            onUpdate={onUpdate}
-        />
+      <ModalDepartmentManagement
+        visible={status.visibleModal}
+        action={status.action}
+        onClose={onCloseModal}
+        rowId={rowId}
+        onCreate={onCreate}
+        onUpdate={onUpdate}
+      />
     );
   };
   const onChangePagination = (pageSize, page) => {
@@ -264,7 +255,7 @@ function DepartmentManagement() {
         <Button
           variant="contained"
           endIcon={<AddCircleOutlineIcon />}
-          onClick={() => onOpenModal(null,"create")}
+          onClick={() => onOpenModal(null, "create")}
         >
           Create
         </Button>
@@ -281,7 +272,7 @@ function DepartmentManagement() {
             ColumnSortedDescendingIcon: SortedDescendingIcon,
             ColumnSortedAscendingIcon: SortedAscendingIcon,
           }}
-          rows={data}// dataDemo
+          rows={data} // dataDemo
           columns={columns}
           pagination={true}
           cell--textCenter
@@ -294,7 +285,7 @@ function DepartmentManagement() {
           onPageChange={(page) => {
             onChangePagination(pagination.pageSize, page);
           }}
-          style={{minHeight: 700}}
+          style={{ minHeight: 700 }}
           // autoHeight={true}
           rowsPerPageOptions={[10, 25, 50, 100]}
         />
@@ -305,7 +296,7 @@ function DepartmentManagement() {
   return (
     <div
       style={{
-        height: '100vh',
+        height: "100vh",
         width: "100%",
         padding: "0 5px",
         fontFamily: "Poppins",

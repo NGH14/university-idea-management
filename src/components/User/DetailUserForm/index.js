@@ -1,23 +1,14 @@
-import React from "react";
-import { TextField } from "@mui/material";
+import "./style.css";
+
 import CloseIcon from "@mui/icons-material/Close";
+import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
-import Select from "@mui/material/Select";
-import IconButton from "@mui/material/IconButton";
-import MenuItem from "@mui/material/MenuItem";
-
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import DatePicker from "@mui/lab/DatePicker";
-import FormHelperText from "@mui/material/FormHelperText";
-import enLocale from "date-fns/locale/en-GB";
-
 import { useFormik } from "formik";
+import React from "react";
 import * as yup from "yup";
-
-import "./style.css";
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
@@ -92,89 +83,76 @@ function DetailUserForm(props) {
       <form className="form_grid" onSubmit={formik.handleSubmit}>
         <div className="form_group">
           <div className="form_content">
-            <InputLabel  htmlFor="full_name">
-              Full Name
-            </InputLabel>
+            <InputLabel htmlFor="full_name">Full Name</InputLabel>
             <CssTextField
-                fullWidth
-                margin="normal"
-                id="full_name"
-                name="full_name"
-                value={formik.values.full_name}
-                variant="standard"
-                InputProps={{
-                  readOnly: true,
-                }}
+              fullWidth
+              margin="normal"
+              id="full_name"
+              name="full_name"
+              value={formik.values.full_name}
+              variant="standard"
+              InputProps={{
+                readOnly: true,
+              }}
             />
           </div>
           <div className="form_content">
-            <InputLabel  htmlFor="email">
-              Email
-            </InputLabel>
+            <InputLabel htmlFor="email">Email</InputLabel>
             <CssTextField
-                fullWidth
-                variant="outlined"
-                id="email"
-                name="email"
-                margin="normal"
-                value={formik.values.email}
-                variant="standard"
-                InputProps={{
-                  readOnly: true,
-                }}
+              fullWidth
+              variant="outlined"
+              id="email"
+              name="email"
+              margin="normal"
+              value={formik.values.email}
+              InputProps={{
+                readOnly: true,
+              }}
             />
           </div>
         </div>
         <div className="form_group">
           <div className="form_content">
-            <InputLabel  htmlFor="department">
-              Department
-            </InputLabel>
+            <InputLabel htmlFor="department">Department</InputLabel>
             <CssTextField
-                fullWidth
-                variant="outlined"
-
-                id="department"
-                name="department"
-                margin="normal"
-                value={formik.values.department}
-                variant="standard"
-                InputProps={{
-                  readOnly: true,
-                }}
+              fullWidth
+              variant="outlined"
+              id="department"
+              name="department"
+              margin="normal"
+              value={formik.values.department}
+              InputProps={{
+                readOnly: true,
+              }}
             />
           </div>
 
           <div className="form_content">
-            <InputLabel  htmlFor="role">
-              Role
-            </InputLabel>
+            <InputLabel htmlFor="role">Role</InputLabel>
             <CssTextField
-                fullWidth
-                variant="outlined"
-                id="role"
-                name="role"
-                margin="normal"
-                value={formik.values.role}
-                variant="standard"
-                InputProps={{
-                  readOnly: true,
-                }}
+              fullWidth
+              variant="outlined"
+              id="role"
+              name="role"
+              margin="normal"
+              value={formik.values.role}
+              InputProps={{
+                readOnly: true,
+              }}
             />
           </div>
           <div className="form_content">
             <InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
             <CssTextField
-                fullWidth
-                variant="outlined"
-                name="date_of_birth"
-                id="date_of_birth"
-                margin="normal"
-                value={formik.values.date_of_birth}
-                variant="standard"
-                InputProps={{
-                  readOnly: true,
-                }}
+              fullWidth
+              variant="outlined"
+              name="date_of_birth"
+              id="date_of_birth"
+              margin="normal"
+              value={formik.values.date_of_birth}
+              InputProps={{
+                readOnly: true,
+              }}
             />
           </div>
         </div>
@@ -185,7 +163,7 @@ function DetailUserForm(props) {
         </div>
       </form>
     </div>
-  )
+  );
 }
 
 export default React.memo(DetailUserForm);

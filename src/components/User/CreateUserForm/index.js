@@ -1,23 +1,21 @@
-import React from "react";
-import { TextField } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import Button from "@mui/material/Button";
-import InputLabel from "@mui/material/InputLabel";
-import { styled } from "@mui/material/styles";
-import Select from "@mui/material/Select";
-import IconButton from "@mui/material/IconButton";
-import MenuItem from "@mui/material/MenuItem";
-
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import DatePicker from "@mui/lab/DatePicker";
-import FormHelperText from "@mui/material/FormHelperText";
-import enLocale from "date-fns/locale/en-GB";
-
-import { useFormik } from "formik";
-import * as yup from "yup";
-
 import "./style.css";
+
+import CloseIcon from "@mui/icons-material/Close";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import DatePicker from "@mui/lab/DatePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import { TextField } from "@mui/material";
+import Button from "@mui/material/Button";
+import FormHelperText from "@mui/material/FormHelperText";
+import IconButton from "@mui/material/IconButton";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import { styled } from "@mui/material/styles";
+import enLocale from "date-fns/locale/en-GB";
+import { useFormik } from "formik";
+import React from "react";
+import * as yup from "yup";
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
@@ -77,11 +75,11 @@ const validationSchema = yup.object({
   full_name: yup.string().required("Full Name is required"),
   email: yup.string().email("Email is invalid").required("Email is required"),
   role: yup.string().required("Role is required"),
+  department: yup.string().required("Department is required"),
   password: yup
     .string()
     .min(4, "Password should be of minimum 4 characters length")
     .required("Password is required"),
-  department: yup.string().required("Department is required"),
   confirm_password: yup
     .string()
     .oneOf([yup.ref("password"), null], "Passwords must match")

@@ -1,40 +1,36 @@
-import React, { useContext, useEffect } from "react";
 import "./style.css";
-import _ from "lodash";
-import { UserContext } from "../../context/AppContext";
-import LogoutIcon from "@mui/icons-material/Logout";
 
-import UniTextLogo from "../../assets/images/2021-Greenwich-Black-Eng.webp";
-
-import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import MuiDrawer from "@mui/material/Drawer";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import CssBaseline from "@mui/material/CssBaseline";
-
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import { AutoStories } from "@mui/icons-material";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import CorporateFareIcon from "@mui/icons-material/CorporateFare";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import HomeIcon from "@mui/icons-material/Home";
+import LogoutIcon from "@mui/icons-material/Logout";
+import MenuIcon from "@mui/icons-material/Menu";
+import MuiAppBar from "@mui/material/AppBar";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import Divider from "@mui/material/Divider";
+import MuiDrawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
-import MenuItem from "@mui/material/MenuItem";
-import CorporateFareIcon from "@mui/icons-material/CorporateFare";
-import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Button from "@mui/material/Button";
-
-import HomeIcon from "@mui/icons-material/Home";
-import { useHistory, useNavigate, useParams } from "react-router-dom";
-import { AutoStories } from "@mui/icons-material";
+import Stack from "@mui/material/Stack";
+import { styled, useTheme } from "@mui/material/styles";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import _ from "lodash";
+import React, { useContext, useEffect } from "react";
 import { useLocation } from "react-router";
+import { useNavigate } from "react-router-dom";
+
+import UniTextLogo from "../../assets/images/2021-Greenwich-Black-Eng.webp";
+import { UserContext } from "../../context/AppContext";
 
 const drawerWidth = 240;
 

@@ -1,22 +1,20 @@
-import { TextField } from "@mui/material";
+import "./style.css";
 
+import GoogleIcon from "@mui/icons-material/Google";
 import SendIcon from "@mui/icons-material/Send";
 import Button from "@mui/lab/LoadingButton";
+import { TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import axios from "axios";
+import { useFormik } from "formik";
 import React, { useContext, useState } from "react";
 import GoogleLogin from "react-google-login";
-import GoogleIcon from "@mui/icons-material/Google";
-import { useFormik } from "formik";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 
-import { AUTH, URL_PATHS, STORAGE_VARS, API_PATHS } from "../../common/env";
 import { AnonRequest } from "../../common/AppUse";
-
-import "./style.css";
-import { UserContext } from "../../context/AppContext";
+import { API_PATHS, AUTH, STORAGE_VARS, URL_PATHS } from "../../common/env";
 import { Notification } from "../../common/Notification";
-import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../context/AppContext";
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
@@ -82,9 +80,12 @@ const validationSchema = yup.object({
     .required("Password is required"),
 });
 
-const LoginForm = () => {
+// ─── MAIN ───────────────────────────────────────────────────────────────────────
+//
+const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
   const navigate = useNavigate();
   const { state, setState } = useContext(UserContext);
+
   const [buttonState, setButtonState] = useState({
     disable: false,
     loading: false,
@@ -95,6 +96,7 @@ const LoginForm = () => {
     titleNotification: "Email or password is invalid, Please try again",
     typeNotification: "error", //error or success
   });
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -106,24 +108,27 @@ const LoginForm = () => {
       onLogin(values);
     },
   });
+
   const onCloseNotification = () => {
     setNotification({ ...notification, visibleNotification: false });
   };
+
   const onLogin = async (value) => {
     try {
-      const res = await AnonRequest.post(API_PATHS.LOGIN, value);
+      const res = await AnonRequest.post(API_PATHS.SHARED.AUTH.LOGIN, value);
       if (res?.data?.succeeded) {
         localStorage.setItem(
           STORAGE_VARS.JWT,
-          res?.data?.result?.access_token?.token
+          res?.data?.result?.access_token?.token,
         );
         localStorage.setItem(
           STORAGE_VARS.REFRESH,
-          res?.data?.result?.refresh_token
+          res?.data?.result?.refresh_token,
         );
+
         setButtonState({ ...buttonState, loading: false, disable: false });
         setState({ ...state, isLogin: true });
-        navigate("/");
+        navigate(returnUrl);
       }
     } catch {
       setButtonState({ ...buttonState, loading: false, disable: false });
@@ -131,23 +136,25 @@ const LoginForm = () => {
     }
   };
 
-  const responseGoogle = async (googleResponse) => {
+  const onGoogleLogin = async (googleResponse) => {
     try {
-      const res = await AnonRequest.post(API_PATHS.EXTERNAL_LOGIN, {
+      const res = await AnonRequest.post(API_PATHS.SHARED.AUTH.EX_LOGIN, {
         provider: "google",
         id_token: googleResponse.tokenId,
       });
       if (res?.data?.succeeded) {
         localStorage.setItem(
           STORAGE_VARS.JWT,
-          res?.data?.result?.access_token?.token
+          res?.data?.result?.access_token?.token,
         );
         localStorage.setItem(
           STORAGE_VARS.REFRESH,
-          res?.data?.result?.refresh_token
+          res?.data?.result?.refresh_token,
         );
+
         setButtonState({ ...buttonState, loading: false, disable: false });
         setState({ ...state, isLogin: true });
+        navigate(returnUrl);
       }
     } catch {
       setButtonState({ ...buttonState, loading: false, disable: false });
@@ -179,7 +186,7 @@ const LoginForm = () => {
           </ColorButton>
         )}
         clientId={AUTH.GOOGLE_CLIENT_ID}
-        onSuccess={(response) => responseGoogle(response)}
+        onSuccess={(response) => onGoogleLogin(response)}
         cookiePolicy={"single_host_origin"}
       />
       <div className="loginform-loginby">
