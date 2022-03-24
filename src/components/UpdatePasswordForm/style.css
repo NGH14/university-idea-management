@@ -1,0 +1,71 @@
+.updatepwdform {
+	margin: auto;
+	margin-inline: 3rem;
+	max-width: 100%;
+	padding: 10px 15px;
+}
+
+.updatepwdform-textcontent {
+	margin-bottom: 2rem;
+}
+
+.updatepwdform-subtext {
+	font-style: normal;
+	font-weight: normal;
+	font-size: 16px;
+	line-height: 24px;
+	color: #333;
+}
+
+.updatepwdform-updatepwdby {
+	font-style: normal;
+	font-weight: normal;
+	font-size: 14px;
+	line-height: 24px;
+	position: relative;
+	color: #999;
+	width: 100%;
+	text-align: center;
+}
+
+.updatepwdform-updatepwdby::after {
+	content: "";
+	width: 100%;
+	height: 2px;
+	left: 0;
+	top: 50%;
+	background-color: rgba(153, 153, 153, 0.452);
+	position: absolute;
+
+	z-index: 0;
+}
+
+.updatepwdform-updatepwdby .textwithline {
+	width: 100%;
+	padding-inline: 10px;
+
+	position: relative;
+	background-color: white;
+	z-index: 2;
+}
+
+.updatepwdform-heading {
+	font-style: normal;
+	font-weight: 600;
+	font-size: 48px;
+	line-height: 72px;
+}
+
+@media only screen and (max-width: 400px) {
+	html {
+		font-size: 16px;
+	}
+
+	.updatepwdform-heading {
+		font-size: 30px;
+	}
+
+	.updatepwdform-textcontent {
+		font-size: 20px;
+	}
+}
