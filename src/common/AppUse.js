@@ -1,23 +1,46 @@
-import axios from "axios"
+import axios from "axios";
 
-const GlobalApi = "https://localhost:7024/api"
+import { STORAGE_VARS } from "./env";
 
-export default class AppUse {
+const globalApi = "https://localhost:7024/api";
+const authHeader = {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
+  },
+};
 
-    static postApi = async (api, params, configs) => {
-        return await axios.post(`${GlobalApi}/${api}`, params, configs)
-    }
+export class AnonRequest {
+  static post = async (api, params, conf) => {
+    return await axios.post(`${globalApi}/${api}`, params, conf);
+  };
 
-    static getApi = async (api, configs) => {
-        return await axios.get(`${GlobalApi}/${api}`, configs)
-    }
+  static get = async (api, config) => {
+    return await axios.get(`${globalApi}/${api}`, config);
+  };
 
-    static deleteApi = async (api, configs) => {
-        return await axios.delete(`${GlobalApi}/${api}`, configs)
-    }
+  static delete = async (api, config) => {
+    return await axios.delete(`${globalApi}/${api}`, config);
+  };
 
-    static putApi = async (api, params, configs) => {
-        return await axios.put(`${GlobalApi}/${api}`, params, configs)
-    }
+  static put = async (api, params, config) => {
+    return await axios.put(`${globalApi}/${api}`, params, config);
+  };
+}
 
+export class AuthRequest {
+  static post = async (api, params) => {
+    return await axios.post(`${globalApi}/${api}`, params, authHeader);
+  };
+
+  static get = async (api) => {
+    return await axios.get(`${globalApi}/${api}`, authHeader);
+  };
+
+  static delete = async (api) => {
+    return await axios.delete(`${globalApi}/${api}`, authHeader);
+  };
+
+  static put = async (api, params) => {
+    return await axios.put(`${globalApi}/${api}`, params, authHeader);
+  };
 }

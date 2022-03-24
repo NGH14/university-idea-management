@@ -1,37 +1,53 @@
-import React from "react";
-import { Route } from "react-router-dom";
-import PublicRoute from "./components/PublicRoute";
-import { PrivateRoute } from "./components/PrivateRoute";
-import Header from ".././components/Header";
-import Sidebar from "../components/Sidebar";
+import React, { useContext } from "react";
+import { Route, Routes } from "react-router-dom";
 
-const LIST_ROUTES_PUBLIC = [
-  {
-    path: "/homepage",
-    component: React.lazy(() => import("../containers/Homepage")),
-  },
-  {
-    path: "/user-management",
-    component: React.lazy(() => import("../containers/UserManagement")),
-  },
-];
+import { URL_PATHS } from "../common/env";
+import LoadingSpinner from "../components/LoadingSpinner";
+import Sidebar from "../components/Sidebar";
+import { UserContext } from "../context/AppContext";
+import PrivateRoute from "./components/PrivateRoute";
+import PublicRoute from "./components/PublicRoute";
+
 const LIST_ROUTES_PRIVATE = [
   {
     path: "*",
+    component: React.lazy(() => import("../containers/NotMatchPage")),
+  },
+  {
+    path: "/",
+    component: React.lazy(() => import("../containers/Homepage")),
+  },
+  {
+    path: URL_PATHS.HOME,
+    component: React.lazy(() => import("../containers/Homepage")),
+  },
+  {
+    path: URL_PATHS.MANAGE_DEP,
+    component: React.lazy(() => import("../containers/DepartmentManagement")),
+  },
+  {
+    path: URL_PATHS.MANAGE_USER,
+    component: React.lazy(() => import("../containers/UserManagement")),
+  },
+  {
+    path: URL_PATHS.MANAGE_TAG,
+    component: React.lazy(() => import("../containers/TagManagement")),
+  },
+];
+
+const LIST_ROUTES_PUBLIC = [
+  {
+    path: URL_PATHS.LOGIN,
     component: React.lazy(() => import("../containers/Login")),
   },
   {
-    path: "/login",
-    component: React.lazy(() => import("../containers/Login")),
-  },
-  {
-    path: "/signin",
+    path: URL_PATHS.SIGNIN,
     component: React.lazy(() => import("../containers/Login")),
   },
 ];
 
-export const listRoute = () => {
-
+export function ListRoute() {
+  const { state, setState } = useContext(UserContext);
   const publicRoute = () => {
     return LIST_ROUTES_PUBLIC.map((route, index) => {
       return (
@@ -39,14 +55,10 @@ export const listRoute = () => {
           key={index}
           path={route.path}
           element={
-            <React.Suspense fallback={<div style={{ height: "100vh" }}></div>}>
-              <PublicRoute>
-                <Sidebar />
-                <div className="main-content">
-                  <Header />
-                  <route.component />
-                </div>
-              </PublicRoute>
+            <React.Suspense fallback={<LoadingSpinner />}>
+              <PrivateRoute>
+                <route.component />
+              </PrivateRoute>
             </React.Suspense>
           }
         />
@@ -60,21 +72,27 @@ export const listRoute = () => {
           key={index}
           path={route.path}
           element={
-            <React.Suspense fallback={<div style={{ height: "100vh" }}></div>}>
-              <PrivateRoute>
-                <route.component />
-              </PrivateRoute>
+            <React.Suspense fallback={<LoadingSpinner />}>
+              <Sidebar>
+                <PublicRoute>
+                  <route.component />
+                </PublicRoute>
+              </Sidebar>
             </React.Suspense>
           }
         />
       );
     });
   };
-
+  if (state.loading) {
+    return <LoadingSpinner></LoadingSpinner>;
+  }
   return (
     <>
-      {publicRoute()}
-      {privateRoute()}
+      <Routes>
+        {publicRoute()}
+        {privateRoute()}
+      </Routes>
     </>
   );
-};
+}

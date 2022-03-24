@@ -1,16 +1,14 @@
-import RightSideLogin from "../../components/LoginRightSide";
-import LeftSideLogin from "../../components/LoginLeftSide";
-
-import loginImg from "../../assets/images/Contact-CIC-Education-2-1024x858.jpg";
-import logoBlack from "../../assets/images/2021-Greenwich-Black-Eng.png";
-
 import "./style.css";
 
-export default function Login() {
+import logoBlack from "../../assets/images/2021-Greenwich-Black-Eng.webp";
+import loginImg from "../../assets/images/Contact-CIC-Education-2-1024x858.webp";
+import LeftSideLogin from "../../components/LoginLeftSide";
+import RightSideLogin from "../../components/LoginRightSide";
+
+export default function Login({ returnUrl }) {
   return (
     <div className="loginpage-wrapper">
-      <LeftSideLogin src={logoBlack} />
-
+      <LeftSideLogin src={logoBlack} returnUrl={returnUrl} />
       <RightSideLogin src={loginImg} />
     </div>
   );

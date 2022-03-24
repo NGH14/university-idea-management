@@ -1,15 +1,17 @@
-import React from "react";
-import LoginForm from "../LoginForm";
 import "./style.css";
 
-const LeftSideLogin = ({ src }) => {
+import React from "react";
+
+import LoginForm from "../LoginForm";
+
+const LeftSideLogin = ({ src, returnUrl }) => {
   return (
     <>
       <div className="loginpage-leftside">
         <img src={src} alt="" className="leftside_logo" />
 
         <div className="leftside_content">
-          <LoginForm />
+          <LoginForm returnUrl={returnUrl} />
         </div>
       </div>
     </>

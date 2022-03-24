@@ -1,6 +1,6 @@
 export default function Homepage() {
   return (
-    <div>
+    <div style={{ height: "100vw" }}>
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum omnis
       dolor nulla mollitia corrupti odit. Quibusdam enim, modi distinctio libero
       quam magni culpa vero error ipsum voluptatibus, reiciendis obcaecati,

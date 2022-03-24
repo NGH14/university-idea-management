@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
-import AppUse from "../common/AppUse";
+
+import { AnonRequest, AuthRequest } from "../common/AppUse";
 import { API_PATHS, STORAGE_VARS } from "../common/env";
-import { CircularProgress } from "@mui/material";
 
 export const UserContext = createContext();
 export const AppContext = (props) => {
@@ -13,45 +13,60 @@ export const AppContext = (props) => {
 
   useEffect(() => {
     checkAuth();
-  }, [localStorage.getItem(STORAGE_VARS.JWT)]);
+  }, []);
 
   const checkAuth = async () => {
-    try {
-      const res = await AppUse.getApi(API_PATHS.AUTH_INFO, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
-        },
-      });
+    if (
+      !localStorage.getItem(STORAGE_VARS.JWT) &&
+      !localStorage.getItem(STORAGE_VARS.REFRESH)
+    ) {
+      localStorage.removeItem(STORAGE_VARS.JWT);
+      localStorage.removeItem(STORAGE_VARS.REFRESH);
 
-      if (res?.data?.succeeded) {
-        setState({
-          ...state,
-          loading: false,
-          isLogin: true,
-          dataUser: res?.data?.result,
-        });
-      } else {
-        setState({
-          ...state,
-          loading: false,
-          isLogin: false,
-        });
-      }
-    } catch (error) {
-      setState({
+      return setState({
         ...state,
         loading: false,
         isLogin: false,
       });
     }
+
+    AuthRequest.get(API_PATHS.SHARED.AUTH.INFO)
+      .then((res) => {
+        if (res?.data?.succeeded) {
+          return setState({
+            ...state,
+            loading: false,
+            isLogin: true,
+            dataUser: res?.data?.result,
+          });
+        } else if (localStorage.getItem(STORAGE_VARS.REFRESH)) {
+          AnonRequest.put(API_PATHS.SHARED.AUTH.TOKEN_ROTATE, {
+            access_token: localStorage.getItem(STORAGE_VARS.JWT),
+            refresh_token: localStorage.getItem(STORAGE_VARS.REFRESH),
+          }).then((res) => {
+            if (res?.data?.succeeded) {
+              setState({
+                ...state,
+                loading: false,
+                isLogin: true,
+                dataUser: res?.data?.result,
+              });
+            }
+          });
+        }
+      })
+      .catch(() => {
+        localStorage.removeItem(STORAGE_VARS.JWT);
+        localStorage.removeItem(STORAGE_VARS.REFRESH);
+
+        setState({
+          ...state,
+          loading: false,
+          isLogin: false,
+        });
+      });
   };
-  if (state.loading) {
-    return (
-      <div style={{ textAlign: "center", marginTop: 80 }}>
-        <CircularProgress />
-      </div>
-    );
-  }
+
   return (
     <UserContext.Provider value={{ state, setState }}>
       {props.children}

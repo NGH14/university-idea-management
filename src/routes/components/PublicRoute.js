@@ -1,15 +1,17 @@
-import { useContext, useEffect } from "react"
-import { UserContext } from "../../context/AppContext"
-import { useNavigate } from "react-router-dom"
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-function PublicRoute({ children }) {
-  const navigate = useNavigate()
-  const { state, setState } = useContext(UserContext)
+import { URL_PATHS } from "../../common/env";
+import { UserContext } from "../../context/AppContext";
+
+export default function PublicRoute({ children }) {
+  const navigate = useNavigate();
+  const { state, setState } = useContext(UserContext);
+
   useEffect(() => {
     if (!state?.isLogin) {
-      navigate("/login")
+      navigate(URL_PATHS.LOGIN);
     }
-  }, [])
-  return children
+  }, []);
+  return children;
 }
-export default PublicRoute

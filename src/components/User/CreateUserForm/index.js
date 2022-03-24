@@ -1,33 +1,32 @@
-import { TextField } from "@mui/material";
-import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
-import InputLabel from "@mui/material/InputLabel";
-import { styled } from "@mui/material/styles";
-import Select from "@mui/material/Select";
-import React from "react";
-import DateFnsUtils from "@date-io/date-fns";
-
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from "@material-ui/pickers";
-
-import { useFormik } from "formik";
-import * as yup from "yup";
-
-import AppUse from "../../common/AppUse";
-
 import "./style.css";
+
+import CloseIcon from "@mui/icons-material/Close";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import DatePicker from "@mui/lab/DatePicker";
+import LocalizationProvider from "@mui/lab/LocalizationProvider";
+import { TextField } from "@mui/material";
+import Button from "@mui/material/Button";
+import FormHelperText from "@mui/material/FormHelperText";
+import IconButton from "@mui/material/IconButton";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import { styled } from "@mui/material/styles";
+import enLocale from "date-fns/locale/en-GB";
+import { useFormik } from "formik";
+import React from "react";
+import * as yup from "yup";
 
 const CssTextField = styled(TextField)({
   ".MuiFormHelperText-root": {
-    fontFamily: "Poppins",
-    fontSize: "12px",
-  },
-  "& .MuiInputBase-root": {
-    fontFamily: "Poppins",
-    color: "#000",
     fontSize: "14px",
+    fontFamily: "Poppins",
+  },
+
+  "& .MuiInputBase-root": {
+    color: "#000",
+    fontSize: "16px",
+    fontFamily: "Poppins",
   },
   "& label.Mui-focused": {
     color: "#000",
@@ -48,25 +47,21 @@ const CssTextField = styled(TextField)({
   },
 });
 
-const ColorButton = styled(Button)(({ bgcolor, hoverbgcolor, textcolor }) => ({
+const ColorButton = styled(Button)(() => ({
   fontFamily: "Poppins",
   fontSize: "13px",
-  fontWeight: "600",
+  fontWeight: "bold",
   textTransform: "none",
-  lineHeight: "30px",
-  display: "block",
-  color: textcolor || "#fff",
-  margin: "1rem 0 1.75rem auto",
-  padding: "10px",
-  backgroundColor: bgcolor || "#333",
+  minWidth: 200,
+  display: "inline-block",
 
-  "&:hover": { backgroundColor: hoverbgcolor || "#000" },
+  margin: "10px 0",
+  padding: "10px",
+
   "&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
-  "&:disabled:hover ": { backgroundColor: "rgba(0, 0, 0, 0.12)" },
 }));
 
 const initialValues = {
-  user_name: "",
   full_name: "",
   department: "",
   email: "",
@@ -77,15 +72,14 @@ const initialValues = {
 };
 
 const validationSchema = yup.object({
-  user_name: yup.string().required("UserName is required"),
   full_name: yup.string().required("Full Name is required"),
   email: yup.string().email("Email is invalid").required("Email is required"),
-  // role: yup.string().required("Role is required"),
+  role: yup.string().required("Role is required"),
+  department: yup.string().required("Department is required"),
   password: yup
     .string()
     .min(4, "Password should be of minimum 4 characters length")
     .required("Password is required"),
-  department: yup.string().required("Password is required"),
   confirm_password: yup
     .string()
     .oneOf([yup.ref("password"), null], "Passwords must match")
@@ -93,18 +87,24 @@ const validationSchema = yup.object({
   date_of_birth: yup.date("Date invalid").nullable(),
 });
 
-function CreateUserForm() {
+function CreateUserForm(prop) {
+  const { onClose, onCreate } = prop;
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      onCreate(values);
     },
   });
 
   return (
     <div className="createuserform">
-      <h2 className="createuserform-tittle">Create New User</h2>
+      <div className="createuserform_title">
+        <h2>Create New User</h2>
+        <IconButton>
+          <CloseIcon onClick={() => onClose()} />
+        </IconButton>
+      </div>
       <br />
 
       <form className="form_grid" onSubmit={formik.handleSubmit}>
@@ -128,27 +128,6 @@ function CreateUserForm() {
             />
           </div>
           <div className="form_content">
-            <InputLabel required htmlFor="user_name">
-              Username
-            </InputLabel>
-            <CssTextField
-              fullWidth
-              margin="normal"
-              id="user_name"
-              name="user_name"
-              value={formik.values.user_name}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={
-                formik.touched.user_name && Boolean(formik.errors.user_name)
-              }
-              helperText={formik.touched.user_name && formik.errors.user_name}
-            />
-          </div>
-        </div>
-
-        <div className="form_group">
-          <div>
             <InputLabel required htmlFor="email">
               Email
             </InputLabel>
@@ -211,66 +190,113 @@ function CreateUserForm() {
 
         <div className="form_group">
           <div className="form_content">
-            <InputLabel htmlFor="department">Department</InputLabel>
+            <InputLabel required htmlFor="department">
+              Department
+            </InputLabel>
             <Select
+              select
               fullWidth
+              displayEmpty
               labelId="department"
               id="department"
               name="department"
               value={formik.values.department}
               onChange={formik.handleChange}
-              native
+              onBlur={formik.handleBlur}
+              renderValue={
+                formik.values.department !== ""
+                  ? undefined
+                  : () => (
+                      <placeholder>
+                        <em style={{ opacity: 0.6, fontSize: 14 }}>
+                          -- department --
+                        </em>
+                      </placeholder>
+                    )
+              }
+              error={
+                formik.touched.department && Boolean(formik.errors.department)
+              }
             >
-              <option value={"IT"}>IT</option>
-              <option value={"HR"}>HR</option>
+              <MenuItem value={"Admin"}>Admin</MenuItem>
+              <MenuItem value={"HR"}>HR</MenuItem>
             </Select>
+            <FormHelperText error>
+              {formik.touched.department && formik.errors.department}
+            </FormHelperText>
           </div>
 
           <div className="form_content">
-            <InputLabel htmlFor="role">Role</InputLabel>
+            <InputLabel required htmlFor="role">
+              Role
+            </InputLabel>
             <Select
+              select
               fullWidth
+              displayEmpty
               labelId="role"
               id="role"
               name="role"
               value={formik.values.role}
               onChange={formik.handleChange}
-              native
+              onBlur={formik.handleBlur}
+              renderValue={
+                formik.values.role !== ""
+                  ? undefined
+                  : () => (
+                      <placeholder>
+                        <em style={{ opacity: 0.6, fontSize: 14 }}>
+                          -- role --
+                        </em>
+                      </placeholder>
+                    )
+              }
+              error={formik.touched.role && Boolean(formik.errors.role)}
+              placeholder="E.g., vuhuua@gmail.com"
             >
-              <option value={"Admin"}>Admin</option>
-              <option value={"HR"}>HR</option>
+              <MenuItem value={"Admin"}>Admin</MenuItem>
+              <MenuItem value={"HR"}>HR</MenuItem>
             </Select>
+            <FormHelperText error>
+              {formik.touched.role && formik.errors.role}
+            </FormHelperText>
           </div>
           <div className="form_content">
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <InputLabel htmlFor="date_of_birth">DoB</InputLabel>
-              <KeyboardDatePicker
-                inputVariant="outlined"
+            <InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
+
+            <LocalizationProvider
+              dateAdapter={AdapterDateFns}
+              locale={enLocale}
+            >
+              <DatePicker
+                fullWidth
+                disableFuture
+                margin="normal"
                 name="date_of_birth"
                 id="date_of_birth"
-                fullWidth
                 onChange={(val) => {
                   formik.setFieldValue("date_of_birth", val);
                 }}
                 value={formik.values.date_of_birth}
-                format="dd/MM/yyyy"
                 error={
                   formik.errors.date_of_birth && formik.touched.date_of_birth
                 }
                 helperText={
                   formik.errors.date_of_birth && formik.touched.date_of_birth
                 }
+                renderInput={(params) => <TextField fullWidth {...params} />}
               />
-            </MuiPickersUtilsProvider>
+            </LocalizationProvider>
           </div>
         </div>
-        <ColorButton
-          variant="contained"
-          type="submit"
-          disabled={!(formik.isValid && formik.dirty)}
-        >
-          Create
-        </ColorButton>
+        <div className="createuserform_footer">
+          <ColorButton variant="outlined" onClick={() => onClose()}>
+            Cancel
+          </ColorButton>
+          <ColorButton variant="contained" type="submit">
+            Create User
+          </ColorButton>
+        </div>
       </form>
     </div>
   );
