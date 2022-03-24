@@ -33,6 +33,10 @@ const LIST_ROUTES_PRIVATE = [
     path: URL_PATHS.MANAGE_TAG,
     component: React.lazy(() => import("../containers/TagManagement")),
   },
+  {
+    path: `${URL_PATHS.UPDATE_PWD}/:token`,
+    component: React.lazy(() => import("../containers/UpdatePassword")),
+  },
 ];
 
 const LIST_ROUTES_PUBLIC = [
@@ -43,6 +47,12 @@ const LIST_ROUTES_PUBLIC = [
   {
     path: URL_PATHS.SIGNIN,
     component: React.lazy(() => import("../containers/Login")),
+  },
+  {
+    path: `${URL_PATHS.UPDATE_PWD_VALIDATE}/:token`,
+    component: React.lazy(() =>
+      import("../containers/UpdatePassword/ValidateAuthInfo"),
+    ),
   },
 ];
 
