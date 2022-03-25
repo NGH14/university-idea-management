@@ -29,18 +29,18 @@ export class AnonRequest {
 
 export class AuthRequest {
 	static post = async (api, params) => {
-		return await axios.post(`${globalApi}/${api}`, params, authHeader);
+		return await axios.post(`${globalApi}/${api}`, params, { authHeader });
 	};
 
 	static get = async (api) => {
-		return await axios.get(`${globalApi}/${api}`, authHeader);
+		return await axios.get(`${globalApi}/${api}`, { authHeader });
 	};
 
 	static delete = async (api) => {
-		return await axios.delete(`${globalApi}/${api}`, authHeader);
+		return await axios.delete(`${globalApi}/${api}`, { authHeader });
 	};
 
 	static put = async (api, params) => {
-		return await axios.put(`${globalApi}/${api}`, params, authHeader);
+		return await axios.put(`${globalApi}/${api}`, params, { authHeader });
 	};
 }

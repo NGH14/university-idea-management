@@ -196,7 +196,7 @@ export default function Sidebar(props) {
 
 	const onLogout = () => {
 		localStorage.clear();
-		setState({ ...state, isLogin: false, loading: false });
+		setState({ ...state, isLogin: false, loading: false, dataUser: {} });
 		navigate("/login");
 	};
 
@@ -206,10 +206,6 @@ export default function Sidebar(props) {
 
 	const nagivateHomepage = () => {
 		navigate("/");
-	};
-	const ConvertLastName = (fullName) => {
-		const lastName = fullName.split(" ");
-		return lastName[_.size(lastName) - 1];
 	};
 
 	return (
@@ -267,11 +263,7 @@ export default function Sidebar(props) {
 						>
 							<ColorButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
 								<Avatar
-									alt={
-										state.dataUser.full_name
-											? ConvertLastName(state.dataUser.full_name)
-											: "Nghia Vu"
-									}
+									alt={state.dataUser.full_name ?? "Username"}
 									src="/static/images/avatar/2.jpg"
 								/>
 
@@ -281,9 +273,7 @@ export default function Sidebar(props) {
 										fontSize={14}
 										fontFamily="Poppins"
 									>
-										{state.dataUser.full_name
-											? ConvertLastName(state.dataUser.full_name)
-											: "Nghia Vu"}
+										{state.dataUser.full_name ?? "Username"}
 										<ExpandMoreIcon
 											sx={{ width: "20px", height: "20px", paddingTop: "8px" }}
 										/>

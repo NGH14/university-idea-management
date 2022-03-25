@@ -6,7 +6,7 @@ import { UserContext } from "../../context/AppContext";
 
 export default function PublicRoute({ children }) {
 	const navigate = useNavigate();
-	const { state } = useContext(UserContext);
+	const { state, setState } = useContext(UserContext);
 
 	useEffect(() => {
 		if (!state?.isLogin) {

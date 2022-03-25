@@ -4,6 +4,7 @@ import { AnonRequest, AuthRequest } from "../common/AppUse";
 import { API_PATHS, STORAGE_VARS } from "../common/env";
 
 export const UserContext = createContext();
+
 export const AppContext = (props) => {
 	const [state, setState] = useState({
 		isLogin: false,
@@ -11,18 +12,18 @@ export const AppContext = (props) => {
 		dataUser: {},
 	});
 
+	const foo = state.isLogin;
+
 	useEffect(() => {
 		checkAuth();
-	}, []);
+		console.log("asda");
+	}, [foo]);
 
 	const checkAuth = async () => {
 		if (
-			!localStorage.getItem(STORAGE_VARS.JWT) &&
+			!localStorage.getItem(STORAGE_VARS.JWT) ||
 			!localStorage.getItem(STORAGE_VARS.REFRESH)
 		) {
-			localStorage.removeItem(STORAGE_VARS.JWT);
-			localStorage.removeItem(STORAGE_VARS.REFRESH);
-
 			return setState({
 				...state,
 				loading: false,
@@ -56,8 +57,8 @@ export const AppContext = (props) => {
 						});
 			})
 			.catch(() => {
-				localStorage.removeItem(STORAGE_VARS.JWT);
-				localStorage.removeItem(STORAGE_VARS.REFRESH);
+				// localStorage.removeItem(STORAGE_VARS.JWT);
+				// localStorage.removeItem(STORAGE_VARS.REFRESH);
 
 				setState({
 					...state,
