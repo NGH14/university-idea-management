@@ -6,10 +6,10 @@ import LeftSideLogin from "../../components/LoginLeftSide";
 import RightSideLogin from "../../components/LoginRightSide";
 
 export default function Login({ returnUrl }) {
-  return (
-    <div className="loginpage-wrapper">
-      <LeftSideLogin src={logoBlack} returnUrl={returnUrl} />
-      <RightSideLogin src={loginImg} />
-    </div>
-  );
+	return (
+		<div className="loginpage-wrapper">
+			<LeftSideLogin src={logoBlack} returnUrl={returnUrl} />
+			<RightSideLogin src={loginImg} />
+		</div>
+	);
 }
