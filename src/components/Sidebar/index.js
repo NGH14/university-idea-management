@@ -21,7 +21,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Menu from "@mui/material/Menu";
 import Stack from "@mui/material/Stack";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import _ from "lodash";
@@ -30,6 +30,7 @@ import { useLocation } from "react-router";
 import { useNavigate } from "react-router-dom";
 
 import UniTextLogo from "../../assets/images/2021-Greenwich-Black-Eng.webp";
+import { URL_PATHS } from "../../common/env";
 import { UserContext } from "../../context/AppContext";
 
 const drawerWidth = 240;
@@ -117,14 +118,10 @@ const Drawer = styled(MuiDrawer, {
 export default function Sidebar(props) {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate();
-  const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const { state, setState } = useContext(UserContext);
   const [selectedIndex, setSelectedIndex] = React.useState("home");
 
-  // const handleListItemClick = (index) => {
-  //   setSelectedIndex(index);
-  // };
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -134,11 +131,11 @@ export default function Sidebar(props) {
 
   const setSelected = (path) => {
     switch (path) {
-      case "/user-management":
+      case URL_PATHS.MANAGE_USER:
         return 1;
-      case "/department-management":
+      case URL_PATHS.MANAGE_DEP:
         return 2;
-      case "/tag-management":
+      case URL_PATHS.MANAGE_TAG:
         return 3;
       default:
         return 0;
@@ -146,6 +143,11 @@ export default function Sidebar(props) {
   };
 
   const UserMenu = [
+    {
+      text: "Profile",
+      icon: <LogoutIcon fontSize="small" />,
+      onClick: () => navigate(URL_PATHS.PROFILE),
+    },
     {
       text: "Logout",
       icon: <LogoutIcon fontSize="small" />,
@@ -158,29 +160,29 @@ export default function Sidebar(props) {
       text: "Home",
       icon: <HomeIcon />,
 
-      onClick: (index) => {
-        navigate("/");
+      onClick: () => {
+        navigate(URL_PATHS.HOME);
       },
     },
     {
       text: "User Management",
       icon: <AssignmentIndIcon />,
-      onClick: (index) => {
-        navigate("/user-management");
+      onClick: () => {
+        navigate(URL_PATHS.MANAGE_USER);
       },
     },
     {
-      text: "Department",
+      text: "Department Management",
       icon: <CorporateFareIcon />,
-      onClick: (index) => {
-        navigate("/department-management");
+      onClick: () => {
+        navigate(URL_PATHS.MANAGE_DEP);
       },
     },
     {
-      text: "Tag",
+      text: "Tag Management",
       icon: <AutoStories />,
-      onClick: (index) => {
-        navigate("/tag-management");
+      onClick: () => {
+        navigate(URL_PATHS.MANAGE_TAG);
       },
     },
   ];
@@ -314,7 +316,7 @@ export default function Sidebar(props) {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {UserMenu.map((item, index) => {
+              {UserMenu.map((item, _) => {
                 const { text, icon, onClick } = item;
                 return (
                   <ListItemButton
@@ -326,6 +328,7 @@ export default function Sidebar(props) {
                     key={text}
                     onClick={onClick}
                   >
+                    {icon && icon}
                     <ListItemText
                       disableTypography
                       primary={text}
@@ -333,10 +336,9 @@ export default function Sidebar(props) {
                         fontFamily: "Nunito, sans-serif",
                         fontSize: "16px",
                         fontWeight: 700,
-                        mr: 3,
+                        ml: 1.7,
                       }}
                     />
-                    {icon && icon}
                   </ListItemButton>
                 );
               })}

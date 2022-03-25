@@ -66,19 +66,24 @@ const ColorButton = styled(Button)(({ bgcolor, hoverbgcolor, textcolor }) => ({
 }));
 
 const validationSchema = yup.object({
-  password: yup
+  old_password: yup
     .string("Enter your password")
     .min(4, "Password should be of minimum 4 characters length")
     .required("Password is required"),
-  confirm_password: yup
+  new_password: yup
+    .string("Enter your new password")
+    .min(4, "Password should be of minimum 4 characters length")
+    .required("Password is required"),
+  confirm_new_password: yup
     .string()
-    .oneOf([yup.ref("password"), null], "Passwords must match")
+    .oneOf([yup.ref("new_password"), null], "Passwords must match")
     .required("Password is required"),
 });
 
 const initialValues = {
-  password: "",
-  confirm_password: "",
+  old_password: "",
+  new_password: "",
+  confirm_new_password: "",
 };
 
 // ─── MAIN ───────────────────────────────────────────────────────────────────────
@@ -132,31 +137,51 @@ const UpdatePasswordForm = () => {
       <form onSubmit={formik.handleSubmit}>
         <CssTextField
           fullWidth
-          id="password"
-          label="Password"
-          name="password"
+          id="old_password"
+          label="Old Password"
+          name="old_password"
           margin="normal"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          error={formik.touched.password && Boolean(formik.errors.password)}
-          helperText={formik.touched.password && formik.errors.password}
-        />
-        <CssTextField
-          fullWidth
-          margin="normal"
-          label="Confirm Password"
           type="password"
-          name="confirm_password"
-          value={formik.values.confirm_password}
+          value={formik.values.old_password}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           error={
-            formik.touched.confirm_password &&
-            Boolean(formik.errors.confirm_password)
+            formik.touched.old_password && Boolean(formik.errors.old_password)
+          }
+          helperText={formik.touched.old_password && formik.errors.old_password}
+        />
+        <CssTextField
+          fullWidth
+          id="new_password"
+          margin="normal"
+          label="New Password"
+          type="password"
+          name="new_password"
+          value={formik.values.new_password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={
+            formik.touched.new_password && Boolean(formik.errors.new_password)
+          }
+          helperText={formik.touched.new_password && formik.errors.new_password}
+        />
+        <CssTextField
+          fullWidth
+          id="confirm_new_password"
+          margin="normal"
+          label="Confirm New Password"
+          type="password"
+          name="confirm_new_password"
+          value={formik.values.confirm_new_password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          error={
+            formik.touched.confirm_new_password &&
+            Boolean(formik.errors.confirm_new_password)
           }
           helperText={
-            formik.touched.confirm_password && formik.errors.confirm_password
+            formik.touched.confirm_new_password &&
+            formik.errors.confirm_new_password
           }
         />
 
