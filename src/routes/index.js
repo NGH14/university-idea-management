@@ -34,8 +34,8 @@ const LIST_ROUTES_PRIVATE = [
     component: React.lazy(() => import("../containers/TagManagement")),
   },
   {
-    path: `${URL_PATHS.UPDATE_PWD}/:token`,
-    component: React.lazy(() => import("../containers/UpdatePassword")),
+    path: URL_PATHS.PROFILE,
+    component: React.lazy(() => import("../containers/Profile")),
   },
 ];
 
@@ -48,16 +48,10 @@ const LIST_ROUTES_PUBLIC = [
     path: URL_PATHS.SIGNIN,
     component: React.lazy(() => import("../containers/Login")),
   },
-  {
-    path: `${URL_PATHS.UPDATE_PWD_VALIDATE}/:token`,
-    component: React.lazy(() =>
-      import("../containers/UpdatePassword/ValidateAuthInfo"),
-    ),
-  },
 ];
 
 export function ListRoute() {
-  const { state, setState } = useContext(UserContext);
+  const { state } = useContext(UserContext);
   const publicRoute = () => {
     return LIST_ROUTES_PUBLIC.map((route, index) => {
       return (

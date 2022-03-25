@@ -37,8 +37,7 @@ export const URL_PATHS = {
   MANAGE_USER: "/user-management",
   MANAGE_DEP: "/department-management",
   MANAGE_TAG: "/tag-management",
-  UPDATE_PWD: "/update-password",
-  UPDATE_PWD_VALIDATE: "/update-password/validate-auth",
+  PROFILE: "/profile",
 };
 
 export const STORAGE_VARS = {
