@@ -21,8 +21,8 @@ export const AppContext = (props) => {
 			!localStorage.getItem(STORAGE_VARS.JWT) ||
 			!localStorage.getItem(STORAGE_VARS.REFRESH)
 		) {
-			// localStorage.removeItem(STORAGE_VARS.JWT);
-			// localStorage.removeItem(STORAGE_VARS.REFRESH);
+			localStorage.removeItem(STORAGE_VARS.JWT);
+			localStorage.removeItem(STORAGE_VARS.REFRESH);
 
 			return setState({
 				...state,
@@ -57,8 +57,8 @@ export const AppContext = (props) => {
 						});
 			})
 			.catch(() => {
-				// localStorage.removeItem(STORAGE_VARS.JWT);
-				// localStorage.removeItem(STORAGE_VARS.REFRESH);
+				localStorage.removeItem(STORAGE_VARS.JWT);
+				localStorage.removeItem(STORAGE_VARS.REFRESH);
 
 				setState({
 					...state,

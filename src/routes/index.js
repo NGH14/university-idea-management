@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Route, Routes } from "react-router-dom";
 
-import { URL_PATHS } from "../common/env";
+import { ROLES, URL_PATHS } from "../common/env";
 import LoadingSpinner from "../components/LoadingSpinner";
 import Sidebar from "../components/Sidebar";
 import { UserContext } from "../context/AppContext";
@@ -10,30 +10,37 @@ import PublicRoute from "./components/PublicRoute";
 
 const LIST_ROUTES_PRIVATE = [
 	{
+		roles: [],
 		path: "*",
 		component: React.lazy(() => import("../containers/NotMatchPage")),
 	},
 	{
+		roles: [],
 		path: "/",
 		component: React.lazy(() => import("../containers/Homepage")),
 	},
 	{
+		roles: [],
 		path: URL_PATHS.HOME,
 		component: React.lazy(() => import("../containers/Homepage")),
 	},
 	{
+		roles: [ROLES.ADMIN],
 		path: URL_PATHS.MANAGE_DEP,
 		component: React.lazy(() => import("../containers/DepartmentManagement")),
 	},
 	{
+		roles: [ROLES.ADMIN],
 		path: URL_PATHS.MANAGE_USER,
 		component: React.lazy(() => import("../containers/UserManagement")),
 	},
 	{
+		roles: [ROLES.ADMIN],
 		path: URL_PATHS.MANAGE_TAG,
 		component: React.lazy(() => import("../containers/TagManagement")),
 	},
 	{
+		roles: [],
 		path: URL_PATHS.PROFILE,
 		component: React.lazy(() => import("../containers/Profile")),
 	},
@@ -60,9 +67,9 @@ export function ListRoute() {
 					path={route.path}
 					element={
 						<React.Suspense fallback={<LoadingSpinner />}>
-							<PrivateRoute>
+							<PublicRoute>
 								<route.component />
-							</PrivateRoute>
+							</PublicRoute>
 						</React.Suspense>
 					}
 				/>
@@ -79,9 +86,9 @@ export function ListRoute() {
 					element={
 						<React.Suspense fallback={<LoadingSpinner />}>
 							<Sidebar>
-								<PublicRoute>
+								<PrivateRoute roles={route.roles}>
 									<route.component />
-								</PublicRoute>
+								</PrivateRoute>
 							</Sidebar>
 						</React.Suspense>
 					}
@@ -89,9 +96,11 @@ export function ListRoute() {
 			);
 		});
 	};
+
 	if (state.loading) {
 		return <LoadingSpinner></LoadingSpinner>;
 	}
+
 	return (
 		<>
 			<Routes>

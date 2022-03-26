@@ -1,17 +1,20 @@
 import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import { URL_PATHS } from "../../common/env";
 import { UserContext } from "../../context/AppContext";
 
 export default function PrivateRoute({ roles = [], children }) {
 	const navigate = useNavigate();
+	const location = useLocation();
 	const { state } = useContext(UserContext);
 
 	useEffect(() => {
-		if (state?.isLogin && roles.indexOf(state?.dataUser.role)) {
-			navigate(URL_PATHS.HOME);
+		console.log(roles.includes(state?.dataUser.role));
+		if (!roles.includes(state?.dataUser.role)) {
+			// TODO: Navigate to unauthorized page
+			return navigate(-1);
 		}
-	}, []);
-	return children;
+	}, [location.pathname]);
+	return state?.isLogin ? children : <Navigate to={URL_PATHS.LOGIN} replace />;
 }
