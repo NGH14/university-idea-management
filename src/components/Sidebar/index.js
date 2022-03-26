@@ -24,7 +24,6 @@ import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import _ from "lodash";
 import React, { useContext, useEffect } from "react";
 import { useLocation } from "react-router";
 import { useNavigate } from "react-router-dom";
