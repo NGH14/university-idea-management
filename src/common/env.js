@@ -30,6 +30,7 @@ export const API_PATHS = {
 };
 
 export const URL_PATHS = {
+	NOT_FOUND: "/notfound",
 	ANY: "/",
 	HOME: "/homepage",
 	LOGIN: "/login",

@@ -16,6 +16,11 @@ const LIST_ROUTES_PRIVATE = [
 	},
 	{
 		roles: [],
+		path: URL_PATHS.NOT_FOUND,
+		component: React.lazy(() => import("../containers/NotMatchPage")),
+	},
+	{
+		roles: [],
 		path: "/",
 		component: React.lazy(() => import("../containers/Homepage")),
 	},

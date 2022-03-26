@@ -11,11 +11,11 @@ export default function PrivateRoute({ roles = [], children }) {
 
 	useEffect(() => {
 		if (!state?.isLogin) {
-			return navigate(URL_PATHS.LOGIN);
+			navigate(URL_PATHS.LOGIN);
 		}
-		if (!roles.includes(state?.dataUser.role)) {
-			// TODO: Navigate to unauthorized page
-			return navigate(-1);
+
+		if (roles.length > 0 && !roles.includes(state?.dataUser.role)) {
+			navigate(URL_PATHS.NOT_FOUND);
 		}
 	}, [pathname]);
 

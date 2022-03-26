@@ -3,7 +3,6 @@ import "./style.css";
 import { AutoStories } from "@mui/icons-material";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import CorporateFareIcon from "@mui/icons-material/CorporateFare";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -29,7 +28,7 @@ import { useLocation } from "react-router";
 import { useNavigate } from "react-router-dom";
 
 import UniTextLogo from "../../assets/images/2021-Greenwich-Black-Eng.webp";
-import { URL_PATHS } from "../../common/env";
+import { ROLES, URL_PATHS } from "../../common/env";
 import { UserContext } from "../../context/AppContext";
 
 const drawerWidth = 240;
@@ -115,10 +114,10 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function Sidebar(props) {
+	const { state, setState } = useContext(UserContext);
 	const [anchorElUser, setAnchorElUser] = React.useState(null);
 	const navigate = useNavigate();
 	const [open, setOpen] = React.useState(true);
-	const { state, setState } = useContext(UserContext);
 	const [selectedIndex, setSelectedIndex] = React.useState("home");
 
 	const { pathname } = useLocation();
@@ -156,6 +155,7 @@ export default function Sidebar(props) {
 
 	const itemsManagementList = [
 		{
+			roles: [],
 			text: "Home",
 			icon: <HomeIcon />,
 
@@ -164,6 +164,7 @@ export default function Sidebar(props) {
 			},
 		},
 		{
+			roles: [ROLES.ADMIN],
 			text: "User Management",
 			icon: <AssignmentIndIcon />,
 			onClick: () => {
@@ -171,6 +172,7 @@ export default function Sidebar(props) {
 			},
 		},
 		{
+			roles: [ROLES.ADMIN],
 			text: "Department Management",
 			icon: <CorporateFareIcon />,
 			onClick: () => {
@@ -178,6 +180,7 @@ export default function Sidebar(props) {
 			},
 		},
 		{
+			roles: [ROLES.ADMIN, ROLES.MANAGER],
 			text: "Tag Management",
 			icon: <AutoStories />,
 			onClick: () => {
@@ -196,7 +199,7 @@ export default function Sidebar(props) {
 	const onLogout = () => {
 		localStorage.clear();
 		setState({ ...state, isLogin: false, loading: false, dataUser: {} });
-		navigate("/login");
+		navigate(URL_PATHS.LOGIN);
 	};
 
 	const handleDrawerCick = () => {
@@ -204,7 +207,7 @@ export default function Sidebar(props) {
 	};
 
 	const nagivateHomepage = () => {
-		navigate("/");
+		navigate(URL_PATHS.HOME);
 	};
 
 	return (
@@ -273,15 +276,15 @@ export default function Sidebar(props) {
 										fontFamily="Poppins"
 									>
 										{state.dataUser.full_name ?? "Username"}
-										<ExpandMoreIcon
-											sx={{ width: "20px", height: "20px", paddingTop: "8px" }}
-										/>
 									</Typography>
 									<Typography
 										variant="body2"
 										color="text.secondary"
 										fontSize={12}
 										fontFamily="Nunito"
+										sx={{
+											textAlign: "left",
+										}}
 									>
 										{state.dataUser.role || "Admin"}
 									</Typography>
@@ -339,41 +342,46 @@ export default function Sidebar(props) {
 				<DrawerHeader></DrawerHeader>
 				<List className="sidebar_customize">
 					{itemsManagementList.map((item, index) => {
-						const { text, icon, onClick } = item;
+						const { roles, text, icon, onClick } = item;
 						return (
-							<ListItemButton
-								selected={selectedIndex === index}
-								sx={{
-									minHeight: 48,
-									justifyContent: open ? "initial" : "center",
-									px: 2.5,
-								}}
-								button
-								key={text}
-								onClick={() => onClick(index)}
-							>
-								{icon && (
-									<ListItemIcon
+							<>
+								{(roles.length === 0 ||
+									roles.includes(state?.dataUser.role)) && (
+									<ListItemButton
+										selected={selectedIndex === index}
 										sx={{
-											minWidth: 0,
-											mr: open ? 3 : "auto",
-											justifyContent: "center",
+											minHeight: 48,
+											justifyContent: open ? "initial" : "center",
+											px: 2.5,
 										}}
+										button
+										key={text}
+										onClick={() => onClick(index)}
 									>
-										{icon}
-									</ListItemIcon>
+										{icon && (
+											<ListItemIcon
+												sx={{
+													minWidth: 0,
+													mr: open ? 3 : "auto",
+													justifyContent: "center",
+												}}
+											>
+												{icon}
+											</ListItemIcon>
+										)}
+										<ListItemText
+											disableTypography
+											primary={text}
+											sx={{
+												fontFamily: "Poppins, sans-serif",
+												fontSize: "14px",
+												fontWeight: "700",
+												opacity: open ? 1 : 0,
+											}}
+										/>
+									</ListItemButton>
 								)}
-								<ListItemText
-									disableTypography
-									primary={text}
-									sx={{
-										fontFamily: "Poppins, sans-serif",
-										fontSize: "14px",
-										fontWeight: "700",
-										opacity: open ? 1 : 0,
-									}}
-								/>
-							</ListItemButton>
+							</>
 						);
 					})}
 				</List>
