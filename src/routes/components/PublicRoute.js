@@ -11,5 +11,6 @@ export default function PublicRoute({ children }) {
 	if (state?.isLogin) {
 		navigate(URL_PATHS.HOME);
 	}
+
 	return children;
 }

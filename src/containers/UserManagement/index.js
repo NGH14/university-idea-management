@@ -22,6 +22,7 @@ import * as React from "react";
 import { useContext, useEffect, useState } from "react";
 
 import { AuthRequest } from "../../common/AppUse";
+import { API_PATHS } from "../../common/env";
 import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
 import Notification from "../../components/Notification";
 import { UserContext } from "../../context/AppContext";
@@ -31,14 +32,16 @@ import { Column } from "./model/Column";
 function SortedDescendingIcon() {
 	return <ExpandMoreIcon className="icon" />;
 }
+
 function SortedAscendingIcon() {
 	return <ExpandLessIcon className="icon" />;
 }
 
 function UserManagement() {
-	const { state, setState } = useContext(UserContext);
+	const { state } = useContext(UserContext);
 	const [data, setData] = useState([]);
 	const [rowId, setRowId] = useState(null);
+
 	const [status, setStatus] = useState({
 		visibleNotification: false,
 		titleNotification: "",
@@ -46,6 +49,7 @@ function UserManagement() {
 		visibleModal: false,
 		action: "create", // create, update, detail
 	});
+
 	const [pagination, setPagination] = useState({
 		pageSize: 10,
 		page: 0,
@@ -105,24 +109,26 @@ function UserManagement() {
 	];
 
 	const loadData = async () => {
-		try {
-			const res = await AuthRequest.get(
-				`user-management/users?papesize=${pagination.pageSize}?page=${
-					pagination.page + 1
-				}`,
+		await AuthRequest.get(API_PATHS.ADMIN.USER, {
+			params: {
+				page: pagination.page,
+				page_size: pagination.pageSize,
+			},
+		})
+			.then((res) => {
+				if (res?.data?.succeeded) {
+					setData(res?.data?.result?.rows);
+					setRowId(null);
+				}
+			})
+			.catch(() =>
+				setStatus({
+					...status,
+					visibleNotification: true,
+					titleNotification: "Something went wrong, Please Try Again ",
+					typeNotification: "error",
+				}),
 			);
-			if (res?.data?.succeeded) {
-				setData(res?.data?.result?.rows);
-				setRowId(null);
-			}
-		} catch {
-			setStatus({
-				...status,
-				visibleNotification: true,
-				titleNotification: "Something went wrong, Please Try Again ",
-				typeNotification: "error",
-			});
-		}
 	};
 
 	const onOpenModal = (id, action) => {
@@ -154,6 +160,7 @@ function UserManagement() {
 			});
 		}
 	};
+
 	const onUpdate = async (value) => {
 		handleClose();
 		try {
@@ -180,6 +187,7 @@ function UserManagement() {
 			});
 		}
 	};
+
 	const onCreate = async (value) => {
 		try {
 			const res = await AuthRequest.post(`user-management`, value);
@@ -207,6 +215,7 @@ function UserManagement() {
 	const onCloseNotification = () => {
 		setStatus({ ...status, visibleNotification: false });
 	};
+
 	const onCloseModal = () => {
 		if (rowId) {
 			setRowId(null);
@@ -229,6 +238,7 @@ function UserManagement() {
 			</GridToolbarContainer>
 		);
 	};
+
 	const renderModal = () => {
 		return (
 			<ModalUserManagement
@@ -241,9 +251,11 @@ function UserManagement() {
 			/>
 		);
 	};
+
 	const onChangePagination = (pageSize, page) => {
 		setPagination({ page, pageSize });
 	};
+
 	const renderTop = () => {
 		return (
 			<div className="managementuser_title">

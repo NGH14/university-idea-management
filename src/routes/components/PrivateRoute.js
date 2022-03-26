@@ -10,7 +10,6 @@ export default function PrivateRoute({ roles = [], children }) {
 	const { state } = useContext(UserContext);
 
 	useEffect(() => {
-		console.log(roles.includes(state?.dataUser.role));
 		if (!state?.isLogin) {
 			return navigate(URL_PATHS.LOGIN);
 		}
