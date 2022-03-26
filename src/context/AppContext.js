@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 
-import { AnonRequest, AuthRequest } from "../common/AppUse";
+import { AuthRequest } from "../common/AppUse";
 import { API_PATHS, STORAGE_VARS } from "../common/env";
 
 export const UserContext = createContext();
@@ -12,18 +12,18 @@ export const AppContext = (props) => {
 		dataUser: {},
 	});
 
-	const foo = state.isLogin;
-
 	useEffect(() => {
 		checkAuth();
-		console.log("asda");
-	}, [foo]);
+	}, [state.isLogin]);
 
 	const checkAuth = async () => {
 		if (
 			!localStorage.getItem(STORAGE_VARS.JWT) ||
 			!localStorage.getItem(STORAGE_VARS.REFRESH)
 		) {
+			// localStorage.removeItem(STORAGE_VARS.JWT);
+			// localStorage.removeItem(STORAGE_VARS.REFRESH);
+
 			return setState({
 				...state,
 				loading: false,
@@ -42,7 +42,7 @@ export const AppContext = (props) => {
 					});
 				} else
 					localStorage.getItem(STORAGE_VARS.REFRESH) &&
-						AnonRequest.put(API_PATHS.SHARED.AUTH.TOKEN_ROTATE, {
+						AuthRequest.get(API_PATHS.SHARED.AUTH.TOKEN_ROTATE, {
 							access_token: localStorage.getItem(STORAGE_VARS.JWT),
 							refresh_token: localStorage.getItem(STORAGE_VARS.REFRESH),
 						}).then((res) => {
