@@ -1,0 +1,40 @@
+.notpermisstion_page {
+  height: 85vh;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  text-align: center;
+}
+
+.notpermisstion_logo {
+  width: 150px;
+  height: 200px;
+}
+
+#notpermisstion_text {
+  margin: 10px;
+  font-size: 14px;
+}
+
+#notpermisstion_header {
+  font-weight: 700;
+  margin: 10px;
+
+  font-size: 20px;
+}
+
+.notpermisstion_buttonwrapper {
+  display: -webkit-flex;
+  display: flex;
+  margin-block: 30px;
+  gap: 30px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px !important;
+  text-align: center;
+}
