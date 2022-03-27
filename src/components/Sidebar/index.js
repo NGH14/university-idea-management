@@ -52,8 +52,6 @@ export default function Sidebar(props) {
     setSelectedPage(pageText);
   }, [pathname]);
 
-
-
   const UserMenu = [
     {
       text: "Profile",
@@ -80,16 +78,18 @@ export default function Sidebar(props) {
   ];
   const setSelected = (path) => {
     switch (path) {
+      case URL_PATHS.HOME:
+        return "Homepage";
       case URL_PATHS.MANAGE_USER:
-        return 1;
+        return "User Management";
       case URL_PATHS.MANAGE_DEP:
-        return 2;
+        return "Department Management";
       case URL_PATHS.MANAGE_TAG:
-        return 3;
+        return "Tag Management";
       case URL_PATHS.MANAGE_SUB:
-        return 4;
+        return "Submission Management";
       default:
-        return 0;
+        return "";
     }
   };
   const itemsManagementList = [
@@ -106,30 +106,30 @@ export default function Sidebar(props) {
       roles: [ROLES.ADMIN],
       text: "Department",
       selectedText: "Department Management",
-        icon: <CorporateFareIcon />,
-        onClick: () => {
-            navigate(URL_PATHS.MANAGE_DEP);
-        },
+      icon: <CorporateFareIcon />,
+      onClick: () => {
+        navigate(URL_PATHS.MANAGE_DEP);
+      },
     },
     {
       roles: [ROLES.ADMIN, ROLES.MANAGER],
-        text: "Tag",
-        selectedText: "Tag Management",
+      text: "Tag",
+      selectedText: "Tag Management",
 
-        icon: <AutoStories />,
-        onClick: () => {
-            navigate(URL_PATHS.MANAGE_TAG);
-        }
-    },
-      {
-          roles: [ROLES.ADMIN, ROLES.MANAGER],
-          text: "Submission",
-          selectedText: "Submission Management",
-          icon: <AutoStories />,
-          onClick: () => {
-              navigate(URL_PATHS.MANAGE_SUB);
-          }
+      icon: <AutoStories />,
+      onClick: () => {
+        navigate(URL_PATHS.MANAGE_TAG);
       },
+    },
+    {
+      roles: [ROLES.ADMIN, ROLES.MANAGER],
+      text: "Submission",
+      selectedText: "Submission Management",
+      icon: <AutoStories />,
+      onClick: () => {
+        navigate(URL_PATHS.MANAGE_SUB);
+      },
+    },
   ];
 
   const handleCloseUserMenu = () => {
@@ -285,56 +285,56 @@ export default function Sidebar(props) {
           </Box>
         </Toolbar>
       </AppBar>
-    <Drawer variant="permanent" open={open} className="drawer_sidebar">
-      <DrawerHeader></DrawerHeader>
-      <List className="sidebar_customize">
-        {itemsList.map((item, index) => {
-          const { selectedText, text, icon, onClick } = item;
-          return (
-            <>
-              <ListItemButton
-                selected={selectedText === selectedPage}
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
-                button
-                key={text}
-                onClick={() => onClick(index)}
-              >
-                {icon && (
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
-                    }}
-                  >
-                    {icon}
-                  </ListItemIcon>
-                )}
-                <ListItemText
-                  disableTypography
-                  primary={text}
+      <Drawer variant="permanent" open={open} className="drawer_sidebar">
+        <DrawerHeader></DrawerHeader>
+        <List className="sidebar_customize">
+          {itemsList.map((item, index) => {
+            const { selectedText, text, icon, onClick } = item;
+            return (
+              <>
+                <ListItemButton
+                  selected={selectedText === selectedPage}
                   sx={{
-                    fontFamily: "Poppins, sans-serif",
-                    fontSize: "14px",
-                    fontWeight: "700",
-                    opacity: open ? 1 : 0,
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
                   }}
-                />
-              </ListItemButton>
-            </>
-          );
-        })}
+                  button
+                  key={text}
+                  onClick={() => onClick(index)}
+                >
+                  {icon && (
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {icon}
+                    </ListItemIcon>
+                  )}
+                  <ListItemText
+                    disableTypography
+                    primary={text}
+                    sx={{
+                      fontFamily: "Poppins, sans-serif",
+                      fontSize: "14px",
+                      fontWeight: "700",
+                      opacity: open ? 1 : 0,
+                    }}
+                  />
+                </ListItemButton>
+              </>
+            );
+          })}
 
-        {itemsManagementList.map((item, index) => {
-          const { selectedText, roles, text, icon, onClick } = item;
-          return (
-            <>
-              {(roles.length === 0 ||
-                roles.includes(state?.dataUser.role)) && (
+          {itemsManagementList.map((item, index) => {
+            const { selectedText, roles, text, icon, onClick } = item;
+            return (
+              <>
+                {(roles.length === 0 ||
+                  roles.includes(state?.dataUser.role)) && (
                   <ListItemButton
                     selected={selectedText === selectedPage}
                     sx={{
@@ -369,25 +369,26 @@ export default function Sidebar(props) {
                     />
                   </ListItemButton>
                 )}
-            </>
-          );
-        })}
-      </List>
-      <Divider />
+              </>
+            );
+          })}
+        </List>
+        <Divider />
 
-      <Divider />
-    </Drawer>
+        <Divider />
+      </Drawer>
 
-    <Box
-      component="main"
-      sx={{
-        flexGrow: 1,
-        p: 4,
-        fontFamily: "Poppins",
-      }}
-    >
-      <DrawerHeader />
-      {props.children}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 4,
+          fontFamily: "Poppins",
+        }}
+      >
+        <DrawerHeader />
+        {props.children}
+      </Box>
     </Box>
-  </Box>);
+  );
 }
