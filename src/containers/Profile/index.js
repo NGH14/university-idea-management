@@ -8,8 +8,6 @@ import { UserContext } from "../../context/AppContext";
 export default function UpdatePassword() {
 	const { state, setState } = useContext(UserContext);
 
-	console.log(state.dataUser);
-
 	return (
 		<div className="updatepassword-wrapper">
 			<UpdatePasswordForm></UpdatePasswordForm>

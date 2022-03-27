@@ -3,7 +3,7 @@ import moment from "moment";
 export const Column = [
 	{
 		field: "no",
-		headerName: "No.",
+		headerName: "#",
 		disableColumnMenu: true,
 		sortable: false,
 		type: "number",
@@ -17,7 +17,6 @@ export const Column = [
 	},
 	{
 		field: "full_name",
-		// headerAlign: "center",
 		headerName: "Full name",
 		disableColumnMenu: true,
 		sortable: true,
@@ -27,47 +26,25 @@ export const Column = [
 		flex: 1,
 	},
 	{
-		field: "date_of_birth",
-		// headerAlign: "center",
-		headerName: "Birthday",
-		disableColumnMenu: true,
-		sortable: false,
-		width: "auto",
-		minWidth: 200,
-		renderCell: (value) => {
-			return (
-				<div>
-					{value?.row?.date_of_birth
-						? moment(value?.row?.date_of_birth).format("DD/MM/YYYY hh:mm")
-						: null}
-				</div>
-			);
-		},
-		type: "date",
-		flex: 1,
-	},
-
-	{
 		field: "email",
 		headerName: "Email",
-		// headerAlign: "center",
-		disableColumnMenu: true,
-		sortable: true,
-		type: "email",
-		width: "auto",
-		minWidth: 200,
-		flex: 1,
-	},
-	{
-		field: "department",
-		headerName: "Department",
-		// headerAlign: "center",
 		disableColumnMenu: true,
 		sortable: true,
 		type: "string",
 		width: "auto",
 		minWidth: 200,
+		display: false,
 		flex: 1,
+	},
+	{
+		field: "department",
+		headerName: "Department",
+		align: "center",
+		headerAlign: "center",
+		disableColumnMenu: true,
+		type: "string",
+		sortable: true,
+		width: 150,
 	},
 	{
 		field: "role",
@@ -76,6 +53,25 @@ export const Column = [
 		headerAlign: "center",
 		disableColumnMenu: true,
 		sortable: true,
-		width: 120,
+		width: 150,
+	},
+	{
+		field: "date_of_birth",
+		headerName: "Birthday",
+		disableColumnMenu: true,
+		sortable: false,
+		align: "center",
+		headerAlign: "center",
+		width: 140,
+		renderCell: (value) => {
+			return (
+				<div>
+					{value?.row?.date_of_birth
+						? moment(value?.row?.date_of_birth).format("DD/MM/YYYY")
+						: null}
+				</div>
+			);
+		},
+		type: "date",
 	},
 ];

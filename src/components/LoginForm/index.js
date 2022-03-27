@@ -9,12 +9,12 @@ import { useFormik } from "formik";
 import React, { useContext, useState } from "react";
 import GoogleLogin from "react-google-login";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import * as yup from "yup";
 
 import { AnonRequest } from "../../common/AppUse";
 import { API_PATHS, AUTH, STORAGE_VARS, URL_PATHS } from "../../common/env";
 import { UserContext } from "../../context/AppContext";
-import Notification from "../Notification";
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -80,6 +80,12 @@ const validationSchema = yup.object({
 		.required("Password is required"),
 });
 
+const toastMessages = {
+	ERR_INVALID_LOGIN: "Email or password is invalid, Please try again!!",
+	ERR_INVALID_GOOGLE: "Google account is invalid, Please try again!!",
+	ERR_SERVER_ERROR: "Something went wrong, please try again!!",
+};
+
 // ─── MAIN ───────────────────────────────────────────────────────────────────────
 //
 const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
@@ -89,12 +95,6 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 	const [buttonState, setButtonState] = useState({
 		disable: false,
 		loading: false,
-	});
-
-	const [notification, setNotification] = useState({
-		visibleNotification: false,
-		titleNotification: "Email or password is invalid, Please try again",
-		typeNotification: "error", //error or success
 	});
 
 	const formik = useFormik({
@@ -109,66 +109,44 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 		},
 	});
 
-	const onCloseNotification = () => {
-		setNotification({ ...notification, visibleNotification: false });
-	};
-
 	const onLogin = async (value) => {
-		try {
-			const res = await AnonRequest.post(API_PATHS.SHARED.AUTH.LOGIN, value);
-			if (res?.data?.succeeded) {
-				localStorage.setItem(
-					STORAGE_VARS.JWT,
-					res?.data?.result?.access_token?.token,
-				);
-				localStorage.setItem(
-					STORAGE_VARS.REFRESH,
-					res?.data?.result?.refresh_token,
-				);
-
-				setButtonState({ ...buttonState, loading: false, disable: false });
+		await AnonRequest.post(API_PATHS.SHARED.AUTH.LOGIN, value)
+			.then((res) => {
+				localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token);
+				localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token);
 				setState({ ...state, isLogin: true });
+			})
+			.catch(() => toast.error(toastMessages.ERR_INVALID_LOGIN))
+			.finally(() => {
+				setButtonState({ ...buttonState, loading: false, disable: false });
 				navigate(returnUrl);
-			}
-		} catch {
-			setButtonState({ ...buttonState, loading: false, disable: false });
-			setNotification({ ...notification, visibleNotification: true });
-		}
+			});
 	};
 
 	const onGoogleLogin = async (googleResponse) => {
-		try {
-			const res = await AnonRequest.post(API_PATHS.SHARED.AUTH.EX_LOGIN, {
-				provider: "google",
-				id_token: googleResponse.tokenId,
-			});
-			if (res?.data?.succeeded) {
-				localStorage.setItem(
-					STORAGE_VARS.JWT,
-					res?.data?.result?.access_token?.token,
-				);
-				localStorage.setItem(
-					STORAGE_VARS.REFRESH,
-					res?.data?.result?.refresh_token,
-				);
-
-				setButtonState({ ...buttonState, loading: false, disable: false });
+		await AnonRequest.post(API_PATHS.SHARED.AUTH.EX_LOGIN, {
+			provider: "google",
+			id_token: googleResponse.tokenId,
+		})
+			.then((res) => {
+				localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token);
+				localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token);
 				setState({ ...state, isLogin: true });
+			})
+			.catch((err) => {
+				toast.error(toastMessages.ERR_INVALID_GOOGLE);
+			})
+			.finally(() => {
+				setButtonState({ ...buttonState, loading: false, disable: false });
 				navigate(returnUrl);
-			}
-		} catch {
-			setButtonState({ ...buttonState, loading: false, disable: false });
-			setNotification({ ...notification, visibleNotification: true });
-		}
+			});
 	};
 
 	return (
 		<div className="loginform">
 			<div className="loginform-textcontent">
 				<h1 className="loginform-heading">UIM Login</h1>
-				<span className="loginform-subtext">
-					Welcome to university idea management
-				</span>
+				<span className="loginform-subtext">Welcome to university idea management</span>
 			</div>
 			<GoogleLogin
 				buttonText="Google"
@@ -187,7 +165,7 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 				)}
 				clientId={AUTH.GOOGLE_CLIENT_ID}
 				onSuccess={(response) => onGoogleLogin(response)}
-				cookiePolicy={"single_host_origin"}
+				cookiePolicy="single_host_origin"
 			/>
 			<div className="loginform-loginby">
 				<span className="textwithline">or Sign in with Email</span>
@@ -234,14 +212,6 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 					Sign in
 				</ColorButton>
 			</form>
-			{notification.visibleNotification && (
-				<Notification
-					visible={notification.visibleNotification}
-					message={notification.titleNotification}
-					type={notification.typeNotification}
-					onClose={onCloseNotification}
-				/>
-			)}
 		</div>
 	);
 };

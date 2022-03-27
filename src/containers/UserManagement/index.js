@@ -20,22 +20,21 @@ import {
 import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
 import * as React from "react";
 import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import { AuthRequest } from "../../common/AppUse";
 import { API_PATHS } from "../../common/env";
 import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
-import Notification from "../../components/Notification";
 import { UserContext } from "../../context/AppContext";
 import ModalUserManagement from "./modal/ModalUserManagement";
 import { Column } from "./model/Column";
 
-function SortedDescendingIcon() {
-	return <ExpandMoreIcon className="icon" />;
-}
-
-function SortedAscendingIcon() {
-	return <ExpandLessIcon className="icon" />;
-}
+const toastMessages = {
+	SUC_USER_ADDED: "Create user successful!!",
+	SUC_USER_EDITED: "Update user successful!!",
+	SUC_USER_DEL: "Delete user successful!!",
+	ERR_SERVER_ERROR: "Something went wrong, please try again!!",
+};
 
 function UserManagement() {
 	const { state } = useContext(UserContext);
@@ -43,11 +42,8 @@ function UserManagement() {
 	const [rowId, setRowId] = useState(null);
 
 	const [status, setStatus] = useState({
-		visibleNotification: false,
-		titleNotification: "",
-		typeNotification: "error", //error or success
 		visibleModal: false,
-		action: "create", // create, update, detail
+		action: "create",
 	});
 
 	const [pagination, setPagination] = useState({
@@ -55,24 +51,14 @@ function UserManagement() {
 		page: 0,
 	});
 
-	const [actionUser, setActionUser] = useState(null);
 	const [tableToolBar, setTableToolBar] = useState(false);
 
 	useEffect(() => {
 		loadData();
 	}, [pagination]);
 
-	const openUserAction = Boolean(actionUser);
 	const handleOnClickToolBar = () => {
 		setTableToolBar((pre) => !pre);
-	};
-
-	const handleClick = (event) => {
-		setActionUser(event.currentTarget);
-	};
-
-	const handleClose = () => {
-		setActionUser(null);
 	};
 
 	const columns = [
@@ -91,12 +77,14 @@ function UserManagement() {
 					onClick={() => onOpenModal(params.id, "detail")}
 					showInMenu
 				/>,
+
 				<GridActionsCellItem
 					icon={<EditIcon color={"secondary"} />}
 					label="Update"
 					onClick={() => onOpenModal(params.id, "update")}
 					showInMenu
 				/>,
+
 				<GridActionsCellItem
 					icon={<DeleteIcon />}
 					disabled={state?.dataUser?.id === params.id ? true : false}
@@ -108,21 +96,17 @@ function UserManagement() {
 		},
 	];
 	const loadData = async () => {
-		await AuthRequest.get(`${API_PATHS.ADMIN.USER}?papesize=${pagination.pageSize}?page=${pagination.page + 1}` )
+		await AuthRequest.get(API_PATHS.ADMIN.USER, {
+			params: {
+				page: pagination.page + 1,
+				page_size: pagination.pageSize,
+			},
+		})
 			.then((res) => {
-				if (res?.data?.succeeded) {
-					setData(res?.data?.result?.rows);
-					setRowId(null);
-				}
+				setData(res?.data?.result?.rows);
+				setRowId(null);
 			})
-			.catch(() =>
-				setStatus({
-					...status,
-					visibleNotification: true,
-					titleNotification: "Something went wrong, Please Try Again ",
-					typeNotification: "error",
-				}),
-			);
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
 	const onOpenModal = (id, action) => {
@@ -133,81 +117,45 @@ function UserManagement() {
 	};
 
 	const onDelete = async (id) => {
-		handleClose();
-		try {
-			const res = await AuthRequest.delete(`user-management/user/${id}`);
-			if (res?.data?.succeeded) {
-				setStatus({
-					...status,
-					visibleNotification: true,
-					titleNotification: "Delete user success",
-					typeNotification: "success",
-				});
+		toast.promise(
+			await AuthRequest.delete(`${API_PATHS.ADMIN.USER}/${id}`).then(() => {
+				setStatus({ ...status, visibleModal: false });
 				loadData();
-			}
-		} catch {
-			setStatus({
-				...status,
-				visibleNotification: true,
-				titleNotification: "Delete user error",
-				typeNotification: "error",
-			});
-		}
+			}),
+			{
+				pending: "Deleting...",
+				success: toastMessages.SUC_USER_DEL,
+				error: toastMessages.ERR_SERVER_ERROR,
+			},
+		);
 	};
 
 	const onUpdate = async (value) => {
-		handleClose();
-		try {
-			const res = await AuthRequest.put(
-				`user-management/user/${value?.id}`,
-				value,
-			);
-			if (res?.data?.succeeded) {
-				setStatus({
-					...status,
-					visibleNotification: true,
-					titleNotification: "Delete user success",
-					typeNotification: "success",
-					visibleModal: false,
-				});
+		toast.promise(
+			await AuthRequest.put(`${API_PATHS.ADMIN.USER}/${value?.id}`, value).then(() => {
+				setStatus({ ...status, visibleModal: false });
 				loadData();
-			}
-		} catch {
-			setStatus({
-				...status,
-				visibleNotification: true,
-				titleNotification: "Delete user error",
-				typeNotification: "error",
-			});
-		}
+			}),
+			{
+				pending: "Updating...",
+				success: toastMessages.SUC_USER_EDITED,
+				error: toastMessages.ERR_SERVER_ERROR,
+			},
+		);
 	};
 
 	const onCreate = async (value) => {
-		try {
-			const res = await AuthRequest.post(`user-management`, value);
-			if (res?.data?.succeeded) {
-				setStatus({
-					...status,
-					visibleNotification: true,
-					titleNotification: "Create User Success",
-					typeNotification: "success",
-					visibleModal: false,
-				});
+		toast.promise(
+			await AuthRequest.post(API_PATHS.ADMIN.USER, value).then(() => {
+				setStatus({ ...status, visibleModal: false });
 				loadData();
-			}
-		} catch {
-			setStatus({
-				...status,
-				visibleModal: false,
-				visibleNotification: true,
-				titleNotification: "Delete user error",
-				typeNotification: "error",
-			});
-		}
-	};
-
-	const onCloseNotification = () => {
-		setStatus({ ...status, visibleNotification: false });
+			}),
+			{
+				pending: "Creating...",
+				success: toastMessages.SUC_USER_ADDED,
+				error: toastMessages.ERR_SERVER_ERROR,
+			},
+		);
 	};
 
 	const onCloseModal = () => {
@@ -222,9 +170,7 @@ function UserManagement() {
 
 	const CustomToolbar = () => {
 		return (
-			<GridToolbarContainer
-				sx={{ fontWeight: 700, display: "flex", justifyContent: "ceter" }}
-			>
+			<GridToolbarContainer sx={{ fontWeight: 700, display: "flex", justifyContent: "ceter" }}>
 				<GridToolbarColumnsButton />
 				<GridToolbarFilterButton />
 				<GridToolbarDensitySelector />
@@ -279,33 +225,26 @@ function UserManagement() {
 				<DataGridPro
 					components={{
 						NoRowsOverlay: CustomNoRowsOverlay,
-						ColumnSortedDescendingIcon: SortedDescendingIcon,
-						ColumnSortedAscendingIcon: SortedAscendingIcon,
+						ColumnSortedDescendingIcon: () => <ExpandMoreIcon className="icon" />,
+						ColumnSortedAscendingIcon: () => <ExpandLessIcon className="icon" />,
 						Toolbar: tableToolBar && CustomToolbar,
 					}}
-					rows={
-						data || []
-						// dataDemo
-					}
+					rows={data}
 					columns={columns}
+					columnVisibilityModel={{}}
 					pagination={true}
 					cell--textCenter
 					pageSize={pagination.pageSize}
 					page={pagination.page}
 					initialState={{ pinnedColumns: { right: ["actions"] } }}
-					onPageSizeChange={(pageSize) => {
-						onChangePagination(pageSize, pagination.page);
-					}}
-					onPageChange={(page) => {
-						onChangePagination(pagination.pageSize, page);
-					}}
+					onPageSizeChange={(pageSize) => onChangePagination(pageSize, pagination.page)}
+					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
 					style={{ minHeight: "600px" }}
 					rowsPerPageOptions={[10, 25, 50, 100]}
 				/>
 			</div>
 		);
 	};
-
 
 	return (
 		<div
@@ -318,12 +257,6 @@ function UserManagement() {
 		>
 			{renderTop()}
 			{renderContent()}
-			<Notification
-				visible={status.visibleNotification}
-				message={status.titleNotification}
-				type={status.typeNotification}
-				onClose={onCloseNotification}
-			/>
 			{status.visibleModal && renderModal()}
 		</div>
 	);

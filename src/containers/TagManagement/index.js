@@ -13,44 +13,47 @@ import MenuItem from "@mui/material/MenuItem";
 import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import { AuthRequest } from "../../common/AppUse";
+import { API_PATHS } from "../../common/env";
 import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
 import { StyledMenu } from "../../components/Custom/StyledMenu";
-import Notification from "../../components/Notification";
 import ModalTagManagement from "./modal/ModalTagManagement";
 import { Column } from "./model/Column";
 
-function SortedDescendingIcon() {
-	return <ExpandMoreIcon className="icon" />;
-}
-function SortedAscendingIcon() {
-	return <ExpandLessIcon className="icon" />;
-}
+const toastMessages = {
+	SUC_TAG_ADDED: "Create tag successful!!",
+	SUC_TAG_EDITED: "Update tag successful!!",
+	SUC_TAG_DEL: "Delete tag successful!!",
+	ERR_SERVER_ERROR: "Something went wrong, please try again!!",
+};
 
 function TagManagement() {
 	const [data, setData] = useState([]);
 	const [rowId, setRowId] = useState(null);
+
 	const [status, setStatus] = useState({
-		visibleNotification: false,
-		titleNotification: "",
-		typeNotification: "error", //error or success
 		visibleModal: false,
-		action: "create", // create, update, detail
+		action: "create",
 	});
+
 	const [pagination, setPagination] = useState({
-		pageSize: 10,
 		page: 0,
+		pageSize: 10,
 	});
+
 	useEffect(() => {
 		loadData();
 	}, [pagination]);
 
 	const [actionUser, setActionUser] = useState(null);
 	const openUserAction = Boolean(actionUser);
+
 	const handleClick = (event) => {
 		setActionUser(event.currentTarget);
 	};
+
 	const handleClose = () => {
 		setActionUser(null);
 	};
@@ -87,25 +90,19 @@ function TagManagement() {
 	];
 
 	const loadData = async () => {
-		try {
-			const res = await AuthRequest.get(
-				`tag-management?papesize=${pagination.pageSize}?page=${
-					pagination.page + 1
-				}`,
-			);
-			if (res?.data?.succeeded) {
+		await AuthRequest.get(API_PATHS.ADMIN.TAG, {
+			params: {
+				page: pagination.page + 1,
+				page_size: pagination.pageSize,
+			},
+		})
+			.then((res) => {
 				setData(res?.data?.result?.rows);
 				setRowId(null);
-			}
-		} catch {
-			setStatus({
-				...status,
-				visibleNotification: true,
-				titleNotification: "Something went wrong, Please Try Again ",
-				typeNotification: "error",
-			});
-		}
+			})
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
+
 	const renderActionButton = (id) => {
 		return (
 			<div>
@@ -139,6 +136,7 @@ function TagManagement() {
 			</div>
 		);
 	};
+
 	const onOpenModal = (id, action) => {
 		if (id) {
 			setRowId(id);
@@ -148,81 +146,33 @@ function TagManagement() {
 
 	const onDelete = async (id) => {
 		handleClose();
-		try {
-			const res = await AuthRequest.delete(`tag-management/tag/${id}`);
-			if (res?.data?.succeeded) {
-				setStatus({
-					...status,
-					visibleNotification: true,
-					titleNotification: "Delete tag success",
-					typeNotification: "success",
-				});
+		await AuthRequest.delete(`${API_PATHS.ADMIN.TAG}/${id}`)
+			.then(() => {
+				toast.success(toastMessages.SUC_TAG_DEL);
 				loadData();
-			}
-		} catch {
-			setStatus({
-				...status,
-				visibleNotification: true,
-				titleNotification: "Delete tag error",
-				typeNotification: "error",
-			});
-		}
-	};
-	const onUpdate = async (value) => {
-		handleClose();
-		try {
-			const res = await AuthRequest.put(
-				`tag-management/tag/${value?.id}`,
-				value,
-			);
-			if (res?.data?.succeeded) {
-				setStatus({
-					...status,
-					action: "create",
-					visibleNotification: true,
-					titleNotification: "Update tag success",
-					typeNotification: "success",
-					visibleModal: false,
-				});
-				loadData();
-			}
-		} catch {
-			setStatus({
-				...status,
-				visibleNotification: true,
-				titleNotification: "Update tag error",
-				typeNotification: "error",
-			});
-		}
-	};
-	const onCreate = async (value) => {
-		try {
-			const res = await AuthRequest.post(`tag-management`, value);
-			if (res?.data?.succeeded) {
-				setStatus({
-					...status,
-					action: "create",
-					visibleModal: false,
-					visibleNotification: true,
-					titleNotification: "Create tag Success",
-					typeNotification: "success",
-				});
-				await loadData();
-			}
-		} catch {
-			setStatus({
-				...status,
-				action: "create",
-				visibleNotification: true,
-				titleNotification: "Create tag error",
-				typeNotification: "error",
-			});
-		}
+			})
+			.catch(() => toast.success(toastMessages.ERR_SERVER_ERROR));
 	};
 
-	const onCloseNotification = () => {
-		setStatus({ ...status, visibleNotification: false });
+	const onUpdate = async (value) => {
+		handleClose();
+		await AuthRequest.put(`${API_PATHS.ADMIN.TAG}/${value?.id}`, value)
+			.then(() => {
+				toast.success(toastMessages.SUC_TAG_EDITED);
+				loadData();
+			})
+			.catch(() => toast.success(toastMessages.ERR_SERVER_ERROR));
 	};
+
+	const onCreate = async (value) => {
+		await AuthRequest.post(API_PATHS.ADMIN.TAG, value)
+			.then(() => {
+				toast.success(toastMessages.SUC_TAG_ADDED);
+				loadData();
+			})
+			.catch(() => toast.success(toastMessages.ERR_SERVER_ERROR));
+	};
+
 	const onCloseModal = () => {
 		setStatus({
 			...status,
@@ -243,9 +193,11 @@ function TagManagement() {
 			/>
 		);
 	};
+
 	const onChangePagination = (pageSize, page) => {
 		setPagination({ page, pageSize });
 	};
+
 	const renderTop = () => {
 		return (
 			<div className="managementuser_title">
@@ -267,8 +219,8 @@ function TagManagement() {
 				<DataGridPro
 					components={{
 						NoRowsOverlay: CustomNoRowsOverlay,
-						ColumnSortedDescendingIcon: SortedDescendingIcon,
-						ColumnSortedAscendingIcon: SortedAscendingIcon,
+						ColumnSortedDescendingIcon: () => <ExpandMoreIcon className="icon" />,
+						ColumnSortedAscendingIcon: () => <ExpandLessIcon className="icon" />,
 					}}
 					rows={data || []} // dataDemo
 					columns={columns}
@@ -302,12 +254,6 @@ function TagManagement() {
 		>
 			{renderTop()}
 			{renderContent()}
-			<Notification
-				visible={status.visibleNotification}
-				message={status.titleNotification}
-				type={status.typeNotification}
-				onClose={onCloseNotification}
-			/>
 			{status.visibleModal && renderModal()}
 		</div>
 	);

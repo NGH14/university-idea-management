@@ -14,8 +14,16 @@ import Select from "@mui/material/Select";
 import { styled } from "@mui/material/styles";
 import enLocale from "date-fns/locale/en-GB";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import * as yup from "yup";
+
+import { AuthRequest } from "../../../common/AppUse";
+import { API_PATHS } from "../../../common/env";
+
+const toastMessages = {
+	ERR_SERVER_ERROR: "Something went wrong, please try again!!",
+};
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -65,21 +73,43 @@ const validationSchema = yup.object({
 	full_name: yup.string().required("Full Name is required"),
 	email: yup.string().email("Email is invalid").required("Email is required"),
 	role: yup.string().required("Role is required"),
-	department: yup.string().required("Department is required"),
+	department: yup.string().nullable(),
 	date_of_birth: yup.date("Date invalid").nullable(),
-	user_name: yup.string().required("User Name is required"),
 });
 
 function EditUserForm(props) {
 	const { onClose, onUpdate, initialValue } = props;
-	console.log(initialValue, 987);
+	const [depOptions, setDepartments] = useState([]);
+	const [roleOptions, setRoles] = useState([]);
+
 	const formik = useFormik({
-		initialValues: initialValue || [],
+		initialValues: initialValue || {},
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
 			onUpdate(values);
 		},
 	});
+
+	useEffect(() => {
+		if (formik?.values === {}) {
+			toast.error(toastMessages.ERR_SERVER_ERROR);
+		}
+
+		getDepartments();
+		getRoles();
+	}, []);
+
+	const getDepartments = async () => {
+		await AuthRequest.get(API_PATHS.ADMIN.DEP)
+			.then((res) => setDepartments(res?.data?.result))
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+	};
+
+	const getRoles = async () => {
+		await AuthRequest.get(API_PATHS.SHARED.ROLE)
+			.then((res) => setRoles(res?.data?.result))
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+	};
 
 	return (
 		<div className="createuserform">
@@ -105,9 +135,7 @@ function EditUserForm(props) {
 							value={formik.values.full_name}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={
-								formik.touched.full_name && Boolean(formik.errors.full_name)
-							}
+							error={formik.touched.full_name && Boolean(formik.errors.full_name)}
 							helperText={formik.touched.full_name && formik.errors.full_name}
 						/>
 					</div>
@@ -141,7 +169,8 @@ function EditUserForm(props) {
 							labelId="department"
 							id="department"
 							name="department"
-							value={formik.values.department}
+							value={formik.values.department ?? ""}
+							defaultValue=""
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							renderValue={
@@ -149,18 +178,19 @@ function EditUserForm(props) {
 									? undefined
 									: () => (
 											<placeholder>
-												<em style={{ opacity: 0.6, fontSize: 14 }}>
-													-- department --
-												</em>
+												<em style={{ opacity: 0.6, fontSize: 14 }}>-- department --"</em>
 											</placeholder>
 									  )
 							}
-							error={
-								formik.touched.department && Boolean(formik.errors.department)
-							}
+							error={formik.touched.department && Boolean(formik.errors.department)}
 						>
-							<MenuItem value={"Admin"}>Admin</MenuItem>
-							<MenuItem value={"HR"}>HR</MenuItem>
+							<MenuItem value="" disabled={true}>
+								none
+							</MenuItem>
+
+							{depOptions.map((dep) => (
+								<MenuItem value={dep?.name}>{dep?.name?.toUpperCase()}</MenuItem>
+							))}
 						</Select>
 						<FormHelperText error>
 							{formik.touched.department && formik.errors.department}
@@ -175,10 +205,11 @@ function EditUserForm(props) {
 							select
 							fullWidth
 							displayEmpty
+							defaultValue=""
 							labelId="role"
 							id="role"
 							name="role"
-							value={formik.values.role}
+							value={formik.values.role ?? ""}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							renderValue={
@@ -186,29 +217,25 @@ function EditUserForm(props) {
 									? undefined
 									: () => (
 											<placeholder>
-												<em style={{ opacity: 0.6, fontSize: 14 }}>
-													-- role --
-												</em>
+												<em style={{ opacity: 0.6, fontSize: 14 }}>-- role --</em>
 											</placeholder>
 									  )
 							}
 							error={formik.touched.role && Boolean(formik.errors.role)}
-							placeholder="E.g., vuhuua@gmail.com"
 						>
-							<MenuItem value={"admin"}>Admin</MenuItem>
-							<MenuItem value={"HR"}>HR</MenuItem>
+							<MenuItem value="" disabled={true}>
+								none
+							</MenuItem>
+							{roleOptions.map((role) => (
+								<MenuItem value={role.name}>{role.name.toUpperCase()}</MenuItem>
+							))}
 						</Select>
-						<FormHelperText error>
-							{formik.touched.role && formik.errors.role}
-						</FormHelperText>
+						<FormHelperText error>{formik.touched.role && formik.errors.role}</FormHelperText>
 					</div>
 					<div className="form_content">
 						<InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
 
-						<LocalizationProvider
-							dateAdapter={AdapterDateFns}
-							locale={enLocale}
-						>
+						<LocalizationProvider dateAdapter={AdapterDateFns} locale={enLocale}>
 							<DatePicker
 								fullWidth
 								disableFuture
@@ -219,12 +246,8 @@ function EditUserForm(props) {
 									formik.setFieldValue("date_of_birth", val);
 								}}
 								value={formik.values.date_of_birth}
-								error={
-									formik.errors.date_of_birth && formik.touched.date_of_birth
-								}
-								helperText={
-									formik.errors.date_of_birth && formik.touched.date_of_birth
-								}
+								error={formik.errors.date_of_birth && formik.touched.date_of_birth}
+								helperText={formik.errors.date_of_birth && formik.touched.date_of_birth}
 								renderInput={(params) => <TextField fullWidth {...params} />}
 							/>
 						</LocalizationProvider>

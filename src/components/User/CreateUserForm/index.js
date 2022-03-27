@@ -14,8 +14,12 @@ import Select from "@mui/material/Select";
 import { styled } from "@mui/material/styles";
 import enLocale from "date-fns/locale/en-GB";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import * as yup from "yup";
+
+import { AuthRequest } from "../../../common/AppUse";
+import { API_PATHS } from "../../../common/env";
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -61,34 +65,32 @@ const ColorButton = styled(Button)(() => ({
 	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
 }));
 
-const initialValues = {
-	full_name: "",
-	department: "",
-	email: "",
-	role: "",
-	password: "",
-	confirm_password: "",
-	date_of_birth: null,
-};
-
 const validationSchema = yup.object({
 	full_name: yup.string().required("Full Name is required"),
 	email: yup.string().email("Email is invalid").required("Email is required"),
 	role: yup.string().required("Role is required"),
 	department: yup.string().required("Department is required"),
-	password: yup
-		.string()
-		.min(4, "Password should be of minimum 4 characters length")
-		.required("Password is required"),
-	confirm_password: yup
-		.string()
-		.oneOf([yup.ref("password"), null], "Passwords must match")
-		.required("Password is required"),
 	date_of_birth: yup.date("Date invalid").nullable(),
 });
 
+const toastMessages = {
+	ERR_UPPASS_FAILED: "Failed to update password!!",
+	ERR_SERVER_ERROR: "Something went wrong, please try again!!",
+};
+
+const initialValues = {
+	email: "",
+	full_name: "",
+	role: "",
+	department: "",
+	date_of_birth: null,
+};
+
 function CreateUserForm(prop) {
 	const { onClose, onCreate } = prop;
+	const [depOptions, setDepartments] = useState([]);
+	const [roleOptions, setRoles] = useState([]);
+
 	const formik = useFormik({
 		initialValues: initialValues,
 		validationSchema: validationSchema,
@@ -96,6 +98,23 @@ function CreateUserForm(prop) {
 			onCreate(values);
 		},
 	});
+
+	useEffect(() => {
+		getDepartments();
+		getRoles();
+	}, []);
+
+	const getDepartments = async () => {
+		await AuthRequest.get(API_PATHS.ADMIN.DEP)
+			.then((res) => setDepartments(res?.data?.result))
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+	};
+
+	const getRoles = async () => {
+		await AuthRequest.get(API_PATHS.SHARED.ROLE)
+			.then((res) => setRoles(res?.data?.result))
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+	};
 
 	return (
 		<div className="createuserform">
@@ -121,9 +140,7 @@ function CreateUserForm(prop) {
 							value={formik.values.full_name}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={
-								formik.touched.full_name && Boolean(formik.errors.full_name)
-							}
+							error={formik.touched.full_name && Boolean(formik.errors.full_name)}
 							helperText={formik.touched.full_name && formik.errors.full_name}
 						/>
 					</div>
@@ -148,48 +165,6 @@ function CreateUserForm(prop) {
 
 				<div className="form_group">
 					<div className="form_content">
-						<InputLabel required htmlFor="password">
-							Password
-						</InputLabel>
-						<CssTextField
-							fullWidth
-							margin="normal"
-							id="password"
-							name="password"
-							type="password"
-							value={formik.values.password}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							error={formik.touched.password && Boolean(formik.errors.password)}
-							helperText={formik.touched.password && formik.errors.password}
-						/>
-					</div>
-					<div className="form_content">
-						<InputLabel required htmlFor="confirm_password">
-							Confirm Password
-						</InputLabel>
-						<CssTextField
-							fullWidth
-							margin="normal"
-							type="password"
-							name="confirm_password"
-							value={formik.values.confirm_password}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							error={
-								formik.touched.confirm_password &&
-								Boolean(formik.errors.confirm_password)
-							}
-							helperText={
-								formik.touched.confirm_password &&
-								formik.errors.confirm_password
-							}
-						/>
-					</div>
-				</div>
-
-				<div className="form_group">
-					<div className="form_content">
 						<InputLabel required htmlFor="department">
 							Department
 						</InputLabel>
@@ -208,18 +183,15 @@ function CreateUserForm(prop) {
 									? undefined
 									: () => (
 											<placeholder>
-												<em style={{ opacity: 0.6, fontSize: 14 }}>
-													-- department --
-												</em>
+												<em style={{ opacity: 0.6, fontSize: 14 }}>-- department --</em>
 											</placeholder>
 									  )
 							}
-							error={
-								formik.touched.department && Boolean(formik.errors.department)
-							}
+							error={formik.touched.department && Boolean(formik.errors.department)}
 						>
-							<MenuItem value={"Admin"}>Admin</MenuItem>
-							<MenuItem value={"HR"}>HR</MenuItem>
+							{depOptions.map((dep) => (
+								<MenuItem value={dep.name}>{dep.name.toUpperCase()}</MenuItem>
+							))}
 						</Select>
 						<FormHelperText error>
 							{formik.touched.department && formik.errors.department}
@@ -245,29 +217,22 @@ function CreateUserForm(prop) {
 									? undefined
 									: () => (
 											<placeholder>
-												<em style={{ opacity: 0.6, fontSize: 14 }}>
-													-- role --
-												</em>
+												<em style={{ opacity: 0.6, fontSize: 14 }}>-- role --</em>
 											</placeholder>
 									  )
 							}
 							error={formik.touched.role && Boolean(formik.errors.role)}
-							placeholder="E.g., vuhuua@gmail.com"
 						>
-							<MenuItem value={"Admin"}>Admin</MenuItem>
-							<MenuItem value={"HR"}>HR</MenuItem>
+							{roleOptions.map((role) => (
+								<MenuItem value={role.name}>{role.name.toUpperCase()}</MenuItem>
+							))}
 						</Select>
-						<FormHelperText error>
-							{formik.touched.role && formik.errors.role}
-						</FormHelperText>
+						<FormHelperText error>{formik.touched.role && formik.errors.role}</FormHelperText>
 					</div>
 					<div className="form_content">
 						<InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
 
-						<LocalizationProvider
-							dateAdapter={AdapterDateFns}
-							locale={enLocale}
-						>
+						<LocalizationProvider dateAdapter={AdapterDateFns} locale={enLocale}>
 							<DatePicker
 								fullWidth
 								disableFuture
@@ -278,12 +243,8 @@ function CreateUserForm(prop) {
 									formik.setFieldValue("date_of_birth", val);
 								}}
 								value={formik.values.date_of_birth}
-								error={
-									formik.errors.date_of_birth && formik.touched.date_of_birth
-								}
-								helperText={
-									formik.errors.date_of_birth && formik.touched.date_of_birth
-								}
+								error={formik.errors.date_of_birth && formik.touched.date_of_birth}
+								helperText={formik.errors.date_of_birth && formik.touched.date_of_birth}
 								renderInput={(params) => <TextField fullWidth {...params} />}
 							/>
 						</LocalizationProvider>

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { URL_PATHS } from "../../common/env";
@@ -8,9 +8,11 @@ export default function PublicRoute({ children }) {
 	const navigate = useNavigate();
 	const { state } = useContext(UserContext);
 
-	if (state?.isLogin) {
-		navigate(URL_PATHS.HOME);
-	}
+	useEffect(() => {
+		if (state?.isLogin) {
+			navigate(URL_PATHS.HOME);
+		}
+	});
 
 	return children;
 }

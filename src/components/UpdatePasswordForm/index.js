@@ -6,11 +6,11 @@ import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import * as yup from "yup";
 
 import { AuthRequest } from "../../common/AppUse";
 import { API_PATHS, URL_PATHS } from "../../common/env";
-import Notification from "../Notification";
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -95,43 +95,24 @@ const UpdatePasswordForm = () => {
 		loading: false,
 	});
 
-	const [notification, setNotification] = useState({
-		visibleNotification: false,
-		titleNotification: "Something went wrong!",
-		typeNotification: "error",
-	});
-
 	const formik = useFormik({
 		initialValues: initialValues,
 		validationSchema: validationSchema,
-		onSubmit: (values) => {
-			onSubmit(values);
+		onSubmit: async (values) => {
+			await AuthRequest.post(API_PATHS.SHARED.AUTH.UPDATE_PWD, values)
+				.catch(() => toast.error("Failed to update password!!"))
+				.finally(() => {
+					setButtonState({ ...buttonState, loading: false, disable: false });
+					navigate(URL_PATHS.HOME);
+				});
 		},
 	});
-
-	const onCloseNotification = () => {
-		setNotification({ ...notification, visibleNotification: false });
-	};
-
-	const onSubmit = async (value) => {
-		await AuthRequest.post(API_PATHS.SHARED.AUTH.UPDATE_PWD, value).then(
-			(res) => {
-				if (res?.data?.succeeded) {
-					setButtonState({ ...buttonState, loading: false, disable: false });
-					setNotification({ ...notification, visibleNotification: true });
-					navigate(URL_PATHS.HOME);
-				}
-			},
-		);
-	};
 
 	return (
 		<div className="updatepwdform">
 			<div className="updatepwdform-textcontent">
 				<h1 className="updatepwdform-heading">UIM</h1>
-				<span className="updatepwdform-subtext">
-					Please Update Your Password
-				</span>
+				<span className="updatepwdform-subtext">Please Update Your Password</span>
 			</div>
 
 			<form onSubmit={formik.handleSubmit}>
@@ -145,9 +126,7 @@ const UpdatePasswordForm = () => {
 					value={formik.values.old_password}
 					onChange={formik.handleChange}
 					onBlur={formik.handleBlur}
-					error={
-						formik.touched.old_password && Boolean(formik.errors.old_password)
-					}
+					error={formik.touched.old_password && Boolean(formik.errors.old_password)}
 					helperText={formik.touched.old_password && formik.errors.old_password}
 				/>
 				<CssTextField
@@ -160,9 +139,7 @@ const UpdatePasswordForm = () => {
 					value={formik.values.new_password}
 					onChange={formik.handleChange}
 					onBlur={formik.handleBlur}
-					error={
-						formik.touched.new_password && Boolean(formik.errors.new_password)
-					}
+					error={formik.touched.new_password && Boolean(formik.errors.new_password)}
 					helperText={formik.touched.new_password && formik.errors.new_password}
 				/>
 				<CssTextField
@@ -176,12 +153,10 @@ const UpdatePasswordForm = () => {
 					onChange={formik.handleChange}
 					onBlur={formik.handleBlur}
 					error={
-						formik.touched.confirm_new_password &&
-						Boolean(formik.errors.confirm_new_password)
+						formik.touched.confirm_new_password && Boolean(formik.errors.confirm_new_password)
 					}
 					helperText={
-						formik.touched.confirm_new_password &&
-						formik.errors.confirm_new_password
+						formik.touched.confirm_new_password && formik.errors.confirm_new_password
 					}
 				/>
 
@@ -196,14 +171,6 @@ const UpdatePasswordForm = () => {
 					Sign in
 				</ColorButton>
 			</form>
-			{notification.visibleNotification && (
-				<Notification
-					visible={notification.visibleNotification}
-					message={notification.titleNotification}
-					type={notification.typeNotification}
-					onClose={onCloseNotification}
-				/>
-			)}
 		</div>
 	);
 };

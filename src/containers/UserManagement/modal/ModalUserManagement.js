@@ -3,8 +3,10 @@ import Box from "@mui/material/Box";
 import _ from "lodash";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import { AuthRequest } from "../../../common/AppUse";
+import { API_PATHS } from "../../../common/env";
 import CreateUserForm from "../../../components/User/CreateUserForm";
 import DetailUserForm from "../../../components/User/DetailUserForm";
 import EditUserForm from "../../../components/User/EditUserForm";
@@ -25,22 +27,27 @@ const style = {
 		width: "100%",
 	},
 };
+
+const toastMessages = {
+	ERR_SERVER_ERROR: "Something went wrong, please try again!!",
+};
+
 const ModalUserManagement = (props) => {
 	const { visible, onClose, onCreate, onUpdate, action, rowId } = props;
 	const [initialValue, setInitialValue] = useState([]);
+
 	useEffect(() => {
 		if (action !== "create") {
 			loadData();
 		}
 	}, [action]);
+
 	const loadData = async () => {
-		try {
-			const res = await AuthRequest.get(`user-management/user/${rowId}`);
-			if (res?.data?.succeeded) {
-				setInitialValue(res?.data?.result);
-			}
-		} catch {}
+		await AuthRequest.get(`${API_PATHS.ADMIN.USER}/${rowId}`)
+			.then((res) => setInitialValue(res?.data?.result))
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
+
 	const renderForm = () => {
 		switch (action) {
 			case "create":
@@ -54,17 +61,16 @@ const ModalUserManagement = (props) => {
 					/>
 				);
 			case "detail":
-				return (
-					<DetailUserForm
-						onClose={() => onClose()}
-						initialValue={initialValue}
-					/>
-				);
+				return <DetailUserForm onClose={() => onClose()} initialValue={initialValue} />;
+			default:
+				return;
 		}
 	};
+
 	if (action !== "create" && _.isEmpty(initialValue)) {
 		return <CircularProgress size={100} />;
 	}
+
 	return (
 		<Modal
 			open={visible}

@@ -18,7 +18,6 @@ export const API_PATHS = {
 		IDEA: "idea",
 		USER: "user",
 		SUB: "submission",
-		DEP: "department",
 	},
 	ADMIN: {
 		TAG: "tag-management",
