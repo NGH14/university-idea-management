@@ -6,7 +6,7 @@ import CorporateFareIcon from "@mui/icons-material/CorporateFare";
 import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
-
+import Collapse from "@mui/material/Collapse";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 
@@ -42,7 +42,7 @@ export default function Sidebar(props) {
   const [managementPage, setManagementPage] = React.useState(true);
 
   const handleClickManagement = () => {
-    setManagementPage(!open);
+    setManagementPage(!managementPage);
   };
 
   const { pathname } = useLocation();
@@ -328,50 +328,56 @@ export default function Sidebar(props) {
               </>
             );
           })}
-
-          {itemsManagementList.map((item, index) => {
-            const { selectedText, roles, text, icon, onClick } = item;
-            return (
-              <>
-                {(roles.length === 0 ||
-                  roles.includes(state?.dataUser.role)) && (
-                  <ListItemButton
-                    selected={selectedText === selectedPage}
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? "initial" : "center",
-                      px: 2.5,
-                    }}
-                    button
-                    key={text}
-                    onClick={() => onClick(index)}
-                  >
-                    {icon && (
-                      <ListItemIcon
-                        sx={{
-                          minWidth: 0,
-                          mr: open ? 3 : "auto",
-                          justifyContent: "center",
-                        }}
-                      >
-                        {icon}
-                      </ListItemIcon>
-                    )}
-                    <ListItemText
-                      disableTypography
-                      primary={text}
+          <ListItemButton onClick={handleClickManagement}>
+            <ListItemIcon>{/* <InboxIcon /> */}</ListItemIcon>
+            <ListItemText primary="Inbox" />
+            {/* {open ? <ExpandLess /> : <ExpandMore />} */}
+          </ListItemButton>
+          <Collapse in={managementPage} timeout="auto" unmountOnExit>
+            {itemsManagementList.map((item, index) => {
+              const { selectedText, roles, text, icon, onClick } = item;
+              return (
+                <>
+                  {(roles.length === 0 ||
+                    roles.includes(state?.dataUser.role)) && (
+                    <ListItemButton
+                      selected={selectedText === selectedPage}
                       sx={{
-                        fontFamily: "Poppins, sans-serif",
-                        fontSize: "14px",
-                        fontWeight: "700",
-                        opacity: open ? 1 : 0,
+                        pl: 4,
+                        minHeight: 48,
+                        justifyContent: open ? "initial" : "center",
                       }}
-                    />
-                  </ListItemButton>
-                )}
-              </>
-            );
-          })}
+                      button
+                      key={text}
+                      onClick={() => onClick(index)}
+                    >
+                      {icon && (
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: open ? 3 : "auto",
+                            justifyContent: "center",
+                          }}
+                        >
+                          {icon}
+                        </ListItemIcon>
+                      )}
+                      <ListItemText
+                        disableTypography
+                        primary={text}
+                        sx={{
+                          fontFamily: "Poppins, sans-serif",
+                          fontSize: "14px",
+                          fontWeight: "700",
+                          opacity: open ? 1 : 0,
+                        }}
+                      />
+                    </ListItemButton>
+                  )}
+                </>
+              );
+            })}
+          </Collapse>
         </List>
         <Divider />
 
