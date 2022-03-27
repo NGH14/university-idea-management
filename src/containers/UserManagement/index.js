@@ -107,14 +107,8 @@ function UserManagement() {
 			],
 		},
 	];
-
 	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.USER, {
-			params: {
-				page: pagination.page,
-				page_size: pagination.pageSize,
-			},
-		})
+		await AuthRequest.get(`${API_PATHS.ADMIN.USER}?papesize=${pagination.pageSize}?page=${pagination.page + 1}` )
 			.then((res) => {
 				if (res?.data?.succeeded) {
 					setData(res?.data?.result?.rows);
@@ -290,7 +284,7 @@ function UserManagement() {
 						Toolbar: tableToolBar && CustomToolbar,
 					}}
 					rows={
-						data
+						data || []
 						// dataDemo
 					}
 					columns={columns}
@@ -311,6 +305,7 @@ function UserManagement() {
 			</div>
 		);
 	};
+
 
 	return (
 		<div

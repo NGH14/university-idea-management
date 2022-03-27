@@ -89,7 +89,7 @@ function TagManagement() {
 	const loadData = async () => {
 		try {
 			const res = await AuthRequest.get(
-				`tag-management/tags?papesize=${pagination.pageSize}?page=${
+				`tag-management?papesize=${pagination.pageSize}?page=${
 					pagination.page + 1
 				}`,
 			);
@@ -270,7 +270,7 @@ function TagManagement() {
 						ColumnSortedDescendingIcon: SortedDescendingIcon,
 						ColumnSortedAscendingIcon: SortedAscendingIcon,
 					}}
-					rows={data} // dataDemo
+					rows={data || []} // dataDemo
 					columns={columns}
 					pagination={true}
 					cell--textCenter

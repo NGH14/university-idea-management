@@ -36,8 +36,10 @@ export const URL_PATHS = {
 	LOGIN: "/login",
 	SIGNIN: "/signin",
 	MANAGE_USER: "/user-management",
+	MANAGE_SUB_ID: "/submission-management/:id",
 	MANAGE_DEP: "/department-management",
 	MANAGE_TAG: "/tag-management",
+	MANAGE_SUB: "/submission-management",
 	PROFILE: "/profile",
 };
 

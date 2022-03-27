@@ -88,10 +88,7 @@ function DepartmentManagement() {
 
 	const loadData = async () => {
 		try {
-			const res = await AuthRequest.get(
-				`department-management/departments?papesize=${
-					pagination.pageSize
-				}?page=${pagination.page + 1}`,
+			const res = await AuthRequest.get(`department-management?papesize=${pagination.pageSize}?page=${pagination.page + 1}`,
 			);
 			if (res?.data?.succeeded) {
 				setData(res?.data?.result?.rows);
@@ -272,7 +269,7 @@ function DepartmentManagement() {
 						ColumnSortedDescendingIcon: SortedDescendingIcon,
 						ColumnSortedAscendingIcon: SortedAscendingIcon,
 					}}
-					rows={data} // dataDemo
+					rows={data || []} // dataDemo
 					columns={columns}
 					pagination={true}
 					cell--textCenter

@@ -93,6 +93,25 @@ export default function Sidebar(props) {
     },
   ];
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+  const setSelected = (path) => {
+    switch (path) {
+      case URL_PATHS.MANAGE_USER:
+        return 1;
+      case URL_PATHS.MANAGE_DEP:
+        return 2;
+      case URL_PATHS.MANAGE_TAG:
+        return 3;
+      case URL_PATHS.MANAGE_SUB:
+        return 4;
+      default:
+        return 0;
+    }
+  };
+=======
+>>>>>>> Stashed changes
   const itemsManagementList = [
     {
       roles: [ROLES.ADMIN],
@@ -107,6 +126,7 @@ export default function Sidebar(props) {
       roles: [ROLES.ADMIN],
       text: "Department",
       selectedText: "Department Management",
+<<<<<<< Updated upstream
 
       icon: <CorporateFareIcon />,
       onClick: () => {
@@ -125,12 +145,73 @@ export default function Sidebar(props) {
     },
   ];
 
+=======
+>>>>>>> d16138c7c780cca6e240399df7d303ec31a3e4e5
+
+  icon: <CorporateFareIcon />,
+    onClick: () => {
+      navigate(URL_PATHS.MANAGE_DEP);
+    },
+    },
+{
+  roles: [ROLES.ADMIN, ROLES.MANAGER],
+    text: "Tag",
+      selectedText: "Tag Management",
+
+        icon: <AutoStories />,
+          onClick: () => {
+            navigate(URL_PATHS.MANAGE_TAG);
+          },
+    },
+  ];
+
+<<<<<<< HEAD
+onClick: () => {
+  navigate(URL_PATHS.HOME);
+},
+		},
+{
+  roles: [ROLES.ADMIN],
+    text: "User Management",
+      icon: <AssignmentIndIcon />,
+        onClick: () => {
+          navigate(URL_PATHS.MANAGE_USER);
+        },
+		},
+{
+  roles: [ROLES.ADMIN],
+    text: "Department Management",
+      icon: <CorporateFareIcon />,
+        onClick: () => {
+          navigate(URL_PATHS.MANAGE_DEP);
+        },
+		},
+{
+  roles: [ROLES.ADMIN, ROLES.MANAGER],
+    text: "Tag Management",
+      icon: <AutoStories />,
+        onClick: () => {
+          navigate(URL_PATHS.MANAGE_TAG);
+        },
+		},
+{
+  roles: [ROLES.ADMIN, ROLES.MANAGER],
+    text: "Submission Management",
+      icon: <AutoStories />,
+        onClick: () => {
+          navigate(URL_PATHS.MANAGE_SUB);
+        },
+		},
+	];
+=======
+>>>>>>> Stashed changes
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
+<<<<<<< Updated upstream
 
   const onLogout = () => {
     localStorage.clear();
@@ -290,10 +371,137 @@ export default function Sidebar(props) {
                   sx={{
                     minHeight: 48,
                     justifyContent: open ? "initial" : "center",
+=======
+>>>>>>> d16138c7c780cca6e240399df7d303ec31a3e4e5
+
+const onLogout = () => {
+  localStorage.clear();
+  setState({ ...state, isLogin: false, loading: false, dataUser: {} });
+  navigate(URL_PATHS.LOGIN);
+};
+
+const handleDrawerCick = () => {
+  setOpen((pre) => !pre);
+};
+
+const nagivateHomepage = () => {
+  navigate(URL_PATHS.HOME);
+};
+
+return (
+  <Box sx={{ display: "flex" }}>
+    <CssBaseline />
+
+    <AppBar
+      className="app_header"
+      position="fixed"
+      open={open}
+      color="inherit"
+      style={{
+        boxShadow: "none",
+      }}
+    >
+      <CssBaseline />
+
+      <Toolbar
+        sx={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottom: "0.1px solid #e2e0e0",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerCick}
+            edge="start"
+          >
+            <MenuIcon />
+          </IconButton>
+          <img
+            onClick={() => nagivateHomepage()}
+            className="drawer_logo"
+            src={UniTextLogo}
+            alt=""
+          />
+        </Box>
+        <Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 5,
+            }}
+          >
+            <ColorButton
+              onClose={handleCloseUserMenu}
+              onClick={handleOpenUserMenu}
+              sx={{ p: 0 }}
+            >
+              <Avatar
+                alt={state.dataUser.full_name ?? "Username"}
+                src="/static/images/avatar/2.jpg"
+              />
+
+              <Stack className="avatar_text" spacing={0.5}>
+                <Typography
+                  fontWeight={500}
+                  fontSize={14}
+                  fontFamily="Poppins"
+                >
+                  {state.dataUser.full_name ?? "Username"}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  fontSize={12}
+                  fontFamily="Nunito"
+                  sx={{
+                    textAlign: "left",
+                  }}
+                >
+                  {state.dataUser.role || "Admin"}
+                </Typography>
+              </Stack>
+            </ColorButton>
+          </Box>
+
+          <Menu
+            sx={{ mt: "50px" }}
+            id="menu-appbar"
+            anchorEl={anchorElUser}
+            anchorOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "right",
+            }}
+            open={Boolean(anchorElUser)}
+            onClose={handleCloseUserMenu}
+            onClick={handleCloseUserMenu}
+          >
+            {UserMenu.map((item, _) => {
+              const { text, icon, onClick } = item;
+              return (
+                <ListItemButton
+                  sx={{
+                    justifyContent: "center",
+>>>>>>> Stashed changes
                     px: 2.5,
                   }}
                   button
                   key={text}
+<<<<<<< Updated upstream
                   onClick={() => onClick(index)}
                 >
                   {icon && (
@@ -307,10 +515,16 @@ export default function Sidebar(props) {
                       {icon}
                     </ListItemIcon>
                   )}
+=======
+                  onClick={onClick}
+                >
+                  {icon && icon}
+>>>>>>> Stashed changes
                   <ListItemText
                     disableTypography
                     primary={text}
                     sx={{
+<<<<<<< Updated upstream
                       fontFamily: "Poppins, sans-serif",
                       fontSize: "14px",
                       fontWeight: "700",
@@ -328,6 +542,71 @@ export default function Sidebar(props) {
               <>
                 {(roles.length === 0 ||
                   roles.includes(state?.dataUser.role)) && (
+=======
+                      fontFamily: "Nunito, sans-serif",
+                      fontSize: "16px",
+                      fontWeight: 700,
+                      ml: 1.7,
+                    }}
+                  />
+                </ListItemButton>
+              );
+            })}
+          </Menu>
+        </Box>
+      </Toolbar>
+    </AppBar>
+    <Drawer variant="permanent" open={open} className="drawer_sidebar">
+      <DrawerHeader></DrawerHeader>
+      <List className="sidebar_customize">
+        {itemsList.map((item, index) => {
+          const { selectedText, text, icon, onClick } = item;
+          return (
+            <>
+              <ListItemButton
+                selected={selectedText === selectedPage}
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+                button
+                key={text}
+                onClick={() => onClick(index)}
+              >
+                {icon && (
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {icon}
+                  </ListItemIcon>
+                )}
+                <ListItemText
+                  disableTypography
+                  primary={text}
+                  sx={{
+                    fontFamily: "Poppins, sans-serif",
+                    fontSize: "14px",
+                    fontWeight: "700",
+                    opacity: open ? 1 : 0,
+                  }}
+                />
+              </ListItemButton>
+            </>
+          );
+        })}
+
+        {itemsManagementList.map((item, index) => {
+          const { selectedText, roles, text, icon, onClick } = item;
+          return (
+            <>
+              {(roles.length === 0 ||
+                roles.includes(state?.dataUser.role)) && (
+>>>>>>> Stashed changes
                   <ListItemButton
                     selected={selectedText === selectedPage}
                     sx={{
@@ -362,6 +641,7 @@ export default function Sidebar(props) {
                     />
                   </ListItemButton>
                 )}
+<<<<<<< Updated upstream
               </>
             );
           })}
@@ -384,4 +664,28 @@ export default function Sidebar(props) {
       </Box>
     </Box>
   );
+=======
+            </>
+          );
+        })}
+      </List>
+      <Divider />
+
+      <Divider />
+    </Drawer>
+
+    <Box
+      component="main"
+      sx={{
+        flexGrow: 1,
+        p: 4,
+        fontFamily: "Poppins",
+      }}
+    >
+      <DrawerHeader />
+      {props.children}
+    </Box>
+  </Box>
+);
+>>>>>>> Stashed changes
 }
