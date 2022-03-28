@@ -7,21 +7,21 @@ export const UserContext = createContext();
 
 export const AppContext = (props) => {
   const [state, setState] = useState({
-    isLogin: false,
-    loading: true,
+    isLogin: true,
+    loading: false,
     dataUser: {
-      // date_of_birth: null,
-      // department: null,
-      // email: "aptu@mitep.pt",
-      // full_name: "Madge Valdez",
-      // id: "MGY3MGYwMzgtYWQzZi00ZTk4LTkzNTktNjU2OGY1ZjRjNDcy",
-      // is_default_password: false,
-      // role: "admin",
+      date_of_birth: null,
+      department: null,
+      email: "aptu@mitep.pt",
+      full_name: "Madge Valdez",
+      id: "MGY3MGYwMzgtYWQzZi00ZTk4LTkzNTktNjU2OGY1ZjRjNDcy",
+      is_default_password: false,
+      role: "admin",
     },
   });
 
   useEffect(() => {
-    checkAuth();
+    // checkAuth();
   }, [state.isLogin]);
 
   const checkAuth = async () => {

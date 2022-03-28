@@ -34,9 +34,13 @@ const ModalSubIdea = (props) => {
 	const renderForm = () => {
 		switch (action) {
 			case "create":
-				return <CreateIdeaSubForm onClose={() => onClose()}
-										  onCreate={onCreate}
-										  submissionTitle={initialValue?.title}/>;
+				return (
+					<CreateIdeaSubForm
+						onClose={() => onClose()}
+						onCreate={onCreate}
+						submissionTitle={initialValue?.title}
+					/>
+				);
 			case "update":
 				return (
 					<EditForm
