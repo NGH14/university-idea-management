@@ -59,3 +59,7 @@ export class AuthRequest {
 		});
 	};
 }
+
+export function sleep(ms) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}

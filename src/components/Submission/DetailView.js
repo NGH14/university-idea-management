@@ -58,7 +58,10 @@ function DetailView() {
 			loading: true,
 		});
 		try {
-			const res = await AuthRequest.put(`submission-management/${value?.id}`, value);
+			const res = await AuthRequest.put(
+				`submission-management/${value?.id}`,
+				value,
+			);
 			if (res?.data?.succeeded) {
 				setStatus({
 					...status,
@@ -117,7 +120,9 @@ function DetailView() {
 	};
 	const renderDetailForm = () => {
 		return (
-			<fieldset style={{ border: "2px solid gray", padding: 12, borderRadius: 8 }}>
+			<fieldset
+				style={{ border: "2px solid gray", padding: 12, borderRadius: 8 }}
+			>
 				<legend style={{ fontWeight: "bold", padding: 8, fontSize: 22 }}>
 					Information Submission
 				</legend>
@@ -128,8 +133,17 @@ function DetailView() {
 	};
 	const renderIdeaView = () => {
 		return (
-			<fieldset style={{ border: "2px solid gray", padding: 12, borderRadius: 8 }}>
-				<legend style={{ fontWeight: "bold", padding: 8, fontSize: 22, display: "flex" }}>
+			<fieldset
+				style={{ border: "2px solid gray", padding: 12, borderRadius: 8 }}
+			>
+				<legend
+					style={{
+						fontWeight: "bold",
+						padding: 8,
+						fontSize: 22,
+						display: "flex",
+					}}
+				>
 					Idea{" "}
 				</legend>
 				<DetailForm initialValue={initialValue} />

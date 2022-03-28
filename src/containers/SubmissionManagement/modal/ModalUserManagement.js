@@ -5,12 +5,9 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 
 import { AuthRequest } from "../../../common/AppUse";
-import CreateUserForm from "../../../components/User/CreateUserForm";
-import DetailUserForm from "../../../components/User/DetailUserForm";
-import EditUserForm from "../../../components/User/EditUserForm";
 import CreateForm from "../../../components/Submission/CreateForm";
-import EditForm from "../../../components/Submission/EditForm";
 import CreateIdexSubForm from "../../../components/Submission/CreateIdeaSubForm";
+import EditForm from "../../../components/Submission/EditForm";
 
 const style = {
 	position: "relative",
@@ -57,11 +54,7 @@ const ModalSubmissionManagement = (props) => {
 					/>
 				);
 			case "createIdea":
-				return (
-					<CreateIdexSubForm
-						onClose={() => onClose()}
-					/>
-				);
+				return <CreateIdexSubForm onClose={() => onClose()} />;
 		}
 	};
 	if (action !== "create" && _.isEmpty(initialValue)) {

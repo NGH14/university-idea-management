@@ -1,17 +1,10 @@
-import { CircularProgress, Modal } from "@mui/material";
+import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
-import _ from "lodash";
 import * as React from "react";
 import { useEffect, useState } from "react";
 
-import { AuthRequest } from "../../../common/AppUse";
-import CreateUserForm from "../../../components/User/CreateUserForm";
-import DetailUserForm from "../../../components/User/DetailUserForm";
-import EditUserForm from "../../../components/User/EditUserForm";
-import CreateForm from "../../../components/Submission/CreateForm";
-import EditForm from "../../../components/Submission/EditForm";
-import CreateIdexSubForm from "../../../components/Submission/CreateIdeaSubForm";
 import CreateIdeaSubForm from "../../../components/Submission/CreateIdeaSubForm";
+import EditForm from "../../../components/Submission/EditForm";
 
 const style = {
 	position: "relative",

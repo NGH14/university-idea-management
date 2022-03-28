@@ -1,17 +1,17 @@
 import "../User/EditUserForm/style.css";
 
 import CloseIcon from "@mui/icons-material/Close";
-import {TextareaAutosize, TextField} from "@mui/material";
+import { DateRangePicker, LocalizationProvider } from "@mui/lab";
+import AdapterDateFns from "@mui/lab/AdapterDateFns";
+import { TextareaAutosize, TextField } from "@mui/material";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import * as yup from "yup";
-import {DateRangePicker, LocalizationProvider} from "@mui/lab";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import Box from "@mui/material/Box";
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -63,54 +63,75 @@ const validationSchema = yup.object({
 
 function EditForm(props) {
 	const { onClose, onUpdate, initialValue } = props;
-	const [dataDateRangePicker, setDataDateRangePicker] = useState([initialValue.initial_date, initialValue.final_date]);
+	const [dataDateRangePicker, setDataDateRangePicker] = useState([
+		initialValue.initial_date,
+		initialValue.final_date,
+	]);
 	const formik = useFormik({
 		initialValues: initialValue || [],
 		// validationSchema: validationSchema,
 		onSubmit: (values) => {
-			const newValue = {...values, initial_date: dataDateRangePicker[0], final_date: dataDateRangePicker[1]}
+			const newValue = {
+				...values,
+				initial_date: dataDateRangePicker[0],
+				final_date: dataDateRangePicker[1],
+			};
 			onUpdate(newValue);
 		},
 	});
 	const renderFormDate = (startProps, endProps) => {
-		return <React.Fragment>
-			<div className="form_content" style={{width: '100%'}}>
-				<InputLabel required htmlFor="initial_date" >
-					Initial Date
-				</InputLabel>
-				<TextField
-					fullWidth
-					{...startProps}
-					required={true}
-					label={null}
-					type={"date"}
-					margin="normal"
-					id="initial_date"
-					name="initial_date"
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-				/>
-			</div>
-			<Box sx={{ mx: 3 }} style={{marginBottom: 8, marginTop: 'auto', height: 56, paddingBottom: 15, paddingTop: 15}}> to </Box>
-			<div className="form_content" style={{width: '100%'}}>
-				<InputLabel required htmlFor="final_date">
-					Final Date
-				</InputLabel>
-				<TextField
-					fullWidth
-					{...endProps}
-					label={null}
-					required={true}
-					type={"date"}
-					margin="normal"
-					id="final_date"
-					name="final_date"
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-				/>
-			</div>
-		</React.Fragment>
-	}
+		return (
+			<React.Fragment>
+				<div className="form_content" style={{ width: "100%" }}>
+					<InputLabel required htmlFor="initial_date">
+						Initial Date
+					</InputLabel>
+					<TextField
+						fullWidth
+						{...startProps}
+						required={true}
+						label={null}
+						type={"date"}
+						margin="normal"
+						id="initial_date"
+						name="initial_date"
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+					/>
+				</div>
+				<Box
+					sx={{ mx: 3 }}
+					style={{
+						marginBottom: 8,
+						marginTop: "auto",
+						height: 56,
+						paddingBottom: 15,
+						paddingTop: 15,
+					}}
+				>
+					{" "}
+					to{" "}
+				</Box>
+				<div className="form_content" style={{ width: "100%" }}>
+					<InputLabel required htmlFor="final_date">
+						Final Date
+					</InputLabel>
+					<TextField
+						fullWidth
+						{...endProps}
+						label={null}
+						required={true}
+						type={"date"}
+						margin="normal"
+						id="final_date"
+						name="final_date"
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+					/>
+				</div>
+			</React.Fragment>
+		);
+	};
 	return (
 		<div className="createuserform">
 			<div className="createuserform_title">
@@ -121,10 +142,7 @@ function EditForm(props) {
 			</div>
 			<br />
 
-			<form
-				className="form_grid"
-				onSubmit={formik.handleSubmit}
-			>
+			<form className="form_grid" onSubmit={formik.handleSubmit}>
 				<div className="form_group">
 					<div className="form_content">
 						<InputLabel required htmlFor="full_name">
@@ -157,17 +175,17 @@ function EditForm(props) {
 								setDataDateRangePicker(newValue);
 							}}
 							onBlur={formik.handleBlur}
-							renderInput={(startProps, endProps) => renderFormDate(startProps, endProps)}
+							renderInput={(startProps, endProps) =>
+								renderFormDate(startProps, endProps)
+							}
 						/>
 					</LocalizationProvider>
 				</div>
 				<div className="form_group">
 					<div className="form_content">
-						<InputLabel htmlFor="description">
-							Description
-						</InputLabel>
+						<InputLabel htmlFor="description">Description</InputLabel>
 						<TextareaAutosize
-							className='description-field'
+							className="description-field"
 							aria-label="minimum height"
 							id="description"
 							name="description"
@@ -176,9 +194,13 @@ function EditForm(props) {
 							value={formik.values.description}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							style={{ width: '100%',marginTop: 16, marginBottom: 8, borderRadius: "5px",}}
+							style={{
+								width: "100%",
+								marginTop: 16,
+								marginBottom: 8,
+								borderRadius: "5px",
+							}}
 						/>
-
 					</div>
 				</div>
 				<div className="createuserform_footer">

@@ -1,9 +1,5 @@
 import "./style.css";
 
-import { AutoStories } from "@mui/icons-material";
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-import CorporateFareIcon from "@mui/icons-material/CorporateFare";
-import HomeIcon from "@mui/icons-material/Home";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import PersonIcon from "@mui/icons-material/Person";
@@ -11,7 +7,6 @@ import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
 import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -22,14 +17,6 @@ import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import React, { useContext, useEffect } from "react";
-import { useLocation } from "react-router";
-import { useNavigate } from "react-router-dom";
-
-import UniTextLogo from "../../assets/images/2021-Greenwich-Black-Eng.webp";
-import { ROLES, URL_PATHS } from "../../common/env";
-import { UserContext } from "../../context/AppContext";
-import { AppBar, ColorButton, Drawer, DrawerHeader } from "./SidebarStyled";
-
 import {
 	BsBookmarksFill,
 	BsHouseFill,
@@ -39,6 +26,13 @@ import {
 } from "react-icons/bs";
 import { FaBuilding } from "react-icons/fa";
 import { RiDiscussFill } from "react-icons/ri";
+import { useLocation } from "react-router";
+import { useNavigate } from "react-router-dom";
+
+import UniTextLogo from "../../assets/images/2021-Greenwich-Black-Eng.webp";
+import { ROLES, URL_PATHS } from "../../common/env";
+import { UserContext } from "../../context/AppContext";
+import { AppBar, ColorButton, Drawer, DrawerHeader } from "./SidebarStyled";
 
 export default function Sidebar(props) {
 	const { state, setState } = useContext(UserContext);
@@ -266,20 +260,20 @@ export default function Sidebar(props) {
 							onClose={handleCloseUserMenu}
 							onClick={handleCloseUserMenu}
 						>
-							{UserMenu.map((item, _) => {
+							{UserMenu.map((item, index) => {
 								const { text, icon, onClick } = item;
 								return (
 									<ListItemButton
+										key={index + Math.random()}
 										sx={{
 											justifyContent: "center",
 											px: 2.5,
 										}}
-										button
-										key={text}
 										onClick={onClick}
 									>
 										{icon && icon}
 										<ListItemText
+											key={index}
 											disableTypography
 											primary={text}
 											sx={{
@@ -304,19 +298,18 @@ export default function Sidebar(props) {
 						return (
 							<>
 								<ListItemButton
-
+									key={index + Math.random()}
 									selected={selectedText === selectedPage}
 									sx={{
 										minHeight: 48,
 										justifyContent: open ? "initial" : "center",
 										px: 2.5,
 									}}
-									button
-									key={text}
 									onClick={() => onClick(index)}
 								>
 									{icon && (
 										<ListItemIcon
+											key={index + Math.random()}
 											sx={{
 												minWidth: 0,
 												mr: open ? 3 : "auto",
@@ -327,6 +320,7 @@ export default function Sidebar(props) {
 										</ListItemIcon>
 									)}
 									<ListItemText
+										key={index + Math.random()}
 										disableTypography
 										primary={text}
 										sx={{
@@ -382,18 +376,18 @@ export default function Sidebar(props) {
 									{(roles.length === 0 ||
 										roles.includes(state?.dataUser.role)) && (
 										<ListItemButton
+											key={index + Math.random()}
 											selected={selectedText === selectedPage}
 											sx={{
 												px: 2.5,
 												minHeight: 48,
 												justifyContent: open ? "initial" : "center",
 											}}
-											button
-											key={text}
 											onClick={() => onClick(index)}
 										>
 											{icon && (
 												<ListItemIcon
+													key={index + Math.random()}
 													sx={{
 														minWidth: 0,
 														mr: open ? 3 : "0",
@@ -404,6 +398,7 @@ export default function Sidebar(props) {
 												</ListItemIcon>
 											)}
 											<ListItemText
+												key={index + Math.random()}
 												disableTypography
 												primary={text}
 												sx={{

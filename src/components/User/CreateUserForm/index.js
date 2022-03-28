@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 import * as yup from "yup";
 
 import { AuthRequest } from "../../../common/AppUse";
-import { API_PATHS } from "../../../common/env";
+import { API_PATHS, DEV_CONFIGS } from "../../../common/env";
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -74,8 +74,8 @@ const validationSchema = yup.object({
 });
 
 const toastMessages = {
-	ERR_UPPASS_FAILED: "Failed to update password!!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again!!",
+	ERR_UPPASS_FAILED: "Failed to update password !!",
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
 };
 
 const initialValues = {
@@ -105,15 +105,33 @@ function CreateUserForm(prop) {
 	}, []);
 
 	const getDepartments = async () => {
+		if (DEV_CONFIGS.IS_DEV) {
+			setDepartments(DEV_CONFIGS.FAKE_DEPS);
+			return;
+		}
+
 		await AuthRequest.get(API_PATHS.ADMIN.DEP)
 			.then((res) => setDepartments(res?.data?.result))
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+			.catch(() =>
+				toast.error(toastMessages.ERR_SERVER_ERROR, {
+					style: { width: "auto" },
+				}),
+			);
 	};
 
 	const getRoles = async () => {
+		if (DEV_CONFIGS.IS_DEV) {
+			setRoles(DEV_CONFIGS.FAKE_ROLES);
+			return;
+		}
+
 		await AuthRequest.get(API_PATHS.SHARED.ROLE)
 			.then((res) => setRoles(res?.data?.result))
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+			.catch(() =>
+				toast.error(toastMessages.ERR_SERVER_ERROR, {
+					style: { width: "auto" },
+				}),
+			);
 	};
 
 	return (
@@ -140,7 +158,9 @@ function CreateUserForm(prop) {
 							value={formik.values.full_name}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={formik.touched.full_name && Boolean(formik.errors.full_name)}
+							error={
+								formik.touched.full_name && Boolean(formik.errors.full_name)
+							}
 							helperText={formik.touched.full_name && formik.errors.full_name}
 						/>
 					</div>
@@ -183,11 +203,15 @@ function CreateUserForm(prop) {
 									? undefined
 									: () => (
 											<placeholder>
-												<em style={{ opacity: 0.6, fontSize: 14 }}>-- department --</em>
+												<em style={{ opacity: 0.6, fontSize: 14 }}>
+													-- department --
+												</em>
 											</placeholder>
 									  )
 							}
-							error={formik.touched.department && Boolean(formik.errors.department)}
+							error={
+								formik.touched.department && Boolean(formik.errors.department)
+							}
 						>
 							{depOptions.map((dep) => (
 								<MenuItem value={dep.name}>{dep.name.toUpperCase()}</MenuItem>
@@ -217,7 +241,9 @@ function CreateUserForm(prop) {
 									? undefined
 									: () => (
 											<placeholder>
-												<em style={{ opacity: 0.6, fontSize: 14 }}>-- role --</em>
+												<em style={{ opacity: 0.6, fontSize: 14 }}>
+													-- role --
+												</em>
 											</placeholder>
 									  )
 							}
@@ -227,12 +253,17 @@ function CreateUserForm(prop) {
 								<MenuItem value={role.name}>{role.name.toUpperCase()}</MenuItem>
 							))}
 						</Select>
-						<FormHelperText error>{formik.touched.role && formik.errors.role}</FormHelperText>
+						<FormHelperText error>
+							{formik.touched.role && formik.errors.role}
+						</FormHelperText>
 					</div>
 					<div className="form_content">
 						<InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
 
-						<LocalizationProvider dateAdapter={AdapterDateFns} locale={enLocale}>
+						<LocalizationProvider
+							dateAdapter={AdapterDateFns}
+							locale={enLocale}
+						>
 							<DatePicker
 								fullWidth
 								disableFuture
@@ -243,8 +274,12 @@ function CreateUserForm(prop) {
 									formik.setFieldValue("date_of_birth", val);
 								}}
 								value={formik.values.date_of_birth}
-								error={formik.errors.date_of_birth && formik.touched.date_of_birth}
-								helperText={formik.errors.date_of_birth && formik.touched.date_of_birth}
+								error={
+									formik.errors.date_of_birth && formik.touched.date_of_birth
+								}
+								helperText={
+									formik.errors.date_of_birth && formik.touched.date_of_birth
+								}
 								renderInput={(params) => <TextField fullWidth {...params} />}
 							/>
 						</LocalizationProvider>

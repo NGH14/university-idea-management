@@ -81,9 +81,9 @@ const validationSchema = yup.object({
 });
 
 const toastMessages = {
-	ERR_INVALID_LOGIN: "Email or password is invalid, Please try again!!",
-	ERR_INVALID_GOOGLE: "Google account is invalid, Please try again!!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again!!",
+	ERR_INVALID_LOGIN: "Email or password is invalid, Please try again !!",
+	ERR_INVALID_GOOGLE: "Google account is invalid, Please try again !!",
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
 };
 
 // ─── MAIN ───────────────────────────────────────────────────────────────────────
@@ -112,8 +112,14 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 	const onLogin = async (value) => {
 		await AnonRequest.post(API_PATHS.SHARED.AUTH.LOGIN, value)
 			.then((res) => {
-				localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token);
-				localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token);
+				localStorage.setItem(
+					STORAGE_VARS.JWT,
+					res?.data?.result?.access_token?.token,
+				);
+				localStorage.setItem(
+					STORAGE_VARS.REFRESH,
+					res?.data?.result?.refresh_token,
+				);
 				setState({ ...state, isLogin: true });
 			})
 			.catch(() => toast.error(toastMessages.ERR_INVALID_LOGIN))
@@ -129,12 +135,20 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 			id_token: googleResponse.tokenId,
 		})
 			.then((res) => {
-				localStorage.setItem(STORAGE_VARS.JWT, res?.data?.result?.access_token?.token);
-				localStorage.setItem(STORAGE_VARS.REFRESH, res?.data?.result?.refresh_token);
+				localStorage.setItem(
+					STORAGE_VARS.JWT,
+					res?.data?.result?.access_token?.token,
+				);
+				localStorage.setItem(
+					STORAGE_VARS.REFRESH,
+					res?.data?.result?.refresh_token,
+				);
 				setState({ ...state, isLogin: true });
 			})
-			.catch((err) => {
-				toast.error(toastMessages.ERR_INVALID_GOOGLE);
+			.catch(() => {
+				toast.error(toastMessages.ERR_INVALID_GOOGLE, {
+					style: { width: "auto" },
+				});
 			})
 			.finally(() => {
 				setButtonState({ ...buttonState, loading: false, disable: false });
@@ -146,7 +160,9 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 		<div className="loginform">
 			<div className="loginform-textcontent">
 				<h1 className="loginform-heading">UIM Login</h1>
-				<span className="loginform-subtext">Welcome to university idea management</span>
+				<span className="loginform-subtext">
+					Welcome to university idea management
+				</span>
 			</div>
 			<GoogleLogin
 				buttonText="Google"

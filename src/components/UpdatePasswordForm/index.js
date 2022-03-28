@@ -100,7 +100,7 @@ const UpdatePasswordForm = () => {
 		validationSchema: validationSchema,
 		onSubmit: async (values) => {
 			await AuthRequest.post(API_PATHS.SHARED.AUTH.UPDATE_PWD, values)
-				.catch(() => toast.error("Failed to update password!!"))
+				.catch(() => toast.error("Failed to update password !!"))
 				.finally(() => {
 					setButtonState({ ...buttonState, loading: false, disable: false });
 					navigate(URL_PATHS.HOME);
@@ -112,7 +112,9 @@ const UpdatePasswordForm = () => {
 		<div className="updatepwdform">
 			<div className="updatepwdform-textcontent">
 				<h1 className="updatepwdform-heading">UIM</h1>
-				<span className="updatepwdform-subtext">Please Update Your Password</span>
+				<span className="updatepwdform-subtext">
+					Please Update Your Password
+				</span>
 			</div>
 
 			<form onSubmit={formik.handleSubmit}>
