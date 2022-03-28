@@ -23,6 +23,8 @@ export const AppContext = (props) => {
 					id: "MGY3MGYwMzgtYWQzZi00ZTk4LTkzNTktNjU2OGY1ZjRjNDcy",
 					is_default_password: false,
 					role: "admin",
+					gender: "male",
+					phone_numer: "0919927066",
 			  }
 			: {},
 	});
@@ -74,11 +76,11 @@ export const AppContext = (props) => {
 					.then((res) => {
 						localStorage.setItem(
 							STORAGE_VARS.JWT,
-							res?.data?.result?.access_token?.token,
+							res?.data?.result?.access_token?.token
 						);
 						localStorage.setItem(
 							STORAGE_VARS.REFRESH,
-							res?.data?.result?.refresh_token,
+							res?.data?.result?.refresh_token
 						);
 
 						setState({

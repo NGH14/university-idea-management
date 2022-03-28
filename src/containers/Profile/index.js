@@ -1,31 +1,46 @@
 import "./style.css";
 
 import React, { useContext, useState } from "react";
+import Avatar from "@mui/material/Avatar";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 import loginImg from "../../assets/images/Contact-CIC-Education-2-1024x858.webp";
-import UpdatePasswordForm from "../../components/UpdatePasswordForm";
+
 import { UserContext } from "../../context/AppContext";
+import TabProfile from "../../components/TabProfile";
 
 export default function UpdatePassword() {
 	const { state, setState } = useContext(UserContext);
-	const [changePasswordMoDal, setchangPassworModal] = useState(false);
+
 	return (
-		<>
-			{/* <div className="profile_title">
-				<div className="profile_heading">
-					<h2>Management User</h2>
-				</div>
+		<div className="profile_wrapper">
+			<div className="avatar_wrapper">
+				<img className="avatar_cover" src={loginImg} alt="avatar_cover" />
+				<Box className="avatar_content" sx={{ display: "flex", gap: 1.5 }}>
+					<Avatar
+						alt={state.dataUser.full_name ?? "Username"}
+						src="/static/images/avatar/2.jpg"
+						className="avatar_img"
+					/>
+					<Stack>
+						<Typography fontWeight={700} fontSize={30} sx={{ mt: -1 }}>
+							{state.dataUser.full_name ?? "Username"}
+						</Typography>
+						<Typography variant="body2" color="text.secondary">
+							{state.dataUser.role ?? "admin"}
+						</Typography>
+					</Stack>
+				</Box>
+			</div>
+			{/* <div className="updatepassword-wrapper">
+				{changePasswordMoDal && <UpdatePasswordForm />}
 			</div> */}
 
-			<div className="avatar_wrapper">
-				<img className="avatar_cover" src={loginImg} />
-				<img
-					className="avatar_img"
-					src="https://scontent.fsgn6-2.fna.fbcdn.net/v/t1.6435-1/78063560_2418338788389098_6031660699644592128_n.jpg?stp=dst-jpg_s320x320&_nc_cat=105&ccb=1-5&_nc_sid=7206a8&_nc_ohc=zVedmM7yFcsAX8CdgDo&_nc_ht=scontent.fsgn6-2.fna&oh=00_AT9AGRw_CmvhzUATiBuGhrPlqE99p48jU-mFGQEwyr9bDA&oe=6268FD0D"
-				/>
-			</div>
-			<div className="updatepassword-wrapper">
-				{changePasswordMoDal && <UpdatePasswordForm />}
-			</div>
-		</>
+			<TabProfile></TabProfile>
+		</div>
 	);
 }
