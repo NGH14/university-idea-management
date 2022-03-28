@@ -22,18 +22,20 @@ import * as React from "react";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-import { AuthRequest } from "../../common/AppUse";
-import { API_PATHS } from "../../common/env";
+import { AuthRequest, sleep } from "../../common/AppUse";
+import { API_PATHS, DEV_CONFIGS } from "../../common/env";
 import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
 import { UserContext } from "../../context/AppContext";
+import { dataDemo } from "./FakeData";
 import ModalUserManagement from "./modal/ModalUserManagement";
 import { Column } from "./model/Column";
 
 const toastMessages = {
-	SUC_USER_ADDED: "Create user successful!!",
-	SUC_USER_EDITED: "Update user successful!!",
-	SUC_USER_DEL: "Delete user successful!!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again!!",
+	WAIT: "Please wait...",
+	SUC_USER_ADDED: "Create user successful !!",
+	SUC_USER_EDITED: "Update user successful !!",
+	SUC_USER_DEL: "Delete user successful !!",
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
 };
 
 function UserManagement() {
@@ -72,14 +74,14 @@ function UserManagement() {
 			sortable: false,
 			getActions: (params) => [
 				<GridActionsCellItem
-					icon={<InfoOutlinedIcon color={"info"} />}
+					icon={<InfoOutlinedIcon />}
 					label="Detail"
 					onClick={() => onOpenModal(params.id, "detail")}
 					showInMenu
 				/>,
 
 				<GridActionsCellItem
-					icon={<EditIcon color={"secondary"} />}
+					icon={<EditIcon />}
 					label="Update"
 					onClick={() => onOpenModal(params.id, "update")}
 					showInMenu
@@ -96,6 +98,12 @@ function UserManagement() {
 		},
 	];
 	const loadData = async () => {
+		if (DEV_CONFIGS.IS_DEV) {
+			setData(dataDemo);
+			setRowId(null);
+			return;
+		}
+
 		await AuthRequest.get(API_PATHS.ADMIN.USER, {
 			params: {
 				page: pagination.page + 1,
@@ -106,7 +114,11 @@ function UserManagement() {
 				setData(res?.data?.result?.rows);
 				setRowId(null);
 			})
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+			.catch(() =>
+				toast.error(toastMessages.ERR_SERVER_ERROR, {
+					style: { width: "auto" },
+				}),
+			);
 	};
 
 	const onOpenModal = (id, action) => {
@@ -117,45 +129,97 @@ function UserManagement() {
 	};
 
 	const onDelete = async (id) => {
-		toast.promise(
-			await AuthRequest.delete(`${API_PATHS.ADMIN.USER}/${id}`).then(() => {
+		if (DEV_CONFIGS.IS_DEV) {
+			toast
+				.promise(sleep(700), {
+					pending: toastMessages.WAIT,
+					success: toastMessages.SUC_USER_DEL,
+					error: toastMessages.ERR_SERVER_ERROR,
+				})
+				.then(() => {
+					setStatus({ ...status, visibleModal: false });
+					loadData();
+				});
+			return;
+		}
+
+		toast
+			.promise(
+				AuthRequest.delete(`${API_PATHS.ADMIN.USER}/${id}`).then(() =>
+					sleep(700),
+				),
+				{
+					pending: toastMessages.WAIT,
+					success: toastMessages.SUC_USER_DEL,
+					error: toastMessages.ERR_SERVER_ERROR,
+				},
+			)
+			.then(() => {
 				setStatus({ ...status, visibleModal: false });
 				loadData();
-			}),
-			{
-				pending: "Deleting...",
-				success: toastMessages.SUC_USER_DEL,
-				error: toastMessages.ERR_SERVER_ERROR,
-			},
-		);
+			});
 	};
 
 	const onUpdate = async (value) => {
-		toast.promise(
-			await AuthRequest.put(`${API_PATHS.ADMIN.USER}/${value?.id}`, value).then(() => {
+		if (DEV_CONFIGS.IS_DEV) {
+			toast
+				.promise(sleep(700), {
+					pending: toastMessages.WAIT,
+					success: toastMessages.SUC_USER_EDITED,
+					error: toastMessages.ERR_SERVER_ERROR,
+				})
+				.then(() => {
+					setStatus({ ...status, visibleModal: false });
+					loadData();
+				});
+			return;
+		}
+
+		toast
+			.promise(
+				AuthRequest.put(`${API_PATHS.ADMIN.USER}/${value?.id}`, value).then(
+					() => sleep(700),
+				),
+				{
+					pending: toastMessages.WAIT,
+					success: toastMessages.SUC_USER_EDITED,
+					error: toastMessages.ERR_SERVER_ERROR,
+				},
+			)
+			.then(() => {
 				setStatus({ ...status, visibleModal: false });
 				loadData();
-			}),
-			{
-				pending: "Updating...",
-				success: toastMessages.SUC_USER_EDITED,
-				error: toastMessages.ERR_SERVER_ERROR,
-			},
-		);
+			});
 	};
 
 	const onCreate = async (value) => {
-		toast.promise(
-			await AuthRequest.post(API_PATHS.ADMIN.USER, value).then(() => {
+		if (DEV_CONFIGS.IS_DEV) {
+			toast
+				.promise(sleep(700), {
+					pending: toastMessages.WAIT,
+					success: toastMessages.SUC_USER_ADDED,
+					error: toastMessages.ERR_SERVER_ERROR,
+				})
+				.then(() => {
+					setStatus({ ...status, visibleModal: false });
+					loadData();
+				});
+			return;
+		}
+
+		toast
+			.promise(
+				AuthRequest.post(API_PATHS.ADMIN.USER, value).then(() => sleep(700)),
+				{
+					pending: toastMessages.WAIT,
+					success: toastMessages.SUC_USER_ADDED,
+					error: toastMessages.ERR_SERVER_ERROR,
+				},
+			)
+			.then(() => {
 				setStatus({ ...status, visibleModal: false });
 				loadData();
-			}),
-			{
-				pending: "Creating...",
-				success: toastMessages.SUC_USER_ADDED,
-				error: toastMessages.ERR_SERVER_ERROR,
-			},
-		);
+			});
 	};
 
 	const onCloseModal = () => {
@@ -170,7 +234,9 @@ function UserManagement() {
 
 	const CustomToolbar = () => {
 		return (
-			<GridToolbarContainer sx={{ fontWeight: 700, display: "flex", justifyContent: "ceter" }}>
+			<GridToolbarContainer
+				sx={{ fontWeight: 700, display: "flex", justifyContent: "ceter" }}
+			>
 				<GridToolbarColumnsButton />
 				<GridToolbarFilterButton />
 				<GridToolbarDensitySelector />
@@ -225,8 +291,12 @@ function UserManagement() {
 				<DataGridPro
 					components={{
 						NoRowsOverlay: CustomNoRowsOverlay,
-						ColumnSortedDescendingIcon: () => <ExpandMoreIcon className="icon" />,
-						ColumnSortedAscendingIcon: () => <ExpandLessIcon className="icon" />,
+						ColumnSortedDescendingIcon: () => (
+							<ExpandMoreIcon className="icon" />
+						),
+						ColumnSortedAscendingIcon: () => (
+							<ExpandLessIcon className="icon" />
+						),
 						Toolbar: tableToolBar && CustomToolbar,
 					}}
 					rows={data}
@@ -237,7 +307,9 @@ function UserManagement() {
 					pageSize={pagination.pageSize}
 					page={pagination.page}
 					initialState={{ pinnedColumns: { right: ["actions"] } }}
-					onPageSizeChange={(pageSize) => onChangePagination(pageSize, pagination.page)}
+					onPageSizeChange={(pageSize) =>
+						onChangePagination(pageSize, pagination.page)
+					}
 					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
 					style={{ minHeight: "600px" }}
 					rowsPerPageOptions={[10, 25, 50, 100]}

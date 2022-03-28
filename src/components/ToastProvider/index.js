@@ -3,15 +3,15 @@ import { ToastContainer } from "react-toastify";
 export default function ToastifyProvider() {
 	return (
 		<ToastContainer
+			theme="dark"
 			position="top-right"
 			autoClose={5000}
-			hideProgressBar={true}
+			hideProgressBar={false}
 			newestOnTop={true}
 			closeOnClick={true}
 			rtl={false}
-			pauseOnFocusLoss
-			draggable
-			pauseOnHover
+			pauseOnHover={false}
+			pauseOnFocusLoss={false}
 		/>
 	);
 }

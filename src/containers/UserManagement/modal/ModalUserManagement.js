@@ -6,10 +6,11 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { AuthRequest } from "../../../common/AppUse";
-import { API_PATHS } from "../../../common/env";
+import { API_PATHS, DEV_CONFIGS } from "../../../common/env";
 import CreateUserForm from "../../../components/User/CreateUserForm";
 import DetailUserForm from "../../../components/User/DetailUserForm";
 import EditUserForm from "../../../components/User/EditUserForm";
+import { dataDemo } from "../FakeData";
 
 const style = {
 	position: "relative",
@@ -29,7 +30,8 @@ const style = {
 };
 
 const toastMessages = {
-	ERR_SERVER_ERROR: "Something went wrong, please try again!!",
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+	ERR_USER_NOT_FOUND: "User not found !!",
 };
 
 const ModalUserManagement = (props) => {
@@ -43,9 +45,24 @@ const ModalUserManagement = (props) => {
 	}, [action]);
 
 	const loadData = async () => {
+		if (DEV_CONFIGS.IS_DEV) {
+			let user = dataDemo.find((_) => _.id === rowId);
+			if (!user) {
+				toast.error(toastMessages.ERR_USER_NOT_FOUND);
+				return;
+			}
+			console.log(user);
+
+			setInitialValue(user);
+			return;
+		}
 		await AuthRequest.get(`${API_PATHS.ADMIN.USER}/${rowId}`)
 			.then((res) => setInitialValue(res?.data?.result))
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+			.catch(() =>
+				toast.error(toastMessages.ERR_SERVER_ERROR, {
+					style: { width: "auto" },
+				}),
+			);
 	};
 
 	const renderForm = () => {
@@ -61,7 +78,12 @@ const ModalUserManagement = (props) => {
 					/>
 				);
 			case "detail":
-				return <DetailUserForm onClose={() => onClose()} initialValue={initialValue} />;
+				return (
+					<DetailUserForm
+						onClose={() => onClose()}
+						initialValue={initialValue}
+					/>
+				);
 			default:
 				return;
 		}
