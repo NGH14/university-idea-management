@@ -23,10 +23,10 @@ import ModalTagManagement from "./modal/ModalTagManagement";
 import { Column } from "./model/Column";
 
 const toastMessages = {
-	SUC_TAG_ADDED: "Create tag successful!!",
-	SUC_TAG_EDITED: "Update tag successful!!",
-	SUC_TAG_DEL: "Delete tag successful!!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again!!",
+	SUC_TAG_ADDED: "Create tag successful !!",
+	SUC_TAG_EDITED: "Update tag successful !!",
+	SUC_TAG_DEL: "Delete tag successful !!",
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
 };
 
 function TagManagement() {
@@ -100,7 +100,11 @@ function TagManagement() {
 				setData(res?.data?.result?.rows);
 				setRowId(null);
 			})
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+			.catch(() =>
+				toast.error(toastMessages.ERR_SERVER_ERROR, {
+					style: { width: "auto" },
+				}),
+			);
 	};
 
 	const renderActionButton = (id) => {
@@ -151,7 +155,11 @@ function TagManagement() {
 				toast.success(toastMessages.SUC_TAG_DEL);
 				loadData();
 			})
-			.catch(() => toast.success(toastMessages.ERR_SERVER_ERROR));
+			.catch(() =>
+				toast.success(toastMessages.ERR_SERVER_ERROR, {
+					style: { width: "auto" },
+				}),
+			);
 	};
 
 	const onUpdate = async (value) => {
@@ -161,7 +169,11 @@ function TagManagement() {
 				toast.success(toastMessages.SUC_TAG_EDITED);
 				loadData();
 			})
-			.catch(() => toast.success(toastMessages.ERR_SERVER_ERROR));
+			.catch(() =>
+				toast.success(toastMessages.ERR_SERVER_ERROR, {
+					style: { width: "auto" },
+				}),
+			);
 	};
 
 	const onCreate = async (value) => {
@@ -170,7 +182,11 @@ function TagManagement() {
 				toast.success(toastMessages.SUC_TAG_ADDED);
 				loadData();
 			})
-			.catch(() => toast.success(toastMessages.ERR_SERVER_ERROR));
+			.catch(() =>
+				toast.success(toastMessages.ERR_SERVER_ERROR, {
+					style: { width: "auto" },
+				}),
+			);
 	};
 
 	const onCloseModal = () => {
@@ -219,8 +235,12 @@ function TagManagement() {
 				<DataGridPro
 					components={{
 						NoRowsOverlay: CustomNoRowsOverlay,
-						ColumnSortedDescendingIcon: () => <ExpandMoreIcon className="icon" />,
-						ColumnSortedAscendingIcon: () => <ExpandLessIcon className="icon" />,
+						ColumnSortedDescendingIcon: () => (
+							<ExpandMoreIcon className="icon" />
+						),
+						ColumnSortedAscendingIcon: () => (
+							<ExpandLessIcon className="icon" />
+						),
 					}}
 					rows={data || []} // dataDemo
 					columns={columns}

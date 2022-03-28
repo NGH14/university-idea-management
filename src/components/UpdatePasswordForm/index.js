@@ -100,7 +100,7 @@ const UpdatePasswordForm = () => {
 		validationSchema: validationSchema,
 		onSubmit: async (values) => {
 			await AuthRequest.post(API_PATHS.SHARED.AUTH.UPDATE_PWD, values)
-				.catch(() => toast.error("Failed to update password!!"))
+				.catch(() => toast.error("Failed to update password !!"))
 				.finally(() => {
 					setButtonState({ ...buttonState, loading: false, disable: false });
 					navigate(URL_PATHS.HOME);
@@ -112,7 +112,9 @@ const UpdatePasswordForm = () => {
 		<div className="updatepwdform">
 			<div className="updatepwdform-textcontent">
 				<h1 className="updatepwdform-heading">UIM</h1>
-				<span className="updatepwdform-subtext">Please Update Your Password</span>
+				<span className="updatepwdform-subtext">
+					Please Update Your Password
+				</span>
 			</div>
 
 			<form onSubmit={formik.handleSubmit}>
@@ -126,7 +128,9 @@ const UpdatePasswordForm = () => {
 					value={formik.values.old_password}
 					onChange={formik.handleChange}
 					onBlur={formik.handleBlur}
-					error={formik.touched.old_password && Boolean(formik.errors.old_password)}
+					error={
+						formik.touched.old_password && Boolean(formik.errors.old_password)
+					}
 					helperText={formik.touched.old_password && formik.errors.old_password}
 				/>
 				<CssTextField
@@ -139,7 +143,9 @@ const UpdatePasswordForm = () => {
 					value={formik.values.new_password}
 					onChange={formik.handleChange}
 					onBlur={formik.handleBlur}
-					error={formik.touched.new_password && Boolean(formik.errors.new_password)}
+					error={
+						formik.touched.new_password && Boolean(formik.errors.new_password)
+					}
 					helperText={formik.touched.new_password && formik.errors.new_password}
 				/>
 				<CssTextField
@@ -153,10 +159,12 @@ const UpdatePasswordForm = () => {
 					onChange={formik.handleChange}
 					onBlur={formik.handleBlur}
 					error={
-						formik.touched.confirm_new_password && Boolean(formik.errors.confirm_new_password)
+						formik.touched.confirm_new_password &&
+						Boolean(formik.errors.confirm_new_password)
 					}
 					helperText={
-						formik.touched.confirm_new_password && formik.errors.confirm_new_password
+						formik.touched.confirm_new_password &&
+						formik.errors.confirm_new_password
 					}
 				/>
 

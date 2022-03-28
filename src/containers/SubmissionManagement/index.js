@@ -107,7 +107,9 @@ function SubmissionManagement() {
 	];
 	const loadData = async () => {
 		await AuthRequest.get(
-			`${API_PATHS.ADMIN.SUB}?papesize=${pagination.pageSize}?page=${pagination.page + 1}`,
+			`${API_PATHS.ADMIN.SUB}?papesize=${pagination.pageSize}?page=${
+				pagination.page + 1
+			}`,
 		)
 			.then((res) => {
 				if (res?.data?.succeeded) {
@@ -138,7 +140,10 @@ function SubmissionManagement() {
 	const onUpdate = async (value) => {
 		handleClose();
 		try {
-			const res = await AuthRequest.put(`submission-management/${value?.id}`, value);
+			const res = await AuthRequest.put(
+				`submission-management/${value?.id}`,
+				value,
+			);
 			if (res?.data?.succeeded) {
 				loadData();
 			}
@@ -179,7 +184,9 @@ function SubmissionManagement() {
 
 	const CustomToolbar = () => {
 		return (
-			<GridToolbarContainer sx={{ fontWeight: 700, display: "flex", justifyContent: "ceter" }}>
+			<GridToolbarContainer
+				sx={{ fontWeight: 700, display: "flex", justifyContent: "ceter" }}
+			>
 				<GridToolbarColumnsButton />
 				<GridToolbarFilterButton />
 				<GridToolbarDensitySelector />

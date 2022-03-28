@@ -1,9 +1,11 @@
-.description-field:focus-visible{
-    border: 1px solid red;
+.description-field:focus-visible {
+	border: 1px solid red;
 }
-.description-field:focus{
-    border: 1px solid red;
+
+.description-field:focus {
+	border: 1px solid red;
 }
-.edit-input-file > .MuiDropzoneArea-root{
-    min-height: 150px;
+
+.edit-input-file>.MuiDropzoneArea-root {
+	min-height: 150px;
 }

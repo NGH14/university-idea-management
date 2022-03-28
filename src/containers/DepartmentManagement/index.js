@@ -23,10 +23,10 @@ import ModalDepartmentManagement from "./modal/ModalDepartmentManagement";
 import { Column } from "./model/Column";
 
 const toastMessages = {
-	SUC_DEP_ADDED: "Create department successful!!",
-	SUC_DEP_EDITED: "Update department successful!!",
-	SUC_DEP_DEL: "Delete department successful!!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again!!",
+	SUC_DEP_ADDED: "Create department successful !!",
+	SUC_DEP_EDITED: "Update department successful !!",
+	SUC_DEP_DEL: "Delete department successful !!",
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
 };
 
 function DepartmentManagement() {
@@ -100,7 +100,11 @@ function DepartmentManagement() {
 				setData(res?.data?.result?.rows);
 				setRowId(null);
 			})
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+			.catch(() =>
+				toast.error(toastMessages.ERR_SERVER_ERROR, {
+					style: { width: "auto" },
+				}),
+			);
 	};
 
 	const renderActionButton = (id) => {
@@ -151,7 +155,11 @@ function DepartmentManagement() {
 				toast.success(toastMessages.SUC_DEP_DEL);
 				loadData();
 			})
-			.catch(() => toast.success(toastMessages.ERR_SERVER_ERROR));
+			.catch(() =>
+				toast.success(toastMessages.ERR_SERVER_ERROR, {
+					style: { width: "auto" },
+				}),
+			);
 	};
 
 	const onUpdate = async (value) => {
@@ -161,7 +169,11 @@ function DepartmentManagement() {
 				toast.success(toastMessages.SUC_DEP_EDITED);
 				loadData();
 			})
-			.catch(() => toast.success(toastMessages.ERR_SERVER_ERROR));
+			.catch(() =>
+				toast.success(toastMessages.ERR_SERVER_ERROR, {
+					style: { width: "auto" },
+				}),
+			);
 	};
 
 	const onCreate = async (value) => {
@@ -170,7 +182,11 @@ function DepartmentManagement() {
 				toast.success(toastMessages.SUC_DEP_ADDED);
 				loadData();
 			})
-			.catch(() => toast.success(toastMessages.ERR_SERVER_ERROR));
+			.catch(() =>
+				toast.success(toastMessages.ERR_SERVER_ERROR, {
+					style: { width: "auto" },
+				}),
+			);
 	};
 
 	const onCloseModal = () => {
@@ -219,8 +235,12 @@ function DepartmentManagement() {
 				<DataGridPro
 					components={{
 						NoRowsOverlay: CustomNoRowsOverlay,
-						ColumnSortedDescendingIcon: () => <ExpandMoreIcon className="icon" />,
-						ColumnSortedAscendingIcon: () => <ExpandLessIcon className="icon" />,
+						ColumnSortedDescendingIcon: () => (
+							<ExpandMoreIcon className="icon" />
+						),
+						ColumnSortedAscendingIcon: () => (
+							<ExpandLessIcon className="icon" />
+						),
 					}}
 					rows={data || []} // dataDemo
 					columns={columns}
