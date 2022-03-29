@@ -18,11 +18,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import React, { useContext, useEffect } from "react";
 import {
-  BsBookmarksFill,
-  BsChevronContract,
-  BsChevronExpand,
-  BsFillPeopleFill,
-  BsHouseFill,
+	BsBookmarksFill,
+	BsChevronContract,
+	BsChevronExpand,
+	BsFillPeopleFill,
+	BsHouseFill,
 } from "react-icons/bs";
 import { FaBuilding } from "react-icons/fa";
 import { RiDiscussFill } from "react-icons/ri";
@@ -349,28 +349,34 @@ export default function Sidebar(props) {
 							width: "100%",
 						}}
 					>
-						<ListItemText
-							disableTypography
-							sx={{
-								fontSize: "0.7rem",
-								lineHeight: "1.125rem",
-								color: "#888",
-								fontFamily: "Poppins, sans-serif",
-								fontWeight: "700",
-								opacity: open ? 1 : 0,
-							}}
-						>
-							Manage
-						</ListItemText>
-						<ListItemIcon
-							sx={{
-								minWidth: 0,
-								ml: open ? 3 : "auto",
-								fontWeight: "700",
-							}}
-						>
-							{managementPage ? <BsChevronContract /> : <BsChevronExpand />}
-						</ListItemIcon>
+						{state?.dataUser.role === ROLES.STAFF ? (
+							<></>
+						) : (
+							<>
+								<ListItemText
+									disableTypography
+									sx={{
+										fontSize: "0.7rem",
+										lineHeight: "1.125rem",
+										color: "#888",
+										fontFamily: "Poppins, sans-serif",
+										fontWeight: "700",
+										opacity: open ? 1 : 0,
+									}}
+								>
+									Manage
+								</ListItemText>
+								<ListItemIcon
+									sx={{
+										minWidth: 0,
+										ml: open ? 3 : "auto",
+										fontWeight: "700",
+									}}
+								>
+									{managementPage ? <BsChevronContract /> : <BsChevronExpand />}
+								</ListItemIcon>
+							</>
+						)}
 					</ListItemButton>
 					<Collapse in={managementPage} timeout="auto" unmountOnExit>
 						{itemsManagementList.map((item, index) => {
