@@ -73,9 +73,6 @@ export default function UpdatePassword() {
 					</Stack>
 				</Box>
 			</div>
-			{/* <div className="updatepassword-wrapper">
-				{changePasswordMoDal && <UpdatePasswordForm />}
-			</div> */}
 
 			<TabProfile />
 		</div>

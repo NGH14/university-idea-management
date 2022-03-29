@@ -1,17 +1,20 @@
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, Bounce } from "react-toastify";
 
 export default function ToastifyProvider() {
 	return (
 		<ToastContainer
-			theme="dark"
+			transition={Bounce}
+			theme="colored"
 			position="top-right"
 			autoClose={5000}
 			hideProgressBar={false}
 			newestOnTop={true}
 			closeOnClick={true}
 			rtl={false}
-			pauseOnHover={false}
+			pauseOnHover={true}
 			pauseOnFocusLoss={false}
+			draggable={true}
+			draggablePercent={20}
 		/>
 	);
 }

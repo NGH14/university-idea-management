@@ -1,20 +1,33 @@
-.updatepwdform {
-	margin: auto;
-	margin-inline: 3rem;
-	max-width: 100%;
-	padding: 10px 15px;
+.updatepwdform_title {
+	font-weight: 500;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.updatepwdform_element
+	.MuiFormControl-root:focus-within
+	.MuiFormHelperText-root {
+	display: none;
 }
 
-.updatepwdform-textcontent {
-	margin-bottom: 2rem;
+.updatepwdform_element {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	margin: 30px auto;
 }
-
-.updatepwdform-subtext {
-	font-style: normal;
-	font-weight: normal;
-	font-size: 16px;
-	line-height: 24px;
-	color: #333;
+.updatepwdform .MuiInputLabel-root {
+	overflow: visible;
+	max-width: 350px;
+	width: 350px;
+	font-weight: 600;
+}
+.updatepwdform_footer {
+	display: flex;
+	justify-content: flex-end;
+	flex-wrap: wrap;
+	gap: 5px;
+	margin-top: 10px;
 }
 
 .updatepwdform-updatepwdby {
@@ -56,6 +69,13 @@
 	line-height: 72px;
 }
 
+@media (max-width: 600px) {
+	.updatepwdform_element {
+		gap: 2px;
+		flex-wrap: wrap;
+	}
+}
+
 @media only screen and (max-width: 400px) {
 	html {
 		font-size: 16px;
@@ -67,5 +87,15 @@
 
 	.updatepwdform-textcontent {
 		font-size: 20px;
+	}
+}
+
+@media (max-width: 600px) {
+	.updatepwdform_footer > * {
+		width: 100%;
+	}
+	.updatepwdform_footer {
+		gap: 2px;
+		margin-top: 5px;
 	}
 }

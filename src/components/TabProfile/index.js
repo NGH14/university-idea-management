@@ -71,7 +71,7 @@ function GeneralList() {
 		<List
 			sx={{
 				flex: "1 1 100%",
-
+				fontSize: 18,
 				maxWidth: "100%",
 				bgcolor: "background.paper",
 			}}
@@ -117,7 +117,14 @@ function ContactList() {
 		},
 	];
 	return (
-		<List sx={{ flex: "1", maxWidth: "100%", bgcolor: "background.paper" }}>
+		<List
+			sx={{
+				flex: "1",
+				maxWidth: "100%",
+				bgcolor: "background.paper",
+				fontSize: 18,
+			}}
+		>
 			{ContactListItems.map((_value, _index) => {
 				const { text, describe } = _value;
 				return (
@@ -180,9 +187,10 @@ function a11yProps(index) {
 
 function PasswordTab() {
 	const [visibleModal, setvisibleModal] = useState(false);
-	const onClose = () => {
+
+	const onClose = React.useCallback(() => {
 		setvisibleModal(false);
-	};
+	});
 	const onOpen = () => {
 		setvisibleModal(true);
 	};
@@ -209,12 +217,16 @@ function PasswordTab() {
 							borderRadius: "5px",
 							overflow: "auto",
 							maxHeight: "100%",
-							" @media (max-width: 600px)": {
+							" @media (max-width: 1000px)": {
+								display: "flex",
+								alignItems: "center",
+
 								width: "100%",
+								height: "100%",
 							},
 						}}
 					>
-						<UpdatePasswordForm />;
+						<UpdatePasswordForm onClose={onClose} />
 					</Box>
 				</Modal>
 			</>
@@ -235,7 +247,11 @@ function PasswordTab() {
 				fullWidth
 			>
 				<CardHeader
-					sx={{ flexWrap: "wrap-reverse", gap: "10px" }}
+					sx={{
+						flexWrap: "wrap-reverse",
+						gap: "15px",
+						alignItems: "center",
+					}}
 					action={
 						<Button
 							variant="contained"
@@ -255,7 +271,13 @@ function PasswordTab() {
 						</Button>
 					}
 					title={
-						<div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+						<div
+							style={{
+								display: "flex",
+								alignItems: "center",
+								gap: "10px",
+							}}
+						>
 							<VscKey />
 							<p
 								style={{
@@ -289,7 +311,7 @@ function AboutTab() {
 			<div
 				style={{
 					display: "grid",
-					gridTemplateColumns: "repeat(auto-fit, minmax(400px,1fr))",
+					gridTemplateColumns: "repeat(auto-fit, minmax(300px,1fr))",
 
 					gap: 1,
 				}}
@@ -337,7 +359,7 @@ function AboutTab() {
 	);
 }
 
-function TabProfile({ prop }) {
+function TabProfile() {
 	const [value, setValue] = React.useState(0);
 
 	const handleChange = (event, newValue) => {

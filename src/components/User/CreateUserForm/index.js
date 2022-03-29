@@ -115,7 +115,7 @@ function CreateUserForm(prop) {
 			.catch(() =>
 				toast.error(toastMessages.ERR_SERVER_ERROR, {
 					style: { width: "auto" },
-				}),
+				})
 			);
 	};
 
@@ -130,7 +130,7 @@ function CreateUserForm(prop) {
 			.catch(() =>
 				toast.error(toastMessages.ERR_SERVER_ERROR, {
 					style: { width: "auto" },
-				}),
+				})
 			);
 	};
 

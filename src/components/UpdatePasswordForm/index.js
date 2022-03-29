@@ -8,6 +8,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
+import InputLabel from "@mui/material/InputLabel";
 
 import { AuthRequest } from "../../common/AppUse";
 import { API_PATHS, URL_PATHS } from "../../common/env";
@@ -48,21 +51,18 @@ const CssTextField = styled(TextField)({
 	},
 });
 
-const ColorButton = styled(Button)(({ bgcolor, hoverbgcolor, textcolor }) => ({
+const ColorButton = styled(Button)(() => ({
 	fontFamily: "Poppins",
 	fontSize: "13px",
-	fontWeight: "600",
+	fontWeight: "bold",
 	textTransform: "none",
-	lineHeight: "30px",
+	minWidth: 200,
+	display: "inline-block",
 
-	color: textcolor || "#fff",
-	margin: "1rem auto 1.75rem",
+	margin: "10px 0",
 	padding: "10px",
-	backgroundColor: bgcolor || "#333",
 
-	"&:hover": { backgroundColor: hoverbgcolor || "#000" },
 	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
-	"&:disabled:hover ": { backgroundColor: "rgba(0, 0, 0, 0.12)" },
 }));
 
 const validationSchema = yup.object({
@@ -73,11 +73,11 @@ const validationSchema = yup.object({
 	new_password: yup
 		.string("Enter your new password")
 		.min(4, "Password should be of minimum 4 characters length")
-		.required("Password is required"),
+		.required("New password is required"),
 	confirm_new_password: yup
 		.string()
 		.oneOf([yup.ref("new_password"), null], "Passwords must match")
-		.required("Password is required"),
+		.required("Confirm password is required"),
 });
 
 const initialValues = {
@@ -88,12 +88,13 @@ const initialValues = {
 
 // ─── MAIN ───────────────────────────────────────────────────────────────────────
 //
-const UpdatePasswordForm = () => {
+const UpdatePasswordForm = (props) => {
 	const navigate = useNavigate();
 	const [buttonState, setButtonState] = useState({
 		disable: false,
 		loading: false,
 	});
+	const { onClose } = props;
 
 	const formik = useFormik({
 		initialValues: initialValues,
@@ -110,74 +111,97 @@ const UpdatePasswordForm = () => {
 
 	return (
 		<div className="updatepwdform">
-			<div className="updatepwdform-textcontent">
-				<h1 className="updatepwdform-heading">UIM</h1>
-				<span className="updatepwdform-subtext">
-					Please Update Your Password
-				</span>
+			<div className="updatepwdform_title">
+				<h2>Update Password</h2>
+				<IconButton>
+					<CloseIcon onClick={() => onClose()} />
+				</IconButton>
 			</div>
+			<br />
 
 			<form onSubmit={formik.handleSubmit}>
-				<CssTextField
-					fullWidth
-					id="old_password"
-					label="Old Password"
-					name="old_password"
-					margin="normal"
-					type="password"
-					value={formik.values.old_password}
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					error={
-						formik.touched.old_password && Boolean(formik.errors.old_password)
-					}
-					helperText={formik.touched.old_password && formik.errors.old_password}
-				/>
-				<CssTextField
-					fullWidth
-					id="new_password"
-					margin="normal"
-					label="New Password"
-					type="password"
-					name="new_password"
-					value={formik.values.new_password}
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					error={
-						formik.touched.new_password && Boolean(formik.errors.new_password)
-					}
-					helperText={formik.touched.new_password && formik.errors.new_password}
-				/>
-				<CssTextField
-					fullWidth
-					id="confirm_new_password"
-					margin="normal"
-					label="Confirm New Password"
-					type="password"
-					name="confirm_new_password"
-					value={formik.values.confirm_new_password}
-					onChange={formik.handleChange}
-					onBlur={formik.handleBlur}
-					error={
-						formik.touched.confirm_new_password &&
-						Boolean(formik.errors.confirm_new_password)
-					}
-					helperText={
-						formik.touched.confirm_new_password &&
-						formik.errors.confirm_new_password
-					}
-				/>
+				<div className="updatepwdform_element">
+					<InputLabel htmlFor="old_password" required>
+						Old Password:
+					</InputLabel>
+					<CssTextField
+						fullWidth
+						variant="standard"
+						id="old_password"
+						name="old_password"
+						margin="normal"
+						type="password"
+						value={formik.values.old_password}
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						error={
+							formik.touched.old_password && Boolean(formik.errors.old_password)
+						}
+						helperText={
+							formik.touched.old_password && formik.errors.old_password
+						}
+					/>
+				</div>
+				<div className="updatepwdform_element">
+					<InputLabel htmlFor="new_password" required>
+						New Password
+					</InputLabel>
+					<CssTextField
+						variant="standard"
+						fullWidth
+						id="new_password"
+						margin="normal"
+						type="password"
+						name="new_password"
+						value={formik.values.new_password}
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						error={
+							formik.touched.new_password && Boolean(formik.errors.new_password)
+						}
+						helperText={
+							formik.touched.new_password && formik.errors.new_password
+						}
+					/>
+				</div>
+				<div className="updatepwdform_element">
+					<InputLabel htmlFor="confirm_new_password" required>
+						Confirm Password
+					</InputLabel>
+					<CssTextField
+						variant="standard"
+						fullWidth
+						id="confirm_new_password"
+						margin="normal"
+						type="password"
+						name="confirm_new_password"
+						value={formik.values.confirm_new_password}
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						error={
+							formik.touched.confirm_new_password &&
+							Boolean(formik.errors.confirm_new_password)
+						}
+						helperText={
+							formik.touched.confirm_new_password &&
+							formik.errors.confirm_new_password
+						}
+					/>
+				</div>
 
-				<ColorButton
-					variant="contained"
-					type="submit"
-					loading={buttonState?.loading}
-					loadingPosition="end"
-					disabled={buttonState.disable}
-					fullWidth
-				>
-					Update password
-				</ColorButton>
+				<div className="updatepwdform_footer">
+					<ColorButton variant="outlined" onClick={() => onClose()}>
+						Cancel
+					</ColorButton>
+					<ColorButton
+						variant="contained"
+						type="submit"
+						loading={buttonState?.loading}
+						disabled={buttonState.disable}
+					>
+						Update password
+					</ColorButton>
+				</div>
 			</form>
 		</div>
 	);
