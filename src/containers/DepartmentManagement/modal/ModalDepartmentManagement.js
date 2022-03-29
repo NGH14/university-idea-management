@@ -2,11 +2,14 @@ import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import { AuthRequest } from "../../../common/AppUse";
-import CreateForm from "../../../components/Department/CreateForm";
-import DetailForm from "../../../components/Department/DetailForm";
-import EditForm from "../../../components/Department/EditForm";
+import { API_PATHS, DEV_CONFIGS } from "../../../common/env";
+import CreateDepartmentForm from "../../../components/Department/CreateDepartmentForm";
+import DetailDepartmentForm from "../../../components/Department/DetailDepartmentForm";
+import EditDepartmentForm from "../../../components/Department/EditDepartmentForm";
+import { dataDemo } from "../FakeData";
 
 const style = {
 	position: "relative",
@@ -24,31 +27,52 @@ const style = {
 		width: "100%",
 	},
 };
+
+const toastMessages = {
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+	ERR_DEP_NOT_FOUND: "Department not found !!",
+};
+
 const ModalDepartmentManagement = (props) => {
 	const { visible, onClose, onCreate, onUpdate, action, rowId } = props;
 	const [initialValue, setInitialValue] = useState([]);
+
 	useEffect(() => {
 		if (action !== "create") {
 			loadData();
 		}
 	}, [action]);
+
 	const loadData = async () => {
-		try {
-			const res = await AuthRequest.get(
-				`department-management/department/${rowId}`,
-			);
-			if (res?.data?.succeeded) {
-				setInitialValue(res?.data?.result);
+		if (DEV_CONFIGS.IS_DEV) {
+			let user = dataDemo.find((_) => _.id === rowId);
+			if (!user) {
+				toast.error(toastMessages.ERR_DEP_NOT_FOUND);
+				return;
 			}
-		} catch {}
+
+			setInitialValue(user);
+			return;
+		}
+
+		await AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_DEP}/${rowId}`)
+			.then((res) => setInitialValue(res?.data?.result))
+			.catch(() =>
+				toast.error(toastMessages.ERR_SERVER_ERROR, {
+					style: { width: "auto" },
+				}),
+			);
 	};
+
 	const renderForm = () => {
 		switch (action) {
 			case "create":
-				return <CreateForm onClose={() => onClose()} onCreate={onCreate} />;
+				return (
+					<CreateDepartmentForm onClose={() => onClose()} onCreate={onCreate} />
+				);
 			case "update":
 				return (
-					<EditForm
+					<EditDepartmentForm
 						onClose={() => onClose()}
 						onUpdate={onUpdate}
 						initialValue={initialValue}
@@ -56,10 +80,16 @@ const ModalDepartmentManagement = (props) => {
 				);
 			case "detail":
 				return (
-					<DetailForm onClose={() => onClose()} initialValue={initialValue} />
+					<DetailDepartmentForm
+						onClose={() => onClose()}
+						initialValue={initialValue}
+					/>
 				);
+			default:
+				return;
 		}
 	};
+
 	return (
 		<Modal
 			open={visible}

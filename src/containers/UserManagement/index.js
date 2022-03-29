@@ -97,6 +97,7 @@ function UserManagement() {
 			],
 		},
 	];
+
 	const loadData = async () => {
 		if (DEV_CONFIGS.IS_DEV) {
 			setData(dataDemo);
@@ -104,7 +105,7 @@ function UserManagement() {
 			return;
 		}
 
-		await AuthRequest.get(API_PATHS.ADMIN.USER, {
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_USER, {
 			params: {
 				page: pagination.page + 1,
 				page_size: pagination.pageSize,
@@ -145,7 +146,7 @@ function UserManagement() {
 
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.USER}/${id}`).then(() =>
+				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`).then(() =>
 					sleep(700),
 				),
 				{
@@ -177,9 +178,10 @@ function UserManagement() {
 
 		toast
 			.promise(
-				AuthRequest.put(`${API_PATHS.ADMIN.USER}/${value?.id}`, value).then(
-					() => sleep(700),
-				),
+				AuthRequest.put(
+					`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`,
+					value,
+				).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_USER_EDITED,
@@ -209,7 +211,9 @@ function UserManagement() {
 
 		toast
 			.promise(
-				AuthRequest.post(API_PATHS.ADMIN.USER, value).then(() => sleep(700)),
+				AuthRequest.post(API_PATHS.ADMIN.MANAGE_USER, value).then(() =>
+					sleep(700),
+				),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_USER_ADDED,
@@ -223,9 +227,8 @@ function UserManagement() {
 	};
 
 	const onCloseModal = () => {
-		if (rowId) {
-			setRowId(null);
-		}
+		rowId && setRowId(null);
+
 		setStatus({
 			...status,
 			visibleModal: false,
@@ -235,7 +238,7 @@ function UserManagement() {
 	const CustomToolbar = () => {
 		return (
 			<GridToolbarContainer
-				sx={{ fontWeight: 700, display: "flex", justifyContent: "ceter" }}
+				sx={{ fontWeight: 700, display: "flex", justifyContent: "center" }}
 			>
 				<GridToolbarColumnsButton />
 				<GridToolbarFilterButton />

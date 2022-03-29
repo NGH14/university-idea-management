@@ -1,5 +1,4 @@
-import "../User/DetailUserForm/style.css";
-import "../User/EditUserForm/style.css";
+import "./style.css";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { TextField } from "@mui/material";
@@ -9,6 +8,7 @@ import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import React from "react";
+import * as yup from "yup";
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -54,15 +54,23 @@ const ColorButton = styled(Button)(() => ({
 	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
 }));
 
-function DetailForm(props) {
-	const { onClose, initialValue } = props;
+const validationSchema = yup.object({
+	name: yup.string().required("Full Name is required"),
+});
+
+function EditDepartmentForm(props) {
+	const { onClose, onUpdate, initialValue } = props;
 	const formik = useFormik({
 		initialValues: initialValue || [],
+		validationSchema: validationSchema,
+		onSubmit: (values) => {
+			onUpdate(values);
+		},
 	});
 
 	return (
-		<div className="createuserform">
-			<div className="createuserform_title">
+		<div className="createdepartmentform">
+			<div className="createdepartmentform_title">
 				<h2>Update Department</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -82,16 +90,19 @@ function DetailForm(props) {
 							id="name"
 							name="name"
 							value={formik.values.name}
-							variant="standard"
-							InputProps={{
-								readOnly: true,
-							}}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							error={formik.touched.full_name && Boolean(formik.errors.name)}
+							helperText={formik.touched.name && formik.errors.name}
 						/>
 					</div>
 				</div>
-				<div className="createuserform_footer">
+				<div className="createdepartmentform_footer">
 					<ColorButton variant="outlined" onClick={() => onClose()}>
-						Close
+						Cancel
+					</ColorButton>
+					<ColorButton variant="contained" type="submit">
+						Update
 					</ColorButton>
 				</div>
 			</form>
@@ -99,4 +110,4 @@ function DetailForm(props) {
 	);
 }
 
-export default React.memo(DetailForm);
+export default React.memo(EditDepartmentForm);

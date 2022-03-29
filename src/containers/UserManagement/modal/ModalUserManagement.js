@@ -39,24 +39,23 @@ const ModalUserManagement = (props) => {
 	const [initialValue, setInitialValue] = useState([]);
 
 	useEffect(() => {
-		if (action !== "create") {
-			loadData();
-		}
-	}, [action]);
-
-	const loadData = async () => {
 		if (DEV_CONFIGS.IS_DEV) {
 			let user = dataDemo.find((_) => _.id === rowId);
 			if (!user) {
 				toast.error(toastMessages.ERR_USER_NOT_FOUND);
 				return;
 			}
-			console.log(user);
-
 			setInitialValue(user);
 			return;
 		}
-		await AuthRequest.get(`${API_PATHS.ADMIN.USER}/${rowId}`)
+
+		if (action !== "create") {
+			loadData();
+		}
+	}, [action]);
+
+	const loadData = async () => {
+		await AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_USER}/${rowId}`)
 			.then((res) => setInitialValue(res?.data?.result))
 			.catch(() =>
 				toast.error(toastMessages.ERR_SERVER_ERROR, {

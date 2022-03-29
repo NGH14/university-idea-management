@@ -3,43 +3,65 @@ import moment from "moment";
 export const Column = [
 	{
 		field: "no",
-		headerName: "No.",
+		headerName: "#",
 		disableColumnMenu: true,
 		sortable: false,
-		width: 80,
 		type: "number",
-		// flex: 1,
+		width: 80,
 		align: "center",
 		headerAlign: "center",
-		renderCell: (value) => {
-			return <div>{value.api.getRowIndex(value.id) + 1}</div>;
-		},
+		renderCell: (value) => <div>{value.api.getRowIndex(value.id) + 1}</div>,
 	},
 	{
 		field: "name",
-		headerAlign: "center",
 		headerName: "Department",
+		align: "center",
+		headerAlign: "center",
 		disableColumnMenu: true,
-		sortable: true,
 		width: "100%",
 		type: "string",
 		minWidth: 200,
 		flex: 1,
+		sortable: true,
 	},
 	{
 		field: "created_date",
-		headerAlign: "center",
-		headerName: "Create at",
+		headerName: "Create Date",
 		disableColumnMenu: true,
 		sortable: false,
-		width: "auto",
-		minWidth: 200,
+		align: "center",
+		headerAlign: "center",
+		width: 150,
 		type: "date",
-		renderCell: (value) => {
-			return (
-				<div>{moment(value?.row?.created_date).format("DD/MM/YYYY hh:mm")}</div>
-			);
-		},
+		renderCell: (value) => (
+			<div>{moment(value?.row?.created_date).format("DD/MM/YYYY hh:mm")}</div>
+		),
+		flex: 1,
+	},
+	{
+		field: "modified_date",
+		headerName: "Modified Date",
+		disableColumnMenu: true,
+		sortable: true,
+		align: "center",
+		headerAlign: "center",
+		width: 140,
+		type: "date",
+		renderCell: (value) => (
+			<div>{moment(value?.row?.created_date).format("DD/MM/YYYY hh:mm")}</div>
+		),
+		flex: 1,
+	},
+	{
+		field: "modified_by",
+		headerName: "Modified By",
+		disableColumnMenu: true,
+		align: "center",
+		headerAlign: "center",
+		type: "string",
+		sortable: true,
+		width: 200,
+		renderCell: (value) => <div>{value?.row?.modified_by}</div>,
 		flex: 1,
 	},
 ];

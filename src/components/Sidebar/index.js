@@ -18,16 +18,16 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import React, { useContext, useEffect } from "react";
 import {
-	BsBookmarksFill,
-	BsHouseFill,
-	BsFillPeopleFill,
-	BsChevronContract,
-	BsChevronExpand,
+  BsBookmarksFill,
+  BsChevronContract,
+  BsChevronExpand,
+  BsFillPeopleFill,
+  BsHouseFill,
 } from "react-icons/bs";
 import { FaBuilding } from "react-icons/fa";
 import { RiDiscussFill } from "react-icons/ri";
 import { useLocation } from "react-router";
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate } from "react-router-dom";
 
 import UniTextLogo from "../../assets/images/2021-Greenwich-Black-Eng.webp";
 import { ROLES, URL_PATHS } from "../../common/env";
@@ -57,7 +57,11 @@ export default function Sidebar(props) {
 		{
 			text: "Profile",
 			icon: <PersonIcon fontSize="small" />,
-			onClick: () => navigate(URL_PATHS.PROFILE),
+			onClick: () =>
+				navigate({
+					pathname: URL_PATHS.PROFILE,
+					search: `${createSearchParams({ email: state?.dataUser?.email })}`,
+				}),
 		},
 		{
 			text: "Logout",

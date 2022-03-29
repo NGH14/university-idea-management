@@ -1,4 +1,4 @@
-import "../User/EditUserForm/style.css";
+import "./style.css";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { TextField } from "@mui/material";
@@ -58,20 +58,21 @@ const validationSchema = yup.object({
 	name: yup.string().required("Full Name is required"),
 });
 
-function EditForm(props) {
-	const { onClose, onUpdate, initialValue } = props;
+function CreateDepartmentForm(props) {
+	const { onClose, onCreate } = props;
+
 	const formik = useFormik({
-		initialValues: initialValue || [],
+		initialValues: {},
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			onUpdate(values);
+			onCreate(values);
 		},
 	});
 
 	return (
-		<div className="createuserform">
-			<div className="createuserform_title">
-				<h2>Update Department</h2>
+		<div className="createdepartmentform">
+			<div className="createdepartmentform_title">
+				<h2>Create Department</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
 				</IconButton>
@@ -92,17 +93,17 @@ function EditForm(props) {
 							value={formik.values.name}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={formik.touched.full_name && Boolean(formik.errors.name)}
+							error={formik.touched.name && Boolean(formik.errors.name)}
 							helperText={formik.touched.name && formik.errors.name}
 						/>
 					</div>
 				</div>
-				<div className="createuserform_footer">
+				<div className="createdepartmentform_footer">
 					<ColorButton variant="outlined" onClick={() => onClose()}>
 						Cancel
 					</ColorButton>
 					<ColorButton variant="contained" type="submit">
-						Update
+						Create
 					</ColorButton>
 				</div>
 			</form>
@@ -110,4 +111,4 @@ function EditForm(props) {
 	);
 }
 
-export default React.memo(EditForm);
+export default React.memo(CreateDepartmentForm);

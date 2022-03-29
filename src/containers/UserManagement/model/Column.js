@@ -10,10 +10,7 @@ export const Column = [
 		width: 80,
 		align: "center",
 		headerAlign: "center",
-
-		renderCell: (value) => {
-			return <div>{value.api.getRowIndex(value.id) + 1}</div>;
-		},
+		renderCell: (value) => <div>{value.api.getRowIndex(value.id) + 1}</div>,
 	},
 	{
 		field: "full_name",
@@ -59,19 +56,17 @@ export const Column = [
 		field: "date_of_birth",
 		headerName: "Birthday",
 		disableColumnMenu: true,
-		sortable: false,
+		sortable: true,
 		align: "center",
 		headerAlign: "center",
 		width: 140,
-		renderCell: (value) => {
-			return (
-				<div>
-					{value?.row?.date_of_birth
-						? moment(value?.row?.date_of_birth).format("DD/MM/YYYY")
-						: null}
-				</div>
-			);
-		},
+		renderCell: (value) => (
+			<div>
+				{value?.row?.date_of_birth
+					? moment(value?.row?.date_of_birth).format("DD/MM/YYYY")
+					: null}
+			</div>
+		),
 		type: "date",
 	},
 ];

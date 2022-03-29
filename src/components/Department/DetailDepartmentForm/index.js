@@ -1,4 +1,4 @@
-import "../User/EditUserForm/style.css";
+import "./style.css";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { TextField } from "@mui/material";
@@ -8,7 +8,6 @@ import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import React from "react";
-import * as yup from "yup";
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -54,24 +53,17 @@ const ColorButton = styled(Button)(() => ({
 	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
 }));
 
-const validationSchema = yup.object({
-	name: yup.string().required("Full Name is required"),
-});
+function DetailDepartmentForm(props) {
+	const { onClose, initialValue } = props;
 
-function CreateForm(props) {
-	const { onClose, onCreate } = props;
 	const formik = useFormik({
-		initialValues: {},
-		validationSchema: validationSchema,
-		onSubmit: (values) => {
-			onCreate(values);
-		},
+		initialValues: initialValue || [],
 	});
 
 	return (
 		<div className="createuserform">
 			<div className="createuserform_title">
-				<h2>Create Department</h2>
+				<h2>Update Department</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
 				</IconButton>
@@ -90,19 +82,16 @@ function CreateForm(props) {
 							id="name"
 							name="name"
 							value={formik.values.name}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							error={formik.touched.name && Boolean(formik.errors.name)}
-							helperText={formik.touched.name && formik.errors.name}
+							variant="standard"
+							InputProps={{
+								readOnly: true,
+							}}
 						/>
 					</div>
 				</div>
 				<div className="createuserform_footer">
 					<ColorButton variant="outlined" onClick={() => onClose()}>
-						Cancel
-					</ColorButton>
-					<ColorButton variant="contained" type="submit">
-						Create
+						Close
 					</ColorButton>
 				</div>
 			</form>
@@ -110,4 +99,4 @@ function CreateForm(props) {
 	);
 }
 
-export default React.memo(CreateForm);
+export default React.memo(DetailDepartmentForm);
