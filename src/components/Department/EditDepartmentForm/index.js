@@ -7,8 +7,9 @@ import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import * as yup from "yup";
+import { toast } from "react-toastify";
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -54,19 +55,30 @@ const ColorButton = styled(Button)(() => ({
 	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
 }));
 
+const toastMessages = {
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+};
+
 const validationSchema = yup.object({
-	name: yup.string().required("Full Name is required"),
+	name: yup.string().required("Department's name is required"),
 });
 
 function EditDepartmentForm(props) {
 	const { onClose, onUpdate, initialValue } = props;
+
 	const formik = useFormik({
-		initialValues: initialValue || [],
+		initialValues: initialValue,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
 			onUpdate(values);
 		},
 	});
+
+	useEffect(() => {
+		if (formik?.values?.length < 1) {
+			toast.error(toastMessages.ERR_SERVER_ERROR, { style: { width: "auto" } });
+		}
+	}, []);
 
 	return (
 		<div className="createdepartmentform">
@@ -92,7 +104,7 @@ function EditDepartmentForm(props) {
 							value={formik.values.name}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={formik.touched.full_name && Boolean(formik.errors.name)}
+							error={formik.touched.name && Boolean(formik.errors.name)}
 							helperText={formik.touched.name && formik.errors.name}
 						/>
 					</div>

@@ -21,10 +21,6 @@ import * as yup from "yup";
 import { AuthRequest } from "../../../common/AppUse";
 import { API_PATHS, DEV_CONFIGS } from "../../../common/env";
 
-const toastMessages = {
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
-};
-
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
 		fontSize: "14px",
@@ -69,6 +65,10 @@ const ColorButton = styled(Button)(() => ({
 	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
 }));
 
+const toastMessages = {
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+};
+
 const validationSchema = yup.object({
 	full_name: yup.string().required("Full Name is required"),
 	email: yup.string().email("Email is invalid").required("Email is required"),
@@ -83,7 +83,7 @@ function EditUserForm(props) {
 	const [roleOptions, setRoles] = useState([]);
 
 	const formik = useFormik({
-		initialValues: initialValue || {},
+		initialValues: initialValue,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
 			onUpdate(values);
@@ -91,8 +91,9 @@ function EditUserForm(props) {
 	});
 
 	useEffect(() => {
-		if (formik?.values === {}) {
+		if (formik?.values?.length < 1) {
 			toast.error(toastMessages.ERR_SERVER_ERROR, { style: { width: "auto" } });
+			return;
 		}
 
 		getDepartments();

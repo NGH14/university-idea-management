@@ -88,9 +88,7 @@ const ModalUserManagement = (props) => {
 		}
 	};
 
-	if (action !== "create" && _.isEmpty(initialValue)) {
-		return <CircularProgress size={100} />;
-	}
+	if (action !== "create" && _.isEmpty(initialValue)) return null;
 
 	return (
 		<Modal

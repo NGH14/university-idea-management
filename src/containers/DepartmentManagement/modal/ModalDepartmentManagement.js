@@ -1,5 +1,6 @@
 import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
+import _ from "lodash";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -38,23 +39,22 @@ const ModalDepartmentManagement = (props) => {
 	const [initialValue, setInitialValue] = useState([]);
 
 	useEffect(() => {
+		if (DEV_CONFIGS.IS_DEV) {
+			let deps = dataDemo.find((_) => _.id === rowId);
+			if (!deps) {
+				toast.error(toastMessages.ERR_DEP_NOT_FOUND);
+				return;
+			}
+			setInitialValue(deps);
+			return;
+		}
+
 		if (action !== "create") {
 			loadData();
 		}
 	}, [action]);
 
 	const loadData = async () => {
-		if (DEV_CONFIGS.IS_DEV) {
-			let user = dataDemo.find((_) => _.id === rowId);
-			if (!user) {
-				toast.error(toastMessages.ERR_DEP_NOT_FOUND);
-				return;
-			}
-
-			setInitialValue(user);
-			return;
-		}
-
 		await AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_DEP}/${rowId}`)
 			.then((res) => setInitialValue(res?.data?.result))
 			.catch(() =>
@@ -89,6 +89,8 @@ const ModalDepartmentManagement = (props) => {
 				return;
 		}
 	};
+
+	if (action !== "create" && _.isEmpty(initialValue)) return null;
 
 	return (
 		<Modal

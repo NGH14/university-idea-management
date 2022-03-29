@@ -111,20 +111,6 @@ function DepartmentManagement() {
 	};
 
 	const onDelete = async (id) => {
-		if (DEV_CONFIGS.IS_DEV) {
-			toast
-				.promise(sleep(700), {
-					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_DEP_DEL,
-					error: toastMessages.ERR_SERVER_ERROR,
-				})
-				.then(() => {
-					setStatus({ ...status, visibleModal: false });
-					loadData();
-				});
-			return;
-		}
-
 		toast
 			.promise(
 				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_DEP}/${id}`).then(() =>
@@ -143,26 +129,11 @@ function DepartmentManagement() {
 	};
 
 	const onUpdate = async (value) => {
-		if (DEV_CONFIGS.IS_DEV) {
-			toast
-				.promise(sleep(700), {
-					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_DEP_EDITED,
-					error: toastMessages.ERR_SERVER_ERROR,
-				})
-				.then(() => {
-					setStatus({ ...status, visibleModal: false });
-					loadData();
-				});
-			return;
-		}
-
 		toast
 			.promise(
-				AuthRequest.put(
-					`${API_PATHS.ADMIN.MANAGE_DEP}/${value?.id}`,
-					value,
-				).then(() => sleep(700)),
+				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_DEP}/${value?.id}`, {
+					name: value?.name,
+				}).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_DEP_EDITED,
@@ -176,20 +147,6 @@ function DepartmentManagement() {
 	};
 
 	const onCreate = async (value) => {
-		if (DEV_CONFIGS.IS_DEV) {
-			toast
-				.promise(sleep(700), {
-					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_DEP_ADDED,
-					error: toastMessages.ERR_SERVER_ERROR,
-				})
-				.then(() => {
-					setStatus({ ...status, visibleModal: false });
-					loadData();
-				});
-			return;
-		}
-
 		toast
 			.promise(
 				AuthRequest.post(API_PATHS.ADMIN.MANAGE_DEP, value).then(() =>

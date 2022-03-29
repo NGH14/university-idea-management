@@ -11,11 +11,11 @@ import { IconButton } from "@mui/material";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import {
-  GridToolbarColumnsButton,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarExport,
-  GridToolbarFilterButton,
+	GridToolbarColumnsButton,
+	GridToolbarContainer,
+	GridToolbarDensitySelector,
+	GridToolbarExport,
+	GridToolbarFilterButton,
 } from "@mui/x-data-grid";
 import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
 import * as React from "react";
@@ -130,20 +130,6 @@ function UserManagement() {
 	};
 
 	const onDelete = async (id) => {
-		if (DEV_CONFIGS.IS_DEV) {
-			toast
-				.promise(sleep(700), {
-					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_USER_DEL,
-					error: toastMessages.ERR_SERVER_ERROR,
-				})
-				.then(() => {
-					setStatus({ ...status, visibleModal: false });
-					loadData();
-				});
-			return;
-		}
-
 		toast
 			.promise(
 				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`).then(() =>
@@ -162,20 +148,6 @@ function UserManagement() {
 	};
 
 	const onUpdate = async (value) => {
-		if (DEV_CONFIGS.IS_DEV) {
-			toast
-				.promise(sleep(700), {
-					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_USER_EDITED,
-					error: toastMessages.ERR_SERVER_ERROR,
-				})
-				.then(() => {
-					setStatus({ ...status, visibleModal: false });
-					loadData();
-				});
-			return;
-		}
-
 		toast
 			.promise(
 				AuthRequest.put(
@@ -195,20 +167,6 @@ function UserManagement() {
 	};
 
 	const onCreate = async (value) => {
-		if (DEV_CONFIGS.IS_DEV) {
-			toast
-				.promise(sleep(700), {
-					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_USER_ADDED,
-					error: toastMessages.ERR_SERVER_ERROR,
-				})
-				.then(() => {
-					setStatus({ ...status, visibleModal: false });
-					loadData();
-				});
-			return;
-		}
-
 		toast
 			.promise(
 				AuthRequest.post(API_PATHS.ADMIN.MANAGE_USER, value).then(() =>

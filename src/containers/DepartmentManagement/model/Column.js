@@ -23,6 +23,9 @@ export const Column = [
 		minWidth: 200,
 		flex: 1,
 		sortable: true,
+		renderCell: (value) => (
+			<div style={{ textTransform: "capitalize" }}>{value?.row?.name}</div>
+		),
 	},
 	{
 		field: "created_date",
@@ -31,7 +34,7 @@ export const Column = [
 		sortable: false,
 		align: "center",
 		headerAlign: "center",
-		width: 150,
+		minWidth: 150,
 		type: "date",
 		renderCell: (value) => (
 			<div>{moment(value?.row?.created_date).format("DD/MM/YYYY hh:mm")}</div>
@@ -45,23 +48,11 @@ export const Column = [
 		sortable: true,
 		align: "center",
 		headerAlign: "center",
-		width: 140,
+		minWidth: 150,
 		type: "date",
 		renderCell: (value) => (
 			<div>{moment(value?.row?.created_date).format("DD/MM/YYYY hh:mm")}</div>
 		),
-		flex: 1,
-	},
-	{
-		field: "modified_by",
-		headerName: "Modified By",
-		disableColumnMenu: true,
-		align: "center",
-		headerAlign: "center",
-		type: "string",
-		sortable: true,
-		width: 200,
-		renderCell: (value) => <div>{value?.row?.modified_by}</div>,
 		flex: 1,
 	},
 ];

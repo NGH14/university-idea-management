@@ -61,8 +61,8 @@ function DetailDepartmentForm(props) {
 	});
 
 	return (
-		<div className="createuserform">
-			<div className="createuserform_title">
+		<div className="createdepartmentform">
+			<div className="createdepartmentform_title">
 				<h2>Update Department</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -89,7 +89,7 @@ function DetailDepartmentForm(props) {
 						/>
 					</div>
 				</div>
-				<div className="createuserform_footer">
+				<div className="createdepartmentform_footer">
 					<ColorButton variant="outlined" onClick={() => onClose()}>
 						Close
 					</ColorButton>

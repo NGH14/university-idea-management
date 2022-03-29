@@ -21,6 +21,9 @@ export const Column = [
 		type: "string",
 		minWidth: 200,
 		flex: 1,
+		renderCell: (value) => (
+			<div style={{ textTransform: "capitalize" }}>{value?.row?.full_name}</div>
+		),
 	},
 	{
 		field: "email",
@@ -42,6 +45,11 @@ export const Column = [
 		type: "string",
 		sortable: true,
 		width: 150,
+		renderCell: (value) => (
+			<div style={{ textTransform: "capitalize" }}>
+				{value?.row?.department}
+			</div>
+		),
 	},
 	{
 		field: "role",
@@ -51,6 +59,9 @@ export const Column = [
 		disableColumnMenu: true,
 		sortable: true,
 		width: 150,
+		renderCell: (value) => (
+			<div style={{ textTransform: "capitalize" }}>{value?.row?.role}</div>
+		),
 	},
 	{
 		field: "date_of_birth",
