@@ -131,8 +131,8 @@ function EditUserForm(props) {
 	};
 
 	return (
-		<div className="createuserform">
-			<div className="createuserform_title">
+		<div className="edituserform">
+			<div className="edituserform_title">
 				<h2>Update User</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -299,7 +299,7 @@ function EditUserForm(props) {
 						</LocalizationProvider>
 					</div>
 				</div>
-				<div className="createuserform_footer">
+				<div className="edituserform_footer">
 					<ColorButton variant="outlined" onClick={() => onClose()}>
 						Cancel
 					</ColorButton>

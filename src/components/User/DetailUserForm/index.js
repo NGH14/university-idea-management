@@ -71,8 +71,8 @@ function DetailUserForm(props) {
 	});
 
 	return (
-		<div className="createuserform">
-			<div className="createuserform_title">
+		<div className="detailuserform">
+			<div className="detailuserform_title">
 				<h2>Detail User</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -91,7 +91,7 @@ function DetailUserForm(props) {
 							name="full_name"
 							value={formik.values.full_name}
 							variant="standard"
-							InputProps={{
+							inputProps={{
 								readOnly: true,
 							}}
 						/>
@@ -105,7 +105,7 @@ function DetailUserForm(props) {
 							name="email"
 							margin="normal"
 							value={formik.values.email}
-							InputProps={{
+							inputProps={{
 								readOnly: true,
 							}}
 						/>
@@ -121,7 +121,7 @@ function DetailUserForm(props) {
 							name="department"
 							margin="normal"
 							value={formik.values.department}
-							InputProps={{
+							inputProps={{
 								readOnly: true,
 							}}
 						/>
@@ -136,7 +136,7 @@ function DetailUserForm(props) {
 							name="role"
 							margin="normal"
 							value={formik.values.role}
-							InputProps={{
+							inputProps={{
 								readOnly: true,
 							}}
 						/>
@@ -150,13 +150,13 @@ function DetailUserForm(props) {
 							id="date_of_birth"
 							margin="normal"
 							value={formik.values.date_of_birth}
-							InputProps={{
+							inputProps={{
 								readOnly: true,
 							}}
 						/>
 					</div>
 				</div>
-				<div className="createuserform_footer">
+				<div className="detailuserform_footer">
 					<ColorButton variant="outlined" onClick={() => onClose()}>
 						Close
 					</ColorButton>

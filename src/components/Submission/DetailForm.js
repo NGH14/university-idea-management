@@ -19,7 +19,7 @@ function DetailForm({ initialValue }) {
 						Title{" "}
 					</InputLabel>
 					<TextField
-						InputProps={{
+						inputProps={{
 							readOnly: true,
 						}}
 						style={{ width: "100%", pointerEvents: "none" }}
@@ -40,7 +40,7 @@ function DetailForm({ initialValue }) {
 						Initial Date
 					</InputLabel>
 					<TextField
-						InputProps={{
+						inputProps={{
 							readOnly: true,
 						}}
 						style={{ width: "100%", pointerEvents: "none" }}
@@ -64,7 +64,7 @@ function DetailForm({ initialValue }) {
 						Final Date
 					</InputLabel>
 					<TextField
-						InputProps={{
+						inputProps={{
 							readOnly: true,
 						}}
 						style={{ width: "100%", pointerEvents: "none" }}
@@ -82,7 +82,7 @@ function DetailForm({ initialValue }) {
 						Description
 					</InputLabel>
 					<TextField
-						InputProps={{
+						inputProps={{
 							readOnly: true,
 						}}
 						style={{ width: "100%", pointerEvents: "none" }}

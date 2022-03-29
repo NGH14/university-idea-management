@@ -48,7 +48,7 @@
 		grid-template-columns: 1fr;
 	}
 
-	.createuserform_footer>* {
+	.createdepartmentform_footer>* {
 		width: 100%;
 	}
 }

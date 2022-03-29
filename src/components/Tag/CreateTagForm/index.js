@@ -1,4 +1,4 @@
-import "../User/EditUserForm/style.css";
+import "./style.css";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { TextField } from "@mui/material";
@@ -55,11 +55,12 @@ const ColorButton = styled(Button)(() => ({
 }));
 
 const validationSchema = yup.object({
-	name: yup.string().required("Full Name is required"),
+	name: yup.string().required("Tag's name is required"),
 });
 
 function CreateForm(props) {
 	const { onClose, onCreate } = props;
+
 	const formik = useFormik({
 		initialValues: {},
 		validationSchema: validationSchema,
@@ -69,8 +70,8 @@ function CreateForm(props) {
 	});
 
 	return (
-		<div className="createuserform">
-			<div className="createuserform_title">
+		<div className="createtagform">
+			<div className="createtagform_title">
 				<h2>Create Category</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -97,7 +98,7 @@ function CreateForm(props) {
 						/>
 					</div>
 				</div>
-				<div className="createuserform_footer">
+				<div className="createtagform_footer">
 					<ColorButton variant="outlined" onClick={() => onClose()}>
 						Cancel
 					</ColorButton>

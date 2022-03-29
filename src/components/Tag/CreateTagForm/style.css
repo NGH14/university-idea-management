@@ -1,13 +1,15 @@
-.editdepartmentform_title {
+.createtagform_title {
 	font-weight: 500;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }
 
-.editdepartmentform_footer {
+.createtagform_footer {
 	display: flex;
 	justify-content: flex-end;
+	flex-wrap: wrap;
+	gap: 10px;
 }
 
 .form_grid {
@@ -46,7 +48,7 @@
 		grid-template-columns: 1fr;
 	}
 
-	.editdepartmentform_footer>* {
+	.createuserform_footer>* {
 		width: 100%;
 	}
 }

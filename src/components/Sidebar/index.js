@@ -234,6 +234,7 @@ export default function Sidebar(props) {
 										{state.dataUser.full_name ?? "Username"}
 									</Typography>
 									<Typography
+										style={{ textTransform: "capitalize" }}
 										variant="body2"
 										color="text.secondary"
 										fontSize={12}
@@ -242,7 +243,7 @@ export default function Sidebar(props) {
 											textAlign: "left",
 										}}
 									>
-										{state.dataUser.role || "Admin"}
+										{state.dataUser.role || "Role"}
 									</Typography>
 								</Stack>
 							</ColorButton>
@@ -349,7 +350,8 @@ export default function Sidebar(props) {
 							width: "100%",
 						}}
 					>
-						{state?.dataUser.role === ROLES.STAFF ? (
+						{state?.dataUser.role === ROLES.STAFF ||
+						state?.dataUser.role === ROLES.SUPERVISOR ? (
 							<></>
 						) : (
 							<>

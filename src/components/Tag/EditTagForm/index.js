@@ -1,4 +1,4 @@
-import "../User/EditUserForm/style.css";
+import "./style.css";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { TextField } from "@mui/material";
@@ -58,7 +58,7 @@ const validationSchema = yup.object({
 	name: yup.string().required("Full Name is required"),
 });
 
-function DetailForm(props) {
+function EditForm(props) {
 	const { onClose, onUpdate, initialValue } = props;
 	const formik = useFormik({
 		initialValues: initialValue || [],
@@ -69,8 +69,8 @@ function DetailForm(props) {
 	});
 
 	return (
-		<div className="createuserform">
-			<div className="createuserform_title">
+		<div className="edittagform">
+			<div className="edittagform_title">
 				<h2>Update Category</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -90,14 +90,14 @@ function DetailForm(props) {
 							id="name"
 							name="name"
 							value={formik.values.name}
-							variant="standard"
-							InputProps={{
-								readOnly: true,
-							}}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							error={formik.touched.full_name && Boolean(formik.errors.name)}
+							helperText={formik.touched.name && formik.errors.name}
 						/>
 					</div>
 				</div>
-				<div className="createuserform_footer">
+				<div className="edittagform_footer">
 					<ColorButton variant="outlined" onClick={() => onClose()}>
 						Cancel
 					</ColorButton>
@@ -110,4 +110,4 @@ function DetailForm(props) {
 	);
 }
 
-export default React.memo(DetailForm);
+export default React.memo(EditForm);

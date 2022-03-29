@@ -1,11 +1,11 @@
-.editdepartmentform_title {
+.detailtagform_title {
 	font-weight: 500;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }
 
-.editdepartmentform_footer {
+.detailtagform_footer {
 	display: flex;
 	justify-content: flex-end;
 }
@@ -46,7 +46,7 @@
 		grid-template-columns: 1fr;
 	}
 
-	.editdepartmentform_footer>* {
+	.detailtagform_footer>* {
 		width: 100%;
 	}
 }

@@ -4,9 +4,9 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 
 import { AuthRequest } from "../../../common/AppUse";
-import CreateForm from "../../../components/Tag/CreateForm";
-import DetailForm from "../../../components/Tag/DetailForm";
-import EditForm from "../../../components/Tag/EditForm";
+import CreateForm from "../../../components/Tag/CreateTagForm";
+import DetailTagForm from "../../../components/Tag/DetailTagForm";
+import EditForm from "../../../components/Tag/EditTagForm";
 
 const style = {
 	position: "relative",
@@ -54,7 +54,10 @@ const ModalTagManagement = (props) => {
 				);
 			case "detail":
 				return (
-					<DetailForm onClose={() => onClose()} initialValue={initialValue} />
+					<DetailTagForm
+						onClose={() => onClose()}
+						initialValue={initialValue}
+					/>
 				);
 		}
 	};
