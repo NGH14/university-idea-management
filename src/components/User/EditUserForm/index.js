@@ -214,8 +214,11 @@ function EditUserForm(props) {
 							</MenuItem>
 
 							{depOptions.map((dep) => (
-								<MenuItem value={dep?.name}>
-									{dep?.name?.toUpperCase()}
+								<MenuItem
+									style={{ textTransform: "capitalize" }}
+									value={dep?.name}
+								>
+									{dep?.name}
 								</MenuItem>
 							))}
 						</Select>
@@ -256,7 +259,12 @@ function EditUserForm(props) {
 								none
 							</MenuItem>
 							{roleOptions.map((role) => (
-								<MenuItem value={role.name}>{role.name.toUpperCase()}</MenuItem>
+								<MenuItem
+									style={{ textTransform: "capitalize" }}
+									value={role.name}
+								>
+									{role.name}
+								</MenuItem>
 							))}
 						</Select>
 						<FormHelperText error>

@@ -83,6 +83,7 @@ function UserManagement() {
 				<GridActionsCellItem
 					icon={<EditIcon />}
 					label="Update"
+					disabled={state?.dataUser?.id === params.id ? true : false}
 					onClick={() => onOpenModal(params.id, "update")}
 					showInMenu
 				/>,

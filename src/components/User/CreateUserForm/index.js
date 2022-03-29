@@ -203,7 +203,13 @@ function CreateUserForm(prop) {
 									? undefined
 									: () => (
 											<placeholder>
-												<em style={{ opacity: 0.6, fontSize: 14 }}>
+												<em
+													style={{
+														textTransform: "capitalize",
+														opacity: 0.6,
+														fontSize: 14,
+													}}
+												>
 													-- department --
 												</em>
 											</placeholder>
@@ -214,7 +220,12 @@ function CreateUserForm(prop) {
 							}
 						>
 							{depOptions.map((dep) => (
-								<MenuItem value={dep.name}>{dep.name.toUpperCase()}</MenuItem>
+								<MenuItem
+									style={{ textTransform: "capitalize" }}
+									value={dep.name}
+								>
+									{dep.name}
+								</MenuItem>
 							))}
 						</Select>
 						<FormHelperText error>
@@ -241,7 +252,13 @@ function CreateUserForm(prop) {
 									? undefined
 									: () => (
 											<placeholder>
-												<em style={{ opacity: 0.6, fontSize: 14 }}>
+												<em
+													style={{
+														textTransform: "capitalize",
+														opacity: 0.6,
+														fontSize: 14,
+													}}
+												>
 													-- role --
 												</em>
 											</placeholder>
@@ -250,7 +267,12 @@ function CreateUserForm(prop) {
 							error={formik.touched.role && Boolean(formik.errors.role)}
 						>
 							{roleOptions.map((role) => (
-								<MenuItem value={role.name}>{role.name.toUpperCase()}</MenuItem>
+								<MenuItem
+									style={{ textTransform: "capitalize" }}
+									value={role.name}
+								>
+									{role.name}
+								</MenuItem>
 							))}
 						</Select>
 						<FormHelperText error>
