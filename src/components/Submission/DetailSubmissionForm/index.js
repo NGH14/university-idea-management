@@ -1,9 +1,11 @@
+import "./style.css"
+
 import { TextField } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import { useFormik } from "formik";
 import React from "react";
 
-function DetailForm({ initialValue }) {
+function DetailSubmissionForm({ initialValue }) {
 	const formik = useFormik({
 		initialValues: initialValue || [],
 	});
@@ -95,4 +97,4 @@ function DetailForm({ initialValue }) {
 		</form>
 	);
 }
-export default DetailForm;
+export default DetailSubmissionForm;

@@ -3,8 +3,8 @@ import Box from "@mui/material/Box";
 import * as React from "react";
 import { useEffect, useState } from "react";
 
-import CreateIdeaSubForm from "../../../components/Submission/CreateIdeaSubForm";
-import EditForm from "../../../components/Submission/EditForm";
+import CreateIdeaForm from "../CreateIdeaForm";
+import EditSubmissionForm from "../EditSubmissionForm";
 
 const style = {
 	position: "relative",
@@ -18,17 +18,20 @@ const style = {
 	borderRadius: "5px",
 	overflow: "auto",
 	maxHeight: "100%",
+
 	" @media (max-width: 600px)": {
 		width: "100%",
 	},
 };
-const ModalSubIdea = (props) => {
+
+const ModalSubmissionIdea = (props) => {
 	const { visible, onClose, onCreate, onUpdate, action, initialValue } = props;
+
 	const renderForm = () => {
 		switch (action) {
 			case "create":
 				return (
-					<CreateIdeaSubForm
+					<CreateIdeaForm
 						onClose={() => onClose()}
 						onCreate={onCreate}
 						submissionTitle={initialValue?.title}
@@ -36,14 +39,17 @@ const ModalSubIdea = (props) => {
 				);
 			case "update":
 				return (
-					<EditForm
+					<EditSubmissionForm
 						onClose={() => onClose()}
 						onUpdate={onUpdate}
 						initialValue={initialValue}
 					/>
 				);
+			default:
+				return;
 		}
 	};
+
 	return (
 		<Modal
 			open={visible}
@@ -55,4 +61,5 @@ const ModalSubIdea = (props) => {
 		</Modal>
 	);
 };
-export default React.memo(ModalSubIdea);
+
+export default React.memo(ModalSubmissionIdea);
