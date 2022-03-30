@@ -1,11 +1,11 @@
-.createdepartmentform_title {
+.detaildepartmentform_title {
 	font-weight: 500;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }
 
-.createdepartmentform_footer {
+.detaildepartmentform_footer {
 	display: flex;
 	justify-content: flex-end;
 }
@@ -46,7 +46,7 @@
 		grid-template-columns: 1fr;
 	}
 
-	.createuserform_footer>* {
+	.detaildepartmentform_footer>* {
 		width: 100%;
 	}
 }

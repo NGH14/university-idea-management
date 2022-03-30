@@ -1,4 +1,4 @@
-import "../User/EditUserForm/style.css";
+import "./style.css";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { TextField } from "@mui/material";
@@ -7,7 +7,8 @@ import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
+import { toast } from "react-toastify";
 import * as yup from "yup";
 
 const CssTextField = styled(TextField)({
@@ -54,24 +55,35 @@ const ColorButton = styled(Button)(() => ({
 	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
 }));
 
+const toastMessages = {
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+};
+
 const validationSchema = yup.object({
 	name: yup.string().required("Full Name is required"),
 });
 
-function DetailForm(props) {
+function EditTagForm(props) {
 	const { onClose, onUpdate, initialValue } = props;
+
 	const formik = useFormik({
-		initialValues: initialValue || [],
+		initialValues: initialValue,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
 			onUpdate(values);
 		},
 	});
 
+	useEffect(() => {
+		if (formik?.values?.length < 1) {
+			toast.error(toastMessages.ERR_SERVER_ERROR, { style: { width: "auto" } });
+		}
+	}, []);
+
 	return (
-		<div className="createuserform">
-			<div className="createuserform_title">
-				<h2>Update Category</h2>
+		<div className="edittagform">
+			<div className="edittagform_title">
+				<h2>Update Tag</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
 				</IconButton>
@@ -82,7 +94,7 @@ function DetailForm(props) {
 				<div className="form_group">
 					<div className="form_content">
 						<InputLabel required htmlFor="full_name">
-							Category Name
+							Tag Name
 						</InputLabel>
 						<CssTextField
 							fullWidth
@@ -90,14 +102,14 @@ function DetailForm(props) {
 							id="name"
 							name="name"
 							value={formik.values.name}
-							variant="standard"
-							InputProps={{
-								readOnly: true,
-							}}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							error={formik.touched.full_name && Boolean(formik.errors.name)}
+							helperText={formik.touched.name && formik.errors.name}
 						/>
 					</div>
 				</div>
-				<div className="createuserform_footer">
+				<div className="edittagform_footer">
 					<ColorButton variant="outlined" onClick={() => onClose()}>
 						Cancel
 					</ColorButton>
@@ -110,4 +122,4 @@ function DetailForm(props) {
 	);
 }
 
-export default React.memo(DetailForm);
+export default React.memo(EditTagForm);

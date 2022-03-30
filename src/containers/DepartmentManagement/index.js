@@ -42,6 +42,12 @@ function DepartmentManagement() {
 	});
 
 	useEffect(() => {
+		if (DEV_CONFIGS.IS_DEV) {
+			setData(dataDemo);
+			setRowId(null);
+			return;
+		}
+
 		loadData();
 	}, [pagination]);
 
@@ -80,12 +86,6 @@ function DepartmentManagement() {
 	];
 
 	const loadData = async () => {
-		if (DEV_CONFIGS.IS_DEV) {
-			setData(dataDemo);
-			setRowId(null);
-			return;
-		}
-
 		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_DEP, {
 			params: {
 				page: pagination.page + 1,

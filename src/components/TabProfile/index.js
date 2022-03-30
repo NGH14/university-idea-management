@@ -1,23 +1,23 @@
-import * as React from "react";
-import { useState, useContext } from "react";
-import PropTypes from "prop-types";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
+import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
+import Button from "@mui/material/IconButton";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
-import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/IconButton";
-import { VscKey } from "react-icons/vsc";
-import { RiContactsBook2Line } from "react-icons/ri";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import Typography from "@mui/material/Typography";
+import moment from "moment";
+import PropTypes from "prop-types";
+import * as React from "react";
+import { useContext, useState } from "react";
 import { BiUserPin } from "react-icons/bi";
+import { RiContactsBook2Line } from "react-icons/ri";
+import { VscKey } from "react-icons/vsc";
 
-import { Modal } from "@mui/material";
 import { UserContext } from "../../context/AppContext";
 import UpdatePasswordForm from "../UpdatePasswordForm";
 
@@ -47,23 +47,25 @@ function GeneralList() {
 	const GeneralListItems = [
 		{
 			text: "Full Name:",
-			describe: state.dataUser.full_name,
+			describe: state?.dataUser?.full_name,
 		},
 		{
 			text: "Date of Birth:",
-			describe: state.dataUser.date_of_birth,
+			describe: state?.dataUser?.date_of_birth
+				? moment(state?.dataUser?.date_of_birth).format("DD/MM/YYYY")
+				: "None",
 		},
 		{
 			text: "Department:",
-			describe: state.dataUser.department,
+			describe: state?.dataUser?.department,
 		},
 		{
 			text: "Role:",
-			describe: state.dataUser.role,
+			describe: state?.dataUser?.role,
 		},
 		{
 			text: "Gender:",
-			describe: state.dataUser.gender,
+			describe: state?.dataUser?.gender,
 		},
 	];
 
@@ -71,13 +73,15 @@ function GeneralList() {
 		<List
 			sx={{
 				flex: "1 1 100%",
-
+				fontSize: 18,
 				maxWidth: "100%",
 				bgcolor: "background.paper",
 			}}
 		>
 			{GeneralListItems.map((_value, _index) => {
 				const { text, describe } = _value;
+				console.log(text);
+
 				return (
 					<>
 						<ListItem
@@ -91,6 +95,11 @@ function GeneralList() {
 								{text}
 							</ListItemText>
 							<ListItemText
+								style={
+									text.toLowerCase() !== "full name:"
+										? { textTransform: "capitalize" }
+										: {}
+								}
 								disableTypography
 								primary={describe ?? "None"}
 								sx={{ flex: "1 1 auto" }}
@@ -117,7 +126,14 @@ function ContactList() {
 		},
 	];
 	return (
-		<List sx={{ flex: "1", maxWidth: "100%", bgcolor: "background.paper" }}>
+		<List
+			sx={{
+				flex: "1",
+				maxWidth: "100%",
+				bgcolor: "background.paper",
+				fontSize: 18,
+			}}
+		>
 			{ContactListItems.map((_value, _index) => {
 				const { text, describe } = _value;
 				return (
@@ -180,9 +196,10 @@ function a11yProps(index) {
 
 function PasswordTab() {
 	const [visibleModal, setvisibleModal] = useState(false);
-	const onClose = () => {
+
+	const onClose = React.useCallback(() => {
 		setvisibleModal(false);
-	};
+	});
 	const onOpen = () => {
 		setvisibleModal(true);
 	};
@@ -209,12 +226,16 @@ function PasswordTab() {
 							borderRadius: "5px",
 							overflow: "auto",
 							maxHeight: "100%",
-							" @media (max-width: 600px)": {
+							" @media (max-width: 1000px)": {
+								display: "flex",
+								alignItems: "center",
+
 								width: "100%",
+								height: "100%",
 							},
 						}}
 					>
-						<UpdatePasswordForm />;
+						<UpdatePasswordForm onClose={onClose} />
 					</Box>
 				</Modal>
 			</>
@@ -235,7 +256,11 @@ function PasswordTab() {
 				fullWidth
 			>
 				<CardHeader
-					sx={{ flexWrap: "wrap-reverse", gap: "10px" }}
+					sx={{
+						flexWrap: "wrap-reverse",
+						gap: "15px",
+						alignItems: "center",
+					}}
 					action={
 						<Button
 							variant="contained"
@@ -255,7 +280,13 @@ function PasswordTab() {
 						</Button>
 					}
 					title={
-						<div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+						<div
+							style={{
+								display: "flex",
+								alignItems: "center",
+								gap: "10px",
+							}}
+						>
 							<VscKey />
 							<p
 								style={{
@@ -289,7 +320,7 @@ function AboutTab() {
 			<div
 				style={{
 					display: "grid",
-					gridTemplateColumns: "repeat(auto-fit, minmax(400px,1fr))",
+					gridTemplateColumns: "repeat(auto-fit, minmax(300px,1fr))",
 
 					gap: 1,
 				}}
@@ -337,7 +368,7 @@ function AboutTab() {
 	);
 }
 
-function TabProfile({ prop }) {
+function TabProfile() {
 	const [value, setValue] = React.useState(0);
 
 	const handleChange = (event, newValue) => {

@@ -1,4 +1,4 @@
-import "../User/EditUserForm/style.css";
+import "./style.css";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { TextField } from "@mui/material";
@@ -55,11 +55,12 @@ const ColorButton = styled(Button)(() => ({
 }));
 
 const validationSchema = yup.object({
-	name: yup.string().required("Full Name is required"),
+	name: yup.string().required("Tag's name is required"),
 });
 
-function CreateForm(props) {
+function CreateTagForm(props) {
 	const { onClose, onCreate } = props;
+
 	const formik = useFormik({
 		initialValues: {},
 		validationSchema: validationSchema,
@@ -69,9 +70,9 @@ function CreateForm(props) {
 	});
 
 	return (
-		<div className="createuserform">
-			<div className="createuserform_title">
-				<h2>Create Category</h2>
+		<div className="createtagform">
+			<div className="createtagform_title">
+				<h2>Create Tag</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
 				</IconButton>
@@ -82,7 +83,7 @@ function CreateForm(props) {
 				<div className="form_group">
 					<div className="form_content">
 						<InputLabel required htmlFor="full_name">
-							Category Name
+							Tag Name
 						</InputLabel>
 						<CssTextField
 							fullWidth
@@ -97,7 +98,7 @@ function CreateForm(props) {
 						/>
 					</div>
 				</div>
-				<div className="createuserform_footer">
+				<div className="createtagform_footer">
 					<ColorButton variant="outlined" onClick={() => onClose()}>
 						Cancel
 					</ColorButton>
@@ -110,4 +111,4 @@ function CreateForm(props) {
 	);
 }
 
-export default React.memo(CreateForm);
+export default React.memo(CreateTagForm);

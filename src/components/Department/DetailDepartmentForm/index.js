@@ -8,6 +8,7 @@ import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import React from "react";
+import { textTransform } from "@mui/system";
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -61,8 +62,8 @@ function DetailDepartmentForm(props) {
 	});
 
 	return (
-		<div className="createdepartmentform">
-			<div className="createdepartmentform_title">
+		<div className="detaildepartmentform">
+			<div className="detaildepartmentform_title">
 				<h2>Update Department</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -83,13 +84,16 @@ function DetailDepartmentForm(props) {
 							name="name"
 							value={formik.values.name}
 							variant="standard"
-							InputProps={{
+							inputProps={{
 								readOnly: true,
+								style: {
+									textTransform: "capitalize",
+								},
 							}}
 						/>
 					</div>
 				</div>
-				<div className="createdepartmentform_footer">
+				<div className="detaildepartmentform_footer">
 					<ColorButton variant="outlined" onClick={() => onClose()}>
 						Close
 					</ColorButton>

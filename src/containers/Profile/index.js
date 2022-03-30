@@ -67,15 +67,16 @@ export default function UpdatePassword() {
 						<Typography fontWeight={700} fontSize={30} sx={{ mt: -1 }}>
 							{user.full_name ?? ""}
 						</Typography>
-						<Typography variant="body2" color="text.secondary">
+						<Typography
+							style={{ textTransform: "capitalize" }}
+							variant="body2"
+							color="text.secondary"
+						>
 							{user.role ?? ""}
 						</Typography>
 					</Stack>
 				</Box>
 			</div>
-			{/* <div className="updatepassword-wrapper">
-				{changePasswordMoDal && <UpdatePasswordForm />}
-			</div> */}
 
 			<TabProfile />
 		</div>

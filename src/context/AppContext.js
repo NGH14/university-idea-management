@@ -76,11 +76,11 @@ export const AppContext = (props) => {
 					.then((res) => {
 						localStorage.setItem(
 							STORAGE_VARS.JWT,
-							res?.data?.result?.access_token?.token,
+							res?.data?.result?.access_token?.token
 						);
 						localStorage.setItem(
 							STORAGE_VARS.REFRESH,
-							res?.data?.result?.refresh_token,
+							res?.data?.result?.refresh_token
 						);
 
 						setState({

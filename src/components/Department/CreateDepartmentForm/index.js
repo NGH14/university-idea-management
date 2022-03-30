@@ -55,7 +55,7 @@ const ColorButton = styled(Button)(() => ({
 }));
 
 const validationSchema = yup.object({
-	name: yup.string().required("Full Name is required"),
+	name: yup.string().required("Department's name is required"),
 });
 
 function CreateDepartmentForm(props) {

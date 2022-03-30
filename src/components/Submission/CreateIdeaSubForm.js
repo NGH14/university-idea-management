@@ -190,7 +190,7 @@ function CreateIdeaSubForm(props) {
 							value={submissionTitle}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							InputProps={{
+							inputProps={{
 								readOnly: true,
 							}}
 							// error={formik.touched.title && Boolean(formik.errors.title)}

@@ -15,8 +15,6 @@ export const Column = [
 	{
 		field: "name",
 		headerName: "Department",
-		align: "center",
-		headerAlign: "center",
 		disableColumnMenu: true,
 		width: "100%",
 		type: "string",
@@ -29,21 +27,21 @@ export const Column = [
 	},
 	{
 		field: "created_date",
-		headerName: "Create Date",
+		headerName: "Create At",
 		disableColumnMenu: true,
 		sortable: false,
 		align: "center",
 		headerAlign: "center",
 		minWidth: 150,
 		type: "date",
+		flex: 1,
 		renderCell: (value) => (
 			<div>{moment(value?.row?.created_date).format("DD/MM/YYYY hh:mm")}</div>
 		),
-		flex: 1,
 	},
 	{
 		field: "modified_date",
-		headerName: "Modified Date",
+		headerName: "Modified At",
 		disableColumnMenu: true,
 		sortable: true,
 		align: "center",

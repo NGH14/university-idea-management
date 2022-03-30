@@ -24,7 +24,7 @@ const style = {
 	borderRadius: "5px",
 	overflow: "auto",
 	maxHeight: "100%",
-	" @media (max-width: 600px)": {
+	" @media (max-width: 1000px)": {
 		width: "100%",
 	},
 };
@@ -60,7 +60,7 @@ const ModalUserManagement = (props) => {
 			.catch(() =>
 				toast.error(toastMessages.ERR_SERVER_ERROR, {
 					style: { width: "auto" },
-				}),
+				})
 			);
 	};
 
