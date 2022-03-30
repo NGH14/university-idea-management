@@ -59,9 +59,7 @@ function UserManagement() {
 		loadData();
 	}, [pagination]);
 
-	const handleOnClickToolBar = () => {
-		setTableToolBar((pre) => !pre);
-	};
+	const handleOnClickToolBar = () => setTableToolBar((pre) => !pre);
 
 	const columns = [
 		...Column,
@@ -133,9 +131,9 @@ function UserManagement() {
 	const onDelete = async (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`).then(() =>
-					sleep(700),
-				),
+				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`)
+					.then(() => sleep(700))
+					.catch(),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_USER_DEL,
@@ -151,10 +149,9 @@ function UserManagement() {
 	const onUpdate = async (value) => {
 		toast
 			.promise(
-				AuthRequest.put(
-					`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`,
-					value,
-				).then(() => sleep(700)),
+				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`, value)
+					.then(() => sleep(700))
+					.catch(),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_USER_EDITED,
@@ -170,9 +167,9 @@ function UserManagement() {
 	const onCreate = async (value) => {
 		toast
 			.promise(
-				AuthRequest.post(API_PATHS.ADMIN.MANAGE_USER, value).then(() =>
-					sleep(700),
-				),
+				AuthRequest.post(API_PATHS.ADMIN.MANAGE_USER, value)
+					.then(() => sleep(700))
+					.catch(),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_USER_ADDED,
