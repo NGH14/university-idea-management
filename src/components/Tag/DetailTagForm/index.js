@@ -57,7 +57,7 @@ function DetailTagForm(props) {
 	const { onClose, initialValue } = props;
 
 	const formik = useFormik({
-		initialValues: initialValue || [],
+		initialValues: initialValue,
 	});
 
 	return (
