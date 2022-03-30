@@ -63,7 +63,7 @@ function DetailTagForm(props) {
 	return (
 		<div className="detailtagform">
 			<div className="detailtagform_title">
-				<h2>Update Category</h2>
+				<h2>Update Tag</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
 				</IconButton>
@@ -74,7 +74,7 @@ function DetailTagForm(props) {
 				<div className="form_group">
 					<div className="form_content">
 						<InputLabel required htmlFor="full_name">
-							Category Name
+							Tag Name
 						</InputLabel>
 						<CssTextField
 							fullWidth

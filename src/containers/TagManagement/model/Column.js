@@ -15,7 +15,6 @@ export const Column = [
 	{
 		field: "name",
 		headerName: "Tag",
-		headerAlign: "center",
 		disableColumnMenu: true,
 		sortable: true,
 		width: "100%",
@@ -35,11 +34,6 @@ export const Column = [
 		type: "string",
 		minWidth: 200,
 		flex: 1,
-		renderCell: (value) => (
-			<div style={{ textTransform: "capitalize" }}>
-				{value?.row?.created_by}
-			</div>
-		),
 	},
 	{
 		field: "modified_by",
@@ -50,11 +44,6 @@ export const Column = [
 		type: "string",
 		minWidth: 200,
 		flex: 1,
-		renderCell: (value) => (
-			<div style={{ textTransform: "capitalize" }}>
-				{value?.row?.modified_by}
-			</div>
-		),
 	},
 	{
 		field: "created_date",
@@ -63,9 +52,8 @@ export const Column = [
 		sortable: false,
 		align: "center",
 		headerAlign: "center",
-		minWidth: 150,
+		minWidth: 170,
 		type: "date",
-		flex: 1,
 		renderCell: (value) => (
 			<div>{moment(value?.row?.created_date).format("DD/MM/YYYY hh:mm")}</div>
 		),
@@ -77,7 +65,7 @@ export const Column = [
 		sortable: true,
 		align: "center",
 		headerAlign: "center",
-		width: 150,
+		width: 170,
 		type: "date",
 		renderCell: (value) => (
 			<div>{moment(value?.row?.created_date).format("DD/MM/YYYY hh:mm")}</div>

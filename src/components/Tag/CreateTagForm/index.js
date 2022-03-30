@@ -58,7 +58,7 @@ const validationSchema = yup.object({
 	name: yup.string().required("Tag's name is required"),
 });
 
-function CreateForm(props) {
+function CreateTagForm(props) {
 	const { onClose, onCreate } = props;
 
 	const formik = useFormik({
@@ -72,7 +72,7 @@ function CreateForm(props) {
 	return (
 		<div className="createtagform">
 			<div className="createtagform_title">
-				<h2>Create Category</h2>
+				<h2>Create Tag</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
 				</IconButton>
@@ -83,7 +83,7 @@ function CreateForm(props) {
 				<div className="form_group">
 					<div className="form_content">
 						<InputLabel required htmlFor="full_name">
-							Category Name
+							Tag Name
 						</InputLabel>
 						<CssTextField
 							fullWidth
@@ -111,4 +111,4 @@ function CreateForm(props) {
 	);
 }
 
-export default React.memo(CreateForm);
+export default React.memo(CreateTagForm);

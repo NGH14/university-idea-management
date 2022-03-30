@@ -50,6 +50,7 @@ function TagManagement() {
 			field: "actions",
 			headerName: "Action",
 			width: 75,
+			type: "actions",
 			disableColumnMenu: true,
 			sortable: false,
 			getActions: (params) => [
@@ -78,7 +79,7 @@ function TagManagement() {
 	];
 
 	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.TAG, {
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_TAG, {
 			params: {
 				page: pagination.page + 1,
 				page_size: pagination.pageSize,
@@ -157,6 +158,8 @@ function TagManagement() {
 	};
 
 	const onCloseModal = () => {
+		rowId && setRowId(null);
+
 		setStatus({
 			...status,
 			visibleModal: false,
@@ -183,8 +186,8 @@ function TagManagement() {
 
 	const renderTop = () => {
 		return (
-			<div className="managementuser_title">
-				<h2 className="managementuser_heading">Tag manager</h2>
+			<div className="managementtag_title">
+				<h2 className="managementtag_heading">Tag manager</h2>
 				<Button
 					variant="contained"
 					endIcon={<AddCircleOutlineIcon />}
@@ -198,7 +201,7 @@ function TagManagement() {
 
 	const renderContent = () => {
 		return (
-			<div className="managementuser_table">
+			<div className="managementtag_table">
 				<DataGridPro
 					components={{
 						NoRowsOverlay: CustomNoRowsOverlay,
@@ -216,14 +219,11 @@ function TagManagement() {
 					pageSize={pagination.pageSize}
 					page={pagination.page}
 					initialState={{ pinnedColumns: { right: ["actions"] } }}
-					onPageSizeChange={(pageSize) => {
-						onChangePagination(pageSize, pagination.page);
-					}}
-					onPageChange={(page) => {
-						onChangePagination(pagination.pageSize, page);
-					}}
-					style={{ minHeight: 700 }}
-					// autoHeight={true}
+					onPageSizeChange={(pageSize) =>
+						onChangePagination(pageSize, pagination.page)
+					}
+					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
+					style={{ minHeight: "600px" }}
 					rowsPerPageOptions={[10, 25, 50, 100]}
 				/>
 			</div>

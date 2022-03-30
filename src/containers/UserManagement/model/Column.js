@@ -44,7 +44,7 @@ export const Column = [
 		disableColumnMenu: true,
 		type: "string",
 		sortable: true,
-		width: 150,
+		width: 250,
 		renderCell: (value) => (
 			<div style={{ textTransform: "capitalize" }}>
 				{value?.row?.department}
@@ -58,7 +58,7 @@ export const Column = [
 		headerAlign: "center",
 		disableColumnMenu: true,
 		sortable: true,
-		width: 150,
+		width: 170,
 		renderCell: (value) => (
 			<div style={{ textTransform: "capitalize" }}>{value?.row?.role}</div>
 		),
@@ -70,7 +70,7 @@ export const Column = [
 		sortable: true,
 		align: "center",
 		headerAlign: "center",
-		width: 140,
+		width: 170,
 		renderCell: (value) => (
 			<div>
 				{value?.row?.date_of_birth

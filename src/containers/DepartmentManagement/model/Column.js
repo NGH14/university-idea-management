@@ -15,8 +15,6 @@ export const Column = [
 	{
 		field: "name",
 		headerName: "Department",
-		align: "center",
-		headerAlign: "center",
 		disableColumnMenu: true,
 		width: "100%",
 		type: "string",

@@ -7,7 +7,8 @@ import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useEffect } from "react";
+import { toast } from "react-toastify";
 import * as yup from "yup";
 
 const CssTextField = styled(TextField)({
@@ -54,24 +55,35 @@ const ColorButton = styled(Button)(() => ({
 	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
 }));
 
+const toastMessages = {
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+};
+
 const validationSchema = yup.object({
 	name: yup.string().required("Full Name is required"),
 });
 
-function EditForm(props) {
+function EditTagForm(props) {
 	const { onClose, onUpdate, initialValue } = props;
+
 	const formik = useFormik({
-		initialValues: initialValue || [],
+		initialValues: initialValue,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
 			onUpdate(values);
 		},
 	});
 
+	useEffect(() => {
+		if (formik?.values?.length < 1) {
+			toast.error(toastMessages.ERR_SERVER_ERROR, { style: { width: "auto" } });
+		}
+	}, []);
+
 	return (
 		<div className="edittagform">
 			<div className="edittagform_title">
-				<h2>Update Category</h2>
+				<h2>Update Tag</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
 				</IconButton>
@@ -82,7 +94,7 @@ function EditForm(props) {
 				<div className="form_group">
 					<div className="form_content">
 						<InputLabel required htmlFor="full_name">
-							Category Name
+							Tag Name
 						</InputLabel>
 						<CssTextField
 							fullWidth
@@ -110,4 +122,4 @@ function EditForm(props) {
 	);
 }
 
-export default React.memo(EditForm);
+export default React.memo(EditTagForm);
