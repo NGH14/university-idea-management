@@ -1,4 +1,4 @@
-import "../UserManagement/style.css";
+import "./style.css";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -11,51 +11,42 @@ import { IconButton } from "@mui/material";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import {
-  GridToolbarColumnsButton,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarExport,
-  GridToolbarFilterButton,
+	GridToolbarColumnsButton,
+	GridToolbarContainer,
+	GridToolbarDensitySelector,
+	GridToolbarExport,
+	GridToolbarFilterButton,
 } from "@mui/x-data-grid";
 import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
 import * as React from "react";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { AuthRequest } from "../../common/AppUse";
+import { AuthRequest, sleep } from "../../common/AppUse";
 import { API_PATHS, URL_PATHS } from "../../common/env";
 import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
 import { UserContext } from "../../context/AppContext";
-import ModalSubmissionManagement from "./modal/ModalUserManagement";
+import ModalSubmissionManagement from "./modal/ModalSubmissionManagement";
 import { Column } from "./model/Column";
-import {toast} from "react-toastify";
-
-function SortedDescendingIcon() {
-	return <ExpandMoreIcon className="icon" />;
-}
-
-function SortedAscendingIcon() {
-	return <ExpandLessIcon className="icon" />;
-}
+import { toast } from "react-toastify";
 
 const toastMessages = {
 	WAIT: "Please wait...",
-	SUC_SUB_CREATE: "Create submission successful !!",
-	SUC_SUB_UPDATE: "Update submission successful !!",
-	SUC_SUB__DELETE: "Delete submission successful !!",
+	SUC_SUB_ADDED: "Create submission successful !!",
+	SUC_SUB_EDITED: "Update submission successful !!",
+	SUC_SUB_DEL: "Delete submission successful !!",
 	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
 };
 
 function SubmissionManagement() {
-	const navigate = useNavigate();
-
 	const { state } = useContext(UserContext);
 	const [data, setData] = useState([]);
 	const [rowId, setRowId] = useState(null);
+	const navigate = useNavigate();
 
 	const [status, setStatus] = useState({
 		visibleModal: false,
-		action: "create", // create, update, detail
+		action: "create",
 	});
 
 	const [pagination, setPagination] = useState({
@@ -71,17 +62,10 @@ function SubmissionManagement() {
 	}, [pagination]);
 
 	const openUserAction = Boolean(actionUser);
-	const handleOnClickToolBar = () => {
-		setTableToolBar((pre) => !pre);
-	};
+	const handleOnClickToolBar = () => setTableToolBar((pre) => !pre);
 
-	const handleClick = (event) => {
-		setActionUser(event.currentTarget);
-	};
-
-	const handleClose = () => {
-		setActionUser(null);
-	};
+	const handleClick = (event) => setActionUser(event.currentTarget);
+	const handleClose = () => setActionUser(null);
 
 	const columns = [
 		...Column,
@@ -99,12 +83,14 @@ function SubmissionManagement() {
 					onClick={() => navigate(`${URL_PATHS.MANAGE_SUB}/${params.id}`)}
 					showInMenu
 				/>,
+
 				<GridActionsCellItem
 					icon={<EditIcon color={"secondary"} />}
 					label="Update"
 					onClick={() => onOpenModal(params.id, "update")}
 					showInMenu
 				/>,
+
 				<GridActionsCellItem
 					icon={<DeleteIcon />}
 					disabled={state?.dataUser?.id === params.id ? true : false}
@@ -116,18 +102,21 @@ function SubmissionManagement() {
 		},
 	];
 	const loadData = async () => {
-		await AuthRequest.get(
-			`${API_PATHS.ADMIN.MANAGE_SUB}?papesize=${pagination.pageSize}?page=${
-				pagination.page + 1
-			}`,
-		)
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_SUB, {
+			params: {
+				page: pagination.page + 1,
+				page_size: pagination.pageSize,
+			},
+		})
 			.then((res) => {
-				if (res?.data?.succeeded) {
-					setData(res?.data?.result?.rows);
-					setRowId(null);
-				}
+				setData(res?.data?.result?.rows);
+				setRowId(null);
 			})
-			.catch(() => {});
+			.catch(() =>
+				toast.error(toastMessages.ERR_SERVER_ERROR, {
+					style: { width: "auto" },
+				}),
+			);
 	};
 
 	const onOpenModal = (id, action) => {
@@ -138,51 +127,57 @@ function SubmissionManagement() {
 	};
 
 	const onDelete = async (id) => {
-		handleClose();
-		try {
-			const res = await AuthRequest.delete(`submission-management/${id}`);
-			if (res?.data?.succeeded) {
+		toast
+			.promise(
+				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`)
+					.then(() => sleep(700))
+					.catch(),
+				{
+					pending: toastMessages.WAIT,
+					success: toastMessages.SUC_SUB_DEL,
+					error: toastMessages.ERR_SERVER_ERROR,
+				},
+			)
+			.then(() => {
+				setStatus({ ...status, visibleModal: false });
 				loadData();
-			}
-			toast.success(toastMessages.SUC_SUB__DELETE)
-		} catch {}
+			});
 	};
 
 	const onUpdate = async (value) => {
-		handleClose();
-		try {
-			const res = await AuthRequest.put(
-				`submission-management/${value?.id}`,
-				value,
-			);
-			if (res?.data?.succeeded) {
-				setStatus({
-					...status,
-					visibleModal: false,
-				});
-				toast.success(toastMessages.SUC_SUB_UPDATE)
-				await loadData();
-			}
-		} catch {}
+		toast
+			.promise(
+				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`, value)
+					.then(() => sleep(700))
+					.catch(),
+				{
+					pending: toastMessages.WAIT,
+					success: toastMessages.SUC_SUB_EDITED,
+					error: toastMessages.ERR_SERVER_ERROR,
+				},
+			)
+			.then(() => {
+				setStatus({ ...status, visibleModal: false });
+				loadData();
+			});
 	};
 
 	const onCreate = async (value) => {
-		try {
-			const res = await AuthRequest.post(`submission-management`, value);
-			if (res?.data?.succeeded) {
-				setStatus({
-					...status,
-					visibleModal: false,
-				});
-				toast.success(toastMessages.SUC_SUB_CREATE)
+		toast
+			.promise(
+				AuthRequest.post(API_PATHS.ADMIN.MANAGE_SUB, value)
+					.then(() => sleep(700))
+					.catch(),
+				{
+					pending: toastMessages.WAIT,
+					success: toastMessages.SUC_SUB_ADDED,
+					error: toastMessages.ERR_SERVER_ERROR,
+				},
+			)
+			.then(() => {
+				setStatus({ ...status, visibleModal: false });
 				loadData();
-			}
-		} catch {
-			setStatus({
-				...status,
-				visibleModal: false,
 			});
-		}
 	};
 
 	const onCloseModal = () => {
@@ -227,8 +222,8 @@ function SubmissionManagement() {
 
 	const renderTop = () => {
 		return (
-			<div className="managementuser_title">
-				<div className="managementuser_heading">
+			<div className="managementsubmission_title">
+				<div className="managementsubmission_heading">
 					<h2>Management Submission</h2>
 					<Tooltip title="Table Tool Bar">
 						<IconButton onClick={handleOnClickToolBar}>
@@ -250,30 +245,29 @@ function SubmissionManagement() {
 
 	const renderContent = () => {
 		return (
-			<div className="managementuser_table">
+			<div className="managementsubmission_table">
 				<DataGridPro
 					components={{
 						NoRowsOverlay: CustomNoRowsOverlay,
-						ColumnSortedDescendingIcon: SortedDescendingIcon,
-						ColumnSortedAscendingIcon: SortedAscendingIcon,
+						ColumnSortedDescendingIcon: () => (
+							<ExpandMoreIcon className="icon" />
+						),
+						ColumnSortedAscendingIcon: () => (
+							<ExpandLessIcon className="icon" />
+						),
 						Toolbar: tableToolBar && CustomToolbar,
 					}}
-					rows={
-						data || []
-						// dataDemo
-					}
+					rows={data}
 					columns={columns}
 					pagination={true}
 					cell--textCenter
 					pageSize={pagination.pageSize}
 					page={pagination.page}
 					initialState={{ pinnedColumns: { right: ["actions"] } }}
-					onPageSizeChange={(pageSize) => {
-						onChangePagination(pageSize, pagination.page);
-					}}
-					onPageChange={(page) => {
-						onChangePagination(pagination.pageSize, page);
-					}}
+					onPageSizeChange={(pageSize) =>
+						onChangePagination(pageSize, pagination.page)
+					}
+					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
 					style={{ minHeight: "600px" }}
 					rowsPerPageOptions={[10, 25, 50, 100]}
 				/>

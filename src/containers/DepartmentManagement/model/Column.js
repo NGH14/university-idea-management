@@ -10,7 +10,7 @@ export const Column = [
 		width: 80,
 		align: "center",
 		headerAlign: "center",
-		renderCell: (value) => <div>{value.api.getRowIndex(value.id) + 1}</div>,
+		renderCell: (value) => <span>{value.api.getRowIndex(value.id) + 1}</span>,
 	},
 	{
 		field: "name",

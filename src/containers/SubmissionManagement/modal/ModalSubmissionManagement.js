@@ -5,9 +5,9 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 
 import { AuthRequest } from "../../../common/AppUse";
-import CreateForm from "../../../components/Submission/CreateForm";
-import CreateIdexSubForm from "../../../components/Submission/CreateIdeaSubForm";
-import EditForm from "../../../components/Submission/EditForm";
+import CreateSubmissionForm from "../../../components/Submission/CreateSubmissionForm";
+import CreateIdeaForm from "../../../components/Submission/CreateIdeaForm";
+import EditSubmissionForm from "../../../components/Submission/EditSubmissionForm";
 
 const style = {
 	position: "relative",
@@ -21,6 +21,7 @@ const style = {
 	borderRadius: "5px",
 	overflow: "auto",
 	maxHeight: "100%",
+
 	" @media (max-width: 600px)": {
 		width: "100%",
 	},
@@ -28,11 +29,13 @@ const style = {
 const ModalSubmissionManagement = (props) => {
 	const { visible, onClose, onCreate, onUpdate, action, rowId } = props;
 	const [initialValue, setInitialValue] = useState([]);
+
 	useEffect(() => {
 		if (action !== "create" && action !== "createIdea") {
 			loadData();
 		}
 	}, [action]);
+
 	const loadData = async () => {
 		try {
 			const res = await AuthRequest.get(`submission-management/${rowId}`);
@@ -41,25 +44,32 @@ const ModalSubmissionManagement = (props) => {
 			}
 		} catch {}
 	};
+
 	const renderForm = () => {
 		switch (action) {
 			case "create":
-				return <CreateForm onClose={() => onClose()} onCreate={onCreate} />;
+				return (
+					<CreateSubmissionForm onClose={() => onClose()} onCreate={onCreate} />
+				);
 			case "update":
 				return (
-					<EditForm
+					<EditSubmissionForm
 						onClose={() => onClose()}
 						onUpdate={onUpdate}
 						initialValue={initialValue}
 					/>
 				);
 			case "createIdea":
-				return <CreateIdexSubForm onClose={() => onClose()} />;
+				return <CreateIdeaForm onClose={() => onClose()} />;
+			default:
+				return;
 		}
 	};
+
 	if (action !== "create" && _.isEmpty(initialValue)) {
 		return <CircularProgress size={100} />;
 	}
+
 	return (
 		<Modal
 			open={visible}

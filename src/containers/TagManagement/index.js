@@ -106,9 +106,9 @@ function TagManagement() {
 	const onDelete = async (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_TAG}/${id}`).then(() =>
-					sleep(700),
-				),
+				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_TAG}/${id}`)
+					.then(() => sleep(700))
+					.catch(),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_TAG_DEL,
@@ -126,7 +126,9 @@ function TagManagement() {
 			.promise(
 				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_TAG}/${value?.id}`, {
 					name: value?.name,
-				}).then(() => sleep(700)),
+				})
+					.then(() => sleep(700))
+					.catch(),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_TAG_EDITED,
@@ -142,9 +144,9 @@ function TagManagement() {
 	const onCreate = async (value) => {
 		toast
 			.promise(
-				AuthRequest.post(API_PATHS.ADMIN.MANAGE_TAG, value).then(() =>
-					sleep(700),
-				),
+				AuthRequest.post(API_PATHS.ADMIN.MANAGE_TAG, value)
+					.then(() => sleep(700))
+					.catch(),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_TAG_ADDED,

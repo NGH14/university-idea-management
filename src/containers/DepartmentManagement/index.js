@@ -113,9 +113,9 @@ function DepartmentManagement() {
 	const onDelete = async (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_DEP}/${id}`).then(() =>
-					sleep(700),
-				),
+				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_DEP}/${id}`)
+					.then(() => sleep(700))
+					.catch(),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_DEP_DEL,
@@ -133,7 +133,9 @@ function DepartmentManagement() {
 			.promise(
 				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_DEP}/${value?.id}`, {
 					name: value?.name,
-				}).then(() => sleep(700)),
+				})
+					.then(() => sleep(700))
+					.catch(),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_DEP_EDITED,
@@ -149,9 +151,9 @@ function DepartmentManagement() {
 	const onCreate = async (value) => {
 		toast
 			.promise(
-				AuthRequest.post(API_PATHS.ADMIN.MANAGE_DEP, value).then(() =>
-					sleep(700),
-				),
+				AuthRequest.post(API_PATHS.ADMIN.MANAGE_DEP, value)
+					.then(() => sleep(700))
+					.catch(),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_DEP_ADDED,
