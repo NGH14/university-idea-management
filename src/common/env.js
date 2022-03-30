@@ -60,6 +60,7 @@ export const URL_PATHS = {
 	MANAGE_TAG: "/tag-management",
 	MANAGE_SUB: "/submission-management",
 	PROFILE: "/profile",
+	DEMO: "/demo",
 };
 
 export const STORAGE_VARS = {

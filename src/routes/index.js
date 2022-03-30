@@ -64,6 +64,11 @@ const LIST_ROUTES_PRIVATE = [
 		path: URL_PATHS.MANAGE_SUB,
 		component: React.lazy(() => import("../containers/SubmissionManagement")),
 	},
+	{
+		roles: [ROLES.ADMIN],
+		path: URL_PATHS.DEMO,
+		component: React.lazy(() => import("../components/Submission/demo")),
+	},
 ];
 
 const LIST_ROUTES_PUBLIC = [
