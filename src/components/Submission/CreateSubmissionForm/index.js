@@ -1,4 +1,3 @@
-import "../User/EditUserForm/style.css";
 import "./style.css";
 
 import CloseIcon from "@mui/icons-material/Close";
@@ -62,7 +61,7 @@ const validationSchema = yup.object({
 	name: yup.string().required("Full Name is required"),
 });
 
-function CreateForm(props) {
+function CreateSubmissionForm(props) {
 	const { onClose, onCreate } = props;
 	const [dataDateRangePicker, setDataDateRangePicker] = useState([null, null]);
 	const formik = useFormik({
@@ -132,8 +131,8 @@ function CreateForm(props) {
 	};
 
 	return (
-		<div className="createuserform">
-			<div className="createuserform_title">
+		<div className="createsubmissionform">
+			<div className="createsubmissionform_title">
 				<h2>Create Submission</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -201,7 +200,7 @@ function CreateForm(props) {
 						/>
 					</div>
 				</div>
-				<div className="createuserform_footer">
+				<div className="createsubmissionform_footer">
 					<ColorButton variant="outlined" onClick={() => onClose()}>
 						Cancel
 					</ColorButton>
@@ -214,4 +213,4 @@ function CreateForm(props) {
 	);
 }
 
-export default React.memo(CreateForm);
+export default React.memo(CreateSubmissionForm);

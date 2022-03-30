@@ -298,6 +298,24 @@ function EditUserForm(props) {
 							/>
 						</LocalizationProvider>
 					</div>
+
+					<div className="form_content">
+						<InputLabel required htmlFor="email">
+							Phone
+						</InputLabel>
+						<CssTextField
+							fullWidth
+							variant="outlined"
+							id="phone"
+							name="phone"
+							margin="normal"
+							value={formik.values.phone}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							error={formik.touched.phone && Boolean(formik.errors.phone)}
+							helperText={formik.touched.phone && formik.errors.phone}
+						/>
+					</div>
 				</div>
 				<div className="edituserform_footer">
 					<ColorButton variant="outlined" onClick={() => onClose()}>

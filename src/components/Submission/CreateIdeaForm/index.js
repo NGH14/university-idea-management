@@ -1,29 +1,24 @@
-import "../User/EditUserForm/style.css";
 import "./style.css";
 
+import AttachFileIcon from "@mui/icons-material/AttachFile";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { TextareaAutosize, TextField } from "@mui/material";
+import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
 import { styled } from "@mui/material/styles";
 import { DropzoneArea } from "@pandemicode/material-ui-dropzone";
 import { useFormik } from "formik";
-import React, { useState} from "react";
-import * as yup from "yup";
-
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import ListItemText from '@mui/material/ListItemText';
-import Avatar from '@mui/material/Avatar';
-import DeleteIcon from '@mui/icons-material/Delete';
-
-import AttachFileIcon from '@mui/icons-material/AttachFile';
 import _ from "lodash";
+import React, { useState } from "react";
 import useDrivePicker from "react-google-drive-picker";
-
-
+import * as yup from "yup";
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -73,17 +68,22 @@ const validationSchema = yup.object({
 	name: yup.string().required("Full Name is required"),
 });
 
+// #region Please refactor
 const ApiGoogleDrive = {
-	CLIENT_ID: '284247270990-gdn3hpqk4c4fjckvmd45k4ajeeov4msb.apps.googleusercontent.com',
-	CLIENT_SECRET: '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',
-	REDIRECT_URL: 'https://developers.google.com/oauthplayground/',
+	CLIENT_ID:
+		"284247270990-gdn3hpqk4c4fjckvmd45k4ajeeov4msb.apps.googleusercontent.com",
+	CLIENT_SECRET: "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",
+	REDIRECT_URL: "https://developers.google.com/oauthplayground/",
 
-	REFRESH_TOKEN: '1//04euMhZM3kPsbCgYIARAAGAQSNwF-L9IrYsB6QdWy_R04LH2kHVOF7K2sJLqOKTVrPHAhrG2tuPyVZjflqNTH4CdZ1Zc0jt0B-48'
-}
-function CreateIdeaSubForm(props) {
+	REFRESH_TOKEN:
+		"1//04euMhZM3kPsbCgYIARAAGAQSNwF-L9IrYsB6QdWy_R04LH2kHVOF7K2sJLqOKTVrPHAhrG2tuPyVZjflqNTH4CdZ1Zc0jt0B-48",
+};
+// #endregion
+
+function CreateIdeaForm(props) {
 	const [openPicker, data, authResponse] = useDrivePicker();
 	const [secondary, setSecondary] = React.useState(false);
-	const [arrayFile, setArrayFile] = useState([])
+	const [arrayFile, setArrayFile] = useState([]);
 	const { onClose, onCreate, submissionTitle } = props;
 
 	const formik = useFormik({
@@ -102,72 +102,78 @@ function CreateIdeaSubForm(props) {
 			developerKey: "xxxxxxxxxxxx",
 			viewId: "DOCS",
 
-			// token: token, // pass oauth token in case you already have one
+			token: "token", // pass oauth token in case you already have one
 			showUploadView: true,
 			showUploadFolders: true,
 			supportDrives: true,
 			multiselect: true,
 
 			// customViews: customViewsArray, // custom view
-		})
-	}
+		});
+	};
 
 	const onUploadFile = async (file) => {
 		const newArrayFile = arrayFile;
-		_.map(file, x => {
+		_.map(file, (x) => {
 			newArrayFile.push({
 				path: x?.path,
 				name: x?.name,
 				type: x?.type,
-			})
-		})
-		setArrayFile(newArrayFile)
-		formik.resetForm()
-	}
-
+			});
+		});
+		setArrayFile(newArrayFile);
+		formik.resetForm();
+	};
 
 	const renderUploadFile = () => {
-		console.log(arrayFile, 'arrayFile')
-		return <>
-			<DropzoneArea
-				dropzoneText={<div style={{marginTop: 20, marginBottom: 15}}>
-					<h1 style={{fontSize: 22, fontWeight: 15}}>Drag and drop file upload</h1>
-					<div>( Image, file, word, excel, pdf, etc. )</div>
-				</div>}
-				showPreviewsInDropzone={false}
-				onDrop={(file)=>onUploadFile(file)}
-				showAlerts={false}
-				clearOnUnmount={false}
-
-			/>
-		<div style={{marginTop: 15}}>
-			<h1 style={{fontWeight: "bold", fontSize: "24px !important"}}>File uploaded</h1>
-			<List>
-				{
-					_.map(arrayFile, item => {
-						return <ListItem
-							secondaryAction={
-								<IconButton edge="end" aria-label="delete">
-									<DeleteIcon />
-								</IconButton>
-							}
-						>
-							<ListItemAvatar>
-								<Avatar>
-									<AttachFileIcon />
-								</Avatar>
-							</ListItemAvatar>
-							<ListItemText
-								primary={item?.name}
-								secondary={secondary ? 'Secondary text' : null}
-							/>
-						</ListItem>
-					})
-				}
-			</List>
-		</div>
+		console.log(arrayFile, "arrayFile");
+		return (
+			<>
+				<DropzoneArea
+					dropzoneText={
+						<div style={{ marginTop: 20, marginBottom: 15 }}>
+							<h1 style={{ fontSize: 22, fontWeight: 15 }}>
+								Drag and drop file upload
+							</h1>
+							<div>( Image, file, word, excel, pdf, etc. )</div>
+						</div>
+					}
+					showPreviewsInDropzone={false}
+					onDrop={(file) => onUploadFile(file)}
+					showAlerts={false}
+					clearOnUnmount={false}
+				/>
+				<div style={{ marginTop: 15 }}>
+					<h1 style={{ fontWeight: "bold", fontSize: "24px !important" }}>
+						File uploaded
+					</h1>
+					<List>
+						{_.map(arrayFile, (item) => {
+							return (
+								<ListItem
+									secondaryAction={
+										<IconButton edge="end" aria-label="delete">
+											<DeleteIcon />
+										</IconButton>
+									}
+								>
+									<ListItemAvatar>
+										<Avatar>
+											<AttachFileIcon />
+										</Avatar>
+									</ListItemAvatar>
+									<ListItemText
+										primary={item?.name}
+										secondary={secondary ? "Secondary text" : null}
+									/>
+								</ListItem>
+							);
+						})}
+					</List>
+				</div>
 			</>
-	}
+		);
+	};
 	return (
 		<div className="createuserform">
 			<div className="createuserform_title">
@@ -272,4 +278,4 @@ function CreateIdeaSubForm(props) {
 	);
 }
 
-export default React.memo(CreateIdeaSubForm);
+export default React.memo(CreateIdeaForm);

@@ -1,4 +1,4 @@
-import "../User/EditUserForm/style.css";
+import "./style.css";
 
 import CloseIcon from "@mui/icons-material/Close";
 import { DateRangePicker, LocalizationProvider } from "@mui/lab";
@@ -61,7 +61,7 @@ const validationSchema = yup.object({
 	name: yup.string().required("Full Name is required"),
 });
 
-function EditForm(props) {
+function EditSubmissionForm(props) {
 	const { onClose, onUpdate, initialValue } = props;
 	const [dataDateRangePicker, setDataDateRangePicker] = useState([
 		initialValue.initial_date,
@@ -133,8 +133,8 @@ function EditForm(props) {
 		);
 	};
 	return (
-		<div className="createuserform">
-			<div className="createuserform_title">
+		<div className="editsubmissionform">
+			<div className="editsubmissionform_title">
 				<h2>Update Submission</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -203,7 +203,7 @@ function EditForm(props) {
 						/>
 					</div>
 				</div>
-				<div className="createuserform_footer">
+				<div className="editsubmissionform_footer">
 					<ColorButton variant="outlined" onClick={() => onClose()}>
 						Cancel
 					</ColorButton>
@@ -216,4 +216,4 @@ function EditForm(props) {
 	);
 }
 
-export default React.memo(EditForm);
+export default React.memo(EditSubmissionForm);

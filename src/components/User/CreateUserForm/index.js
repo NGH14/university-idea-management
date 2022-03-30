@@ -67,6 +67,7 @@ const ColorButton = styled(Button)(() => ({
 
 const validationSchema = yup.object({
 	full_name: yup.string().required("Full Name is required"),
+	phone: yup.string().nullable(),
 	email: yup.string().email("Email is invalid").required("Email is required"),
 	role: yup.string().required("Role is required"),
 	department: yup.string().required("Department is required"),
@@ -82,6 +83,7 @@ const initialValues = {
 	email: "",
 	full_name: "",
 	role: "",
+	phone: "",
 	department: "",
 	date_of_birth: null,
 };
@@ -115,7 +117,7 @@ function CreateUserForm(prop) {
 			.catch(() =>
 				toast.error(toastMessages.ERR_SERVER_ERROR, {
 					style: { width: "auto" },
-				})
+				}),
 			);
 	};
 
@@ -130,7 +132,7 @@ function CreateUserForm(prop) {
 			.catch(() =>
 				toast.error(toastMessages.ERR_SERVER_ERROR, {
 					style: { width: "auto" },
-				})
+				}),
 			);
 	};
 
@@ -305,6 +307,24 @@ function CreateUserForm(prop) {
 								renderInput={(params) => <TextField fullWidth {...params} />}
 							/>
 						</LocalizationProvider>
+					</div>
+
+					<div className="form_content">
+						<InputLabel required htmlFor="email">
+							Phone
+						</InputLabel>
+						<CssTextField
+							fullWidth
+							variant="outlined"
+							id="phone"
+							name="phone"
+							margin="normal"
+							value={formik.values.phone}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							error={formik.touched.phone && Boolean(formik.errors.phone)}
+							helperText={formik.touched.phone && formik.errors.phone}
+						/>
 					</div>
 				</div>
 				<div className="createuserform_footer">

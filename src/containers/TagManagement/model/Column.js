@@ -10,7 +10,7 @@ export const Column = [
 		width: 80,
 		align: "center",
 		headerAlign: "center",
-		renderCell: (value) => <div>{value.api.getRowIndex(value.id) + 1}</div>,
+		renderCell: (value) => <span>{value.api.getRowIndex(value.id) + 1}</span>,
 	},
 	{
 		field: "name",
@@ -22,7 +22,7 @@ export const Column = [
 		minWidth: 200,
 		flex: 1,
 		renderCell: (value) => (
-			<div style={{ textTransform: "capitalize" }}>{value?.row?.name}</div>
+			<span style={{ textTransform: "capitalize" }}>{value?.row?.name}</span>
 		),
 	},
 	{
@@ -54,9 +54,10 @@ export const Column = [
 		headerAlign: "center",
 		minWidth: 170,
 		type: "date",
-		renderCell: (value) => (
-			<div>{moment(value?.row?.created_date).format("DD/MM/YYYY hh:mm")}</div>
-		),
+		renderCell: (value) =>
+			value?.row?.created_date
+				? moment(value?.row?.created_date).format("DD/MM/YYYY")
+				: "-",
 	},
 	{
 		field: "modified_date",
@@ -67,8 +68,9 @@ export const Column = [
 		headerAlign: "center",
 		width: 170,
 		type: "date",
-		renderCell: (value) => (
-			<div>{moment(value?.row?.created_date).format("DD/MM/YYYY hh:mm")}</div>
-		),
+		renderCell: (value) =>
+			value?.row?.modified_date
+				? moment(value?.row?.modified_date).format("DD/MM/YYYY")
+				: "-",
 	},
 ];

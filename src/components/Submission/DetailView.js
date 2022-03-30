@@ -13,8 +13,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { AuthRequest } from "../../common/AppUse";
 import { URL_PATHS } from "../../common/env";
-import DetailForm from "./DetailForm";
-import ModalSubIdea from "./Modal/ModalSubIdea";
+import DetailSubmissionForm from "./DetailSubmissionForm";
+import ModalSubmissionIdea from "./Modal/ModalSubmissionIdea";
 import IdeaSubView from "./IdeaSubView";
 
 function DetailView() {
@@ -77,7 +77,7 @@ function DetailView() {
 	};
 	const renderModal = () => {
 		return (
-			<ModalSubIdea
+			<ModalSubmissionIdea
 				visible={status.visibleModal}
 				action={status.action}
 				onClose={onCloseModal}
@@ -119,7 +119,7 @@ function DetailView() {
 			</div>
 		);
 	};
-	const renderDetailForm = () => {
+	const renderDetailSubmissionForm = () => {
 		return (
 			<fieldset
 				style={{ border: "2px solid gray", padding: 12, borderRadius: 8 }}
@@ -128,14 +128,19 @@ function DetailView() {
 					Information Submission
 				</legend>
 
-				<DetailForm initialValue={initialValue} />
+				<DetailSubmissionForm initialValue={initialValue} />
 			</fieldset>
 		);
 	};
 	const renderIdeaView = () => {
 		return (
 			<fieldset
-				style={{ border: "2px solid gray", padding: 12, borderRadius: 8, marginTop: 30}}
+				style={{
+					border: "2px solid gray",
+					padding: 12,
+					borderRadius: 8,
+					marginTop: 30,
+				}}
 			>
 				<legend
 					style={{
@@ -156,9 +161,8 @@ function DetailView() {
 	}
 	return (
 		<div>
-
 			{renderTop()}
-			{renderDetailForm()}
+			{renderDetailSubmissionForm()}
 			{renderIdeaView()}
 			{status.visibleModal && renderModal()}
 		</div>

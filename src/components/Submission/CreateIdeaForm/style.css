@@ -1,11 +1,11 @@
-.createtagform_title {
+.createsubmissionform_title {
 	font-weight: 500;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }
 
-.createtagform_footer {
+.createsubmissionform_footer {
 	display: flex;
 	justify-content: flex-end;
 	flex-wrap: wrap;
@@ -48,7 +48,7 @@
 		grid-template-columns: 1fr;
 	}
 
-	.createtagform_footer>* {
+	.createsubmissionform_footer>* {
 		width: 100%;
 	}
 }
