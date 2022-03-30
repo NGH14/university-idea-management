@@ -1,18 +1,29 @@
 import "../User/EditUserForm/style.css";
 import "./style.css";
 
-import { createStyles, makeStyles } from "@material-ui/core/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import { TextareaAutosize, TextField } from "@mui/material";
-import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
 import { DropzoneArea } from "@pandemicode/material-ui-dropzone";
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import React, { useState} from "react";
 import * as yup from "yup";
+
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemText from '@mui/material/ListItemText';
+import Avatar from '@mui/material/Avatar';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import _ from "lodash";
+import useDrivePicker from "react-google-drive-picker";
+
+
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -62,9 +73,19 @@ const validationSchema = yup.object({
 	name: yup.string().required("Full Name is required"),
 });
 
+const ApiGoogleDrive = {
+	CLIENT_ID: '284247270990-gdn3hpqk4c4fjckvmd45k4ajeeov4msb.apps.googleusercontent.com',
+	CLIENT_SECRET: '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',
+	REDIRECT_URL: 'https://developers.google.com/oauthplayground/',
+
+	REFRESH_TOKEN: '1//04euMhZM3kPsbCgYIARAAGAQSNwF-L9IrYsB6QdWy_R04LH2kHVOF7K2sJLqOKTVrPHAhrG2tuPyVZjflqNTH4CdZ1Zc0jt0B-48'
+}
 function CreateIdeaSubForm(props) {
+	const [openPicker, data, authResponse] = useDrivePicker();
+	const [secondary, setSecondary] = React.useState(false);
+	const [arrayFile, setArrayFile] = useState([])
 	const { onClose, onCreate, submissionTitle } = props;
-	const [dataDateRangePicker, setDataDateRangePicker] = useState([null, null]);
+
 	const formik = useFormik({
 		initialValues: {},
 		onSubmit: (values) => {
@@ -74,67 +95,79 @@ function CreateIdeaSubForm(props) {
 		},
 	});
 
-	const renderFormDate = (startProps, endProps) => {
-		return (
-			<React.Fragment>
-				<div className="form_content" style={{ width: "100%" }}>
-					<InputLabel required htmlFor="initial_date">
-						Initial Date
-					</InputLabel>
-					<TextField
-						fullWidth
-						{...startProps}
-						required={true}
-						label={null}
-						type={"date"}
-						margin="normal"
-						id="initial_date"
-						name="initial_date"
-						onChange={formik.handleChange}
-						onBlur={formik.handleBlur}
-					/>
-				</div>
-				<Box
-					sx={{ mx: 3 }}
-					style={{
-						marginBottom: 8,
-						marginTop: "auto",
-						height: 56,
-						paddingBottom: 15,
-						paddingTop: 15,
-					}}
-				>
-					{" "}
-					to{" "}
-				</Box>
-				<div className="form_content" style={{ width: "100%" }}>
-					<InputLabel required htmlFor="final_date">
-						Final Date
-					</InputLabel>
-					<TextField
-						fullWidth
-						{...endProps}
-						label={null}
-						required={true}
-						type={"date"}
-						margin="normal"
-						id="final_date"
-						name="final_date"
-						onChange={formik.handleChange}
-						onBlur={formik.handleBlur}
-					/>
-				</div>
-			</React.Fragment>
-		);
-	};
-	const useStyles = makeStyles((theme) =>
-		createStyles({
-			previewChip: {
-				minWidth: 160,
-				maxWidth: 210,
-			},
-		}),
-	);
+	// const customViewsArray = [new google.picker.DocsView()]; // custom view
+	const handleOpenPicker = () => {
+		openPicker({
+			clientId: "xxxxxxxxxxxxxxxxx",
+			developerKey: "xxxxxxxxxxxx",
+			viewId: "DOCS",
+
+			// token: token, // pass oauth token in case you already have one
+			showUploadView: true,
+			showUploadFolders: true,
+			supportDrives: true,
+			multiselect: true,
+
+			// customViews: customViewsArray, // custom view
+		})
+	}
+
+	const onUploadFile = async (file) => {
+		const newArrayFile = arrayFile;
+		_.map(file, x => {
+			newArrayFile.push({
+				path: x?.path,
+				name: x?.name,
+				type: x?.type,
+			})
+		})
+		setArrayFile(newArrayFile)
+		formik.resetForm()
+	}
+
+
+	const renderUploadFile = () => {
+		console.log(arrayFile, 'arrayFile')
+		return <>
+			<DropzoneArea
+				dropzoneText={<div style={{marginTop: 20, marginBottom: 15}}>
+					<h1 style={{fontSize: 22, fontWeight: 15}}>Drag and drop file upload</h1>
+					<div>( Image, file, word, excel, pdf, etc. )</div>
+				</div>}
+				showPreviewsInDropzone={false}
+				onDrop={(file)=>onUploadFile(file)}
+				showAlerts={false}
+				clearOnUnmount={false}
+
+			/>
+		<div style={{marginTop: 15}}>
+			<h1 style={{fontWeight: "bold", fontSize: "24px !important"}}>File uploaded</h1>
+			<List>
+				{
+					_.map(arrayFile, item => {
+						return <ListItem
+							secondaryAction={
+								<IconButton edge="end" aria-label="delete">
+									<DeleteIcon />
+								</IconButton>
+							}
+						>
+							<ListItemAvatar>
+								<Avatar>
+									<AttachFileIcon />
+								</Avatar>
+							</ListItemAvatar>
+							<ListItemText
+								primary={item?.name}
+								secondary={secondary ? 'Secondary text' : null}
+							/>
+						</ListItem>
+					})
+				}
+			</List>
+		</div>
+			</>
+	}
 	return (
 		<div className="createuserform">
 			<div className="createuserform_title">
@@ -202,41 +235,28 @@ function CreateIdeaSubForm(props) {
 
 				<div className="form_group">
 					<div className="form_content">
-						<InputLabel htmlFor="description">Description</InputLabel>
-						<TextareaAutosize
-							className="description-field"
-							aria-label="minimum height"
-							id="description"
-							name="description"
-							minRows={6}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							style={{
-								width: "100%",
-								marginTop: 16,
-								marginBottom: 8,
-								borderRadius: "5px",
-							}}
-						/>
+						<div>
+							<TextareaAutosize
+								className="description-field"
+								aria-label="minimum height"
+								id="description"
+								name="description"
+								minRows={6}
+								onChange={formik.handleChange}
+								onBlur={formik.handleBlur}
+								style={{
+									width: "100%",
+									marginTop: 16,
+									marginBottom: 8,
+									borderRadius: "5px",
+								}}
+							/>
+						</div>
 					</div>
 				</div>
 				<div className="form_group">
 					<div className="form_content edit-input-file">
-						<DropzoneArea
-							showPreviews={true}
-							initialFiles={[
-								"https://drive.google.com/file/d/1j01Gc7r27V5vkEExy9OJwcs5SEkCEuHC",
-							]}
-							showPreviewsInDropzone={false}
-							onChange={(value) => console.log(value, "value")}
-							useChipsForPreview
-							showAlerts={false}
-							clearOnUnmount={false}
-							filesLimit={5}
-							previewGridProps={{ container: { spacing: 1, direction: "row" } }}
-							// previewChipProps={{classes: { root: classes.previewChip } }}
-							previewText="Selected files"
-						/>
+						{renderUploadFile()}
 					</div>
 				</div>
 				<div className="createuserform_footer">

@@ -15,6 +15,7 @@ import { AuthRequest } from "../../common/AppUse";
 import { URL_PATHS } from "../../common/env";
 import DetailForm from "./DetailForm";
 import ModalSubIdea from "./Modal/ModalSubIdea";
+import IdeaSubView from "./IdeaSubView";
 
 function DetailView() {
 	const { id } = useParams();
@@ -134,7 +135,7 @@ function DetailView() {
 	const renderIdeaView = () => {
 		return (
 			<fieldset
-				style={{ border: "2px solid gray", padding: 12, borderRadius: 8 }}
+				style={{ border: "2px solid gray", padding: 12, borderRadius: 8, marginTop: 30}}
 			>
 				<legend
 					style={{
@@ -144,9 +145,9 @@ function DetailView() {
 						display: "flex",
 					}}
 				>
-					Idea{" "}
+					List Idea{" "}
 				</legend>
-				<DetailForm initialValue={initialValue} />
+				<IdeaSubView initialValue={initialValue} />
 			</fieldset>
 		);
 	};
@@ -155,6 +156,7 @@ function DetailView() {
 	}
 	return (
 		<div>
+
 			{renderTop()}
 			{renderDetailForm()}
 			{renderIdeaView()}

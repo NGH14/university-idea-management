@@ -28,6 +28,7 @@ import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
 import { UserContext } from "../../context/AppContext";
 import ModalSubmissionManagement from "./modal/ModalUserManagement";
 import { Column } from "./model/Column";
+import {toast} from "react-toastify";
 
 function SortedDescendingIcon() {
 	return <ExpandMoreIcon className="icon" />;
@@ -37,8 +38,17 @@ function SortedAscendingIcon() {
 	return <ExpandLessIcon className="icon" />;
 }
 
+const toastMessages = {
+	WAIT: "Please wait...",
+	SUC_SUB_CREATE: "Create submission successful !!",
+	SUC_SUB_UPDATE: "Update submission successful !!",
+	SUC_SUB__DELETE: "Delete submission successful !!",
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+};
+
 function SubmissionManagement() {
 	const navigate = useNavigate();
+
 	const { state } = useContext(UserContext);
 	const [data, setData] = useState([]);
 	const [rowId, setRowId] = useState(null);
@@ -107,7 +117,7 @@ function SubmissionManagement() {
 	];
 	const loadData = async () => {
 		await AuthRequest.get(
-			`${API_PATHS.ADMIN.SUB}?papesize=${pagination.pageSize}?page=${
+			`${API_PATHS.ADMIN.MANAGE_SUB}?papesize=${pagination.pageSize}?page=${
 				pagination.page + 1
 			}`,
 		)
@@ -134,6 +144,7 @@ function SubmissionManagement() {
 			if (res?.data?.succeeded) {
 				loadData();
 			}
+			toast.success(toastMessages.SUC_SUB__DELETE)
 		} catch {}
 	};
 
@@ -145,7 +156,12 @@ function SubmissionManagement() {
 				value,
 			);
 			if (res?.data?.succeeded) {
-				loadData();
+				setStatus({
+					...status,
+					visibleModal: false,
+				});
+				toast.success(toastMessages.SUC_SUB_UPDATE)
+				await loadData();
 			}
 		} catch {}
 	};
@@ -158,7 +174,8 @@ function SubmissionManagement() {
 					...status,
 					visibleModal: false,
 				});
-				await loadData();
+				toast.success(toastMessages.SUC_SUB_CREATE)
+				loadData();
 			}
 		} catch {
 			setStatus({
@@ -166,10 +183,6 @@ function SubmissionManagement() {
 				visibleModal: false,
 			});
 		}
-	};
-
-	const onCloseNotification = () => {
-		setStatus({ ...status, visibleNotification: false });
 	};
 
 	const onCloseModal = () => {
