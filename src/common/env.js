@@ -1,6 +1,6 @@
 export const DEV_CONFIGS = {
-	IS_LOGIN: false,
-	IS_DEV: false,
+	IS_LOGIN: true,
+	IS_DEV: true,
 	FAKE_ROLES: [
 		{ name: "admin" },
 		{ name: "manager" },
