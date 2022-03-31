@@ -300,12 +300,11 @@ function EditUserForm(props) {
 					</div>
 
 					<div className="form_content">
-						<InputLabel required htmlFor="email">
+						<InputLabel required htmlFor="phone">
 							Phone
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							variant="outlined"
 							id="phone"
 							name="phone"
 							margin="normal"
@@ -314,6 +313,23 @@ function EditUserForm(props) {
 							onBlur={formik.handleBlur}
 							error={formik.touched.phone && Boolean(formik.errors.phone)}
 							helperText={formik.touched.phone && formik.errors.phone}
+						/>
+					</div>
+
+					<div className="form_content">
+						<InputLabel required htmlFor="gender">
+							Gender
+						</InputLabel>
+						<CssTextField
+							fullWidth
+							id="gender"
+							name="gender"
+							margin="normal"
+							value={formik.values.gender}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							error={formik.touched.gender && Boolean(formik.errors.gender)}
+							helperText={formik.touched.gender && formik.errors.gender}
 						/>
 					</div>
 				</div>

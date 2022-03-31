@@ -54,15 +54,6 @@ const ColorButton = styled(Button)(() => ({
 	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
 }));
 
-const validationSchema = yup.object({
-	full_name: yup.string().required("Full Name is required"),
-	email: yup.string().email("Email is invalid").required("Email is required"),
-	role: yup.string().required("Role is required"),
-	department: yup.string().required("Department is required"),
-	date_of_birth: yup.date("Date invalid").nullable(),
-	user_name: yup.string().required("User Name is required"),
-});
-
 function DetailUserForm(props) {
 	const { onClose, initialValue } = props;
 
@@ -92,6 +83,7 @@ function DetailUserForm(props) {
 							value={formik.values.full_name}
 							variant="standard"
 							inputProps={{
+								disabled: true,
 								readOnly: true,
 							}}
 						/>
@@ -100,12 +92,13 @@ function DetailUserForm(props) {
 						<InputLabel htmlFor="email">Email</InputLabel>
 						<CssTextField
 							fullWidth
-							variant="outlined"
+							variant="standard"
 							id="email"
 							name="email"
 							margin="normal"
 							value={formik.values.email}
 							inputProps={{
+								disabled: true,
 								readOnly: true,
 							}}
 						/>
@@ -116,12 +109,13 @@ function DetailUserForm(props) {
 						<InputLabel htmlFor="department">Department</InputLabel>
 						<CssTextField
 							fullWidth
-							variant="outlined"
+							variant="standard"
 							id="department"
 							name="department"
 							margin="normal"
 							value={formik.values.department}
 							inputProps={{
+								disabled: true,
 								readOnly: true,
 							}}
 						/>
@@ -131,12 +125,13 @@ function DetailUserForm(props) {
 						<InputLabel htmlFor="role">Role</InputLabel>
 						<CssTextField
 							fullWidth
-							variant="outlined"
+							variant="standard"
 							id="role"
 							name="role"
 							margin="normal"
 							value={formik.values.role}
 							inputProps={{
+								disabled: true,
 								readOnly: true,
 							}}
 						/>
@@ -145,19 +140,64 @@ function DetailUserForm(props) {
 						<InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
 						<CssTextField
 							fullWidth
-							variant="outlined"
+							variant="standard"
 							name="date_of_birth"
-							id="date_of_birth"
 							margin="normal"
-							value={formik.values.date_of_birth}
+							id="date_of_birth"
 							inputProps={{
+								disabled: true,
 								readOnly: true,
 							}}
+							value={formik.values.date_of_birth}
+						/>
+					</div>
+
+					<div className="form_content">
+						<InputLabel required htmlFor="phone">
+							Phone
+						</InputLabel>
+						<CssTextField
+							fullWidth
+							id="phone"
+							name="phone"
+							variant="standard"
+							margin="normal"
+							inputProps={{
+								disabled: true,
+								readOnly: true,
+							}}
+							value={formik.values.phone}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							error={formik.touched.phone && Boolean(formik.errors.phone)}
+							helperText={formik.touched.phone && formik.errors.phone}
+						/>
+					</div>
+
+					<div className="form_content">
+						<InputLabel required htmlFor="gender">
+							Gender
+						</InputLabel>
+						<CssTextField
+							fullWidth
+							id="gender"
+							name="gender"
+							margin="normal"
+							variant="standard"
+							inputProps={{
+								disabled: true,
+								readOnly: true,
+							}}
+							value={formik.values.gender}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							error={formik.touched.gender && Boolean(formik.errors.gender)}
+							helperText={formik.touched.gender && formik.errors.gender}
 						/>
 					</div>
 				</div>
 				<div className="detailuserform_footer">
-					<ColorButton variant="outlined" onClick={() => onClose()}>
+					<ColorButton variant="standard" onClick={() => onClose()}>
 						Close
 					</ColorButton>
 				</div>
