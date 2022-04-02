@@ -1,8 +1,5 @@
 import "../../containers/UserManagement/style.css";
-
 import { dataDemo_ideas } from "../../containers/SubmissionManagement/FakeData/Ideas";
-
-import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import { CircularProgress } from "@mui/material";
@@ -25,6 +22,12 @@ const toastMessages = {
 	ERR_IDEAS_NOT_FOUND: "Ideas not found !!",
 };
 
+import {STORAGE_VARS, URL_PATHS} from "../../common/env";
+import DetailSubmissionForm from "./DetailSubmissionForm";
+import ModalSubmissionIdea from "./Modal/ModalSubmissionIdea";
+import IdeaSubView from "./IdeaSubView";
+import axios from "axios";
+
 function DetailView() {
 	const { id } = useParams();
 	const navigate = useNavigate();
@@ -33,6 +36,10 @@ function DetailView() {
 		visibleModal: false,
 		action: "update",
 		loading: false,
+	});
+	const [data, setData] = useState({
+		subData: [],
+		ideaData: []
 	});
 
 	useEffect(() => {
@@ -52,20 +59,32 @@ function DetailView() {
 	}, []);
 
 	const loadData = async () => {
-		setStatus({ ...status, loading: true });
-		try {
-			const res = await AuthRequest.get(`submission-management/${id}`);
-			if (res?.data?.succeeded) {
-				const value = res?.data?.result;
+
+		const globalApi = "https://localhost:7024/api";
+
+		await axios.all([
+			axios.get(`${globalApi}/submission-management/${id}`,{
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
+				}
+			}),
+			// axios.get(`${globalApi}/idea-management?page=1&page_size=5`, {submissionId: id} {
+			// 	headers: {
+			// 		Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
+			// 	}
+			// }
+		]).then(axios.spread(function(resSub, resIdea) {
+			if(resSub?.data?.succeeded){
+				const value = resSub?.data?.result;
 				const newValue = {
 					...value,
 					initial_date_v: moment(value?.initial_date).format("DD/MM/YYYY"),
 					final_date_v: moment(value?.final_date).format("DD/MM/YYYY"),
 				};
-				setInitialValue(newValue);
+				setData({...data, subData: newValue});
 				setStatus({ ...status, loading: false, visibleModal: false });
 			}
-		} catch {}
+		}))
 	};
 
 	const onCloseModal = () => {
@@ -74,7 +93,7 @@ function DetailView() {
 	const onOpenModal = (action) => {
 		setStatus({ ...status, visibleModal: true, action: action });
 	};
-	const onUpdate = async (value) => {
+	const onUpdateSubmission = async (value) => {
 		setStatus({
 			...status,
 			loading: true,
@@ -93,17 +112,34 @@ function DetailView() {
 			}
 		} catch {}
 	};
-	const onCloseNotification = () => {
-		setStatus({ ...status, visibleNotification: false });
+	const onUpdateIdea = async (value) => {
+		setStatus({
+			...status,
+			loading: true,
+		});
+		try {
+			const res = await AuthRequest.put(
+				`submission-management/${value?.id}`,
+				value,
+			);
+			if (res?.data?.succeeded) {
+				setStatus({
+					...status,
+					visibleModal: false,
+				});
+				await loadData();
+			}
+		} catch {}
 	};
+
 	const renderModal = () => {
 		return (
 			<ModalSubmissionIdea
 				visible={status.visibleModal}
 				action={status.action}
 				onClose={onCloseModal}
-				initialValue={initialValue}
-				onUpdate={onUpdate}
+				initialValue={data.subData}
+				onUpdate={onUpdateSubmission}
 			/>
 		);
 	};
@@ -129,14 +165,7 @@ function DetailView() {
 					Edit Submission
 				</Button>
 
-				<Button
-					size={"small"}
-					variant="contained"
-					endIcon={<AddIcon />}
-					onClick={() => onOpenModal("create")}
-				>
-					Create Idea
-				</Button>
+
 			</div>
 		);
 	};
@@ -148,8 +177,7 @@ function DetailView() {
 				<legend style={{ fontWeight: "bold", padding: 8, fontSize: 22 }}>
 					Information Submission
 				</legend>
-
-				<DetailSubmissionForm initialValue={initialValue} />
+				<DetailSubmissionForm initialValue={data.subData} />
 			</fieldset>
 		);
 	};
@@ -157,10 +185,12 @@ function DetailView() {
 		return (
 			<fieldset
 				style={{
-					border: "2px solid gray",
+					border: "1px solid gray",
 					padding: 12,
-					borderRadius: 8,
 					marginTop: 30,
+					borderRight: 'none',
+					borderLeft: 'none',
+					borderBottom: 'none',
 				}}
 			>
 				<legend
@@ -173,11 +203,11 @@ function DetailView() {
 				>
 					List Idea{" "}
 				</legend>
-				<IdeaSubView initialValue={initialValue} />
+				<IdeaSubView ideaData={data.ideaData} loadData={loadData} subData={data?.subData}/>
 			</fieldset>
 		);
 	};
-	if (_.isEmpty(initialValue) || status.loading) {
+	if (_.isEmpty(data.subData) || status.loading) {
 		return <CircularProgress size={100} />;
 	}
 	return (

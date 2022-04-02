@@ -1,63 +1,33 @@
-import * as React from 'react';
-import { styled } from '@mui/material/styles';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import Paper from '@mui/material/Paper';
-import moment from "moment";
-import {Box, Button, CircularProgress, Menu, MenuItem, Pagination, Tooltip} from "@mui/material";
-
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import AddIcon from "@mui/icons-material/Add";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
-import {DataGridPro, GridActionsCellItem} from "@mui/x-data-grid-pro";
-import useDrivePicker from "react-google-drive-picker";
-import _ from "lodash";
-import {toast} from "react-toastify";
+import {useEffect, useState} from "react";
 import {AuthRequest, sleep} from "../../common/AppUse";
 import {API_PATHS} from "../../common/env";
-import ModalIdea from "../Idea/ModalIdea";
-import {useEffect, useState} from "react";
-import CommentIdea from "../Idea/CommentIdea";
-
-const toastMessages = {
-    WAIT: "Please wait...",
-    SUC_IDEA_ADDED: "Create idea successful !!",
-    SUC_IDEA_EDITED: "Update idea successful !!",
-    SUC_IDEA_DEL: "Delete idea successful !!",
-    ERR_SERVER_ERROR: "Something went wrong, please try again !!",
-};
-
-const ExpandMore = styled((props) => {
-    const { expand, ...other } = props;
-    return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-        duration: theme.transitions.duration.shortest,
-    }),
-}));
-const Item = styled(Paper)(({ theme }) => ({
-    // backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    border: 'none',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    // textAlign: 'center',
-    color: theme.palette.text.secondary,
-}));
+import {toast} from "react-toastify";
+import IdeaSubView from "../../components/Submission/IdeaSubView";
+import * as React from "react";
+import {Box, Button, CircularProgress, Menu, MenuItem, Pagination, Tooltip} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import ModalIdea from "../../components/Idea/ModalIdea";
+import _ from "lodash";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import Avatar from "@mui/material/Avatar";
+import moment from "moment";
+import IconButton from "@mui/material/IconButton";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import CardActions from "@mui/material/CardActions";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import Collapse from "@mui/material/Collapse";
+import CommentIdea from "../../components/Idea/CommentIdea";
+import {styled} from "@mui/material/styles";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 const fakeData = [{
-    name: "000", 
+    name: "000",
     id: 1,
     comment:[
         {id: 1,  user:{name: "Data Fake 01 _01"}, content: "Data fake demo 01", modified_date: "2022-03-15T13:45:30"},
@@ -72,47 +42,43 @@ const fakeData = [{
             {id: 2, user:{name: "Data Fake 01 _02"}, content: "Data fake demo 02", modified_date: "2022-03-15T13:45:30"}
         ]}
 ]
+const ExpandMore = styled((props) => {
+    const { expand, ...other } = props;
+    return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+    marginLeft: 'auto',
+    transition: theme.transitions.create('transform', {
+        duration: theme.transitions.duration.shortest,
+    }),
+}));
 const ITEM_HEIGHT = 48;
 
-function IdeaSubView({ideaData, subData}){
 
-    const [dataIdea, setDataIdea] = useState(ideaData)
+const toastMessages = {
+    WAIT: "Please wait...",
+    SUC_COMMENT_ADDED: "Create comment successful !!",
+    SUC_COMMENT_EDITED: "Update comment successful !!",
+    SUC_COMMENT_DEL: "Delete comment successful !!",
+    ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+};
 
-    const [totalIdea, setTotalIdea] = useState(ideaData?.totalIdea)
-
-    const [pagination, setPagination] = useState({
-        page: null
-    })
-
-    //#region variable
+function IdeaManagement(){
     const [status, setStatus] = useState({
         visibleModal: false,
         action: "update",
-        loading: false
+        loading: false,
     });
-
-    const [idIdea, setIdIdea] = useState(null);
-    const [openPicker, data, authResponse] = useDrivePicker();
     const [expanded, setExpanded] = React.useState([]);
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [pagination, setPagination] = useState({
+        page: 1
+    })
     const open = Boolean(anchorEl);
+    const [data, setData] = useState([])
     useEffect(()=>{
-        if(pagination?.page){
-            loadDataIdea()
-        }
+        loadData()
     }, [pagination])
-
-    useEffect(()=>{
-        if(fakeData && !_.isEmpty(fakeData)){
-            let newExpanded = []
-            _.map(fakeData, x => {
-                const id = x.id
-                newExpanded[id] = false;
-            })
-            setExpanded(newExpanded)
-        }
-    }, [])
-
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -125,21 +91,6 @@ function IdeaSubView({ideaData, subData}){
         newExpanded[id] = !newExpanded[id]
         setExpanded(newExpanded);
     };
-    //#endregion
-
-    //#region action button API IDEA
-
-    const loadDataIdea = async () => {
-        setStatus({...status, loading: true})
-        await AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_IDEA}?page=${pagination?.page}?page_size=5`, {
-            submissionId: subData.id
-        })
-            .then((res) => {
-                setStatus({...status, loading: false})
-                setDataIdea(res?.data?.result)
-            })
-            .catch(() =>{});
-    }
     const onDelete = (id) => {
         toast
             .promise(
@@ -153,7 +104,7 @@ function IdeaSubView({ideaData, subData}){
                 },
             )
             .then(() => {
-                loadDataIdea()
+                loadData()
             });
     }
 
@@ -174,15 +125,14 @@ function IdeaSubView({ideaData, subData}){
                     // delete file API
                 }
                 setStatus({ ...status, visibleModal: false });
-                loadDataIdea();
+                loadData();
             });
     }
 
     const onCreate = (value) => {
-        let newValue = {...value, submissionId: subData?.id}
         toast
             .promise(
-                AuthRequest.post(API_PATHS.ADMIN.MANAGE_IDEA, newValue)
+                AuthRequest.post(API_PATHS.ADMIN.MANAGE_IDEA, value)
                     .then(() => sleep(700))
                     .catch(),
                 {
@@ -193,26 +143,25 @@ function IdeaSubView({ideaData, subData}){
             )
             .then(() => {
                 setStatus({ ...status, visibleModal: false });
-                loadDataIdea();
+                loadData();
             });
     }
-    //#endregion IDEA I
-
-
-
-    const renderCardHeader = (item) => {
-        return <CardHeader
-            avatar={
-                <Avatar sx={{ bgcolor: "gray" }} aria-label="recipe">
-                    P
-                </Avatar>
-            }
-            action={renderActionIdea(item.id)}
-            title="People Private"
-            subheader ={item?.createTime ? moment(item?.createTime).format("LLL") : "September 14, 2016"}
-        />
-    }
-
+    const loadData = async () => {
+        await AuthRequest.get(API_PATHS.ADMIN.MANAGE_COMMENT, {
+            params: {
+                page: pagination.page + 1,
+                page_size: 5,
+            },
+        })
+            .then((res) => {
+                setData(res?.data?.result?.rows);
+            })
+            .catch(() =>
+                toast.error(toastMessages.ERR_SERVER_ERROR, {
+                    style: { width: "auto" },
+                }),
+            );
+    };
     const actionButtonIdea = [
 
         <Button startIcon={<EditIcon />}
@@ -228,6 +177,13 @@ function IdeaSubView({ideaData, subData}){
             Delete Idea
         </Button>
     ];
+
+    const onCloseModal = () => {
+        setStatus({ ...status, visibleModal: false });
+    };
+    const onOpenModal = (action, id) => {
+        setStatus({ ...status, visibleModal: true, action: action });
+    };
     const renderActionIdea = (id) => {
         return <div>
             <IconButton
@@ -266,6 +222,43 @@ function IdeaSubView({ideaData, subData}){
             </Menu>
         </div>
     }
+    const renderTop = () => {
+        return <div style={{ width: "100%", textAlign: "right", marginBottom: 15}}>
+            <Button
+                size={"small"}
+                variant="contained"
+                endIcon={<AddIcon />}
+                onClick={() => onOpenModal("create")}
+            >
+                Create Idea
+            </Button>
+        </div>
+    }
+    const renderModal = () => {
+        return (
+            <ModalIdea
+                visible={status.visibleModal}
+                action={status.action}
+                onClose={onCloseModal}
+                onUpdate={onUpdate}
+                onCreate={onCreate}
+            />
+        );
+    };
+
+    const renderCardHeader = (item) => {
+        return <CardHeader
+            avatar={
+                <Avatar sx={{ bgcolor: "gray" }} aria-label="recipe">
+                    P
+                </Avatar>
+            }
+            action={renderActionIdea(item.id)}
+            title="People Private"
+            subheader ={item?.createTime ? moment(item?.createTime).format("LLL") : "September 14, 2016"}
+        />
+    }
+
     const renderCardContent = (item) => {
         return <CardContent>
             <div style={{display: "flex"}}>
@@ -283,6 +276,7 @@ function IdeaSubView({ideaData, subData}){
             </div>
         </CardContent>
     }
+
     const renderActionButton = (item) => {
 
         return <CardActions disableSpacing style={{paddingRight: 15, paddingLeft: 15}}>
@@ -306,11 +300,6 @@ function IdeaSubView({ideaData, subData}){
         </CardActions>
     }
 
-    const renderComment = (item) => {
-        return <Collapse in={expanded[item.id]} timeout="auto" unmountOnExit >
-            <CommentIdea data={item} ideaId={item.id}/>
-        </Collapse>
-    }
     const renderListFile = (item) => {
         if(item?.file || !_.isEmpty(item?.file)){
             return <Card style={{ marginLeft: 15, marginRight: 15}}>
@@ -321,51 +310,23 @@ function IdeaSubView({ideaData, subData}){
             return <div></div>
         }
     }
-    const onCloseModal = () => {
-        setStatus({ ...status, visibleModal: false });
-    };
-    const onOpenModal = (action, id) => {
-        id && setIdIdea(id)
-        setStatus({ ...status, visibleModal: true, action: action });
-    };
-    const renderModal = () => {
-        return (
-            <ModalIdea
-                visible={status.visibleModal}
-                action={status.action}
-                onClose={onCloseModal}
-                idIdea={idIdea}
-                titleSub ={subData.title}
-                onUpdate={onUpdate}
-                onCreate={onCreate}
-            />
-        );
-    };
-    const renderTop = () => {
-        return <div style={{ width: "100%", textAlign: "right", marginBottom: 15}}>
-            <Button
-                size={"small"}
-                variant="contained"
-                endIcon={<AddIcon />}
-                onClick={() => onOpenModal("create")}
-            >
-                Create Idea
-            </Button>
-        </div>
+
+    const renderComment = (item) => {
+        return <Collapse in={expanded[item.id]} timeout="auto" unmountOnExit >
+            <CommentIdea data={item} ideaId={item.id}/>
+        </Collapse>
     }
-    const onChangePage = async (page) => {
-        setPagination({...pagination, page})
-    }
-    const renderContent = () => {
+
+    const renderContentIdea = () => {
         const result = _.map(fakeData, (item, index) => {
-                return <Card style={index === 0 ? {border: "1px solid #90a4ae"} : { border: "1px solid #90a4ae", marginTop: 30}} >
-                    {renderCardHeader(item)}
-                    {renderCardContent(item)}
-                    {renderListFile(item)}
-                    {renderActionButton(item)}
-                    {renderComment(item)}
-                </Card>
-            })
+            return <Card style={index === 0 ? {border: "1px solid #90a4ae"} : { border: "1px solid #90a4ae", marginTop: 30}} >
+                {renderCardHeader(item)}
+                {renderCardContent(item)}
+                {renderListFile(item)}
+                {renderActionButton(item)}
+                {renderComment(item)}
+            </Card>
+        })
         if(status.loading){
             return <Box sx={{ display: 'flex' }}>
                 <CircularProgress />
@@ -373,6 +334,11 @@ function IdeaSubView({ideaData, subData}){
         }
         return result
     }
+
+    const onChangePage = async (page) => {
+        setPagination({...pagination, page})
+    }
+
     const renderFooter = () => {
         return <div style={{marginTop: 15, float: "right"}}>
             <Pagination
@@ -384,13 +350,40 @@ function IdeaSubView({ideaData, subData}){
             />
         </div>
     }
-    return (
-        <>
+
+    const renderContent = () => {
+        return <>
             {renderTop()}
-            {renderContent()}
+            {renderContentIdea()}
             {renderFooter()}
             {status.visibleModal && renderModal()}
         </>
-    );
+    }
+
+    return <>
+        <fieldset
+            style={{
+                border: "1px solid gray",
+                padding: 12,
+                marginTop: 30,
+                borderRight: 'none',
+                borderLeft: 'none',
+                borderBottom: 'none',
+            }}
+        >
+            <legend
+                style={{
+                    fontWeight: "bold",
+                    padding: 8,
+                    fontSize: 22,
+                    display: "flex",
+                }}
+            >
+                List Idea{" "}
+            </legend>
+            {renderContent()}
+        </fieldset>
+        {status.visibleModal && renderModal()}
+    </>
 }
-export default IdeaSubView;
+export default IdeaManagement

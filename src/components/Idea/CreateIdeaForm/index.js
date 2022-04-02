@@ -1,24 +1,16 @@
 import "./style.css";
-
-import AttachFileIcon from "@mui/icons-material/AttachFile";
 import CloseIcon from "@mui/icons-material/Close";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { TextareaAutosize, TextField } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemText from "@mui/material/ListItemText";
 import { styled } from "@mui/material/styles";
-import { DropzoneArea } from "@pandemicode/material-ui-dropzone";
 import { useFormik } from "formik";
-import _ from "lodash";
-import React, { useState } from "react";
-import useDrivePicker from "react-google-drive-picker";
+import React from "react";
 import * as yup from "yup";
+import Dropzone from "react-dropzone";
+import ClearIcon from '@mui/icons-material/Clear';
+import _ from "lodash";
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -78,103 +70,45 @@ const ApiGoogleDrive = {
 		"1//04euMhZM3kPsbCgYIARAAGAQSNwF-L9IrYsB6QdWy_R04LH2kHVOF7K2sJLqOKTVrPHAhrG2tuPyVZjflqNTH4CdZ1Zc0jt0B-48",
 };
 
+
+// ref 137 option submission
+
 function CreateIdeaForm(props) {
-	const [openPicker, data, authResponse] = useDrivePicker();
-	const [secondary, setSecondary] = React.useState(false);
-	const [arrayFile, setArrayFile] = useState([]);
 	const { onClose, onCreate, submissionTitle } = props;
 
 	const formik = useFormik({
 		initialValues: {},
 		onSubmit: (values) => {
-			// const newValue = {...values, initial_date: dataDateRangePicker[0], final_date: dataDateRangePicker[1]}
-			// onCreate(newValue)
-			console.log(values, 98975);
+			if(values.file && !_.isEmpty(values.file)){
+				onSubmitForm(values)
+			} else {
+				onCreate(values)
+			}
 		},
 	});
-
-	// const customViewsArray = [new google.picker.DocsView()]; // custom view
-	const handleOpenPicker = () => {
-		openPicker({
-			clientId: "xxxxxxxxxxxxxxxxx",
-			developerKey: "xxxxxxxxxxxx",
-			viewId: "DOCS",
-
-			token: "token", // pass oauth token in case you already have one
-			showUploadView: true,
-			showUploadFolders: true,
-			supportDrives: true,
-			multiselect: true,
-
-			// customViews: customViewsArray, // custom view
-		});
-	};
-
-	const onUploadFile = async (file) => {
-		const newArrayFile = arrayFile;
-		_.map(file, (x) => {
-			newArrayFile.push({
-				path: x?.path,
-				name: x?.name,
-				type: x?.type,
-			});
-		});
-		setArrayFile(newArrayFile);
-		formik.resetForm();
-	};
-
-	const renderUploadFile = () => {
-		console.log(arrayFile, "arrayFile");
-		return (
-			<>
-				<DropzoneArea
-					dropzoneText={
-						<div style={{ marginTop: 20, marginBottom: 15 }}>
-							<h1 style={{ fontSize: 22, fontWeight: 15 }}>
-								Drag and drop file upload
-							</h1>
-							<div>( Image, file, word, excel, pdf, etc. )</div>
-						</div>
-					}
-					showPreviewsInDropzone={false}
-					onDrop={(file) => onUploadFile(file)}
-					showAlerts={false}
-					clearOnUnmount={false}
-				/>
-				<div style={{ marginTop: 15 }}>
-					<h1 style={{ fontWeight: "bold", fontSize: "24px !important" }}>
-						File uploaded
-					</h1>
-					<List>
-						{_.map(arrayFile, (item) => {
-							return (
-								<ListItem
-									secondaryAction={
-										<IconButton edge="end" aria-label="delete">
-											<DeleteIcon />
-										</IconButton>
-									}
-								>
-									<ListItemAvatar>
-										<Avatar>
-											<AttachFileIcon />
-										</Avatar>
-									</ListItemAvatar>
-									<ListItemText
-										primary={item?.name}
-										secondary={secondary ? "Secondary text" : null}
-									/>
-								</ListItem>
-							);
-						})}
-					</List>
-				</div>
-			</>
-		);
-	};
+	const onSubmitForm = (values) => {
+		console.log(values.file[0], 987)
+		const file = values.file[0] //the file
+		const reader = new FileReader() //this for convert to Base64
+		reader.readAsDataURL(values.file[0]) //start conversion...
+		reader.onload = function () { //.. once finished..
+			const rawLog = reader.result.split(',')[1]; //extract only thee file data part
+			const dataSend = {dataReq: { data: rawLog, name: file.name, type: file.type }, fname: "uploadFilesToGoogleDrive"}; //preapre info to send to API
+			fetch('https://script.google.com/macros/s/AKfycbzOsDnvlUIHyq6y2dpzWevLym82dPqM9ZVTbvpB2KpoFN9GHoiodwvMMNpRDeupSeFO/exec', //your AppsScript URL
+				{ method: "POST", body: JSON.stringify(dataSend) },) //send to Api
+				.then(res => res.json()).then((infoFile) => {
+				onCreate({...values, fileRequest: {
+						id: infoFile.id,
+						url: infoFile.url,
+						name: file.name,
+						type: file.type
+					}}) //See response
+			}).catch(e => console.log(e)) // Or Error in console // Or Error in console
+		}
+	}
 	return (
 		<div className="createuserform">
-			<div className="createuserform_title">
+			<div className="createuserform_title" >
 				<h2>Create Idea</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -186,7 +120,7 @@ function CreateIdeaForm(props) {
 				<div className="form_group">
 					<div className="form_content">
 						<InputLabel htmlFor="full_name">Title Submission</InputLabel>
-						<CssTextField
+						{submissionTitle ? <CssTextField
 							fullWidth
 							margin="normal"
 							id="titleSub"
@@ -199,7 +133,11 @@ function CreateIdeaForm(props) {
 							}}
 							// error={formik.touched.title && Boolean(formik.errors.title)}
 							// helperText={formik.touched.title && formik.errors.title}
-						/>
+						/> : <>
+
+							{/*option Sub mission*/}
+
+						</>}
 					</div>
 				</div>
 				<div className="form_group">
@@ -219,48 +157,54 @@ function CreateIdeaForm(props) {
 							// helperText={formik.touched.title && formik.errors.title}
 						/>
 					</div>
-					<div className="form_content">
-						<InputLabel required={true} htmlFor="full_name">
-							Content Idea
-						</InputLabel>
-						<CssTextField
-							fullWidth
-							margin="normal"
-							id="content"
-							name="content"
-							value={formik.values.content}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							// error={formik.touched.title && Boolean(formik.errors.title)}
-							// helperText={formik.touched.title && formik.errors.title}
-						/>
-					</div>
 				</div>
 
 				<div className="form_group">
 					<div className="form_content">
-						<div>
-							<TextareaAutosize
-								className="description-field"
-								aria-label="minimum height"
-								id="description"
-								name="description"
-								minRows={6}
-								onChange={formik.handleChange}
-								onBlur={formik.handleBlur}
-								style={{
-									width: "100%",
-									marginTop: 16,
-									marginBottom: 8,
-									borderRadius: "5px",
-								}}
-							/>
-						</div>
+						<InputLabel required={true} htmlFor="full_name">
+							Content
+						</InputLabel>
+						<TextareaAutosize
+							className="description-field"
+							aria-label="minimum height"
+							id="content"
+							name="content"
+							minRows={8}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							style={{
+								width: "100%",
+								marginTop: 16,
+								marginBottom: 8,
+								borderRadius: "5px",
+							}}
+						/>
+
 					</div>
 				</div>
 				<div className="form_group">
-					<div className="form_content edit-input-file">
-						{renderUploadFile()}
+					<div className="form_content" style={{display: "flex"}}>
+						<Dropzone
+							onDrop={(value)=>formik.setFieldValue("file", [...value])}
+
+							maxFiles={1}
+							multiple={true}
+						>
+							{({ getRootProps, getInputProps }) => (
+								<div {...getRootProps({ className: "dropzone" })} style={{height: "100%"}}>
+									<input {...getInputProps()} type={"file"}/>
+									<Button variant={"contained"} style={{background: "darkgray"}}>Upload Image</Button>
+
+								</div>
+							)}
+						</Dropzone>
+						{/*<input  type={"file"} name={"file"} onChange={(e)=>{*/}
+						{/*	console.log(e)*/}
+						{/*}}/>*/}
+						<div style={{marginTop: "auto", marginBottom: "auto", marginLeft: "15px", display: "flex"}}>
+							<a style={{marginTop: "auto", marginBottom: "auto", marginRight: "15px"}} href={""}>Upload-Image.doc</a>
+							<IconButton style={{ color: "darkred"}}><ClearIcon /></IconButton>
+						</div>
 					</div>
 				</div>
 				<div className="createuserform_footer">

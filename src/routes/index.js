@@ -66,6 +66,11 @@ const LIST_ROUTES_PRIVATE = [
 	},
 	{
 		roles: [ROLES.ADMIN],
+		path: URL_PATHS.MANAGE_IDEA,
+		component: React.lazy(() => import("../containers/IdeaMangement")),
+	},
+	{
+		roles: [ROLES.ADMIN],
 		path: URL_PATHS.DEMO,
 		component: React.lazy(() => import("../components/Submission/demo")),
 	},
@@ -129,6 +134,19 @@ export function ListRoute() {
 	return (
 		<>
 			<Routes>
+				<Route
+					// key={index}
+					// path={route.path}
+					element={
+						<React.Suspense fallback={<LoadingSpinner />}>
+							<Sidebar>
+								<PrivateRoute>
+									{React.lazy(() => import("../components/Submission/demo"))}
+								</PrivateRoute>
+							</Sidebar>
+						</React.Suspense>
+					}
+				/>
 				{publicRoute()}
 				{privateRoute()}
 			</Routes>

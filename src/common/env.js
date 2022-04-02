@@ -43,6 +43,7 @@ export const API_PATHS = {
 		DEP: "departments",
 		MANAGE_TAG: "tag-management",
 		MANAGE_IDEA: "idea-management",
+		MANAGE_COMMENT: "comment-management",
 		MANAGE_USER: "user-management",
 		MANAGE_SUB: "submission-management",
 		MANAGE_DEP: "department-management",
@@ -57,11 +58,13 @@ export const URL_PATHS = {
 	LOGIN: "/login",
 	SIGNIN: "/signin",
 	MANAGE_USER: "/user-management",
+	MANAGE_IDEA: "/idea-management",
 	MANAGE_SUB_ID: "/submission-management/:id",
 	MANAGE_DEP: "/department-management",
 	MANAGE_TAG: "/tag-management",
 	MANAGE_SUB: "/submission-management",
 	PROFILE: "/profile",
+
 	DEMO: "/demo",
 };
 

@@ -16,6 +16,7 @@ import Menu from "@mui/material/Menu";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import React, { useContext, useEffect } from "react";
 import {
 	BsBookmarksFill,
@@ -96,6 +97,8 @@ export default function Sidebar(props) {
 				return "Tag Management";
 			case URL_PATHS.MANAGE_SUB:
 				return "Submission Management";
+			case URL_PATHS.MANAGE_IDEA:
+				return "Idea Management";
 			default:
 				return "";
 		}
@@ -136,6 +139,15 @@ export default function Sidebar(props) {
 			icon: <RiDiscussFill className="sidebar_icon" />,
 			onClick: () => {
 				navigate(URL_PATHS.MANAGE_SUB);
+			},
+		},
+		{
+			roles: [ROLES.ADMIN, ROLES.MANAGER],
+			text: "Idea",
+			selectedText: "Idea Management",
+			icon: <RiDiscussFill className="sidebar_icon" />,
+			onClick: () => {
+				navigate(URL_PATHS.MANAGE_IDEA);
 			},
 		},
 	];

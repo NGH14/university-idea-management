@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import * as React from "react";
 import { useEffect, useState } from "react";
 
-import CreateIdeaForm from "../CreateIdeaForm";
+import CreateIdeaForm from "../../Idea/CreateIdeaForm";
 import EditSubmissionForm from "../EditSubmissionForm";
 
 const style = {
@@ -50,6 +50,7 @@ const ModalSubmissionIdea = (props) => {
 		}
 	};
 
+
 	return (
 		<Modal
 			open={visible}
@@ -59,6 +60,7 @@ const ModalSubmissionIdea = (props) => {
 		>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>
+
 	);
 };
 
