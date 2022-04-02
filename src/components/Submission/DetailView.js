@@ -11,22 +11,16 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { AuthRequest } from "../../common/AppUse";
-import { DEV_CONFIGS, URL_PATHS } from "../../common/env";
+import {DEV_CONFIGS, STORAGE_VARS, URL_PATHS} from "../../common/env";
 import DetailSubmissionForm from "./DetailSubmissionForm";
 import ModalSubmissionIdea from "./Modal/ModalSubmissionIdea";
 import IdeaSubView from "./IdeaSubView";
 import { toast } from "react-toastify";
-
+import axios from "axios";
 const toastMessages = {
 	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
 	ERR_IDEAS_NOT_FOUND: "Ideas not found !!",
 };
-
-import {STORAGE_VARS, URL_PATHS} from "../../common/env";
-import DetailSubmissionForm from "./DetailSubmissionForm";
-import ModalSubmissionIdea from "./Modal/ModalSubmissionIdea";
-import IdeaSubView from "./IdeaSubView";
-import axios from "axios";
 
 function DetailView() {
 	const { id } = useParams();

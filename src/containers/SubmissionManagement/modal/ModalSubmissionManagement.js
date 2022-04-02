@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 
 import { AuthRequest } from "../../../common/AppUse";
 import { DEV_CONFIGS } from "../../../common/env";
-import CreateIdeaForm from "../../../components/Submission/CreateIdeaForm";
 import CreateSubmissionForm from "../../../components/Submission/CreateSubmissionForm";
 import EditSubmissionForm from "../../../components/Submission/EditSubmissionForm";
 import { dataDemo_submissions } from "../FakeData/Submissions";
@@ -78,8 +77,8 @@ const ModalSubmissionManagement = (props) => {
 						initialValue={initialValue}
 					/>
 				);
-			case "createIdea":
-				return <CreateIdeaForm onClose={() => onClose()} />;
+			// case "createIdea":
+			// 	return <CreateSubmissionForm onClose={() => onClose()} />;
 			default:
 				return;
 		}
