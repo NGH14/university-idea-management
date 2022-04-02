@@ -179,7 +179,7 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 						Sign in with Google
 					</ColorButton>
 				)}
-				clientId={AUTH.GOOGLE_CLIENT_ID}
+				clientId={AUTH.GAPI_CLIENT_ID}
 				onSuccess={(response) => onGoogleLogin(response)}
 				cookiePolicy="single_host_origin"
 			/>

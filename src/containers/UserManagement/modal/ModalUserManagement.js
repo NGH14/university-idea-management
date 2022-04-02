@@ -60,7 +60,7 @@ const ModalUserManagement = (props) => {
 			.catch(() =>
 				toast.error(toastMessages.ERR_SERVER_ERROR, {
 					style: { width: "auto" },
-				})
+				}),
 			);
 	};
 

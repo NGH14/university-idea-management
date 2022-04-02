@@ -68,7 +68,6 @@ const validationSchema = yup.object({
 	name: yup.string().required("Full Name is required"),
 });
 
-// #region Please refactor
 const ApiGoogleDrive = {
 	CLIENT_ID:
 		"284247270990-gdn3hpqk4c4fjckvmd45k4ajeeov4msb.apps.googleusercontent.com",
@@ -78,7 +77,6 @@ const ApiGoogleDrive = {
 	REFRESH_TOKEN:
 		"1//04euMhZM3kPsbCgYIARAAGAQSNwF-L9IrYsB6QdWy_R04LH2kHVOF7K2sJLqOKTVrPHAhrG2tuPyVZjflqNTH4CdZ1Zc0jt0B-48",
 };
-// #endregion
 
 function CreateIdeaForm(props) {
 	const [openPicker, data, authResponse] = useDrivePicker();

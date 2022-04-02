@@ -56,6 +56,12 @@ function UserManagement() {
 	const [tableToolBar, setTableToolBar] = useState(false);
 
 	useEffect(() => {
+		if (DEV_CONFIGS.IS_DEV) {
+			setData(dataDemo);
+			setRowId(null);
+			return;
+		}
+
 		loadData();
 	}, [pagination]);
 
@@ -98,12 +104,6 @@ function UserManagement() {
 	];
 
 	const loadData = async () => {
-		if (DEV_CONFIGS.IS_DEV) {
-			setData(dataDemo);
-			setRowId(null);
-			return;
-		}
-
 		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_USER, {
 			params: {
 				page: pagination.page + 1,

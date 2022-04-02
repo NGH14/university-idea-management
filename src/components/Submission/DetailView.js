@@ -1,5 +1,7 @@
 import "../../containers/UserManagement/style.css";
 
+import { dataDemo_ideas } from "../../containers/SubmissionManagement/FakeData/Ideas";
+
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
@@ -12,24 +14,43 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { AuthRequest } from "../../common/AppUse";
-import { URL_PATHS } from "../../common/env";
+import { DEV_CONFIGS, URL_PATHS } from "../../common/env";
 import DetailSubmissionForm from "./DetailSubmissionForm";
 import ModalSubmissionIdea from "./Modal/ModalSubmissionIdea";
 import IdeaSubView from "./IdeaSubView";
+import { toast } from "react-toastify";
+
+const toastMessages = {
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+	ERR_IDEAS_NOT_FOUND: "Ideas not found !!",
+};
 
 function DetailView() {
 	const { id } = useParams();
 	const navigate = useNavigate();
+	const [initialValue, setInitialValue] = useState([]);
 	const [status, setStatus] = useState({
 		visibleModal: false,
 		action: "update",
 		loading: false,
 	});
-	const [initialValue, setInitialValue] = useState([]);
 
 	useEffect(() => {
+		if (DEV_CONFIGS.IS_DEV) {
+			let ideas = dataDemo_ideas.find((_) => _.submission_id === id);
+			if (!ideas) {
+				toast.error(toastMessages.ERR_IDEAS_NOT_FOUND);
+				setStatus({ ...status, loading: false });
+				navigate(-1);
+				return;
+			}
+			setInitialValue(ideas);
+			return;
+		}
+
 		loadData();
 	}, []);
+
 	const loadData = async () => {
 		setStatus({ ...status, loading: true });
 		try {

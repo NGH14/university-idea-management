@@ -1,6 +1,6 @@
 export const DEV_CONFIGS = {
-	IS_LOGIN: false,
-	IS_DEV: false,
+	IS_LOGIN: true,
+	IS_DEV: true,
 	FAKE_ROLES: [
 		{ name: "admin" },
 		{ name: "manager" },
@@ -17,8 +17,10 @@ export const DEV_CONFIGS = {
 };
 
 export const AUTH = {
-	GOOGLE_CLIENT_ID:
-		"149599602064-503d6jfus46t0o24gik0eeinpmj6si33.apps.googleusercontent.com",
+	GAPI_CLIENT_ID: process.env.REACT_APP_GAPI_CLIENT_ID,
+	GAPI_CLIENT_SECRET: process.env.REACT_APP_GAPI_CLIENT_SECRET,
+	GAPI_REFRESH_TOKEN: process.env.REACT_APP_GAPI_REFRESH_TOKEN,
+	GAPI_KEY: process.env.REACT_APP_GAPI_KEY,
 };
 
 export const API_PATHS = {

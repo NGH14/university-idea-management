@@ -23,12 +23,13 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { AuthRequest, sleep } from "../../common/AppUse";
-import { API_PATHS, URL_PATHS } from "../../common/env";
+import { API_PATHS, DEV_CONFIGS, URL_PATHS } from "../../common/env";
 import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
 import { UserContext } from "../../context/AppContext";
 import ModalSubmissionManagement from "./modal/ModalSubmissionManagement";
 import { Column } from "./model/Column";
 import { toast } from "react-toastify";
+import { dataDemo_submissions } from "./FakeData/Submissions";
 
 const toastMessages = {
 	WAIT: "Please wait...",
@@ -58,6 +59,12 @@ function SubmissionManagement() {
 	const [tableToolBar, setTableToolBar] = useState(false);
 
 	useEffect(() => {
+		if (DEV_CONFIGS.IS_DEV) {
+			setData(dataDemo_submissions);
+			setRowId(null);
+			return;
+		}
+
 		loadData();
 	}, [pagination]);
 

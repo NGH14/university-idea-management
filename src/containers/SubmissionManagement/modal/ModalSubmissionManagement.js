@@ -3,11 +3,14 @@ import Box from "@mui/material/Box";
 import _ from "lodash";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 import { AuthRequest } from "../../../common/AppUse";
-import CreateSubmissionForm from "../../../components/Submission/CreateSubmissionForm";
+import { DEV_CONFIGS } from "../../../common/env";
 import CreateIdeaForm from "../../../components/Submission/CreateIdeaForm";
+import CreateSubmissionForm from "../../../components/Submission/CreateSubmissionForm";
 import EditSubmissionForm from "../../../components/Submission/EditSubmissionForm";
+import { dataDemo_submissions } from "../FakeData/Submissions";
 
 const style = {
 	position: "relative",
@@ -26,11 +29,27 @@ const style = {
 		width: "100%",
 	},
 };
+
+const toastMessages = {
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+	ERR_USER_NOT_FOUND: "User not found !!",
+};
+
 const ModalSubmissionManagement = (props) => {
 	const { visible, onClose, onCreate, onUpdate, action, rowId } = props;
 	const [initialValue, setInitialValue] = useState([]);
 
 	useEffect(() => {
+		if (DEV_CONFIGS.IS_DEV) {
+			let user = dataDemo_submissions.find((_) => _.id === rowId);
+			if (!user) {
+				toast.error(toastMessages.ERR_USER_NOT_FOUND);
+				return;
+			}
+			setInitialValue(user);
+			return;
+		}
+
 		if (action !== "create" && action !== "createIdea") {
 			loadData();
 		}
