@@ -1,8 +1,9 @@
 import { ToastContainer, Bounce } from "react-toastify";
-
+import "./style.css"
 export default function ToastifyProvider() {
 	return (
 		<ToastContainer
+		
 			transition={Bounce}
 			theme="colored"
 			position="top-right"

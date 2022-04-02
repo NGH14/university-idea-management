@@ -65,6 +65,7 @@ function UserManagement() {
 		loadData();
 	}, [pagination]);
 
+
 	const handleOnClickToolBar = () => setTableToolBar((pre) => !pre);
 
 	const columns = [
