@@ -1,1 +1,28 @@
-.Toastify__toast-body { font-family: 'Poppins', sans-serif; }
+.Toastify__toast-body {
+	font-family: 'Poppins', sans-serif;
+}
+
+.Toastify__toast-container {
+	width: 320px;
+}
+
+.Toastify__toast--default {
+	background: #d6d6d6;
+	color: #aaa;
+}
+
+.Toastify__toast--info {
+	background: #41adbb;
+}
+
+.Toastify__toast--success {
+	background: #2ec78c;
+}
+
+.Toastify__toast--warning {
+	background: #df9958;
+}
+
+.Toastify__toast--error {
+	background: #e25057;
+}

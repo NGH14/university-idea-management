@@ -34,7 +34,7 @@ const ModalSubmissionIdea = (props) => {
 					<CreateIdeaForm
 						onClose={() => onClose()}
 						onCreate={onCreate}
-						submissionTitle={initialValue?.title}
+						submissionTitle={initialValue.title}
 					/>
 				);
 			case "update":
@@ -50,7 +50,6 @@ const ModalSubmissionIdea = (props) => {
 		}
 	};
 
-
 	return (
 		<Modal
 			open={visible}
@@ -60,7 +59,6 @@ const ModalSubmissionIdea = (props) => {
 		>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>
-
 	);
 };
 

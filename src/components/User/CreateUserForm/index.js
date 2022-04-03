@@ -51,6 +51,10 @@ const CssTextField = styled(TextField)({
 	},
 });
 
+const toastMessages = {
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+};
+
 const ColorButton = styled(Button)(() => ({
 	fontFamily: "Poppins",
 	fontSize: "13px",
@@ -73,11 +77,6 @@ const validationSchema = yup.object({
 	department: yup.string().required("Department is required"),
 	date_of_birth: yup.date("Date invalid").nullable(),
 });
-
-const toastMessages = {
-	ERR_UPPASS_FAILED: "Failed to update password !!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
-};
 
 const initialValues = {
 	email: "",
@@ -112,13 +111,9 @@ function CreateUserForm(prop) {
 			return;
 		}
 
-		await AuthRequest.get(API_PATHS.ADMIN.DEP)
-			.then((res) => setDepartments(res?.data?.result))
-			.catch(() =>
-				toast.error(toastMessages.ERR_SERVER_ERROR, {
-					style: { width: "auto" },
-				}),
-			);
+		await AuthRequest.get(API_PATHS.SHARED.ROLE + "/list")
+			.then((res) => setRoles(res?.data?.result))
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
 	const getRoles = async () => {
@@ -127,13 +122,9 @@ function CreateUserForm(prop) {
 			return;
 		}
 
-		await AuthRequest.get(API_PATHS.SHARED.ROLE)
-			.then((res) => setRoles(res?.data?.result))
-			.catch(() =>
-				toast.error(toastMessages.ERR_SERVER_ERROR, {
-					style: { width: "auto" },
-				}),
-			);
+		await AuthRequest.get(API_PATHS.ADMIN.DEP + "/list")
+			.then((res) => setDepartments(res?.data?.result))
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
 	return (
@@ -183,6 +174,23 @@ function CreateUserForm(prop) {
 							helperText={formik.touched.email && formik.errors.email}
 						/>
 					</div>
+					<div className="form_content">
+						<InputLabel required htmlFor="phone">
+							Phone
+						</InputLabel>
+						<CssTextField
+							fullWidth
+							variant="outlined"
+							id="phone"
+							name="phone"
+							margin="normal"
+							value={formik.values.phone}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							error={formik.touched.phone && Boolean(formik.errors.phone)}
+							helperText={formik.touched.phone && formik.errors.phone}
+						/>
+					</div>
 				</div>
 
 				<div className="form_group">
@@ -200,6 +208,7 @@ function CreateUserForm(prop) {
 							value={formik.values.department}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
+							style={{ textTransform: "capitalize" }}
 							renderValue={
 								formik.values.department !== ""
 									? undefined
@@ -207,7 +216,6 @@ function CreateUserForm(prop) {
 											<placeholder>
 												<em
 													style={{
-														textTransform: "capitalize",
 														opacity: 0.6,
 														fontSize: 14,
 													}}
@@ -235,6 +243,21 @@ function CreateUserForm(prop) {
 						</FormHelperText>
 					</div>
 
+					<InputLabel required htmlFor="gender">
+						Gender
+					</InputLabel>
+					<CssTextField
+						fullWidth
+						id="gender"
+						name="gender"
+						margin="normal"
+						value={formik.values.gender}
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						error={formik.touched.gender && Boolean(formik.errors.gender)}
+						helperText={formik.touched.gender && formik.errors.gender}
+					/>
+
 					<div className="form_content">
 						<InputLabel required htmlFor="role">
 							Role
@@ -249,6 +272,7 @@ function CreateUserForm(prop) {
 							value={formik.values.role}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
+							style={{ textTransform: "capitalize" }}
 							renderValue={
 								formik.values.role !== ""
 									? undefined
@@ -256,7 +280,6 @@ function CreateUserForm(prop) {
 											<placeholder>
 												<em
 													style={{
-														textTransform: "capitalize",
 														opacity: 0.6,
 														fontSize: 14,
 													}}
@@ -307,24 +330,6 @@ function CreateUserForm(prop) {
 								renderInput={(params) => <TextField fullWidth {...params} />}
 							/>
 						</LocalizationProvider>
-					</div>
-
-					<div className="form_content">
-						<InputLabel required htmlFor="email">
-							Phone
-						</InputLabel>
-						<CssTextField
-							fullWidth
-							variant="outlined"
-							id="phone"
-							name="phone"
-							margin="normal"
-							value={formik.values.phone}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							error={formik.touched.phone && Boolean(formik.errors.phone)}
-							helperText={formik.touched.phone && formik.errors.phone}
-						/>
 					</div>
 				</div>
 				<div className="createuserform_footer">

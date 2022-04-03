@@ -1,15 +1,15 @@
 import "./style.css";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Button from "@mui/material/Button";
 import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { BiPencil } from "react-icons/bi";
+import { GoInfo } from "react-icons/go";
+import { MdOutlineDeleteOutline } from "react-icons/md";
 import { toast } from "react-toastify";
 
 import { AuthRequest, sleep } from "../../common/AppUse";
@@ -55,21 +55,23 @@ function TagManagement() {
 			sortable: false,
 			getActions: (params) => [
 				<GridActionsCellItem
-					icon={<InfoOutlinedIcon color={"info"} />}
+					icon={<GoInfo color="blue" style={{ fontSize: "20px" }} />}
 					label="Detail"
 					onClick={() => onOpenModal(params.id, "detail")}
 					showInMenu
 				/>,
 
 				<GridActionsCellItem
-					icon={<EditIcon color={"secondary"} />}
+					icon={<BiPencil style={{ fontSize: "20px" }} />}
 					label="Update"
 					onClick={() => onOpenModal(params.id, "update")}
 					showInMenu
 				/>,
 
 				<GridActionsCellItem
-					icon={<DeleteIcon />}
+					icon={
+						<MdOutlineDeleteOutline color="red" style={{ fontSize: "20px" }} />
+					}
 					label="Delete"
 					onClick={() => onDelete(params.id)}
 					showInMenu
@@ -79,21 +81,17 @@ function TagManagement() {
 	];
 
 	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_TAG, {
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_TAG + "/list", {
 			params: {
 				page: pagination.page + 1,
 				page_size: pagination.pageSize,
 			},
 		})
 			.then((res) => {
-				setData(res?.data?.result?.rows);
+				setData(res?.data?.result?.rows ?? []);
 				setRowId(null);
 			})
-			.catch(() =>
-				toast.error(toastMessages.ERR_SERVER_ERROR, {
-					style: { width: "auto" },
-				}),
-			);
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
 	const onOpenModal = (id, action) => {
@@ -106,15 +104,16 @@ function TagManagement() {
 	const onDelete = async (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_TAG}/${id}`)
-					.then(() => sleep(700))
-					.catch(),
+				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_TAG}/${id}`).then(() =>
+					sleep(700),
+				),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_TAG_DEL,
 					error: toastMessages.ERR_SERVER_ERROR,
 				},
 			)
+			.then(() => sleep(700))
 			.then(() => {
 				setStatus({ ...status, visibleModal: false });
 				loadData();
@@ -126,9 +125,7 @@ function TagManagement() {
 			.promise(
 				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_TAG}/${value?.id}`, {
 					name: value?.name,
-				})
-					.then(() => sleep(700))
-					.catch(),
+				}).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_TAG_EDITED,
@@ -144,9 +141,9 @@ function TagManagement() {
 	const onCreate = async (value) => {
 		toast
 			.promise(
-				AuthRequest.post(API_PATHS.ADMIN.MANAGE_TAG, value)
-					.then(() => sleep(700))
-					.catch(),
+				AuthRequest.post(API_PATHS.ADMIN.MANAGE_TAG, value).then(() =>
+					sleep(700),
+				),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_TAG_ADDED,

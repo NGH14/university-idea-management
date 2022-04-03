@@ -1,35 +1,35 @@
 import "./style.css";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { IconButton } from "@mui/material";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import {
-	GridToolbarColumnsButton,
-	GridToolbarContainer,
-	GridToolbarDensitySelector,
-	GridToolbarExport,
-	GridToolbarFilterButton,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarDensitySelector,
+  GridToolbarExport,
+  GridToolbarFilterButton,
 } from "@mui/x-data-grid";
 import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
 import * as React from "react";
 import { useContext, useEffect, useState } from "react";
+import { BiPencil } from "react-icons/bi";
+import { GoInfo } from "react-icons/go";
+import { MdOutlineDeleteOutline } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import { AuthRequest, sleep } from "../../common/AppUse";
 import { API_PATHS, DEV_CONFIGS, URL_PATHS } from "../../common/env";
 import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
 import { UserContext } from "../../context/AppContext";
+import { dataDemo_submissions } from "./FakeData/Submissions";
 import ModalSubmissionManagement from "./modal/ModalSubmissionManagement";
 import { Column } from "./model/Column";
-import { toast } from "react-toastify";
-import { dataDemo_submissions } from "./FakeData/Submissions";
 
 const toastMessages = {
 	WAIT: "Please wait...",
@@ -40,7 +40,7 @@ const toastMessages = {
 };
 
 function SubmissionManagement() {
-	const { state } = useContext(UserContext);
+	const { state, setState } = useContext(UserContext);
 	const [data, setData] = useState([]);
 	const [rowId, setRowId] = useState(null);
 	const navigate = useNavigate();
@@ -59,7 +59,7 @@ function SubmissionManagement() {
 	const [tableToolBar, setTableToolBar] = useState(false);
 
 	useEffect(() => {
-		if (DEV_CONFIGS.IS_DEV) {
+		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
 			setData(dataDemo_submissions);
 			setRowId(null);
 			return;
@@ -85,21 +85,23 @@ function SubmissionManagement() {
 			sortable: false,
 			getActions: (params) => [
 				<GridActionsCellItem
-					icon={<InfoOutlinedIcon color={"info"} />}
+					icon={<GoInfo color="#3f66da" style={{ fontSize: "20px" }} />}
 					label="Detail"
 					onClick={() => navigate(`${URL_PATHS.MANAGE_SUB}/${params.id}`)}
 					showInMenu
 				/>,
 
 				<GridActionsCellItem
-					icon={<EditIcon color={"secondary"} />}
+					icon={<BiPencil style={{ fontSize: "20px" }} />}
 					label="Update"
 					onClick={() => onOpenModal(params.id, "update")}
 					showInMenu
 				/>,
 
 				<GridActionsCellItem
-					icon={<DeleteIcon />}
+					icon={
+						<MdOutlineDeleteOutline color="red" style={{ fontSize: "20px" }} />
+					}
 					disabled={state?.dataUser?.id === params.id ? true : false}
 					label="Delete"
 					onClick={() => onDelete(params.id)}
@@ -108,22 +110,19 @@ function SubmissionManagement() {
 			],
 		},
 	];
+
 	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_SUB, {
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_SUB + "/list", {
 			params: {
 				page: pagination.page + 1,
 				page_size: pagination.pageSize,
 			},
 		})
 			.then((res) => {
-				setData(res?.data?.result?.rows);
+				setData(res?.data?.result?.rows ?? []);
 				setRowId(null);
 			})
-			.catch(() =>
-				toast.error(toastMessages.ERR_SERVER_ERROR, {
-					style: { width: "auto" },
-				}),
-			);
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
 	const onOpenModal = (id, action) => {
@@ -136,9 +135,9 @@ function SubmissionManagement() {
 	const onDelete = async (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`)
-					.then(() => sleep(700))
-					.catch(),
+				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`).then(() =>
+					sleep(700),
+				),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_SUB_DEL,
@@ -154,9 +153,10 @@ function SubmissionManagement() {
 	const onUpdate = async (value) => {
 		toast
 			.promise(
-				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`, value)
-					.then(() => sleep(700))
-					.catch(),
+				AuthRequest.put(
+					`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`,
+					value,
+				).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_SUB_EDITED,
@@ -172,9 +172,9 @@ function SubmissionManagement() {
 	const onCreate = async (value) => {
 		toast
 			.promise(
-				AuthRequest.post(API_PATHS.ADMIN.MANAGE_SUB, value)
-					.then(() => sleep(700))
-					.catch(),
+				AuthRequest.post(API_PATHS.ADMIN.MANAGE_SUB, value).then(() =>
+					sleep(700),
+				),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_SUB_ADDED,
@@ -191,6 +191,7 @@ function SubmissionManagement() {
 		if (rowId) {
 			setRowId(null);
 		}
+
 		setStatus({
 			...status,
 			visibleModal: false,

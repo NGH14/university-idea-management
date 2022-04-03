@@ -95,39 +95,30 @@ function EditUserForm(props) {
 			toast.error(toastMessages.ERR_SERVER_ERROR, { style: { width: "auto" } });
 			return;
 		}
-
 		getDepartments();
 		getRoles();
 	}, []);
 
 	const getDepartments = async () => {
-		if (DEV_CONFIGS.IS_DEV) {
+		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
 			setDepartments(DEV_CONFIGS.FAKE_DEPS);
 			return;
 		}
 
-		await AuthRequest.get(API_PATHS.ADMIN.DEP)
+		await AuthRequest.get(API_PATHS.ADMIN.DEP + "/list")
 			.then((res) => setDepartments(res?.data?.result))
-			.catch(() =>
-				toast.error(toastMessages.ERR_SERVER_ERROR, {
-					style: { width: "auto" },
-				}),
-			);
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
 	const getRoles = async () => {
-		if (DEV_CONFIGS.IS_DEV) {
+		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
 			setRoles(DEV_CONFIGS.FAKE_ROLES);
 			return;
 		}
 
-		await AuthRequest.get(API_PATHS.SHARED.ROLE)
+		await AuthRequest.get(API_PATHS.SHARED.ROLE + "/list")
 			.then((res) => setRoles(res?.data?.result))
-			.catch(() =>
-				toast.error(toastMessages.ERR_SERVER_ERROR, {
-					style: { width: "auto" },
-				}),
-			);
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
 	return (
@@ -178,102 +169,42 @@ function EditUserForm(props) {
 						/>
 					</div>
 				</div>
+
 				<div className="form_group">
 					<div className="form_content">
-						<InputLabel required htmlFor="department">
-							Department
+						<InputLabel required htmlFor="phone">
+							Phone
 						</InputLabel>
-						<Select
-							select
+						<CssTextField
 							fullWidth
-							displayEmpty
-							labelId="department"
-							id="department"
-							name="department"
-							value={formik.values.department ?? ""}
-							defaultValue=""
+							id="phone"
+							name="phone"
+							margin="normal"
+							value={formik.values.phone}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							renderValue={
-								formik.values.department !== ""
-									? undefined
-									: () => (
-											<placeholder>
-												<em style={{ opacity: 0.6, fontSize: 14 }}>
-													-- department --"
-												</em>
-											</placeholder>
-									  )
-							}
-							error={
-								formik.touched.department && Boolean(formik.errors.department)
-							}
-						>
-							<MenuItem value="" disabled={true}>
-								none
-							</MenuItem>
-
-							{depOptions.map((dep) => (
-								<MenuItem
-									style={{ textTransform: "capitalize" }}
-									value={dep?.name}
-								>
-									{dep?.name}
-								</MenuItem>
-							))}
-						</Select>
-						<FormHelperText error>
-							{formik.touched.department && formik.errors.department}
-						</FormHelperText>
+							error={formik.touched.phone && Boolean(formik.errors.phone)}
+							helperText={formik.touched.phone && formik.errors.phone}
+						/>
 					</div>
-
 					<div className="form_content">
-						<InputLabel required htmlFor="role">
-							Role
+						<InputLabel required htmlFor="gender">
+							Gender
 						</InputLabel>
-						<Select
-							select
+						<CssTextField
 							fullWidth
-							displayEmpty
-							defaultValue=""
-							labelId="role"
-							id="role"
-							name="role"
-							value={formik.values.role ?? ""}
+							id="gender"
+							name="gender"
+							margin="normal"
+							value={formik.values.gender}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							renderValue={
-								formik.values.role !== ""
-									? undefined
-									: () => (
-											<placeholder>
-												<em style={{ opacity: 0.6, fontSize: 14 }}>
-													-- role --
-												</em>
-											</placeholder>
-									  )
-							}
-							error={formik.touched.role && Boolean(formik.errors.role)}
-						>
-							<MenuItem value="" disabled={true}>
-								none
-							</MenuItem>
-							{roleOptions.map((role) => (
-								<MenuItem
-									style={{ textTransform: "capitalize" }}
-									value={role.name}
-								>
-									{role.name}
-								</MenuItem>
-							))}
-						</Select>
-						<FormHelperText error>
-							{formik.touched.role && formik.errors.role}
-						</FormHelperText>
+							error={formik.touched.gender && Boolean(formik.errors.gender)}
+							helperText={formik.touched.gender && formik.errors.gender}
+						/>
 					</div>
 					<div className="form_content">
 						<InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
-
 						<LocalizationProvider
 							dateAdapter={AdapterDateFns}
 							locale={enLocale}
@@ -298,39 +229,88 @@ function EditUserForm(props) {
 							/>
 						</LocalizationProvider>
 					</div>
+				</div>
 
+				<div className="form_group">
 					<div className="form_content">
-						<InputLabel required htmlFor="phone">
-							Phone
+						<InputLabel required htmlFor="department">
+							Department
 						</InputLabel>
-						<CssTextField
+						<Select
+							select
 							fullWidth
-							id="phone"
-							name="phone"
-							margin="normal"
-							value={formik.values.phone}
+							displayEmpty
+							labelId="department"
+							id="department"
+							name="department"
+							value={formik.values.department ?? ""}
+							defaultValue=""
+							style={
+								formik.values.department != null
+									? { textTransform: "capitalize" }
+									: { color: "#959596" }
+							}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={formik.touched.phone && Boolean(formik.errors.phone)}
-							helperText={formik.touched.phone && formik.errors.phone}
-						/>
+							error={
+								formik.touched.department && Boolean(formik.errors.department)
+							}
+						>
+							<MenuItem value="" disabled={true}>
+								none
+							</MenuItem>
+
+							{depOptions.map((dep) => (
+								<MenuItem
+									style={{ textTransform: "capitalize" }}
+									value={dep?.name}
+								>
+									{dep?.name}
+								</MenuItem>
+							))}
+						</Select>
+						<FormHelperText error>
+							{formik.touched.department && formik.errors.department}
+						</FormHelperText>
 					</div>
-
 					<div className="form_content">
-						<InputLabel required htmlFor="gender">
-							Gender
+						<InputLabel required htmlFor="role">
+							Role
 						</InputLabel>
-						<CssTextField
+						<Select
+							select
 							fullWidth
-							id="gender"
-							name="gender"
-							margin="normal"
-							value={formik.values.gender}
+							displayEmpty
+							labelId="role"
+							id="role"
+							name="role"
+							defaultValue=""
+							style={
+								formik.values.department != null
+									? { textTransform: "capitalize" }
+									: { color: "#959596" }
+							}
+							value={formik.values.role ?? ""}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={formik.touched.gender && Boolean(formik.errors.gender)}
-							helperText={formik.touched.gender && formik.errors.gender}
-						/>
+							error={formik.touched.role && Boolean(formik.errors.role)}
+						>
+							<MenuItem value="" disabled={true}>
+								none
+							</MenuItem>
+
+							{roleOptions.map((role) => (
+								<MenuItem
+									style={{ textTransform: "capitalize" }}
+									value={role.name}
+								>
+									{role.name}
+								</MenuItem>
+							))}
+						</Select>
+						<FormHelperText error>
+							{formik.touched.role && formik.errors.role}
+						</FormHelperText>
 					</div>
 				</div>
 				<div className="edituserform_footer">

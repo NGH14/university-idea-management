@@ -1,15 +1,15 @@
 import "./style.css";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Button from "@mui/material/Button";
 import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { BiPencil } from "react-icons/bi";
+import { GoInfo } from "react-icons/go";
+import { MdOutlineDeleteOutline } from "react-icons/md";
 import { toast } from "react-toastify";
 
 import { AuthRequest, sleep } from "../../common/AppUse";
@@ -42,7 +42,7 @@ function DepartmentManagement() {
 	});
 
 	useEffect(() => {
-		if (DEV_CONFIGS.IS_DEV) {
+		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
 			setData(dataDemo);
 			setRowId(null);
 			return;
@@ -62,21 +62,23 @@ function DepartmentManagement() {
 			sortable: false,
 			getActions: (params) => [
 				<GridActionsCellItem
-					icon={<InfoOutlinedIcon color={"info"} />}
+					icon={<GoInfo color="#3f66da" style={{ fontSize: "20px" }} />}
 					label="Detail"
 					onClick={() => onOpenModal(params.id, "detail")}
 					showInMenu
 				/>,
 
 				<GridActionsCellItem
-					icon={<EditIcon color={"secondary"} />}
+					icon={<BiPencil style={{ fontSize: "20px" }} />}
 					label="Update"
 					onClick={() => onOpenModal(params.id, "update")}
 					showInMenu
 				/>,
 
 				<GridActionsCellItem
-					icon={<DeleteIcon />}
+					icon={
+						<MdOutlineDeleteOutline color="red" style={{ fontSize: "20px" }} />
+					}
 					label="Delete"
 					onClick={() => onDelete(params.id)}
 					showInMenu
@@ -86,21 +88,17 @@ function DepartmentManagement() {
 	];
 
 	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_DEP, {
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_DEP + "/list", {
 			params: {
 				page: pagination.page + 1,
 				page_size: pagination.pageSize,
 			},
 		})
 			.then((res) => {
-				setData(res?.data?.result?.rows);
+				setData(res?.data?.result?.rows ?? []);
 				setRowId(null);
 			})
-			.catch(() =>
-				toast.error(toastMessages.ERR_SERVER_ERROR, {
-					style: { width: "auto" },
-				}),
-			);
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
 	const onOpenModal = (id, action) => {
@@ -113,9 +111,9 @@ function DepartmentManagement() {
 	const onDelete = async (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_DEP}/${id}`)
-					.then(() => sleep(700))
-					.catch(),
+				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_DEP}/${id}`).then(() =>
+					sleep(700),
+				),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_DEP_DEL,
@@ -133,9 +131,7 @@ function DepartmentManagement() {
 			.promise(
 				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_DEP}/${value?.id}`, {
 					name: value?.name,
-				})
-					.then(() => sleep(700))
-					.catch(),
+				}).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_DEP_EDITED,
@@ -151,9 +147,9 @@ function DepartmentManagement() {
 	const onCreate = async (value) => {
 		toast
 			.promise(
-				AuthRequest.post(API_PATHS.ADMIN.MANAGE_DEP, value)
-					.then(() => sleep(700))
-					.catch(),
+				AuthRequest.post(API_PATHS.ADMIN.MANAGE_DEP, value).then(() =>
+					sleep(700),
+				),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_DEP_ADDED,

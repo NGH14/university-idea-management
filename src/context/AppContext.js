@@ -14,7 +14,7 @@ export const AppContext = (props) => {
 	const [state, setState] = useState({
 		isLogin: DEV_CONFIGS.IS_LOGIN,
 		loading: true,
-		dataUser: DEV_CONFIGS.IS_DEV
+		dataUser: DEV_CONFIGS.IS_OFFLINE_DEV
 			? {
 					id: "MGY3MGYwMzgtYWQzZi00ZTk4LTkzNTktNjU2OGY1ZjRjNDcy",
 					email: "aptu@mitep.pt",
@@ -30,7 +30,7 @@ export const AppContext = (props) => {
 	});
 
 	useEffect(() => {
-		DEV_CONFIGS.IS_DEV
+		DEV_CONFIGS.IS_OFFLINE_DEV
 			? setState({
 					...state,
 					loading: false,
@@ -76,11 +76,11 @@ export const AppContext = (props) => {
 					.then((res) => {
 						localStorage.setItem(
 							STORAGE_VARS.JWT,
-							res?.data?.result?.access_token?.token
+							res?.data?.result?.access_token?.token,
 						);
 						localStorage.setItem(
 							STORAGE_VARS.REFRESH,
-							res?.data?.result?.refresh_token
+							res?.data?.result?.refresh_token,
 						);
 
 						setState({

@@ -57,22 +57,35 @@ const ColorButton = styled(Button)(() => ({
 	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
 }));
 
+const initialValues = {
+	title: "",
+	description: "",
+	initial_date: null,
+	final_date: null,
+	is_active: true,
+};
+
 const validationSchema = yup.object({
-	name: yup.string().required("Full Name is required"),
+	title: yup.string().required("Submission title is required"),
+	description: yup.string().nullable(),
+	initial_date: yup.date("Date invalid").nullable().default(undefined),
+	final_date: yup.date("Date invalid").nullable().default(undefined),
+	is_active: yup.bool().default(true),
 });
 
 function CreateSubmissionForm(props) {
 	const { onClose, onCreate } = props;
 	const [dataDateRangePicker, setDataDateRangePicker] = useState([null, null]);
+
 	const formik = useFormik({
-		initialValues: {},
+		initialValues: initialValues,
+		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			const newValue = {
+			onCreate({
 				...values,
 				initial_date: dataDateRangePicker[0],
 				final_date: dataDateRangePicker[1],
-			};
-			onCreate(newValue);
+			});
 		},
 	});
 
@@ -81,19 +94,25 @@ function CreateSubmissionForm(props) {
 			<React.Fragment>
 				<div className="form_content" style={{ width: "100%" }}>
 					<InputLabel required htmlFor="initial_date">
-						Initial Date
+						Initial Deadline
 					</InputLabel>
 					<TextField
 						fullWidth
 						{...startProps}
 						required={true}
 						label={null}
-						type={"date"}
+						type="date"
 						margin="normal"
 						id="initial_date"
 						name="initial_date"
 						onChange={formik.handleChange}
 						onBlur={formik.handleBlur}
+						error={
+							formik.touched.initial_date && Boolean(formik.errors.initial_date)
+						}
+						helperText={
+							formik.touched.initial_date && formik.errors.initial_date
+						}
 					/>
 				</div>
 				<Box
@@ -106,12 +125,11 @@ function CreateSubmissionForm(props) {
 						paddingTop: 15,
 					}}
 				>
-					{" "}
-					to{" "}
+					to
 				</Box>
 				<div className="form_content" style={{ width: "100%" }}>
 					<InputLabel required htmlFor="final_date">
-						Final Date
+						Final Deadline
 					</InputLabel>
 					<TextField
 						fullWidth
@@ -124,6 +142,10 @@ function CreateSubmissionForm(props) {
 						name="final_date"
 						onChange={formik.handleChange}
 						onBlur={formik.handleBlur}
+						error={
+							formik.touched.final_date && Boolean(formik.errors.final_date)
+						}
+						helperText={formik.touched.final_date && formik.errors.final_date}
 					/>
 				</div>
 			</React.Fragment>
@@ -155,16 +177,16 @@ function CreateSubmissionForm(props) {
 							required={true}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							// error={formik.touched.title && Boolean(formik.errors.title)}
-							// helperText={formik.touched.title && formik.errors.title}
+							error={formik.touched.title && Boolean(formik.errors.title)}
+							helperText={formik.touched.title && formik.errors.title}
 						/>
 					</div>
 				</div>
 				<div className="form_group">
 					<LocalizationProvider dateAdapter={AdapterDateFns}>
 						<DateRangePicker
-							startText="Initial Date "
-							endText="Final Date"
+							startText="Initial Deadline"
+							endText="Final Deadline"
 							id="titles"
 							name="titles"
 							calendars={2}

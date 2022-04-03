@@ -146,9 +146,7 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 				setState({ ...state, isLogin: true });
 			})
 			.catch(() => {
-				toast.error(toastMessages.ERR_INVALID_GOOGLE, {
-					style: { width: "auto" },
-				});
+				toast.error(toastMessages.ERR_INVALID_GOOGLE);
 			})
 			.finally(() => {
 				setButtonState({ ...buttonState, loading: false, disable: false });

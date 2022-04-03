@@ -8,7 +8,6 @@ import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import React from "react";
-import * as yup from "yup";
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -103,6 +102,27 @@ function DetailUserForm(props) {
 							}}
 						/>
 					</div>
+					<div className="form_content">
+						<InputLabel required htmlFor="phone">
+							Phone
+						</InputLabel>
+						<CssTextField
+							fullWidth
+							id="phone"
+							name="phone"
+							variant="standard"
+							margin="normal"
+							inputProps={{
+								disabled: true,
+								readOnly: true,
+							}}
+							value={formik.values.phone}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							error={formik.touched.phone && Boolean(formik.errors.phone)}
+							helperText={formik.touched.phone && formik.errors.phone}
+						/>
+					</div>
 				</div>
 				<div className="form_group">
 					<div className="form_content">
@@ -153,28 +173,6 @@ function DetailUserForm(props) {
 					</div>
 
 					<div className="form_content">
-						<InputLabel required htmlFor="phone">
-							Phone
-						</InputLabel>
-						<CssTextField
-							fullWidth
-							id="phone"
-							name="phone"
-							variant="standard"
-							margin="normal"
-							inputProps={{
-								disabled: true,
-								readOnly: true,
-							}}
-							value={formik.values.phone}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							error={formik.touched.phone && Boolean(formik.errors.phone)}
-							helperText={formik.touched.phone && formik.errors.phone}
-						/>
-					</div>
-
-					<div className="form_content">
 						<InputLabel required htmlFor="gender">
 							Gender
 						</InputLabel>
@@ -196,11 +194,7 @@ function DetailUserForm(props) {
 						/>
 					</div>
 				</div>
-				<div className="detailuserform_footer">
-					<ColorButton variant="standard" onClick={() => onClose()}>
-						Close
-					</ColorButton>
-				</div>
+				<div className="detailuserform_footer"></div>
 			</form>
 		</div>
 	);

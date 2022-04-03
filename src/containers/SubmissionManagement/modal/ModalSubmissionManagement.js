@@ -1,4 +1,4 @@
-import { CircularProgress, Modal } from "@mui/material";
+import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import _ from "lodash";
 import * as React from "react";
@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { AuthRequest } from "../../../common/AppUse";
-import { DEV_CONFIGS } from "../../../common/env";
+import { API_PATHS, DEV_CONFIGS } from "../../../common/env";
 import CreateSubmissionForm from "../../../components/Submission/CreateSubmissionForm";
 import EditSubmissionForm from "../../../components/Submission/EditSubmissionForm";
 import { dataDemo_submissions } from "../FakeData/Submissions";
@@ -31,7 +31,7 @@ const style = {
 
 const toastMessages = {
 	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
-	ERR_USER_NOT_FOUND: "User not found !!",
+	ERR_SUB_NOT_FOUND: "Submission not found !!",
 };
 
 const ModalSubmissionManagement = (props) => {
@@ -39,10 +39,10 @@ const ModalSubmissionManagement = (props) => {
 	const [initialValue, setInitialValue] = useState([]);
 
 	useEffect(() => {
-		if (DEV_CONFIGS.IS_DEV) {
+		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
 			let user = dataDemo_submissions.find((_) => _.id === rowId);
 			if (!user) {
-				toast.error(toastMessages.ERR_USER_NOT_FOUND);
+				toast.error(toastMessages.ERR_SUB_NOT_FOUND);
 				return;
 			}
 			setInitialValue(user);
@@ -55,12 +55,9 @@ const ModalSubmissionManagement = (props) => {
 	}, [action]);
 
 	const loadData = async () => {
-		try {
-			const res = await AuthRequest.get(`submission-management/${rowId}`);
-			if (res?.data?.succeeded) {
-				setInitialValue(res?.data?.result);
-			}
-		} catch {}
+		await AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${rowId}`)
+			.then((res) => setInitialValue(res?.data?.result))
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
 	const renderForm = () => {
@@ -84,9 +81,7 @@ const ModalSubmissionManagement = (props) => {
 		}
 	};
 
-	if (action !== "create" && _.isEmpty(initialValue)) {
-		return <CircularProgress size={100} />;
-	}
+	if (action !== "create" && _.isEmpty(initialValue)) return null;
 
 	return (
 		<Modal

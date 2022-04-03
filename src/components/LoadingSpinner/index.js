@@ -5,9 +5,13 @@ import React from "react";
 
 import UniLogo from "../../assets/images/logo-500.webp";
 
-function LoadingSpinner() {
+function LoadingSpinner(props) {
+	const { inputHeight } = props;
 	return (
-		<div className="loading_page">
+		<div
+			className="loading_page"
+			style={{ height: inputHeight ? inputHeight : "100vh" }}
+		>
 			<div className="loading_content">
 				<CircularProgress
 					size={100}

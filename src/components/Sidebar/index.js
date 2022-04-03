@@ -16,16 +16,15 @@ import Menu from "@mui/material/Menu";
 import Stack from "@mui/material/Stack";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import React, { useContext, useEffect } from "react";
 import {
-	BsBookmarksFill,
-	BsChevronContract,
-	BsChevronExpand,
-	BsFillPeopleFill,
-	BsHouseFill,
+  BsBookmarksFill,
+  BsChevronContract,
+  BsChevronExpand,
+  BsFillPeopleFill,
+  BsHouseFill,
 } from "react-icons/bs";
-import { FaBuilding } from "react-icons/fa";
+import { FaBuilding, FaLightbulb } from "react-icons/fa";
 import { RiDiscussFill } from "react-icons/ri";
 import { useLocation } from "react-router";
 import { createSearchParams, useNavigate } from "react-router-dom";
@@ -145,7 +144,7 @@ export default function Sidebar(props) {
 			roles: [ROLES.ADMIN, ROLES.MANAGER],
 			text: "Idea",
 			selectedText: "Idea Management",
-			icon: <RiDiscussFill className="sidebar_icon" />,
+			icon: <FaLightbulb className="sidebar_icon" />,
 			onClick: () => {
 				navigate(URL_PATHS.MANAGE_IDEA);
 			},

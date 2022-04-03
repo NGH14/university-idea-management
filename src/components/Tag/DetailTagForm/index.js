@@ -89,11 +89,7 @@ function DetailTagForm(props) {
 						/>
 					</div>
 				</div>
-				<div className="detailtagform_footer">
-					<ColorButton variant="outlined" onClick={() => onClose()}>
-						Cancel
-					</ColorButton>
-				</div>
+				<div className="detailtagform_footer"></div>
 			</form>
 		</div>
 	);

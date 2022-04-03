@@ -21,33 +21,32 @@ export const Column = [
 		type: "string",
 		minWidth: 200,
 		flex: 1,
+		renderCell: (value) => (
+			<span style={{ textTransform: "capitalize" }}>{value?.row?.name}</span>
+		),
 	},
 	{
-		field: "initial_date",
-		headerName: "Initial Deadline",
+		field: "user.email",
+		headerName: "Author",
 		disableColumnMenu: true,
 		sortable: true,
-		align: "center",
-		headerAlign: "center",
-		width: 170,
-		type: "date",
-		renderCell: (value) =>
-			value?.row?.initial_date
-				? moment(value?.row?.initial_date).format("DD/MM/YYYY")
-				: "-",
+		width: "100%",
+		type: "string",
+		minWidth: 200,
+		flex: 1,
 	},
 	{
-		field: "final_date",
-		headerName: "Final Deadline",
+		field: "created_date",
+		headerName: "Create At",
 		disableColumnMenu: true,
-		sortable: true,
+		sortable: false,
 		align: "center",
 		headerAlign: "center",
-		width: 170,
+		minWidth: 170,
 		type: "date",
 		renderCell: (value) =>
-			value?.row?.final_date
-				? moment(value?.row?.final_date).format("DD/MM/YYYY")
+			value?.row?.created_date
+				? moment(value?.row?.created_date).format("DD/MM/YYYY")
 				: "-",
 	},
 ];

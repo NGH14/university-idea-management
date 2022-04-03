@@ -9,6 +9,7 @@
 	overflow-y: hidden;
 	position: relative;
 }
+
 .avatar_img {
 	max-height: 150px;
 	width: 120px;
@@ -19,6 +20,7 @@
 	object-fit: cover;
 	font-size: 60px;
 }
+
 .avatar_cover {
 	background-color: black;
 	height: 200px;
@@ -47,6 +49,7 @@
 		justify-content: center;
 		text-align: center;
 	}
+
 	.avatar_img {
 		margin-top: -100px;
 	}

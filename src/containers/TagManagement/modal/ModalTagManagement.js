@@ -39,7 +39,7 @@ const ModalTagManagement = (props) => {
 	const [initialValue, setInitialValue] = useState([]);
 
 	useEffect(() => {
-		if (DEV_CONFIGS.IS_DEV) {
+		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
 			let deps = dataDemo.find((_) => _.id === rowId);
 			if (!deps) {
 				toast.error(toastMessages.ERR_TAG_NOT_FOUND);
@@ -57,11 +57,7 @@ const ModalTagManagement = (props) => {
 	const loadData = async () => {
 		await AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_TAG}/${rowId}`)
 			.then((res) => setInitialValue(res?.data?.result))
-			.catch(() =>
-				toast.error(toastMessages.ERR_SERVER_ERROR, {
-					style: { width: "auto" },
-				}),
-			);
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
 	const renderForm = () => {
