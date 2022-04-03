@@ -71,12 +71,12 @@ export default function DetailView() {
 		await axios
 			.all([
 				AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`),
-				AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_IDEA}/list/${id}`, {
-					params: {
-						page: pagination.page + 1,
-						page_size: pagination.pageSize,
-					},
-				}),
+				// AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`, {
+				// 	params: {
+				// 		page: pagination.page + 1,
+				// 		page_size: pagination.pageSize,
+				// 	},
+				// }),
 			])
 			.then(
 				axios.spread(function (resSub, resIdeas) {

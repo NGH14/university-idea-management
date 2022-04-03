@@ -4,11 +4,13 @@ import { TextField } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import { useFormik } from "formik";
 import moment from "moment";
-import React from "react";
+import React, {useContext} from "react";
+import {UserContext} from "../../../context/AppContext";
+import {ROLES} from "../../../common/env";
 
 function DetailSubmissionForm({ initialValue }) {
 	const formik = useFormik({ initialValues: initialValue });
-
+	const { state } = useContext(UserContext);
 	return (
 		<form onSubmit={formik.handleSubmit}>
 			<div className="form_group" style={{ marginBottom: 12 }}>
@@ -28,47 +30,51 @@ function DetailSubmissionForm({ initialValue }) {
 				</div>
 			</div>
 
-			<div className="form_group" style={{ marginBottom: 12, display: "flex" }}>
-				<div
-					className="form_content"
-					style={{ display: "flex", width: "100%" }}
-				>
-					<InputLabel
-						style={{ width: 150, marginBottom: "auto", marginTop: "auto" }}
+			{
+				<div className="form_group" style={{ marginBottom: 12, display: "flex" }}>
+					<div
+						className="form_content"
+						style={{ display: "flex", width: "100%" }}
 					>
-						Create By
-					</InputLabel>
-					<TextField
-						inputProps={{ readOnly: true }}
-						style={{ width: "100%", pointerEvents: "none" }}
-						variant="standard"
-						name={"initial_date"}
-						value={formik.values.created_by}
-					/>
-				</div>
-				<div
-					className="form_content"
-					style={{ display: "flex", width: "100%" }}
-				>
-					<InputLabel
-						style={{
-							width: 150,
-							marginBottom: "auto",
-							marginTop: "auto",
-							marginLeft: 10,
-						}}
+						<InputLabel
+							style={{ width: 150, marginBottom: "auto", marginTop: "auto" }}
+						>
+							Create By
+						</InputLabel>
+						<TextField
+							inputProps={{ readOnly: true }}
+							style={{ width: "100%", pointerEvents: "none" }}
+							variant="standard"
+							name={"initial_date"}
+							value={formik.values.created_by}
+						/>
+					</div>
+					<div
+						className="form_content"
+						style={{ display: "flex", width: "100%" }}
 					>
-						Modified By
-					</InputLabel>
-					<TextField
-						inputProps={{ readOnly: true }}
-						style={{ width: "100%", pointerEvents: "none" }}
-						variant="standard"
-						name={"final_date"}
-						value={formik.values.modified_by}
-					/>
+						<InputLabel
+							style={{
+								width: 150,
+								marginBottom: "auto",
+								marginTop: "auto",
+								marginLeft: 10,
+							}}
+						>
+							Modified By
+						</InputLabel>
+						<TextField
+							inputProps={{ readOnly: true }}
+							style={{ width: "100%", pointerEvents: "none" }}
+							variant="standard"
+							name={"final_date"}
+							value={formik.values.modified_by}
+						/>
+					</div>
 				</div>
-			</div>
+
+			}
+
 
 			<div className="form_group" style={{ marginBottom: 12, display: "flex" }}>
 				<div

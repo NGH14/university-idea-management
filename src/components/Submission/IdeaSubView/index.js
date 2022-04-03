@@ -36,6 +36,7 @@ import { AuthRequest, sleep } from "../../../common/AppUse";
 import { API_PATHS } from "../../../common/env";
 import CommentIdea from "../../Idea/CommentIdea";
 import ModalIdea from "../../Idea/ModalIdea";
+import {useNavigate} from "react-router-dom";
 
 const toastMessages = {
 	WAIT: "Please wait...",
@@ -131,6 +132,7 @@ const fakeData = [
 const ITEM_HEIGHT = 48;
 
 function IdeaSubView({ ideaData, subData }) {
+	const navigate = useNavigate();
 	const [ideaList, setIdealist] = useState(ideaData);
 	const [rowId, setRowId] = useState(null);
 
@@ -348,7 +350,19 @@ function IdeaSubView({ ideaData, subData }) {
 					<h3 style={{ marginRight: 10, fontWeight: "bold" }}>
 						{/*{item?.title}*/} Title:{" "}
 					</h3>
-					<label>Title Idea</label>
+					<Tooltip title={"Detail submission"}>
+						<label
+							onClick={()=>{navigate(`/submission/${item.submissionId || "NDM3YzBiMzktMDBlNy00ZDk3LTgzMTctOTE3NzIwYzJkMzlh"}`)}}
+							style={{
+								textDecoration: "underline",
+								textDecorationColor: "#1976d2",
+								color:  "#1976d2",
+								cursor: "pointer"
+							}}
+						>
+							{/*{data?.submissionName}*/}Submission name
+						</label>
+					</Tooltip>
 				</div>
 				<br></br>
 				<div>

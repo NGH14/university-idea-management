@@ -106,7 +106,7 @@ function UserManagement() {
   ];
 
   const loadData = async () => {
-    await AuthRequest.get(API_PATHS.ADMIN.MANAGE_USER + "/list", {
+    await AuthRequest.get(API_PATHS.ADMIN.MANAGE_USER, {
       params: {
         page: pagination.page + 1,
         page_size: pagination.pageSize,

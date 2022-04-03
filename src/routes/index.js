@@ -66,13 +66,23 @@ const LIST_ROUTES_PRIVATE = [
   },
   {
     roles: [ROLES.ADMIN],
+    path: URL_PATHS.MANAGE,
+    component: React.lazy(() => import("../containers/Submission")),
+  },
+  {
+    roles: [ROLES.ADMIN],
     path: URL_PATHS.MANAGE_IDEA,
     component: React.lazy(() => import("../containers/IdeaMangement")),
   },
   {
-    roles: [ROLES.ADMIN],
+    roles: [],
     path: URL_PATHS.DEMO,
     component: React.lazy(() => import("../components/Submission/demo")),
+  },
+  {
+    roles: [],
+    path: URL_PATHS.IDEA_ID,
+    component: React.lazy(() => import("../containers/IdeaDetailView")),
   },
 ];
 

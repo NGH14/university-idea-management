@@ -42,28 +42,49 @@ const fakeData = [
 		createAt: "2022-03-15T13:45:30",
 	},
 ];
+
 function CommentIdea({ data, ideaId }) {
 	const [dataComment, setDataComment] = useState(data?.comment);
 
-	const [totalComment, setTotalComment] = useState(data?.totalComment);
+	const [totalComment, setTotalComment] = useState(data?.comment.total || 10);
+	const [pagination, setPagination] = useState({
+		page: 1,
+		pageSize: 5,
+	});
 
-	// fix param show more
-	// ref 80 condition display button show more
-	const onShowMoreComment = async () => {
+	// fix param show more-
+	const loadData = async () => {
 		//API show more comment
 		await AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_COMMENT}`, {
-			ideaId,
-			totalComment,
+			params: {
+				ideaId,
+				page: pagination?.page,
+			}
+
 		})
-			.then((res) => setDataComment([...dataComment, res?.data?.result]))
+			.then((res) => {
+				setDataComment([...dataComment, res?.data?.result?.row])
+			})
 			.catch(() => {});
+	}
+	// ref 80 condition display button show more
+	const onShowMoreComment = async () => {
+		setPagination(pagination?.page + 1)
+		loadData()
 	};
+
+	const loadDataAction = () => {
+
+	}
 
 	const onCreateComment = async (value) => {
 		// api create Comment
 		const newValue = { ...value, ideaId };
 		await AuthRequest.post(`${API_PATHS.ADMIN.MANAGE_COMMENT}`, newValue)
-			.then((res) => onShowMoreComment())
+			.then((res) => {
+				setDataComment([{...res?.data?.result}, ...dataComment])
+				setTotalComment(totalComment+1)
+			})
 			.catch(() => {});
 	};
 
@@ -108,21 +129,17 @@ function CommentIdea({ data, ideaId }) {
 			);
 		});
 
-		const buttonMore = (
-			<div
-				style={{ textAlign: "center", marginTop: 15, marginBottom: 15 }}
-				onClick={() => {
-					onShowMoreComment();
-				}}
-			>
-				<Button variant={"outlined  "}>View More ...</Button>
-			</div>
-		);
-
 		return (
 			<div>
 				{comments}
-				{_.size(dataComment) !== totalComment && buttonMore}
+				{_.size(dataComment) === totalComment || totalComment === 0 ? <div></div> : <div
+					style={{ textAlign: "center", marginTop: 15, marginBottom: 15 }}
+					onClick={() => {
+						onShowMoreComment();
+					}}
+				>
+					<Button variant={"outlined  "}>View More ...</Button>
+				</div>}
 			</div>
 		);
 	};
@@ -159,7 +176,7 @@ function CommentIdea({ data, ideaId }) {
 				</Paper>
 			</div>
 			<div style={{ paddingRight: 15, paddingLeft: 15, marginTop: 15 }}>
-				<strong>Comment (4)</strong>
+				<strong>Comment ({totalComment || 10})</strong>
 			</div>
 			{renderContent()}
 		</>

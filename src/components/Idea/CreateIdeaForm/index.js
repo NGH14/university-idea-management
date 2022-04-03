@@ -81,16 +81,19 @@ function CreateIdeaForm(props) {
 		initialValues: initialValues,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			if (values.file && !_.isEmpty(values.file)) {
-				onSubmitForm(values);
-			} else {
-				onCreate(values);
-			}
+
+			console.log(12312321, "values.file ")
+			// if (values.file && !_.isEmpty(values.file)) {
+			// 	onSubmitForm(values);
+			// } else {
+			// 	onCreate(values);
+			// }
 		},
 	});
 	const handleDrop = (acceptedFiles) => {
 		setFileArray([...fileArray, ...acceptedFiles])
-		formik.setFieldValue('file', `${fileArray}`)
+		// formik.setFieldValue('file', `${fileArray}`)
+		// formik.resetForm()
 	}
 	const onSubmitForm = (values) => {
 		const file = values.file[0]; //the file
