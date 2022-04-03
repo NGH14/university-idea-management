@@ -141,7 +141,7 @@ export default function DetailView() {
 				visible={status.visibleModal}
 				action={status.action}
 				onClose={onCloseModal}
-				initialValue={data.sub}
+				initialValue={data?.sub}
 				onUpdate={onUpdateSubmission}
 			/>
 		);
@@ -176,16 +176,16 @@ export default function DetailView() {
 		return (
 			<fieldset
 				style={{
-					border: "2px solid gray",
 					padding: 12,
 					borderRadius: 8,
+					border: "2px solid gray",
 					textTransform: "capitalize",
 				}}
 			>
 				<legend style={{ fontWeight: "bold", padding: 8, fontSize: 22 }}>
 					submission details
 				</legend>
-				<DetailSubmissionForm initialValue={data.sub} />
+				<DetailSubmissionForm initialValue={data?.sub} />
 			</fieldset>
 		);
 	};
@@ -217,9 +217,8 @@ export default function DetailView() {
 		);
 	};
 
-	if (_.isEmpty(data.sub) || status.loading) {
-		return <LoadingSpinner />;
-	}
+	if (_.isEmpty(data.sub) || status.loading) return null;
+
 	return (
 		<div>
 			{renderTop()}

@@ -95,7 +95,6 @@ function EditUserForm(props) {
 			toast.error(toastMessages.ERR_SERVER_ERROR, { style: { width: "auto" } });
 			return;
 		}
-
 		getDepartments();
 		getRoles();
 	}, []);

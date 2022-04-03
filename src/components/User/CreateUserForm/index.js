@@ -243,6 +243,21 @@ function CreateUserForm(prop) {
 						</FormHelperText>
 					</div>
 
+					<InputLabel required htmlFor="gender">
+						Gender
+					</InputLabel>
+					<CssTextField
+						fullWidth
+						id="gender"
+						name="gender"
+						margin="normal"
+						value={formik.values.gender}
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						error={formik.touched.gender && Boolean(formik.errors.gender)}
+						helperText={formik.touched.gender && formik.errors.gender}
+					/>
+
 					<div className="form_content">
 						<InputLabel required htmlFor="role">
 							Role
