@@ -1,12 +1,18 @@
 import AddIcon from "@mui/icons-material/Add";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import { Box, Button, CircularProgress, Menu, MenuItem, Pagination, Tooltip } from "@mui/material";
+import {
+	Box,
+	Button,
+	CircularProgress,
+	Menu,
+	MenuItem,
+	Pagination,
+	Tooltip,
+} from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -14,18 +20,50 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
+import Paper from "@mui/material/Paper";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import _ from "lodash";
 import moment from "moment";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import useDrivePicker from "react-google-drive-picker";
+import { BiPencil } from "react-icons/bi";
+import { MdOutlineDeleteOutline } from "react-icons/md";
 import { toast } from "react-toastify";
 
-import { AuthRequest, sleep } from "../../common/AppUse";
-import { API_PATHS } from "../../common/env";
-import CommentIdea from "../../components/Idea/CommentIdea";
-import ModalIdea from "../../components/Idea/ModalIdea";
+import { AuthRequest, sleep } from "../../../common/AppUse";
+import { API_PATHS } from "../../../common/env";
+import CommentIdea from "../../Idea/CommentIdea";
+import ModalIdea from "../../Idea/ModalIdea";
+
+const toastMessages = {
+	WAIT: "Please wait...",
+	SUC_IDEA_ADDED: "Create idea successful !!",
+	SUC_IDEA_EDITED: "Update idea successful !!",
+	SUC_IDEA_DEL: "Delete idea successful !!",
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+};
+
+const ExpandMore = styled((props) => {
+	const { expand, ...other } = props;
+	return <IconButton {...other} />;
+})(({ theme, expand }) => ({
+	transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
+	marginLeft: "auto",
+	transition: theme.transitions.create("transform", {
+		duration: theme.transitions.duration.shortest,
+	}),
+}));
+
+const Item = styled(Paper)(({ theme }) => ({
+	// backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+	border: "none",
+	...theme.typography.body2,
+	padding: theme.spacing(1),
+	// textAlign: 'center',
+	color: theme.palette.text.secondary,
+}));
 
 const fakeData = [
 	{
@@ -89,42 +127,48 @@ const fakeData = [
 		],
 	},
 ];
-const ExpandMore = styled((props) => {
-	const { expand, ...other } = props;
-	return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-	transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-	marginLeft: "auto",
-	transition: theme.transitions.create("transform", {
-		duration: theme.transitions.duration.shortest,
-	}),
-}));
+
 const ITEM_HEIGHT = 48;
 
-const toastMessages = {
-	WAIT: "Please wait...",
-	SUC_COMMENT_ADDED: "Create comment successful !!",
-	SUC_COMMENT_EDITED: "Update comment successful !!",
-	SUC_COMMENT_DEL: "Delete comment successful !!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
-};
+function IdeaSubView({ ideaData, subData }) {
+	const [ideaList, setIdealist] = useState(ideaData);
+	const [rowId, setRowId] = useState(null);
 
-function IdeaManagement() {
+	const [pagination, setPagination] = useState({
+		pageSize: 5,
+		page: 0,
+	});
+
 	const [status, setStatus] = useState({
 		visibleModal: false,
 		action: "update",
 		loading: false,
 	});
-	const [expanded, setExpanded] = React.useState([]);
-	const [anchorEl, setAnchorEl] = React.useState(null);
-	const [pagination, setPagination] = useState({
-		page: 1,
-	});
+
+	//#region variable
+	const [ideaId, setIdeaId] = useState(null);
+	const [expanded, setExpanded] = useState([]);
+	const [anchorEl, setAnchorEl] = useState(null);
+	const [openPicker, data, authResponse] = useDrivePicker();
+
 	const open = Boolean(anchorEl);
-	const [data, setData] = useState([]);
+
 	useEffect(() => {
-		loadData();
+		if (pagination?.page) {
+			loadDataIdea();
+		}
 	}, [pagination]);
+
+	useEffect(() => {
+		if (fakeData && !_.isEmpty(fakeData)) {
+			let newExpanded = [];
+			_.map(fakeData, (x) => {
+				const id = x.id;
+				newExpanded[id] = false;
+			});
+			setExpanded(newExpanded);
+		}
+	}, []);
 
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -137,12 +181,31 @@ function IdeaManagement() {
 		newExpanded[id] = !newExpanded[id];
 		setExpanded(newExpanded);
 	};
+	//#endregion
+
+	//#region action button API IDEA
+
+	const loadDataIdea = async () => {
+		setStatus({ ...status, loading: true });
+		await AuthRequest.get(
+			`${API_PATHS.ADMIN.MANAGE_IDEA}?page=${pagination?.page}?page_size=5`,
+			{
+				submissionId: subData.id,
+			},
+		)
+			.then((res) => {
+				setStatus({ ...status, loading: false });
+				setIdealist(res?.data?.result);
+			})
+			.catch(() => {});
+	};
+
 	const onDelete = (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`).then(() =>
-					sleep(700),
-				),
+				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`)
+					.then(() => sleep(700))
+					.catch(),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_DEL,
@@ -150,17 +213,16 @@ function IdeaManagement() {
 				},
 			)
 			.then(() => {
-				loadData();
+				loadDataIdea();
 			});
 	};
 
 	const onUpdate = (value) => {
 		toast
 			.promise(
-				AuthRequest.put(
-					`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`,
-					value,
-				).then(() => sleep(700)),
+				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`, value)
+					.then(() => sleep(700))
+					.catch(),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_EDITED,
@@ -172,16 +234,17 @@ function IdeaManagement() {
 					// delete file API
 				}
 				setStatus({ ...status, visibleModal: false });
-				loadData();
+				loadDataIdea();
 			});
 	};
 
 	const onCreate = (value) => {
+		let newValue = { ...value, submissionId: subData?.id };
 		toast
 			.promise(
-				AuthRequest.post(API_PATHS.ADMIN.MANAGE_IDEA, value).then(() =>
-					sleep(700),
-				),
+				AuthRequest.post(API_PATHS.ADMIN.MANAGE_IDEA, newValue)
+					.then(() => sleep(700))
+					.catch(),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_ADDED,
@@ -190,44 +253,48 @@ function IdeaManagement() {
 			)
 			.then(() => {
 				setStatus({ ...status, visibleModal: false });
-				loadData();
+				loadDataIdea();
 			});
 	};
-	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_COMMENT, {
-			params: {
-				page: pagination.page + 1,
-				page_size: 5,
-			},
-		})
-			.then((res) => {
-				setData(res?.data?.result?.rows ?? []);
-			})
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+	//#endregion IDEA I
+
+	const renderCardHeader = (item) => {
+		return (
+			<CardHeader
+				avatar={
+					<Avatar sx={{ bgcolor: "gray" }} aria-label="recipe">
+						P
+					</Avatar>
+				}
+				action={renderActionIdea(item.id)}
+				title="People Private"
+				subheader={
+					item?.createTime
+						? moment(item?.createTime).format("LLL")
+						: "September 14, 2016"
+				}
+			/>
+		);
 	};
+
 	const actionButtonIdea = [
 		<Button
-			startIcon={<EditIcon />}
+			startIcon={<BiPencil style={{ fontSize: "20px" }} />}
 			style={{ backgroundColor: "#4caf50" }}
 			variant={"contained"}
 		>
 			Update Idea
 		</Button>,
 		<Button
-			startIcon={<DeleteIcon />}
+			startIcon={
+				<MdOutlineDeleteOutline style={{ fontSize: "20px" }} color="red" />
+			}
 			style={{ backgroundColor: "#ba000d" }}
 			variant={"contained"}
 		>
 			Delete Idea
 		</Button>,
 	];
-
-	const onCloseModal = () => {
-		setStatus({ ...status, visibleModal: false });
-	};
-	const onOpenModal = (action, id) => {
-		setStatus({ ...status, visibleModal: true, action: action });
-	};
 	const renderActionIdea = (id) => {
 		return (
 			<div>
@@ -272,51 +339,6 @@ function IdeaManagement() {
 			</div>
 		);
 	};
-	const renderTop = () => {
-		return (
-			<div style={{ width: "100%", textAlign: "right", marginBottom: 15 }}>
-				<Button
-					size={"small"}
-					variant="contained"
-					endIcon={<AddIcon />}
-					onClick={() => onOpenModal("create")}
-				>
-					Create Idea
-				</Button>
-			</div>
-		);
-	};
-	const renderModal = () => {
-		return (
-			<ModalIdea
-				visible={status.visibleModal}
-				action={status.action}
-				onClose={onCloseModal}
-				onUpdate={onUpdate}
-				onCreate={onCreate}
-			/>
-		);
-	};
-
-	const renderCardHeader = (item) => {
-		return (
-			<CardHeader
-				avatar={
-					<Avatar sx={{ bgcolor: "gray" }} aria-label="recipe">
-						P
-					</Avatar>
-				}
-				action={renderActionIdea(item.id)}
-				title="People Private"
-				subheader={
-					item?.createTime
-						? moment(item?.createTime).format("LLL")
-						: "September 14, 2016"
-				}
-			/>
-		);
-	};
-
 	const renderCardContent = (item) => {
 		return (
 			<CardContent>
@@ -339,7 +361,6 @@ function IdeaManagement() {
 			</CardContent>
 		);
 	};
-
 	const renderActionButton = (item) => {
 		return (
 			<CardActions disableSpacing style={{ paddingRight: 15, paddingLeft: 15 }}>
@@ -376,6 +397,13 @@ function IdeaManagement() {
 		);
 	};
 
+	const renderComment = (item) => {
+		return (
+			<Collapse in={expanded[item.id]} timeout="auto" unmountOnExit>
+				<CommentIdea data={item} ideaId={item.id} />
+			</Collapse>
+		);
+	};
 	const renderListFile = (item) => {
 		if (item?.file || !_.isEmpty(item?.file)) {
 			return (
@@ -390,16 +418,44 @@ function IdeaManagement() {
 			return <div></div>;
 		}
 	};
-
-	const renderComment = (item) => {
+	const onCloseModal = () => {
+		setStatus({ ...status, visibleModal: false });
+	};
+	const onOpenModal = (action, id) => {
+		id && setIdeaId(id);
+		setStatus({ ...status, visibleModal: true, action: action });
+	};
+	const renderModal = () => {
 		return (
-			<Collapse in={expanded[item.id]} timeout="auto" unmountOnExit>
-				<CommentIdea data={item} ideaId={item.id} />
-			</Collapse>
+			<ModalIdea
+				visible={status.visibleModal}
+				action={status.action}
+				onClose={onCloseModal}
+				idIdea={ideaId}
+				titleSub={subData.title}
+				onUpdate={onUpdate}
+				onCreate={onCreate}
+			/>
 		);
 	};
-
-	const renderContentIdea = () => {
+	const renderTop = () => {
+		return (
+			<div style={{ width: "100%", textAlign: "right", marginBottom: 15 }}>
+				<Button
+					size={"small"}
+					variant="contained"
+					endIcon={<AddIcon />}
+					onClick={() => onOpenModal("create")}
+				>
+					Create Idea
+				</Button>
+			</div>
+		);
+	};
+	const onChangePage = async (page) => {
+		setPagination({ ...pagination, page });
+	};
+	const renderContent = () => {
 		const result = _.map(fakeData, (item, index) => {
 			return (
 				<Card
@@ -426,17 +482,11 @@ function IdeaManagement() {
 		}
 		return result;
 	};
-
-	const onChangePage = async (page) => {
-		setPagination({ ...pagination, page });
-	};
-
 	const renderFooter = () => {
 		return (
 			<div style={{ marginTop: 15, float: "right" }}>
 				<Pagination
 					count={10}
-					color="primary"
 					onChange={(value) =>
 						onChangePage(_.toNumber(_.get(value.target, "innerText")))
 					}
@@ -446,44 +496,13 @@ function IdeaManagement() {
 			</div>
 		);
 	};
-
-	const renderContent = () => {
-		return (
-			<>
-				{renderTop()}
-				{renderContentIdea()}
-				{renderFooter()}
-				{status.visibleModal && renderModal()}
-			</>
-		);
-	};
-
 	return (
 		<>
-			<fieldset
-				style={{
-					border: "1px solid gray",
-					padding: 12,
-					marginTop: 30,
-					borderRight: "none",
-					borderLeft: "none",
-					borderBottom: "none",
-				}}
-			>
-				<legend
-					style={{
-						fontWeight: "bold",
-						padding: 8,
-						fontSize: 22,
-						display: "flex",
-					}}
-				>
-					List Idea{" "}
-				</legend>
-				{renderContent()}
-			</fieldset>
+			{renderTop()}
+			{renderContent()}
+			{renderFooter()}
 			{status.visibleModal && renderModal()}
 		</>
 	);
 }
-export default IdeaManagement;
+export default IdeaSubView;

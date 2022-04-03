@@ -1,222 +1,231 @@
 import "../../containers/UserManagement/style.css";
-import { dataDemo_ideas } from "../../containers/SubmissionManagement/FakeData/Ideas";
+
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { BiPencil } from "react-icons/bi";
-import { CircularProgress } from "@mui/material";
 import Button from "@mui/material/Button";
+import axios from "axios";
 import _ from "lodash";
-import moment from "moment";
 import * as React from "react";
 import { useEffect, useState } from "react";
+import { BiPencil } from "react-icons/bi";
 import { useNavigate, useParams } from "react-router-dom";
-
-import { AuthRequest } from "../../common/AppUse";
-import { DEV_CONFIGS, STORAGE_VARS, URL_PATHS } from "../../common/env";
-import DetailSubmissionForm from "./DetailSubmissionForm";
-import ModalSubmissionIdea from "./Modal/ModalSubmissionIdea";
-import IdeaSubView from "./IdeaSubView";
 import { toast } from "react-toastify";
-import axios from "axios";
+
+import { AuthRequest, sleep } from "../../common/AppUse";
+import { API_PATHS, DEV_CONFIGS, URL_PATHS } from "../../common/env";
+import { dataDemo_ideas } from "../../containers/SubmissionManagement/FakeData/Ideas";
 import LoadingSpinner from "../LoadingSpinner";
+import DetailSubmissionForm from "./DetailSubmissionForm";
+import IdeaSubView from "./IdeaSubView";
+import ModalSubmissionIdea from "./Modal/ModalSubmissionIdea";
+
 const toastMessages = {
-  ERR_SERVER_ERROR: "Something went wrong, please try again !!",
-  ERR_IDEAS_NOT_FOUND: "Ideas not found !!",
+	WAIT: "Please wait...",
+	SUC: {
+		SUB: {
+			EDITED: "Update submission successful !!",
+			DEL: "Delete submission successful !!",
+		},
+		IDEA: {
+			ADDED: "Create idea successful !!",
+			EDITED: "Update idea successful !!",
+			DEL: "Delete idea successful !!",
+		},
+	},
+	ERR: {
+		SUB_NOT_FOUND: "Submission not found !!",
+		IDEAS_NOT_FOUND: "Ideas not found !!",
+		SERVER_ERROR: "Something went wrong, please try again !!",
+	},
 };
 
-function DetailView() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [initialValue, setInitialValue] = useState([]);
-  const [status, setStatus] = useState({
-    visibleModal: false,
-    action: "update",
-    loading: false,
-  });
-  const [data, setData] = useState({
-    subData: [],
-    ideaData: [],
-  });
+export default function DetailView() {
+	const { id } = useParams();
+	const navigate = useNavigate();
+	const [data, setData] = useState({ sub: {}, ideas: [] });
 
-  useEffect(() => {
-    if (DEV_CONFIGS.IS_DEV) {
-      let ideas = dataDemo_ideas.find((_) => _.submission_id === id);
-      if (!ideas) {
-        toast.error(toastMessages.ERR_IDEAS_NOT_FOUND);
-        setStatus({ ...status, loading: false });
-        navigate(-1);
-        return;
-      }
-      setInitialValue(ideas);
-      return;
-    }
+	const [pagination, setPagination] = useState({
+		pageSize: 5,
+		page: 0,
+	});
 
-    loadData();
-  }, []);
+	const [status, setStatus] = useState({
+		visibleModal: false,
+		action: "update",
+		loading: false,
+	});
 
-  const loadData = async () => {
-    const globalApi = "https://localhost:7024/api";
+	useEffect(() => {
+		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
+			let ideas = dataDemo_ideas.find((_) => _.submission_id === id);
+			if (!ideas) {
+				toast.error(toastMessages.ERR.IDEAS_NOT_FOUND);
+				setStatus({ ...status, loading: false });
+				navigate(-1);
+			}
+			return;
+		}
+		loadData();
+	}, []);
 
-    await axios
-      .all([
-        axios.get(`${globalApi}/submission-management/${id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
-          },
-        }),
-        // axios.get(`${globalApi}/idea-management?page=1&page_size=5`, {submissionId: id} {
-        // 	headers: {
-        // 		Authorization: `Bearer ${localStorage.getItem(STORAGE_VARS.JWT)}`,
-        // 	}
-        // }
-      ])
-      .then(
-        axios.spread(function (resSub, resIdea) {
-          if (resSub?.data?.succeeded) {
-            const value = resSub?.data?.result;
-            const newValue = {
-              ...value,
-              initial_date_v: moment(value?.initial_date).format("DD/MM/YYYY"),
-              final_date_v: moment(value?.final_date).format("DD/MM/YYYY"),
-            };
-            setData({ ...data, subData: newValue });
-            setStatus({ ...status, loading: false, visibleModal: false });
-          }
-        })
-      );
-  };
+	const loadData = async () => {
+		await axios
+			.all([
+				AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`),
+				AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_IDEA}/list/${id}`, {
+					params: {
+						page: pagination.page + 1,
+						page_size: pagination.pageSize,
+					},
+				}),
+			])
+			.then(
+				axios.spread(function (resSub, resIdeas) {
+					setData({
+						...data,
+						sub: resSub?.data?.result,
+						ideas: resIdeas?.data?.result,
+					});
+					setStatus({ ...status, loading: false, visibleModal: false });
+				}),
+			);
+	};
 
-  const onCloseModal = () => {
-    setStatus({ ...status, visibleModal: false });
-  };
-  const onOpenModal = (action) => {
-    setStatus({ ...status, visibleModal: true, action: action });
-  };
-  const onUpdateSubmission = async (value) => {
-    setStatus({
-      ...status,
-      loading: true,
-    });
-    try {
-      const res = await AuthRequest.put(
-        `submission-management/${value?.id}`,
-        value
-      );
-      if (res?.data?.succeeded) {
-        setStatus({
-          ...status,
-          visibleModal: false,
-        });
-        await loadData();
-      }
-    } catch {}
-  };
-  const onUpdateIdea = async (value) => {
-    setStatus({
-      ...status,
-      loading: true,
-    });
-    try {
-      const res = await AuthRequest.put(
-        `submission-management/${value?.id}`,
-        value
-      );
-      if (res?.data?.succeeded) {
-        setStatus({
-          ...status,
-          visibleModal: false,
-        });
-        await loadData();
-      }
-    } catch {}
-  };
+	const onCloseModal = () => setStatus({ ...status, visibleModal: false });
+	const onOpenModal = (action) => {
+		setStatus({ visibleModal: true, action: action });
+	};
 
-  const renderModal = () => {
-    return (
-      <ModalSubmissionIdea
-        visible={status.visibleModal}
-        action={status.action}
-        onClose={onCloseModal}
-        initialValue={data.subData}
-        onUpdate={onUpdateSubmission}
-      />
-    );
-  };
-  const renderTop = () => {
-    return (
-      <div style={{ textAlign: "right" }}>
-        <Button
-          size={"small"}
-          variant="contained"
-          style={{ backgroundColor: "#9e9e9e", marginRight: 15 }}
-          endIcon={<ArrowBackIcon />}
-          onClick={() => navigate(`${URL_PATHS.MANAGE_SUB}`)}
-        >
-          Back
-        </Button>
-        <Button
-          size={"small"}
-          variant="contained"
-          style={{ backgroundColor: "#4caf50", marginRight: 15 }}
-          endIcon={<BiPencil />}
-          onClick={() => onOpenModal("update")}
-        >
-          Edit Submission
-        </Button>
-      </div>
-    );
-  };
-  const renderDetailSubmissionForm = () => {
-    return (
-      <fieldset
-        style={{ border: "2px solid gray", padding: 12, borderRadius: 8 }}
-      >
-        <legend style={{ fontWeight: "bold", padding: 8, fontSize: 22 }}>
-          Information Submission
-        </legend>
-        <DetailSubmissionForm initialValue={data.subData} />
-      </fieldset>
-    );
-  };
-  const renderIdeaView = () => {
-    return (
-      <fieldset
-        style={{
-          border: "1px solid gray",
-          padding: 12,
-          marginTop: 30,
-          borderRight: "none",
-          borderLeft: "none",
-          borderBottom: "none",
-        }}
-      >
-        <legend
-          style={{
-            fontWeight: "bold",
-            padding: 8,
-            fontSize: 22,
-            display: "flex",
-          }}
-        >
-          List Idea{" "}
-        </legend>
-        <IdeaSubView
-          ideaData={data.ideaData}
-          loadData={loadData}
-          subData={data?.subData}
-        />
-      </fieldset>
-    );
-  };
-  if (_.isEmpty(data.subData) || status.loading) {
-    return <LoadingSpinner />;
-  }
-  return (
-    <div>
-      {renderTop()}
-      {renderDetailSubmissionForm()}
-      {renderIdeaView()}
-      {status.visibleModal && renderModal()}
-    </div>
-  );
+	const onUpdateSubmission = async (value) => {
+		setStatus({ ...status, loading: true });
+		toast
+			.promise(
+				AuthRequest.put(
+					`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`,
+					value,
+				).then(() => sleep(700)),
+				{
+					pending: toastMessages.WAIT,
+					success: toastMessages.SUC.SUB.EDITED,
+					error: toastMessages.ERR.SERVER_ERROR,
+				},
+			)
+			.then(() => {
+				setStatus({ ...status, visibleModal: false });
+				loadData();
+			});
+	};
+
+	const onUpdateIdea = async (value) => {
+		setStatus({ ...status, loading: true });
+		toast
+			.promise(
+				AuthRequest.put(
+					`${API_PATHS.ADMIN.MANAGE_IDEA}/${value?.id}`,
+					value,
+				).then(() => sleep(700)),
+				{
+					pending: toastMessages.WAIT,
+					success: toastMessages.SUC.SUB.EDITED,
+					error: toastMessages.ERR.SERVER_ERROR,
+				},
+			)
+			.then(() => {
+				setStatus({ ...status, visibleModal: false });
+				loadData();
+			});
+	};
+
+	const renderModal = () => {
+		return (
+			<ModalSubmissionIdea
+				visible={status.visibleModal}
+				action={status.action}
+				onClose={onCloseModal}
+				initialValue={data.sub}
+				onUpdate={onUpdateSubmission}
+			/>
+		);
+	};
+
+	const renderTop = () => {
+		return (
+			<div style={{ textAlign: "right" }}>
+				<Button
+					size={"small"}
+					variant="contained"
+					style={{ backgroundColor: "#9e9e9e", marginRight: 15 }}
+					endIcon={<ArrowBackIcon />}
+					onClick={() => navigate(`${URL_PATHS.MANAGE_SUB}`)}
+				>
+					Back
+				</Button>
+				<Button
+					size={"small"}
+					variant="contained"
+					style={{ backgroundColor: "#4caf50", marginRight: 15 }}
+					endIcon={<BiPencil />}
+					onClick={() => onOpenModal("update")}
+				>
+					Edit Submission
+				</Button>
+			</div>
+		);
+	};
+
+	const renderSubmissionDetails = () => {
+		return (
+			<fieldset
+				style={{
+					border: "2px solid gray",
+					padding: 12,
+					borderRadius: 8,
+					textTransform: "capitalize",
+				}}
+			>
+				<legend style={{ fontWeight: "bold", padding: 8, fontSize: 22 }}>
+					submission details
+				</legend>
+				<DetailSubmissionForm initialValue={data.sub} />
+			</fieldset>
+		);
+	};
+
+	const renderIdeaView = () => {
+		return (
+			<fieldset
+				style={{
+					border: "1px solid gray",
+					padding: 12,
+					marginTop: 30,
+					borderRight: "none",
+					borderLeft: "none",
+					borderBottom: "none",
+				}}
+			>
+				<legend
+					style={{
+						fontWeight: "bold",
+						padding: 8,
+						fontSize: 22,
+						display: "flex",
+					}}
+				>
+					List Ideas
+				</legend>
+				<IdeaSubView ideaData={data.ideas} subData={data?.sub} />
+			</fieldset>
+		);
+	};
+
+	if (_.isEmpty(data.sub) || status.loading) {
+		return <LoadingSpinner />;
+	}
+	return (
+		<div>
+			{renderTop()}
+			{renderSubmissionDetails()}
+			{renderIdeaView()}
+			{status.visibleModal && renderModal()}
+		</div>
+	);
 }
-export default DetailView;

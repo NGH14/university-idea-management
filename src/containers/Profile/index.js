@@ -3,8 +3,6 @@ import "./style.css";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import React, { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
@@ -14,7 +12,6 @@ import loginImg from "../../assets/images/Contact-CIC-Education-2-1024x858.webp"
 import { AuthRequest } from "../../common/AppUse";
 import { API_PATHS, DEV_CONFIGS } from "../../common/env";
 import TabProfile from "../../components/TabProfile";
-import { UserContext } from "../../context/AppContext";
 import { dataDemo } from "../UserManagement/FakeData";
 
 const toastMessages = {
@@ -29,7 +26,7 @@ export default function UpdatePassword() {
 	const email = searchParams.get("email");
 
 	useEffect(() => {
-		if (DEV_CONFIGS.IS_DEV) {
+		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
 			let user = dataDemo.find((_) => _.email === email);
 
 			if (!user) {
@@ -47,9 +44,7 @@ export default function UpdatePassword() {
 		await AuthRequest.get(`${API_PATHS.SHARED.USER}/${email}`)
 			.then((res) => setUser(res?.data?.result))
 			.catch(() => {
-				toast.error(toastMessages.ERR_SERVER_ERROR, {
-					style: { width: "auto" },
-				});
+				toast.error(toastMessages.ERR_SERVER_ERROR);
 			});
 	};
 

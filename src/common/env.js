@@ -1,6 +1,6 @@
 export const DEV_CONFIGS = {
-	IS_LOGIN: true,
-	IS_DEV: true,
+	IS_LOGIN: false,
+	IS_OFFLINE_DEV: false,
 	FAKE_ROLES: [
 		{ name: "admin" },
 		{ name: "manager" },
@@ -38,12 +38,12 @@ export const API_PATHS = {
 		IDEA: "idea",
 		USER: "user",
 		SUB: "submission",
+		COMMENT: "comment",
 	},
 	ADMIN: {
-		DEP: "departments",
+		DEP: "department",
 		MANAGE_TAG: "tag-management",
 		MANAGE_IDEA: "idea-management",
-		MANAGE_COMMENT: "comment-management",
 		MANAGE_USER: "user-management",
 		MANAGE_SUB: "submission-management",
 		MANAGE_DEP: "department-management",

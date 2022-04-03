@@ -4,9 +4,8 @@
 	justify-content: space-between;
 	align-items: center;
 }
-.updatepwdform_element
-	.MuiFormControl-root:focus-within
-	.MuiFormHelperText-root {
+
+.updatepwdform_element .MuiFormControl-root:focus-within .MuiFormHelperText-root {
 	display: none;
 }
 
@@ -16,12 +15,14 @@
 	align-items: center;
 	margin: 30px auto;
 }
+
 .updatepwdform .MuiInputLabel-root {
 	overflow: visible;
 	max-width: 350px;
 	width: 350px;
 
 }
+
 .updatepwdform_footer {
 	display: flex;
 	justify-content: flex-end;
@@ -91,9 +92,10 @@
 }
 
 @media (max-width: 600px) {
-	.updatepwdform_footer > * {
+	.updatepwdform_footer>* {
 		width: 100%;
 	}
+
 	.updatepwdform_footer {
 		gap: 2px;
 		margin-top: 5px;

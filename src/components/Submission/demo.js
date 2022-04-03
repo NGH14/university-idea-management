@@ -1,19 +1,12 @@
-import React, {useCallback} from 'react'
-import {useDropzone} from 'react-dropzone'
-import Dropzone from "react-dropzone";
-import axios from "axios";
-
+import React, { useCallback } from "react";
 
 function Demo() {
-    // const onDrop = useCallback(acceptedFiles => {
-    //     // Do something with the files
-    // }, [])
-    //
-    // const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
+	// const onDrop = useCallback(acceptedFiles => {
+	//     // Do something with the files
+	// }, [])
+	//
+	// const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
-
-
-
-    return <></>
+	return <></>;
 }
-export default Demo
+export default Demo;

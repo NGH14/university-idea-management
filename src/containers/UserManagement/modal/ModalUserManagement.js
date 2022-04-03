@@ -1,4 +1,4 @@
-import { CircularProgress, Modal } from "@mui/material";
+import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
 import _ from "lodash";
 import * as React from "react";
@@ -6,11 +6,10 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { AuthRequest } from "../../../common/AppUse";
-import { API_PATHS, DEV_CONFIGS } from "../../../common/env";
+import { API_PATHS } from "../../../common/env";
 import CreateUserForm from "../../../components/User/CreateUserForm";
 import DetailUserForm from "../../../components/User/DetailUserForm";
 import EditUserForm from "../../../components/User/EditUserForm";
-import { dataDemo } from "../FakeData";
 
 const style = {
 	position: "relative",
@@ -24,6 +23,7 @@ const style = {
 	borderRadius: "5px",
 	overflow: "auto",
 	maxHeight: "100%",
+
 	" @media (max-width: 1000px)": {
 		width: "100%",
 	},
@@ -39,16 +39,6 @@ const ModalUserManagement = (props) => {
 	const [initialValue, setInitialValue] = useState([]);
 
 	useEffect(() => {
-		if (DEV_CONFIGS.IS_DEV) {
-			let user = dataDemo.find((_) => _.id === rowId);
-			if (!user) {
-				toast.error(toastMessages.ERR_USER_NOT_FOUND);
-				return;
-			}
-			setInitialValue(user);
-			return;
-		}
-
 		if (action !== "create") {
 			loadData();
 		}
@@ -57,11 +47,7 @@ const ModalUserManagement = (props) => {
 	const loadData = async () => {
 		await AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_USER}/${rowId}`)
 			.then((res) => setInitialValue(res?.data?.result))
-			.catch(() =>
-				toast.error(toastMessages.ERR_SERVER_ERROR, {
-					style: { width: "auto" },
-				}),
-			);
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
 	const renderForm = () => {
