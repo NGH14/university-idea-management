@@ -178,7 +178,7 @@ function TagManagement() {
     });
   };
 
-  const CustomToolbarSubmission = () => {
+  const CustomToolbarTag = () => {
     return (
       <GridToolbarContainer sx={{ fontWeight: 700 }}>
         <GridToolbarColumnsButton />
@@ -241,7 +241,7 @@ function TagManagement() {
             ColumnSortedAscendingIcon: () => (
               <ExpandLessIcon className="icon" />
             ),
-            Toolbar: tableToolBar && CustomToolbarSubmission,
+            Toolbar: tableToolBar && CustomToolbarTag,
           }}
           rows={data}
           columns={columns}
