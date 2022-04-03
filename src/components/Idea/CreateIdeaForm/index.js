@@ -1,6 +1,5 @@
 import "./style.css";
 
-import ClearIcon from "@mui/icons-material/Clear";
 import CloseIcon from "@mui/icons-material/Close";
 import { TextareaAutosize, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
@@ -8,11 +7,12 @@ import IconButton from "@mui/material/IconButton";
 import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
+import { AUTH } from "../../../common/env";
 import _ from "lodash";
 import React, { useState } from "react";
 import Dropzone from "react-dropzone";
 import * as yup from "yup";
-import { AUTH } from "../../../common/env";
+import { toast } from "react-toastify";
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -44,6 +44,12 @@ const CssTextField = styled(TextField)({
 	},
 });
 
+const toastMessages = {
+	UPLOAD_WAIT_DRIVE: "Uploading attachments...",
+	SUC_IDEA_ADDED: "Create idea successful !!",
+	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+};
+
 const ColorButton = styled(Button)(() => ({
 	fontFamily: "Poppins",
 	fontSize: "13px",
@@ -68,9 +74,9 @@ const validationSchema = yup.object({
 const initialValues = {
 	title: "",
 	content: "",
-	is_anonymous: true,
 	tags: [],
 	attachments: [],
+	is_anonymous: true,
 };
 
 function CreateIdeaForm(props) {
@@ -81,46 +87,60 @@ function CreateIdeaForm(props) {
 		initialValues: initialValues,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			if (values.file && !_.isEmpty(values.file)) {
-				onSubmitForm(values);
-			} else {
-				onCreate(values);
-			}
+			fileArray && !_.isEmpty(fileArray)
+				? onSubmitForm(values)
+				: onCreate(values);
 		},
 	});
+
 	const handleDrop = (acceptedFiles) => {
-		setFileArray([...fileArray, ...acceptedFiles])
-		formik.setFieldValue('file', `${fileArray}`)
-	}
+		setFileArray([...fileArray, ...acceptedFiles]);
+	};
+
 	const onSubmitForm = (values) => {
-		const file = values.file[0]; //the file
-		const reader = new FileReader(); //this for convert to Base64
-		reader.readAsDataURL(values.file[0]); //start conversion...
-		reader.onload = function () {
-			//.. once finished..
-			const rawLog = reader.result.split(",")[1]; //extract only thee file data part
-			const dataSend = {
-				dataReq: { data: rawLog, name: file.name, type: file.type },
-				fname: "uploadFilesToGoogleDrive",
-			}; //preapre info to send to API
-			fetch(
-				"https://script.google.com/macros/s/AKfycbzOsDnvlUIHyq6y2dpzWevLym82dPqM9ZVTbvpB2KpoFN9GHoiodwvMMNpRDeupSeFO/exec", //your AppsScript URL
-				{ method: "POST", body: JSON.stringify(dataSend) },
-			) //send to Api
-				.then((res) => res.json())
-				.then((infoFile) => {
-					onCreate({
-						...values,
-						fileRequest: {
-							id: infoFile.id,
-							url: infoFile.url,
-							name: file.name,
-							type: file.type,
+		const files = fileArray;
+		const reader = new FileReader();
+
+		files.forEach((file) => {
+			reader.readAsDataURL(file);
+			reader.onload = () => {
+				const rawLog = reader.result.split(",")[1];
+
+				const dataSend = {
+					dataReq: {
+						data: rawLog,
+						name: file.name,
+						type: file.type,
+					},
+					fname: "uploadFilesToGoogleDrive",
+				};
+
+				toast
+					.promise(
+						fetch(AUTH.GAPI_REFRESH_INFO, {
+							method: "POST",
+							body: JSON.stringify(dataSend),
+						}),
+						{
+							pending: toastMessages.UPLOAD_WAIT.DRIVE,
+							error: toastMessages.ERR_SERVER_ERROR,
 						},
-					}); //See response
-				})
-				.catch((e) => console.log(e)); // Or Error in console // Or Error in console
-		};
+					)
+					.then((res) => {
+						console.log(res);
+						onCreate({
+							...values,
+							attachments: {
+								id: res.id,
+								url: res.url,
+								name: file.name,
+								type: file.type,
+							},
+						});
+					})
+					.catch((e) => console.log(e));
+			};
+		});
 	};
 
 	return (
@@ -209,7 +229,7 @@ function CreateIdeaForm(props) {
 						<div>
 							<strong>Files:</strong>
 							<ul>
-								{_.map(fileArray, files => (
+								{_.map(fileArray, (files) => (
 									<li key={files.name}>{files.name}</li>
 								))}
 							</ul>
