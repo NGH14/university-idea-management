@@ -230,7 +230,7 @@ function SubmissionManagement() {
     return (
       <div className="managementsubmission_title">
         <div className="managementsubmission_heading">
-          <h2>Management Submission</h2>
+          <h2>Submission Management</h2>
           <Tooltip title="Table Tool Bar">
             <IconButton onClick={handleOnClickToolBar}>
               <MoreVertIcon />

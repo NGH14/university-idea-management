@@ -222,7 +222,7 @@ function UserManagement() {
     return (
       <div className="managementuser_title">
         <div className="managementuser_heading">
-          <h2>Management User</h2>
+          <h2>User Management</h2>
           <Tooltip title="Table Tool Bar">
             <IconButton onClick={handleOnClickToolBar}>
               <MoreVertIcon />
