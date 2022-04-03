@@ -75,7 +75,7 @@ const initialValues = {
 
 function CreateIdeaForm(props) {
 	const { onClose, onCreate, submissionTitle } = props;
-	const [fileNames, setFileNames] = useState([]);
+	const [fileArray, setFileArray] = useState([]);
 
 	const formik = useFormik({
 		initialValues: initialValues,
@@ -88,7 +88,10 @@ function CreateIdeaForm(props) {
 			}
 		},
 	});
-
+	const handleDrop = (acceptedFiles) => {
+		setFileArray([...fileArray, ...acceptedFiles])
+		formik.setFieldValue('file', `${fileArray}`)
+	}
 	const onSubmitForm = (values) => {
 		const file = values.file[0]; //the file
 		const reader = new FileReader(); //this for convert to Base64
@@ -194,12 +197,8 @@ function CreateIdeaForm(props) {
 					</div>
 				</div>
 				<div className="form_group">
-					<div className="form_content" style={{ display: "flex" }}>
-						<Dropzone
-							onDrop={(file) => {
-								setFileNames([...fileNames, file]);
-							}}
-						>
+					<div className="form_content">
+						<Dropzone onDrop={handleDrop}>
 							{({ getRootProps, getInputProps }) => (
 								<div {...getRootProps({ className: "dropzone" })}>
 									<input {...getInputProps()} />
@@ -210,8 +209,8 @@ function CreateIdeaForm(props) {
 						<div>
 							<strong>Files:</strong>
 							<ul>
-								{fileNames?.map((file) => (
-									<li key={file?.name}>{file?.name}</li>
+								{_.map(fileArray, files => (
+									<li key={files.name}>{files.name}</li>
 								))}
 							</ul>
 						</div>
