@@ -9,9 +9,10 @@ import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
 import { useFormik } from "formik";
 import _ from "lodash";
-import React from "react";
+import React, { useState } from "react";
 import Dropzone from "react-dropzone";
 import * as yup from "yup";
+import { AUTH } from "../../../common/env";
 
 const CssTextField = styled(TextField)({
 	".MuiFormHelperText-root": {
@@ -50,7 +51,6 @@ const ColorButton = styled(Button)(() => ({
 	textTransform: "none",
 	minWidth: 200,
 	display: "inline-block",
-
 	margin: "10px",
 	padding: "10px",
 
@@ -58,26 +58,28 @@ const ColorButton = styled(Button)(() => ({
 }));
 
 const validationSchema = yup.object({
-	name: yup.string().required("Full Name is required"),
+	title: yup.string().required("Title is required"),
+	content: yup.string().required("Please Provide content"),
+	is_anonymous: yup.bool(),
+	tags: yup.array(),
+	attachments: yup.array(),
 });
 
-const ApiGoogleDrive = {
-	CLIENT_ID:
-		"284247270990-gdn3hpqk4c4fjckvmd45k4ajeeov4msb.apps.googleusercontent.com",
-	CLIENT_SECRET: "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",
-	REDIRECT_URL: "https://developers.google.com/oauthplayground/",
-
-	REFRESH_TOKEN:
-		"1//04euMhZM3kPsbCgYIARAAGAQSNwF-L9IrYsB6QdWy_R04LH2kHVOF7K2sJLqOKTVrPHAhrG2tuPyVZjflqNTH4CdZ1Zc0jt0B-48",
+const initialValues = {
+	title: "",
+	content: "",
+	is_anonymous: true,
+	tags: [],
+	attachments: [],
 };
-
-// ref 137 option submission
 
 function CreateIdeaForm(props) {
 	const { onClose, onCreate, submissionTitle } = props;
+	const [fileNames, setFileNames] = useState([]);
 
 	const formik = useFormik({
-		initialValues: {},
+		initialValues: initialValues,
+		validationSchema: validationSchema,
 		onSubmit: (values) => {
 			if (values.file && !_.isEmpty(values.file)) {
 				onSubmitForm(values);
@@ -86,8 +88,8 @@ function CreateIdeaForm(props) {
 			}
 		},
 	});
+
 	const onSubmitForm = (values) => {
-		console.log(values.file[0], 987);
 		const file = values.file[0]; //the file
 		const reader = new FileReader(); //this for convert to Base64
 		reader.readAsDataURL(values.file[0]); //start conversion...
@@ -117,6 +119,7 @@ function CreateIdeaForm(props) {
 				.catch((e) => console.log(e)); // Or Error in console // Or Error in console
 		};
 	};
+
 	return (
 		<div className="createuserform">
 			<div className="createuserform_title">
@@ -130,7 +133,7 @@ function CreateIdeaForm(props) {
 			<form className="form_grid" onSubmit={formik.handleSubmit}>
 				<div className="form_group">
 					<div className="form_content">
-						<InputLabel htmlFor="full_name">Title Submission</InputLabel>
+						<InputLabel htmlFor="titleSub">Title Submission</InputLabel>
 						{submissionTitle ? (
 							<CssTextField
 								fullWidth
@@ -143,17 +146,15 @@ function CreateIdeaForm(props) {
 								inputProps={{
 									readOnly: true,
 								}}
-								// error={formik.touched.title && Boolean(formik.errors.title)}
-								// helperText={formik.touched.title && formik.errors.title}
 							/>
 						) : (
-							<>{/*option Sub mission*/}</>
+							<>{/* selection Sub mission */}</>
 						)}
 					</div>
 				</div>
 				<div className="form_group">
 					<div className="form_content">
-						<InputLabel required={true} htmlFor="full_name">
+						<InputLabel required={true} htmlFor="title">
 							Title Idea
 						</InputLabel>
 						<CssTextField
@@ -161,11 +162,11 @@ function CreateIdeaForm(props) {
 							margin="normal"
 							id="title"
 							name="title"
-							value={formik.values.title}
+							value={formik.values?.title}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							// error={formik.touched.title && Boolean(formik.errors.title)}
-							// helperText={formik.touched.title && formik.errors.title}
+							error={formik.touched.title && Boolean(formik.errors.title)}
+							helperText={formik.touched.title && formik.errors.title}
 						/>
 					</div>
 				</div>
@@ -195,49 +196,24 @@ function CreateIdeaForm(props) {
 				<div className="form_group">
 					<div className="form_content" style={{ display: "flex" }}>
 						<Dropzone
-							onDrop={(value) => formik.setFieldValue("file", [...value])}
-							maxFiles={1}
-							multiple={true}
+							onDrop={(file) => {
+								setFileNames([...fileNames, file]);
+							}}
 						>
 							{({ getRootProps, getInputProps }) => (
-								<div
-									{...getRootProps({ className: "dropzone" })}
-									style={{ height: "100%" }}
-								>
-									<input {...getInputProps()} type={"file"} />
-									<Button
-										variant={"contained"}
-										style={{ background: "darkgray" }}
-									>
-										Upload Image
-									</Button>
+								<div {...getRootProps({ className: "dropzone" })}>
+									<input {...getInputProps()} />
+									<p>Drag'n'drop files, or click to select files</p>
 								</div>
 							)}
 						</Dropzone>
-						{/*<input  type={"file"} name={"file"} onChange={(e)=>{*/}
-						{/*	console.log(e)*/}
-						{/*}}/>*/}
-						<div
-							style={{
-								marginTop: "auto",
-								marginBottom: "auto",
-								marginLeft: "15px",
-								display: "flex",
-							}}
-						>
-							<a
-								style={{
-									marginTop: "auto",
-									marginBottom: "auto",
-									marginRight: "15px",
-								}}
-								href={""}
-							>
-								Upload-Image.doc
-							</a>
-							<IconButton style={{ color: "darkred" }}>
-								<ClearIcon />
-							</IconButton>
+						<div>
+							<strong>Files:</strong>
+							<ul>
+								{fileNames?.map((file) => (
+									<li key={file?.name}>{file?.name}</li>
+								))}
+							</ul>
 						</div>
 					</div>
 				</div>

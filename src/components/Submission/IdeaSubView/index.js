@@ -184,28 +184,29 @@ function IdeaSubView({ ideaData, subData }) {
 	//#endregion
 
 	//#region action button API IDEA
-
 	const loadDataIdea = async () => {
 		setStatus({ ...status, loading: true });
-		await AuthRequest.get(
-			`${API_PATHS.ADMIN.MANAGE_IDEA}?page=${pagination?.page}?page_size=5`,
-			{
-				submissionId: subData.id,
+
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_IDEA + "/list", {
+			params: {
+				page: pagination.page + 1,
+				page_size: pagination.pageSize,
 			},
-		)
+		})
 			.then((res) => {
 				setStatus({ ...status, loading: false });
-				setIdealist(res?.data?.result);
+				setIdealist(res?.data?.result?.rows ?? []);
+				setRowId(null);
 			})
-			.catch(() => {});
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
 	const onDelete = (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`)
-					.then(() => sleep(700))
-					.catch(),
+				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`).then(() =>
+					sleep(700),
+				),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_DEL,
@@ -220,9 +221,10 @@ function IdeaSubView({ ideaData, subData }) {
 	const onUpdate = (value) => {
 		toast
 			.promise(
-				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`, value)
-					.then(() => sleep(700))
-					.catch(),
+				AuthRequest.put(
+					`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`,
+					value,
+				).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_EDITED,
@@ -231,7 +233,7 @@ function IdeaSubView({ ideaData, subData }) {
 			)
 			.then(() => {
 				if (value?.exitFile && value?.file && !_.isEmpty(value?.file)) {
-					// delete file API
+					// TODO: delete drive file API
 				}
 				setStatus({ ...status, visibleModal: false });
 				loadDataIdea();
@@ -239,12 +241,12 @@ function IdeaSubView({ ideaData, subData }) {
 	};
 
 	const onCreate = (value) => {
-		let newValue = { ...value, submissionId: subData?.id };
+		let newValue = { ...value, submission_id: subData?.id };
 		toast
 			.promise(
-				AuthRequest.post(API_PATHS.ADMIN.MANAGE_IDEA, newValue)
-					.then(() => sleep(700))
-					.catch(),
+				AuthRequest.post(API_PATHS.ADMIN.MANAGE_IDEA, newValue).then(() =>
+					sleep(700),
+				),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_ADDED,
@@ -256,7 +258,7 @@ function IdeaSubView({ ideaData, subData }) {
 				loadDataIdea();
 			});
 	};
-	//#endregion IDEA I
+	//#endregion
 
 	const renderCardHeader = (item) => {
 		return (
