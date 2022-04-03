@@ -2,6 +2,12 @@ html {
 	font-family: "Poppins", sans-serif;
 }
 
+textarea {
+  padding: 12px;
+  resize: none;
+  min-height: fit-content;
+}
+
 *::-webkit-scrollbar-track {
 	border-radius: 5px;
 	background-color: #F5F5F5;
