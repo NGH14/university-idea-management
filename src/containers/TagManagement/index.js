@@ -5,13 +5,22 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Button from "@mui/material/Button";
 import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
+import { IconButton } from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Tooltip from "@mui/material/Tooltip";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { BiPencil } from "react-icons/bi";
 import { GoInfo } from "react-icons/go";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { toast } from "react-toastify";
-
+import {
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarDensitySelector,
+  GridToolbarExport,
+  GridToolbarFilterButton,
+} from "@mui/x-data-grid";
 import { AuthRequest, sleep } from "../../common/AppUse";
 import { API_PATHS } from "../../common/env";
 import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
@@ -29,6 +38,7 @@ const toastMessages = {
 function TagManagement() {
   const [data, setData] = useState([]);
   const [rowId, setRowId] = useState(null);
+  const [tableToolBar, setTableToolBar] = useState(false);
 
   const [status, setStatus] = useState({
     visibleModal: false,
@@ -43,6 +53,8 @@ function TagManagement() {
   useEffect(() => {
     loadData();
   }, [pagination]);
+
+  const handleOnClickToolBar = () => setTableToolBar((pre) => !pre);
 
   const columns = [
     ...Column,
@@ -166,6 +178,17 @@ function TagManagement() {
     });
   };
 
+  const CustomToolbarSubmission = () => {
+    return (
+      <GridToolbarContainer sx={{ fontWeight: 700 }}>
+        <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />
+        {/* <GridToolbarExport printOptions={{ disableToolbarButton: true }} /> */}
+      </GridToolbarContainer>
+    );
+  };
+
   const renderModal = () => {
     return (
       <ModalTagManagement
@@ -186,7 +209,15 @@ function TagManagement() {
   const renderTop = () => {
     return (
       <div className="managementtag_title">
-        <h2 className="managementtag_heading">Tag Management</h2>
+        <div className="managementtag_heading">
+          <h2>Tag Management</h2>
+          <Tooltip title="Table Tool Bar">
+            <IconButton onClick={handleOnClickToolBar}>
+              <MoreVertIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
+
         <Button
           variant="contained"
           endIcon={<AddCircleOutlineIcon />}
@@ -210,6 +241,7 @@ function TagManagement() {
             ColumnSortedAscendingIcon: () => (
               <ExpandLessIcon className="icon" />
             ),
+            Toolbar: tableToolBar && CustomToolbarSubmission,
           }}
           rows={data}
           columns={columns}

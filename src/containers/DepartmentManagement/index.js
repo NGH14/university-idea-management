@@ -11,6 +11,16 @@ import { BiPencil } from "react-icons/bi";
 import { GoInfo } from "react-icons/go";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { toast } from "react-toastify";
+import {
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarDensitySelector,
+  GridToolbarExport,
+  GridToolbarFilterButton,
+} from "@mui/x-data-grid";
+import Tooltip from "@mui/material/Tooltip";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { IconButton } from "@mui/material";
 
 import { AuthRequest, sleep } from "../../common/AppUse";
 import { API_PATHS, DEV_CONFIGS } from "../../common/env";
@@ -30,6 +40,8 @@ const toastMessages = {
 function DepartmentManagement() {
   const [data, setData] = useState([]);
   const [rowId, setRowId] = useState(null);
+  const [tableToolBar, setTableToolBar] = useState(false);
+  const handleOnClickToolBar = () => setTableToolBar((pre) => !pre);
 
   const [status, setStatus] = useState({
     visibleModal: false,
@@ -189,17 +201,28 @@ function DepartmentManagement() {
     setPagination({ page, pageSize });
   };
 
+  const CustomToolbarDepartment = () => {
+    return (
+      <GridToolbarContainer sx={{ fontWeight: 700 }}>
+        <GridToolbarColumnsButton />
+        <GridToolbarFilterButton />
+        <GridToolbarDensitySelector />
+        {/* <GridToolbarExport printOptions={{ disableToolbarButton: true }} /> */}
+      </GridToolbarContainer>
+    );
+  };
+
   const renderTop = () => {
     return (
       <div className="managementdepartment_title">
-        <h2 className="managementdepartment_heading">Department Management</h2>
-        <Button
-          variant="contained"
-          endIcon={<AddCircleOutlineIcon />}
-          onClick={() => onOpenModal(null, "create")}
-        >
-          Create
-        </Button>
+        <div className="managementdepartment_heading">
+          <h2>Department Management</h2>
+          <Tooltip title="Table Tool Bar">
+            <IconButton onClick={handleOnClickToolBar}>
+              <MoreVertIcon />
+            </IconButton>
+          </Tooltip>
+        </div>
       </div>
     );
   };
@@ -216,6 +239,7 @@ function DepartmentManagement() {
             ColumnSortedAscendingIcon: () => (
               <ExpandLessIcon className="icon" />
             ),
+            Toolbar: tableToolBar && CustomToolbarDepartment,
           }}
           rows={data}
           columns={columns}
