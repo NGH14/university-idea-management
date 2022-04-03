@@ -24,8 +24,8 @@ import {
 
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+import { MdOutlineDeleteOutline } from "react-icons/md";
+import { BiPencil } from "react-icons/bi";
 import AddIcon from "@mui/icons-material/Add";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
@@ -274,14 +274,16 @@ function IdeaSubView({ ideaData, subData }) {
 
   const actionButtonIdea = [
     <Button
-      startIcon={<EditIcon />}
+      startIcon={<BiPencil style={{ fontSize: "20px" }} />}
       style={{ backgroundColor: "#4caf50" }}
       variant={"contained"}
     >
       Update Idea
     </Button>,
     <Button
-      startIcon={<DeleteIcon />}
+      startIcon={
+        <MdOutlineDeleteOutline style={{ fontSize: "20px" }} color="red" />
+      }
       style={{ backgroundColor: "#ba000d" }}
       variant={"contained"}
     >

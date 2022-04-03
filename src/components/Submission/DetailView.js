@@ -1,7 +1,7 @@
 import "../../containers/UserManagement/style.css";
 import { dataDemo_ideas } from "../../containers/SubmissionManagement/FakeData/Ideas";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import EditIcon from "@mui/icons-material/Edit";
+import { BiPencil } from "react-icons/bi";
 import { CircularProgress } from "@mui/material";
 import Button from "@mui/material/Button";
 import _ from "lodash";
@@ -157,7 +157,7 @@ function DetailView() {
           size={"small"}
           variant="contained"
           style={{ backgroundColor: "#4caf50", marginRight: 15 }}
-          endIcon={<EditIcon />}
+          endIcon={<BiPencil />}
           onClick={() => onOpenModal("update")}
         >
           Edit Submission

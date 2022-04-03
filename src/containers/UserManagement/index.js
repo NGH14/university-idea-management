@@ -1,11 +1,12 @@
 import "./style.css";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+import { MdOutlineDeleteOutline } from "react-icons/md";
+import { BiPencil } from "react-icons/bi";
+
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { GoInfo } from "react-icons/go";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { IconButton } from "@mui/material";
 import Button from "@mui/material/Button";
@@ -78,14 +79,14 @@ function UserManagement() {
       sortable: false,
       getActions: (params) => [
         <GridActionsCellItem
-          icon={<InfoOutlinedIcon />}
+          icon={<GoInfo color="#3f66da" style={{ fontSize: "20px" }} />}
           label="Detail"
           onClick={() => onOpenModal(params.id, "detail")}
           showInMenu
         />,
 
         <GridActionsCellItem
-          icon={<EditIcon />}
+          icon={<BiPencil style={{ fontSize: "20px" }} />}
           label="Update"
           disabled={state?.dataUser?.id === params.id ? true : false}
           onClick={() => onOpenModal(params.id, "update")}
@@ -93,7 +94,9 @@ function UserManagement() {
         />,
 
         <GridActionsCellItem
-          icon={<DeleteIcon />}
+          icon={
+            <MdOutlineDeleteOutline color="red" style={{ fontSize: "20px" }} />
+          }
           disabled={state?.dataUser?.id === params.id ? true : false}
           label="Delete"
           onClick={() => onDelete(params.id)}

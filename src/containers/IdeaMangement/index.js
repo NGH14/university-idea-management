@@ -32,8 +32,8 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import Collapse from "@mui/material/Collapse";
 import CommentIdea from "../../components/Idea/CommentIdea";
 import { styled } from "@mui/material/styles";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { BiPencil } from "react-icons/bi";
+import { MdOutlineDeleteOutline } from "react-icons/md";
 const fakeData = [
   {
     name: "000",
@@ -217,14 +217,14 @@ function IdeaManagement() {
   };
   const actionButtonIdea = [
     <Button
-      startIcon={<EditIcon />}
+      startIcon={<BiPencil style={{ fontSize: "20px" }} />}
       style={{ backgroundColor: "#4caf50" }}
       variant={"contained"}
     >
       Update Idea
     </Button>,
     <Button
-      startIcon={<DeleteIcon />}
+      startIcon={<MdOutlineDeleteOutline style={{ fontSize: "20px" }} />}
       style={{ backgroundColor: "#ba000d" }}
       variant={"contained"}
     >
