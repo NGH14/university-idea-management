@@ -84,6 +84,7 @@ const initialValues = {
 	role: "",
 	phone: "",
 	department: "",
+	gender: "",
 	date_of_birth: null,
 };
 
@@ -174,6 +175,9 @@ function CreateUserForm(prop) {
 							helperText={formik.touched.email && formik.errors.email}
 						/>
 					</div>
+				</div>
+
+				<div className="form_group">
 					<div className="form_content">
 						<InputLabel required htmlFor="phone">
 							Phone
@@ -190,6 +194,74 @@ function CreateUserForm(prop) {
 							error={formik.touched.phone && Boolean(formik.errors.phone)}
 							helperText={formik.touched.phone && formik.errors.phone}
 						/>
+					</div>
+					<div className="form_content">
+						<InputLabel htmlFor="gender">Gender</InputLabel>
+
+						<Select
+							select
+							fullWidth
+							displayEmpty
+							margin="normal"
+							labelId="gender"
+							id="gender"
+							name="gender"
+							value={formik.values.gender}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							style={{ textTransform: "capitalize" }}
+							renderValue={
+								formik.values.gender !== ""
+									? undefined
+									: () => (
+											<placeholder>
+												<em
+													style={{
+														opacity: 0.6,
+														fontSize: 14,
+													}}
+												>
+													-- gender --
+												</em>
+											</placeholder>
+									  )
+							}
+							error={formik.touched.gender && Boolean(formik.errors.gender)}
+						>
+							<MenuItem style={{ textTransform: "capitalize" }} value="male">
+								male
+							</MenuItem>
+							<MenuItem style={{ textTransform: "capitalize" }} value="female">
+								female
+							</MenuItem>
+						</Select>
+					</div>
+					<div className="form_content">
+						<InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
+
+						<LocalizationProvider
+							dateAdapter={AdapterDateFns}
+							locale={enLocale}
+						>
+							<DatePicker
+								fullWidth
+								disableFuture
+								margin="normal"
+								name="date_of_birth"
+								id="date_of_birth"
+								onChange={(val) => {
+									formik.setFieldValue("date_of_birth", val);
+								}}
+								value={formik.values.date_of_birth}
+								error={
+									formik.errors.date_of_birth && formik.touched.date_of_birth
+								}
+								helperText={
+									formik.errors.date_of_birth && formik.touched.date_of_birth
+								}
+								renderInput={(params) => <TextField fullWidth {...params} />}
+							/>
+						</LocalizationProvider>
 					</div>
 				</div>
 
@@ -243,21 +315,6 @@ function CreateUserForm(prop) {
 						</FormHelperText>
 					</div>
 
-					<InputLabel required htmlFor="gender">
-						Gender
-					</InputLabel>
-					<CssTextField
-						fullWidth
-						id="gender"
-						name="gender"
-						margin="normal"
-						value={formik.values.gender}
-						onChange={formik.handleChange}
-						onBlur={formik.handleBlur}
-						error={formik.touched.gender && Boolean(formik.errors.gender)}
-						helperText={formik.touched.gender && formik.errors.gender}
-					/>
-
 					<div className="form_content">
 						<InputLabel required htmlFor="role">
 							Role
@@ -303,33 +360,6 @@ function CreateUserForm(prop) {
 						<FormHelperText error>
 							{formik.touched.role && formik.errors.role}
 						</FormHelperText>
-					</div>
-					<div className="form_content">
-						<InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
-
-						<LocalizationProvider
-							dateAdapter={AdapterDateFns}
-							locale={enLocale}
-						>
-							<DatePicker
-								fullWidth
-								disableFuture
-								margin="normal"
-								name="date_of_birth"
-								id="date_of_birth"
-								onChange={(val) => {
-									formik.setFieldValue("date_of_birth", val);
-								}}
-								value={formik.values.date_of_birth}
-								error={
-									formik.errors.date_of_birth && formik.touched.date_of_birth
-								}
-								helperText={
-									formik.errors.date_of_birth && formik.touched.date_of_birth
-								}
-								renderInput={(params) => <TextField fullWidth {...params} />}
-							/>
-						</LocalizationProvider>
 					</div>
 				</div>
 				<div className="createuserform_footer">

@@ -40,6 +40,7 @@ import {useNavigate} from "react-router-dom";
 
 const toastMessages = {
 	WAIT: "Please wait...",
+	WAIT_IDEA: "Creating idea...",
 	SUC_IDEA_ADDED: "Create idea successful !!",
 	SUC_IDEA_EDITED: "Update idea successful !!",
 	SUC_IDEA_DEL: "Delete idea successful !!",
@@ -147,11 +148,9 @@ function IdeaSubView({ ideaData, subData }) {
 		loading: false,
 	});
 
-	//#region variable
 	const [ideaId, setIdeaId] = useState(null);
 	const [expanded, setExpanded] = useState([]);
 	const [anchorEl, setAnchorEl] = useState(null);
-	const [openPicker, data, authResponse] = useDrivePicker();
 
 	const open = Boolean(anchorEl);
 
@@ -172,20 +171,15 @@ function IdeaSubView({ ideaData, subData }) {
 		}
 	}, []);
 
-	const handleClick = (event) => {
-		setAnchorEl(event.currentTarget);
-	};
-	const handleClose = () => {
-		setAnchorEl(null);
-	};
+	const handleClick = (event) => setAnchorEl(event.currentTarget);
+	const handleClose = () => setAnchorEl(null);
+
 	const handleExpandClick = (id) => {
 		let newExpanded = [...expanded];
 		newExpanded[id] = !newExpanded[id];
 		setExpanded(newExpanded);
 	};
-	//#endregion
 
-	//#region action button API IDEA
 	const loadDataIdea = async () => {
 		setStatus({ ...status, loading: true });
 
@@ -203,6 +197,7 @@ function IdeaSubView({ ideaData, subData }) {
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
+	//#region action button API IDEA
 	const onDelete = (id) => {
 		toast
 			.promise(
@@ -244,13 +239,15 @@ function IdeaSubView({ ideaData, subData }) {
 
 	const onCreate = (value) => {
 		let newValue = { ...value, submission_id: subData?.id };
+		console.log(newValue);
+
 		toast
 			.promise(
 				AuthRequest.post(API_PATHS.ADMIN.MANAGE_IDEA, newValue).then(() =>
 					sleep(700),
 				),
 				{
-					pending: toastMessages.WAIT,
+					pending: toastMessages.WAIT_IDEA,
 					success: toastMessages.SUC_IDEA_ADDED,
 					error: toastMessages.ERR_SERVER_ERROR,
 				},

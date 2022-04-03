@@ -10,23 +10,23 @@
 	justify-content: flex-end;
 }
 
-.form_grid {
-	min-height: 300px;
+.detailtagform_grid {
+	min-height: 100px;
 	max-width: 100vw;
 	margin: 20px auto 0;
 }
 
-.form_grid label {
+.detailtagform_grid label {
 	font-weight: 500;
 	font-family: "Poppins";
 	font-size: 0.8em !important;
 }
 
-.form_grid option {
+.detailtagform_grid option {
 	background-color: red;
 }
 
-.form_group {
+.detailtagform_group {
 	margin-bottom: 20px;
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
@@ -42,11 +42,11 @@
 		font-size: 12px;
 	}
 
-	.form_group {
+	.detailtagform_group {
 		grid-template-columns: 1fr;
 	}
 
-	.detailtagform_footer>* {
+	.detailtagdetailtagform_footer>* {
 		width: 100%;
 	}
 }
