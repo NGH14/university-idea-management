@@ -188,21 +188,38 @@ function EditUserForm(props) {
 						/>
 					</div>
 					<div className="form_content">
-						<InputLabel required htmlFor="gender">
-							Gender
-						</InputLabel>
-						<CssTextField
+						<InputLabel htmlFor="gender">Gender</InputLabel>
+
+						<Select
+							select
 							fullWidth
+							displayEmpty
+							labelId="gender"
 							id="gender"
 							name="gender"
-							margin="normal"
-							value={formik.values.gender}
+							value={formik.values.gender ?? ""}
+							defaultValue=""
+							style={
+								formik.values.department != null
+									? { textTransform: "capitalize" }
+									: { color: "#959596" }
+							}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							error={formik.touched.gender && Boolean(formik.errors.gender)}
-							helperText={formik.touched.gender && formik.errors.gender}
-						/>
+						>
+							<MenuItem value="" disabled={true}>
+								none
+							</MenuItem>
+							<MenuItem style={{ textTransform: "capitalize" }} value="male">
+								male
+							</MenuItem>
+							<MenuItem style={{ textTransform: "capitalize" }} value="female">
+								female
+							</MenuItem>
+						</Select>
 					</div>
+
 					<div className="form_content">
 						<InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
 						<LocalizationProvider

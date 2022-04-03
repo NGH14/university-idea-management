@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { AuthRequest } from "../../../common/AppUse";
-import { API_PATHS } from "../../../common/env";
+import { API_PATHS, DEV_CONFIGS } from "../../../common/env";
+import { dataDemo_ideas } from "../../../containers/SubmissionManagement/FakeData/Ideas";
 import CreateIdeaForm from "../../Idea/CreateIdeaForm";
 import UpdateIdeaForm from "../UpdateIdeaForm";
 
@@ -38,7 +39,7 @@ const ModalIdea = (props) => {
 
 	useEffect(() => {
 		// if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-		//     let user = dataDemo.find((_) => _.id === rowId);
+		//     let user = dataDemo_ideas.find((_) => _.id === rowId);
 		//     if (!user) {
 		//         toast.error(toastMessages.ERR_USER_NOT_FOUND);
 		//         return;
@@ -57,6 +58,7 @@ const ModalIdea = (props) => {
 			.then((res) => setInitialValue(res?.data?.result))
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
+
 	const renderForm = () => {
 		switch (action) {
 			case "create":

@@ -47,6 +47,7 @@ const CssTextField = styled(TextField)({
 const toastMessages = {
 	UPLOAD_WAIT_DRIVE: "Uploading attachments...",
 	SUC_IDEA_ADDED: "Create idea successful !!",
+	ERR_DRIVE_FAILED: "Create idea successful !!",
 	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
 };
 
@@ -100,47 +101,45 @@ function CreateIdeaForm(props) {
 	const onSubmitForm = (values) => {
 		const files = fileArray;
 		const reader = new FileReader();
+		let attachments = [];
 
-		files.forEach((file) => {
-			reader.readAsDataURL(file);
-			reader.onload = () => {
-				const rawLog = reader.result.split(",")[1];
-
-				const dataSend = {
-					dataReq: {
-						data: rawLog,
-						name: file.name,
-						type: file.type,
-					},
-					fname: "uploadFilesToGoogleDrive",
-				};
-
-				toast
-					.promise(
-						fetch(AUTH.GAPI_REFRESH_INFO, {
-							method: "POST",
-							body: JSON.stringify(dataSend),
-						}),
-						{
-							pending: toastMessages.UPLOAD_WAIT.DRIVE,
-							error: toastMessages.ERR_SERVER_ERROR,
-						},
-					)
-					.then((res) => {
-						console.log(res);
-						onCreate({
-							...values,
-							attachments: {
-								id: res.id,
-								url: res.url,
+		toast.promise(
+			new Promise(() => {
+				files.forEach((file) => {
+					reader.readAsDataURL(file);
+					reader.onload = () => {
+						const rawLog = reader.result.split(",")[1];
+						const dataSend = {
+							dataReq: {
+								data: rawLog,
 								name: file.name,
 								type: file.type,
 							},
-						});
-					})
-					.catch((e) => console.log(e));
-			};
-		});
+							fname: "uploadFilesToGoogleDrive",
+						};
+
+						fetch(AUTH.GAPI_REFRESH_INFO, {
+							method: "POST",
+							body: JSON.stringify(dataSend),
+						})
+							.then((res) => {
+								console.log(res);
+								attachments.push({
+									id: res.id,
+									url: res.url,
+									name: file.name,
+									type: file.type,
+								});
+							})
+							.catch(() => toast.warn(toastMessages.ERR_DRIVE_FAILED));
+					};
+				});
+			}),
+			{
+				pending: toastMessages.UPLOAD_WAIT_DRIVE,
+				error: toastMessages.ERR_SERVER_ERROR,
+			},
+		);
 	};
 
 	return (
