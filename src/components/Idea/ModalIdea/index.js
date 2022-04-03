@@ -31,6 +31,7 @@ const toastMessages = {
 	ERR_USER_NOT_FOUND: "User not found !!",
 };
 
+
 const ModalIdea = (props) => {
 	const { visible, onClose, onCreate, onUpdate, action, titleSub, idIdea } =
 		props;
@@ -80,6 +81,7 @@ const ModalIdea = (props) => {
 				return;
 		}
 	};
+
 
 	return (
 		<Modal
