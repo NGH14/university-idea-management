@@ -1,34 +1,36 @@
-import "./style.css";
+import './style.css';
 
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { IconButton } from "@mui/material";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { IconButton, Pagination } from '@mui/material';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 import {
-    GridToolbarColumnsButton,
-    GridToolbarContainer,
-    GridToolbarDensitySelector,
-    GridToolbarExport,
-    GridToolbarFilterButton,
-} from "@mui/x-data-grid";
-import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
-import * as React from "react";
-import { useContext, useEffect, useState } from "react";
-import { BiPencil } from "react-icons/bi";
-import { GoInfo } from "react-icons/go";
-import { MdOutlineDeleteOutline } from "react-icons/md";
-import { toast } from "react-toastify";
+	GridToolbarColumnsButton,
+	GridToolbarContainer,
+	GridToolbarDensitySelector,
+	GridToolbarExport,
+	GridToolbarFilterButton,
+} from '@mui/x-data-grid';
+import { DataGridPro, GridActionsCellItem } from '@mui/x-data-grid-pro';
+import * as React from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { BiPencil } from 'react-icons/bi';
+import { GoInfo } from 'react-icons/go';
+import { MdOutlineDeleteOutline } from 'react-icons/md';
+import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from "../../common/AppUse";
-import { API_PATHS, DEV_CONFIGS } from "../../common/env";
-import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
-import { UserContext } from "../../context/AppContext";
-import { dataDemo } from "./FakeData";
-import ModalUserManagement from "./modal/ModalUserManagement";
-import { Column } from "./model/Column";
+import { AuthRequest, sleep } from '../../common/AppUse';
+import { API_PATHS, DEV_CONFIGS } from '../../common/env';
+import CustomNoRowsOverlay from '../../components/Custom/CustomNoRowsOverlay';
+import { UserContext } from '../../context/AppContext';
+import { dataDemo } from './FakeData';
+import ModalUserManagement from './modal/ModalUserManagement';
+import { Column } from './model/Column';
 
 const toastMessages = {
 	WAIT: 'Please wait...',
@@ -51,7 +53,7 @@ function UserManagement() {
 
 	const [pagination, setPagination] = useState({
 		pageSize: 5,
-		page: 0,
+		page: 1,
 	});
 
 	useEffect(() => {
@@ -109,12 +111,12 @@ function UserManagement() {
 	const loadData = async () => {
 		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_USER + '/table/list', {
 			params: {
-				page: pagination.page + 1,
+				page: pagination.page,
 				page_size: pagination.pageSize,
 			},
 		})
 			.then((res) => {
-				setData(res?.data?.result?.rows ?? []);
+				setData(res?.data?.result);
 				setRowId(null);
 			})
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
@@ -215,10 +217,6 @@ function UserManagement() {
 		);
 	};
 
-	const onChangePagination = (pageSize, page) => {
-		setPagination({ page, pageSize });
-	};
-
 	const renderTop = () => {
 		return (
 			<div className='managementuser_title'>
@@ -256,21 +254,49 @@ function UserManagement() {
 						),
 						Toolbar: tableToolBar && CustomToolbarUser,
 					}}
-					rows={data}
+					rows={data?.rows ?? []}
 					columns={columns}
 					columnVisibilityModel={{}}
-					pagination={true}
+					pagination={false}
 					cell--textCenter
 					pageSize={pagination.pageSize}
 					page={pagination.page}
+					hideFooterSelectedRowCount={true}
+					hideFooterPagination={true}
+					hideFooterRowCount={true}
 					initialState={{ pinnedColumns: { right: ['actions'] } }}
-					onPageSizeChange={(pageSize) =>
-						onChangePagination(pageSize, pagination.page)
-					}
-					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
-					style={{ minHeight: '600px' }}
-					rowsPerPageOptions={[5, 10, 25, 50]}
+					style={{ minHeight: '60vh' }}
 				/>
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'flex-end',
+						alignItems: 'center',
+					}}
+				>
+					<Select
+						labelId='row-size'
+						id='row-size'
+						defaultValue={5}
+						label='Rows'
+						onChange={(event) =>
+							setPagination({
+								...pagination,
+								pageSize: event.target.value,
+								page: 1,
+							})
+						}
+					>
+						<MenuItem value={5}>5</MenuItem>
+						<MenuItem value={10}>10</MenuItem>
+						<MenuItem value={25}>25</MenuItem>
+						<MenuItem value={50}>50</MenuItem>
+					</Select>
+					<Pagination
+						count={Math.floor(data?.total / pagination.pageSize) + 1}
+						onChange={(_, page) => setPagination({ ...pagination, page })}
+					/>
+				</div>
 			</div>
 		);
 	};
