@@ -98,11 +98,22 @@ export default function Sidebar(props) {
 				return "Submission Management";
 			case URL_PATHS.MANAGE_IDEA:
 				return "Idea Management";
+			case URL_PATHS.DASHBOARD:
+				return "Dashboard";
 			default:
 				return "";
 		}
 	};
 	const itemsManagementList = [
+		{
+			roles: [ROLES.ADMIN],
+			text: "Dashboard",
+			selectedText: "Dashboard",
+			icon: <FaBuilding className="sidebar_icon" />,
+			onClick: () => {
+				navigate(URL_PATHS.DASHBOARD);
+			},
+		},
 		{
 			roles: [ROLES.ADMIN],
 			text: "User",

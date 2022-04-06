@@ -69,7 +69,7 @@ export const URL_PATHS = {
 	MANAGE: "/submission/:id",
 	PROFILE: "/profile",
 	IDEA_ID: "/idea/:id",
-	DEMO: "/demo",
+	DASHBOARD: "/dashboard",
 };
 
 export const STORAGE_VARS = {

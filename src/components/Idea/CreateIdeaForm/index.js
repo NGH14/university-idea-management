@@ -88,9 +88,8 @@ function CreateIdeaForm(props) {
 		initialValues: initialValues,
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			fileArray && !_.isEmpty(fileArray)
-				? onSubmitForm(values)
-				: onCreate(values);
+			onSubmitForm(values)
+			console.log(987)
 		},
 	});
 
@@ -101,45 +100,30 @@ function CreateIdeaForm(props) {
 	const onSubmitForm = (values) => {
 		const files = fileArray;
 		const reader = new FileReader();
-		let attachments = [];
+		console.log(123)
+		let arr = []
+		files.map((file) => {
+			reader.readAsDataURL(file);
+			reader.onload = () => {
+				const rawLog = reader.result.split(",")[1];
+				const dataSend = {
+					dataReq: {
+						data: rawLog,
+						name: file.name,
+						type: file.type,
+					},
+					fname: "uploadFilesToGoogleDrive",
+				};
 
-		toast.promise(
-			new Promise(() => {
-				files.forEach((file) => {
-					reader.readAsDataURL(file);
-					reader.onload = () => {
-						const rawLog = reader.result.split(",")[1];
-						const dataSend = {
-							dataReq: {
-								data: rawLog,
-								name: file.name,
-								type: file.type,
-							},
-							fname: "uploadFilesToGoogleDrive",
-						};
-
-						fetch(AUTH.GAPI_REFRESH_INFO, {
-							method: "POST",
-							body: JSON.stringify(dataSend),
-						})
-							.then((res) => {
-								console.log(res);
-								attachments.push({
-									id: res.id,
-									url: res.url,
-									name: file.name,
-									type: file.type,
-								});
-							})
-							.catch(() => toast.warn(toastMessages.ERR_DRIVE_FAILED));
-					};
-				});
-			}),
-			{
-				pending: toastMessages.UPLOAD_WAIT_DRIVE,
-				error: toastMessages.ERR_SERVER_ERROR,
-			},
-		);
+				arr.push(fetch("https://script.google.com/macros/s/AKfycbzuif2t4XRsV6wUqQJkWn3rf6oJZyVuPoB9PXzl4ETRYT7AmeO4yecaiyu5HzQYTulC/exec", {
+					method: "POST",
+					body: JSON.stringify(dataSend),
+				}))
+			};
+		});
+		Promise.all([
+			arr
+		]).catch(alert);
 	};
 
 	return (

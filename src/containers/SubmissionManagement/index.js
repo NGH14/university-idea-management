@@ -111,7 +111,7 @@ function SubmissionManagement() {
 	];
 
 	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_SUB + "/list", {
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_SUB , {
 			params: {
 				page: pagination.page + 1,
 				page_size: pagination.pageSize,

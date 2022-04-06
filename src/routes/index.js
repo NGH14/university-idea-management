@@ -76,8 +76,8 @@ const LIST_ROUTES_PRIVATE = [
   },
   {
     roles: [],
-    path: URL_PATHS.DEMO,
-    component: React.lazy(() => import("../components/Submission/demo")),
+    path: URL_PATHS.DASHBOARD,
+    component: React.lazy(() => import("../containers/Dashboard/Dashboard")),
   },
   {
     roles: [],
@@ -153,7 +153,7 @@ export function ListRoute() {
             <React.Suspense fallback={<LoadingSpinner />}>
               <Sidebar>
                 <PrivateRoute>
-                  {React.lazy(() => import("../components/Submission/demo"))}
+                  {React.lazy(() => import("../containers/Dashboard/Dashboard"))}
                 </PrivateRoute>
               </Sidebar>
             </React.Suspense>

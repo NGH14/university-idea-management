@@ -65,6 +65,7 @@
   },
   "devDependencies": {
     "@material-ui/core": "^4.12.3",
+    "devextreme-react": "^21.2.6",
     "gapi-script": "^1.2.0"
   }
 }

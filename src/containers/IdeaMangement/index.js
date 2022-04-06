@@ -479,7 +479,7 @@ function IdeaManagement() {
 					}}
 				>
 					List Idea{" "}
-				</legend>
+				</legend>q
 				{renderContent()}
 			</fieldset>
 			{status.visibleModal && renderModal()}
