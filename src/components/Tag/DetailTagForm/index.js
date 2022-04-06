@@ -1,13 +1,13 @@
-import "./style.css";
+import './style.css';
 
-import CloseIcon from "@mui/icons-material/Close";
-import { TextField } from "@mui/material";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
-import { styled } from "@mui/material/styles";
-import { useFormik } from "formik";
-import React from "react";
+import CloseIcon from '@mui/icons-material/Close';
+import { TextField } from '@mui/material';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
+import { styled } from '@mui/material/styles';
+import { useFormik } from 'formik';
+import React from 'react';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -78,7 +78,6 @@ function DetailTagForm(props) {
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							margin='normal'
 							id='name'
 							name='name'
 							value={formik.values.name}
@@ -97,7 +96,6 @@ function DetailTagForm(props) {
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							margin='normal'
 							id='created_by'
 							name='created_by'
 							value={formik.values.created_by}
@@ -113,7 +111,6 @@ function DetailTagForm(props) {
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							margin='normal'
 							id='modified_by'
 							name='modified_by'
 							value={formik.values.modified_by}
@@ -132,7 +129,6 @@ function DetailTagForm(props) {
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							margin='normal'
 							id='created_at'
 							name='created_at'
 							value={formik.values.created_at}
@@ -148,7 +144,6 @@ function DetailTagForm(props) {
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							margin='normal'
 							id='modified_at'
 							name='modified_at'
 							value={formik.values.modified_at}

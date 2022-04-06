@@ -1,25 +1,35 @@
-import "./style.css";
+import './style.css';
 
-import CloseIcon from "@mui/icons-material/Close";
-import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
-import { FormHelperText, MenuItem, OutlinedInput, TextareaAutosize, TextField } from "@mui/material";
-import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import Chip from "@mui/material/Chip";
-import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
-import List from "@mui/material/List";
-import ListItemText from "@mui/material/ListItemText";
-import Select from "@mui/material/Select";
-import { styled } from "@mui/material/styles";
-import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
-import Dropzone from "react-dropzone";
-import { toast } from "react-toastify";
-import * as yup from "yup";
+import CloseIcon from '@mui/icons-material/Close';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import {
+	FormHelperText,
+	MenuItem,
+	OutlinedInput,
+	TextareaAutosize,
+	TextField,
+} from '@mui/material';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import Chip from '@mui/material/Chip';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
+import List from '@mui/material/List';
+import ListItemText from '@mui/material/ListItemText';
+import Select from '@mui/material/Select';
+import { styled } from '@mui/material/styles';
+import { useFormik } from 'formik';
+import React, { useEffect, useState } from 'react';
+import Dropzone from 'react-dropzone';
+import { toast } from 'react-toastify';
+import * as yup from 'yup';
 
-import { AuthRequest, getGuid, toReadableFileSize } from "../../../common/AppUse";
-import { API_PATHS } from "../../../common/env";
+import {
+	AuthRequest,
+	getGuid,
+	toReadableFileSize,
+} from '../../../common/AppUse';
+import { API_PATHS } from '../../../common/env';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -79,10 +89,12 @@ const ColorButton = styled(Button)(() => ({
 const validationSchema = yup.object({
 	title: yup.string().required('Idea title is required'),
 	content: yup.string().required('Please Provide content'),
-	tags: yup.array().max(3, 'Only 3 tags per idea'),
+	tags: yup.array().max(3, 'Only 3 tags per idea').nullable(),
 	attachments: yup.array().nullable(),
 	is_anonymous: yup.bool(),
-	submission_id: yup.string().required('Please specify the submission for this idea'),
+	submission_id: yup
+		.string()
+		.required('Please specify the submission for this idea'),
 });
 
 const initialValues = {
@@ -91,7 +103,7 @@ const initialValues = {
 	tags: null,
 	attachments: null,
 	is_anonymous: true,
-	submission_id: null,
+	submission_id: '',
 };
 
 function CreateIdeaForm(props) {
@@ -152,7 +164,8 @@ function CreateIdeaForm(props) {
 
 			for (const file of acceptedFiles) {
 				if (
-					attachments.reduce((a, b) => a + (b['size'] || 0), 0) + file.size >
+					attachments.reduce((a, b) => a + (b['size'] || 0), 0) +
+						file.size >
 					FILE_SIZE
 				) {
 					toast.error(`${file.name} ${toastMessages.ERR_FILE_BIG}`);
@@ -189,8 +202,8 @@ function CreateIdeaForm(props) {
 	};
 
 	return (
-		<div className='createuserform'>
-			<div className='createuserform_title'>
+		<div className='createideaform'>
+			<div className='createideaform_title'>
 				<h2>Create Idea</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -198,23 +211,26 @@ function CreateIdeaForm(props) {
 			</div>
 			<br />
 
-			<form className='form_grid' onSubmit={formik.handleSubmit}>
-				<div className='form_group'>
-					<div className='form_content'>
-						<InputLabel htmlFor='titleSub'>Title Submission</InputLabel>
+			<form
+				className='createideaform_grid'
+				onSubmit={formik.handleSubmit}>
+				<div className='createideaform_group'>
+					<div className='createideaform_content'>
+						<InputLabel htmlFor='titleSub'>
+							Title Submission
+						</InputLabel>
 						{externalSubData ? (
 							<Select
 								disabled={true}
 								fullWidth
 								labelId='submission_id'
-								id='submission_id'
+								id='titleSub'
 								name='submission_id'
 								value={formik.values.submission_id}
 								style={{
 									textTransform: 'capitalize',
 									color: 'black',
-								}}
-							>
+								}}>
 								<MenuItem value={formik.values.submission_id}>
 									{externalSubData.title}
 								</MenuItem>
@@ -237,32 +253,29 @@ function CreateIdeaForm(props) {
 										formik.values.submission_id !== null
 											? undefined
 											: () => (
-												<placeholder>
-													<em
-														style={{
-															textTransform:
-																'lowercase',
-															opacity: 0.6,
-															fontSize: 14,
-														}}
-													>
-														-- submission --
-													</em>
-												</placeholder>
-											)
+													<placeholder>
+														<em
+															style={{
+																textTransform:
+																	'lowercase',
+																opacity: 0.6,
+																fontSize: 14,
+															}}>
+															-- submission --
+														</em>
+													</placeholder>
+											  )
 									}
 									error={
 										formik.touched.submission_id &&
 										Boolean(formik.errors.submission_id)
-									}
-								>
+									}>
 									{subOptions?.map((sub) => (
 										<MenuItem
 											style={{
 												textTransform: 'capitalize',
 											}}
-											value={sub.id}
-										>
+											value={sub.id}>
 											{sub.title}
 										</MenuItem>
 									))}
@@ -274,29 +287,30 @@ function CreateIdeaForm(props) {
 							</>
 						)}
 					</div>
-				</div>
-
-				<div className='form_group'>
-					<div className='form_content'>
+					<div className='createideaform_content'>
 						<InputLabel required={true} htmlFor='title'>
 							Title Idea
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							margin='normal'
 							id='title'
 							name='title'
 							value={formik.values?.title}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={formik.touched.title && Boolean(formik.errors.title)}
-							helperText={formik.touched.title && formik.errors.title}
+							error={
+								formik.touched.title &&
+								Boolean(formik.errors.title)
+							}
+							helperText={
+								formik.touched.title && formik.errors.title
+							}
 						/>
 					</div>
 				</div>
 
-				<div className='form_group'>
-					<div className='form_content'>
+				<div className='createideaform_group'>
+					<div className='createideaform_content'>
 						<InputLabel required={true} htmlFor='content'>
 							Content
 						</InputLabel>
@@ -318,8 +332,8 @@ function CreateIdeaForm(props) {
 					</div>
 				</div>
 
-				<div className='form_group'>
-					<div className='form_content'>
+				<div className='createideaform_group'>
+					<div className='createideaform_content'>
 						<InputLabel required={true} htmlFor='tags'>
 							Tags
 						</InputLabel>
@@ -335,7 +349,9 @@ function CreateIdeaForm(props) {
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							MenuProps={{
-								PaperProps: { style: { maxHeight: 224, width: 250 } },
+								PaperProps: {
+									style: { maxHeight: 224, width: 250 },
+								},
 							}}
 							renderValue={(selected) =>
 								formik.values.tags !== null ? (
@@ -347,35 +363,43 @@ function CreateIdeaForm(props) {
 											listStyle: 'none',
 											p: 0.5,
 											m: 0,
-										}}
-									>
+										}}>
 										{selected.map((value, index) => (
 											<ListItem key={index}>
 												<Chip
 													label={value}
-													style={{ background: '#d2d2d2' }}
+													style={{
+														background: '#d2d2d2',
+													}}
 												/>
 											</ListItem>
 										))}
 									</List>
 								) : (
 									<placeholder>
-										<em style={{ opacity: 0.6, fontSize: 14 }}>
+										<em
+											style={{
+												opacity: 0.6,
+												fontSize: 14,
+											}}>
 											-- tags --
 										</em>
 									</placeholder>
 								)
 							}
-							error={formik.touched.tags && Boolean(formik.errors.tags)}
-						>
+							error={
+								formik.touched.tags &&
+								Boolean(formik.errors.tags)
+							}>
 							{tagOptions?.map((tag) => (
 								<MenuItem
 									style={{ textTransform: 'capitalize' }}
-									value={tag.name}
-								>
+									value={tag.name}>
 									<Checkbox
 										checked={
-											formik.values.tags?.indexOf(tag.name) > -1
+											formik.values.tags?.indexOf(
+												tag.name,
+											) > -1
 										}
 									/>
 									<ListItemText primary={tag.name} />
@@ -389,8 +413,8 @@ function CreateIdeaForm(props) {
 				</div>
 
 				{attachments.length === 0 ? null : (
-					<div className='form_group'>
-						<div className='form_content'>
+					<div className='createideaform_group'>
+						<div className='createideaform_content'>
 							<List
 								sx={{
 									display: 'flex',
@@ -399,15 +423,18 @@ function CreateIdeaForm(props) {
 									listStyle: 'none',
 									p: 0.5,
 									m: 0,
-								}}
-							>
+								}}>
 								{attachments.map((file, index) => (
 									<ListItem key={index}>
 										<Chip
 											clickable
 											icon={<InsertDriveFileIcon />}
-											onDelete={handleDeleteAttachment(file)}
-											label={`${file.name} · ${toReadableFileSize(
+											onDelete={handleDeleteAttachment(
+												file,
+											)}
+											label={`${
+												file.name
+											} · ${toReadableFileSize(
 												file.size,
 											)}`}
 											style={{ background: '#d2d2d2' }}
@@ -419,25 +446,30 @@ function CreateIdeaForm(props) {
 					</div>
 				)}
 
-				<div className='form_group'>
-					<div className='form_content'>
+				<div className='createideaform_group'>
+					<div className='createideaform_content'>
 						<Dropzone
 							onDrop={handleDrop}
 							onDropRejected={() =>
 								toast.error(toastMessages.ERR_FILE_REJECTED)
-							}
-						>
+							}>
 							{({ getRootProps, getInputProps }) => (
-								<div {...getRootProps({ className: 'dropzone' })}>
+								<div
+									{...getRootProps({
+										className: 'dropzone',
+									})}>
 									<input {...getInputProps()} />
-									<p>Drag'n'drop files, or click to select files</p>
+									<p>
+										Drag'n'drop files, or click to select
+										files
+									</p>
 								</div>
 							)}
 						</Dropzone>
 					</div>
 				</div>
 
-				<div className='createuserform_footer'>
+				<div className='createideaform_footer'>
 					<ColorButton variant='outlined' onClick={() => onClose()}>
 						Cancel
 					</ColorButton>

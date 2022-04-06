@@ -104,7 +104,6 @@ function EditDepartmentForm(props) {
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							margin='normal'
 							id='name'
 							name='name'
 							value={formik.values.name}

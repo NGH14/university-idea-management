@@ -1,12 +1,12 @@
-import "./style.css";
+import './style.css';
 
-import CloseIcon from "@mui/icons-material/Close";
-import { TextField } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
-import { styled } from "@mui/material/styles";
-import { useFormik } from "formik";
-import React from "react";
+import CloseIcon from '@mui/icons-material/Close';
+import { TextField } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
+import { styled } from '@mui/material/styles';
+import { useFormik } from 'formik';
+import React from 'react';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -61,7 +61,6 @@ function DetailUserForm(props) {
 						<InputLabel htmlFor='full_name'>Full Name</InputLabel>
 						<CssTextField
 							fullWidth
-							margin='normal'
 							id='full_name'
 							name='full_name'
 							value={formik.values.full_name}
@@ -79,7 +78,6 @@ function DetailUserForm(props) {
 							variant='standard'
 							id='email'
 							name='email'
-							margin='normal'
 							value={formik.values.email}
 							inputProps={{
 								disabled: true,
@@ -96,7 +94,6 @@ function DetailUserForm(props) {
 							id='phone'
 							name='phone'
 							variant='standard'
-							margin='normal'
 							inputProps={{
 								disabled: true,
 								readOnly: true,
@@ -104,8 +101,13 @@ function DetailUserForm(props) {
 							value={formik.values.phone}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={formik.touched.phone && Boolean(formik.errors.phone)}
-							helperText={formik.touched.phone && formik.errors.phone}
+							error={
+								formik.touched.phone &&
+								Boolean(formik.errors.phone)
+							}
+							helperText={
+								formik.touched.phone && formik.errors.phone
+							}
 						/>
 					</div>
 				</div>
@@ -117,7 +119,6 @@ function DetailUserForm(props) {
 							variant='standard'
 							id='department'
 							name='department'
-							margin='normal'
 							value={formik.values.department}
 							inputProps={{
 								disabled: true,
@@ -133,7 +134,6 @@ function DetailUserForm(props) {
 							variant='standard'
 							id='role'
 							name='role'
-							margin='normal'
 							value={formik.values.role}
 							inputProps={{
 								disabled: true,
@@ -142,12 +142,13 @@ function DetailUserForm(props) {
 						/>
 					</div>
 					<div className='form_content'>
-						<InputLabel htmlFor='date_of_birth'>Date of Birth</InputLabel>
+						<InputLabel htmlFor='date_of_birth'>
+							Date of Birth
+						</InputLabel>
 						<CssTextField
 							fullWidth
 							variant='standard'
 							name='date_of_birth'
-							margin='normal'
 							id='date_of_birth'
 							inputProps={{
 								disabled: true,
@@ -165,7 +166,6 @@ function DetailUserForm(props) {
 							fullWidth
 							id='gender'
 							name='gender'
-							margin='normal'
 							variant='standard'
 							inputProps={{
 								disabled: true,
@@ -174,8 +174,13 @@ function DetailUserForm(props) {
 							value={formik.values.gender}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={formik.touched.gender && Boolean(formik.errors.gender)}
-							helperText={formik.touched.gender && formik.errors.gender}
+							error={
+								formik.touched.gender &&
+								Boolean(formik.errors.gender)
+							}
+							helperText={
+								formik.touched.gender && formik.errors.gender
+							}
 						/>
 					</div>
 				</div>

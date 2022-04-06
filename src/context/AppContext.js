@@ -20,7 +20,7 @@ export const AppContext = (props) => {
 					email: 'aptu@mitep.pt',
 					full_name: 'Madge Valdez',
 					department: null,
-					role: 'staff',
+					role: 'admin',
 					gender: 'male',
 					phone_number: '0919927066',
 					date_of_birth: null,

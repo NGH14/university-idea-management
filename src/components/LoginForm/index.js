@@ -1,20 +1,20 @@
-import "./style.css";
+import './style.css';
 
-import GoogleIcon from "@mui/icons-material/Google";
-import SendIcon from "@mui/icons-material/Send";
-import Button from "@mui/lab/LoadingButton";
-import { TextField } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { useFormik } from "formik";
-import React, { useContext, useState } from "react";
-import GoogleLogin from "react-google-login";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import * as yup from "yup";
+import GoogleIcon from '@mui/icons-material/Google';
+import SendIcon from '@mui/icons-material/Send';
+import Button from '@mui/lab/LoadingButton';
+import { TextField } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { useFormik } from 'formik';
+import React, { useContext, useState } from 'react';
+import GoogleLogin from 'react-google-login';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import * as yup from 'yup';
 
-import { AnonRequest } from "../../common/AppUse";
-import { API_PATHS, AUTH, STORAGE_VARS, URL_PATHS } from "../../common/env";
-import { UserContext } from "../../context/AppContext";
+import { AnonRequest } from '../../common/AppUse';
+import { API_PATHS, AUTH, STORAGE_VARS, URL_PATHS } from '../../common/env';
+import { UserContext } from '../../context/AppContext';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -124,7 +124,11 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 			})
 			.catch(() => toast.error(toastMessages.ERR_INVALID_LOGIN))
 			.finally(() => {
-				setButtonState({ ...buttonState, loading: false, disable: false });
+				setButtonState({
+					...buttonState,
+					loading: false,
+					disable: false,
+				});
 				navigate(returnUrl);
 			});
 	};
@@ -149,7 +153,11 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 				toast.error(toastMessages.ERR_INVALID_GOOGLE);
 			})
 			.finally(() => {
-				setButtonState({ ...buttonState, loading: false, disable: false });
+				setButtonState({
+					...buttonState,
+					loading: false,
+					disable: false,
+				});
 				navigate(returnUrl);
 			});
 	};
@@ -172,8 +180,7 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 						variant='contained'
 						bgcolor={'#fff'}
 						textcolor={'#444'}
-						hoverbgcolor={'#fff'}
-					>
+						hoverbgcolor={'#fff'}>
 						Sign in with Google
 					</ColorButton>
 				)}
@@ -192,7 +199,6 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 					label='Email'
 					name='email'
 					placeholder='E.g., vuhuua@gmail.com'
-					margin='normal'
 					value={formik.values.email}
 					onChange={formik.handleChange}
 					onBlur={formik.handleBlur}
@@ -201,7 +207,6 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 				/>
 				<CssTextField
 					fullWidth
-					margin='normal'
 					placeholder='Enter your password'
 					id='password'
 					name='password'
@@ -210,8 +215,13 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 					value={formik.values.password}
 					onChange={formik.handleChange}
 					onBlur={formik.handleBlur}
-					error={formik.touched.password && Boolean(formik.errors.password)}
-					helperText={formik.touched.password && formik.errors.password}
+					error={
+						formik.touched.password &&
+						Boolean(formik.errors.password)
+					}
+					helperText={
+						formik.touched.password && formik.errors.password
+					}
 				/>
 
 				<ColorButton
@@ -221,8 +231,7 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 					loading={buttonState?.loading}
 					loadingPosition='end'
 					disabled={buttonState.disable}
-					fullWidth
-				>
+					fullWidth>
 					Sign in
 				</ColorButton>
 			</form>

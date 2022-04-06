@@ -1,17 +1,17 @@
-import "./style.css";
+import './style.css';
 
-import CloseIcon from "@mui/icons-material/Close";
-import { DateRangePicker, LocalizationProvider } from "@mui/lab";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { TextareaAutosize, TextField } from "@mui/material";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
-import { styled } from "@mui/material/styles";
-import { useFormik } from "formik";
-import React, { useState } from "react";
-import * as yup from "yup";
+import CloseIcon from '@mui/icons-material/Close';
+import { DateRangePicker, LocalizationProvider } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import { TextareaAutosize, TextField } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
+import { styled } from '@mui/material/styles';
+import { useFormik } from 'formik';
+import React, { useState } from 'react';
+import * as yup from 'yup';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -97,7 +97,6 @@ function EditSubmissionForm(props) {
 						required={true}
 						label={null}
 						type={'date'}
-						margin='normal'
 						id='initial_date'
 						name='initial_date'
 						onChange={formik.handleChange}
@@ -107,7 +106,8 @@ function EditSubmissionForm(props) {
 							Boolean(formik.errors.initial_date)
 						}
 						helperText={
-							formik.touched.initial_date && formik.errors.initial_date
+							formik.touched.initial_date &&
+							formik.errors.initial_date
 						}
 					/>
 				</div>
@@ -119,8 +119,7 @@ function EditSubmissionForm(props) {
 						height: 56,
 						paddingBottom: 15,
 						paddingTop: 15,
-					}}
-				>
+					}}>
 					to
 				</Box>
 				<div className='form_content' style={{ width: '100%' }}>
@@ -133,15 +132,18 @@ function EditSubmissionForm(props) {
 						label={null}
 						required={true}
 						type={'date'}
-						margin='normal'
 						id='final_date'
 						name='final_date'
 						onChange={formik.handleChange}
 						onBlur={formik.handleBlur}
 						error={
-							formik.touched.final_date && Boolean(formik.errors.final_date)
+							formik.touched.final_date &&
+							Boolean(formik.errors.final_date)
 						}
-						helperText={formik.touched.final_date && formik.errors.final_date}
+						helperText={
+							formik.touched.final_date &&
+							formik.errors.final_date
+						}
 					/>
 				</div>
 			</React.Fragment>
@@ -165,15 +167,19 @@ function EditSubmissionForm(props) {
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							margin='normal'
 							id='title'
 							name='title'
 							value={formik.values.title}
 							required={true}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={formik.touched.title && Boolean(formik.errors.title)}
-							helperText={formik.touched.title && formik.errors.title}
+							error={
+								formik.touched.title &&
+								Boolean(formik.errors.title)
+							}
+							helperText={
+								formik.touched.title && formik.errors.title
+							}
 						/>
 					</div>
 				</div>
@@ -198,7 +204,9 @@ function EditSubmissionForm(props) {
 				</div>
 				<div className='form_group'>
 					<div className='form_content'>
-						<InputLabel htmlFor='description'>Description</InputLabel>
+						<InputLabel htmlFor='description'>
+							Description
+						</InputLabel>
 						<TextareaAutosize
 							className='description-field'
 							aria-label='minimum height'

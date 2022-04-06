@@ -1,19 +1,19 @@
-import "./style.css";
+import './style.css';
 
-import CloseIcon from "@mui/icons-material/Close";
-import Button from "@mui/lab/LoadingButton";
-import { TextField } from "@mui/material";
-import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
-import { styled } from "@mui/material/styles";
-import { useFormik } from "formik";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import * as yup from "yup";
+import CloseIcon from '@mui/icons-material/Close';
+import Button from '@mui/lab/LoadingButton';
+import { TextField } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
+import { styled } from '@mui/material/styles';
+import { useFormik } from 'formik';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import * as yup from 'yup';
 
-import { AuthRequest } from "../../common/AppUse";
-import { API_PATHS, URL_PATHS } from "../../common/env";
+import { AuthRequest } from '../../common/AppUse';
+import { API_PATHS, URL_PATHS } from '../../common/env';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -103,7 +103,11 @@ const UpdatePasswordForm = (props) => {
 			await AuthRequest.post(API_PATHS.SHARED.AUTH.UPDATE_PWD, values)
 				.catch(() => toast.error('Failed to update password !!'))
 				.finally(() => {
-					setButtonState({ ...buttonState, loading: false, disable: false });
+					setButtonState({
+						...buttonState,
+						loading: false,
+						disable: false,
+					});
 					navigate(URL_PATHS.HOME);
 				});
 		},
@@ -129,7 +133,6 @@ const UpdatePasswordForm = (props) => {
 						variant='standard'
 						id='old_password'
 						name='old_password'
-						margin='normal'
 						type='password'
 						value={formik.values.old_password}
 						onChange={formik.handleChange}
@@ -139,7 +142,8 @@ const UpdatePasswordForm = (props) => {
 							Boolean(formik.errors.old_password)
 						}
 						helperText={
-							formik.touched.old_password && formik.errors.old_password
+							formik.touched.old_password &&
+							formik.errors.old_password
 						}
 					/>
 				</div>
@@ -151,7 +155,6 @@ const UpdatePasswordForm = (props) => {
 						variant='standard'
 						fullWidth
 						id='new_password'
-						margin='normal'
 						type='password'
 						name='new_password'
 						value={formik.values.new_password}
@@ -162,7 +165,8 @@ const UpdatePasswordForm = (props) => {
 							Boolean(formik.errors.new_password)
 						}
 						helperText={
-							formik.touched.new_password && formik.errors.new_password
+							formik.touched.new_password &&
+							formik.errors.new_password
 						}
 					/>
 				</div>
@@ -174,7 +178,6 @@ const UpdatePasswordForm = (props) => {
 						variant='standard'
 						fullWidth
 						id='confirm_new_password'
-						margin='normal'
 						type='password'
 						name='confirm_new_password'
 						value={formik.values.confirm_new_password}
@@ -199,8 +202,7 @@ const UpdatePasswordForm = (props) => {
 						variant='contained'
 						type='submit'
 						loading={buttonState?.loading}
-						disabled={buttonState.disable}
-					>
+						disabled={buttonState.disable}>
 						Update password
 					</ColorButton>
 				</div>

@@ -1,16 +1,16 @@
-import "./style.css";
+import './style.css';
 
-import ClearIcon from "@mui/icons-material/Clear";
-import CloseIcon from "@mui/icons-material/Close";
-import { TextareaAutosize, TextField } from "@mui/material";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
-import { styled } from "@mui/material/styles";
-import { useFormik } from "formik";
-import _ from "lodash";
-import React, { useEffect, useState } from "react";
-import Dropzone from "react-dropzone";
+import ClearIcon from '@mui/icons-material/Clear';
+import CloseIcon from '@mui/icons-material/Close';
+import { TextareaAutosize, TextField } from '@mui/material';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
+import { styled } from '@mui/material/styles';
+import { useFormik } from 'formik';
+import _ from 'lodash';
+import React, { useEffect, useState } from 'react';
+import Dropzone from 'react-dropzone';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -138,11 +138,12 @@ function UpdateIdeaForm(props) {
 			<form className='form_grid' onSubmit={formik.handleSubmit}>
 				<div className='form_group'>
 					<div className='form_content'>
-						<InputLabel htmlFor='full_name'>Title Submission</InputLabel>
+						<InputLabel htmlFor='full_name'>
+							Title Submission
+						</InputLabel>
 						{submissionTitle ? (
 							<CssTextField
 								fullWidth
-								margin='normal'
 								id='titleSub'
 								name='titleSub'
 								value={submissionTitle}
@@ -166,7 +167,6 @@ function UpdateIdeaForm(props) {
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							margin='normal'
 							id='title'
 							name='title'
 							value={formik.values.title}
@@ -204,15 +204,17 @@ function UpdateIdeaForm(props) {
 					<div className='form_content' style={{ display: 'flex' }}>
 						<Dropzone
 							onDrop={(value) => onUploadFile(value)}
-							disabled={fileState && !_.isEmpty(fileState) ? true : false}
+							disabled={
+								fileState && !_.isEmpty(fileState)
+									? true
+									: false
+							}
 							maxFiles={1}
-							multiple={true}
-						>
+							multiple={true}>
 							{({ getRootProps, getInputProps }) => (
 								<div
 									{...getRootProps({ className: 'dropzone' })}
-									style={{ height: '100%' }}
-								>
+									style={{ height: '100%' }}>
 									<input {...getInputProps()} type={'file'} />
 									<Button
 										disabled={
@@ -221,8 +223,7 @@ function UpdateIdeaForm(props) {
 												: false
 										}
 										variant={'contained'}
-										style={{ background: 'darkgray' }}
-									>
+										style={{ background: 'darkgray' }}>
 										Upload Image
 									</Button>
 								</div>
@@ -236,8 +237,7 @@ function UpdateIdeaForm(props) {
 									marginBottom: 'auto',
 									marginLeft: '15px',
 									display: 'flex',
-								}}
-							>
+								}}>
 								{fileState?.url ? (
 									<a
 										style={{
@@ -245,8 +245,7 @@ function UpdateIdeaForm(props) {
 											marginBottom: 'auto',
 											marginRight: '15px',
 										}}
-										href={fileState?.url}
-									>
+										href={fileState?.url}>
 										{fileState?.name}
 									</a>
 								) : (
@@ -255,8 +254,7 @@ function UpdateIdeaForm(props) {
 											marginTop: 'auto',
 											marginBottom: 'auto',
 											marginRight: '15px',
-										}}
-									>
+										}}>
 										{fileState?.[0].name}
 									</p>
 								)}
@@ -264,8 +262,7 @@ function UpdateIdeaForm(props) {
 									style={{ color: 'darkred' }}
 									onClick={() => {
 										onDeleteFile();
-									}}
-								>
+									}}>
 									<ClearIcon />
 								</IconButton>
 							</div>

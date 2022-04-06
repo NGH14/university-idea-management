@@ -1,14 +1,14 @@
-import "./style.css";
+import './style.css';
 
-import CloseIcon from "@mui/icons-material/Close";
-import { TextField } from "@mui/material";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
-import { styled } from "@mui/material/styles";
-import { useFormik } from "formik";
-import React from "react";
-import * as yup from "yup";
+import CloseIcon from '@mui/icons-material/Close';
+import { TextField } from '@mui/material';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
+import { styled } from '@mui/material/styles';
+import { useFormik } from 'formik';
+import React from 'react';
+import * as yup from 'yup';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -87,14 +87,18 @@ function CreateDepartmentForm(props) {
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							margin='normal'
 							id='name'
 							name='name'
 							value={formik.values.name}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={formik.touched.name && Boolean(formik.errors.name)}
-							helperText={formik.touched.name && formik.errors.name}
+							error={
+								formik.touched.name &&
+								Boolean(formik.errors.name)
+							}
+							helperText={
+								formik.touched.name && formik.errors.name
+							}
 						/>
 					</div>
 				</div>
