@@ -12,6 +12,8 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import Tooltip from '@mui/material/Tooltip';
+
 import Menu from '@mui/material/Menu';
 import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
@@ -24,6 +26,9 @@ import {
 	BsFillPeopleFill,
 	BsHouseFill,
 } from 'react-icons/bs';
+
+import { HiPresentationChartLine } from 'react-icons/hi';
+
 import { FaBuilding, FaLightbulb } from 'react-icons/fa';
 import { RiDiscussFill } from 'react-icons/ri';
 import { useLocation } from 'react-router';
@@ -41,9 +46,13 @@ export default function Sidebar(props) {
 	const [open, setOpen] = React.useState(true);
 	const [selectedPage, setSelectedPage] = React.useState('Homepage');
 	const [managementPage, setManagementPage] = React.useState(true);
+	const [reportPage, setReportPage] = React.useState(true);
 
 	const handleClickManagement = () => {
 		setManagementPage(!managementPage);
+	};
+	const handleClickReport = () => {
+		setReportPage(!reportPage);
 	};
 
 	const { pathname } = useLocation();
@@ -84,38 +93,19 @@ export default function Sidebar(props) {
 		},
 	];
 
-	const setSelected = (path) => {
-		switch (path) {
-			case '/':
-				return 'Homepage';
-			case URL_PATHS.HOME:
-				return 'Homepage';
-			case URL_PATHS.MANAGE_USER:
-				return 'User Management';
-			case URL_PATHS.MANAGE_DEP:
-				return 'Department Management';
-			case URL_PATHS.MANAGE_TAG:
-				return 'Tag Management';
-			case URL_PATHS.MANAGE_SUB:
-				return 'Submission Management';
-			case URL_PATHS.MANAGE_IDEA:
-				return 'Idea Management';
-			case URL_PATHS.DASHBOARD:
-				return 'Dashboard';
-			default:
-				return '';
-		}
-	};
-	const itemsManagementList = [
+	const itemsReportList = [
 		{
 			roles: [ROLES.ADMIN],
 			text: 'Dashboard',
 			selectedText: 'Dashboard',
-			icon: <FaBuilding className='sidebar_icon' />,
+			icon: <HiPresentationChartLine className='sidebar_icon' />,
 			onClick: () => {
 				navigate(URL_PATHS.DASHBOARD);
 			},
 		},
+	];
+
+	const itemsManagementList = [
 		{
 			roles: [ROLES.ADMIN],
 			text: 'User',
@@ -164,6 +154,29 @@ export default function Sidebar(props) {
 		},
 	];
 
+	const setSelected = (path) => {
+		switch (path) {
+			case '/':
+				return 'Homepage';
+			case URL_PATHS.HOME:
+				return 'Homepage';
+			case URL_PATHS.MANAGE_USER:
+				return 'User Management';
+			case URL_PATHS.MANAGE_DEP:
+				return 'Department Management';
+			case URL_PATHS.MANAGE_TAG:
+				return 'Tag Management';
+			case URL_PATHS.MANAGE_SUB:
+				return 'Submission Management';
+			case URL_PATHS.MANAGE_IDEA:
+				return 'Idea Management';
+			case URL_PATHS.DASHBOARD:
+				return 'Dashboard';
+			default:
+				return '';
+		}
+	};
+
 	const handleCloseUserMenu = () => {
 		setAnchorElUser(null);
 	};
@@ -180,6 +193,7 @@ export default function Sidebar(props) {
 	const handleDrawerCick = () => {
 		setOpen((pre) => !pre);
 		setManagementPage(true);
+		setReportPage(true);
 	};
 
 	const nagivateHomepage = () => {
@@ -283,27 +297,32 @@ export default function Sidebar(props) {
 							{UserMenu.map((item, index) => {
 								const { text, icon, onClick } = item;
 								return (
-									<ListItemButton
-										key={index + Math.random()}
-										sx={{
-											justifyContent: 'center',
-											px: 2.5,
-										}}
-										onClick={onClick}>
-										{icon && icon}
-										<ListItemText
-											key={index}
-											disableTypography
-											primary={text}
+									<Tooltip
+										title={text}
+										arrow
+										placement='left'>
+										<ListItemButton
+											key={index + Math.random()}
 											sx={{
-												fontFamily:
-													'Nunito, sans-serif',
-												fontSize: '16px',
-												fontWeight: 700,
-												ml: 1.7,
+												justifyContent: 'center',
+												px: 2.5,
 											}}
-										/>
-									</ListItemButton>
+											onClick={onClick}>
+											{icon && icon}
+											<ListItemText
+												key={index}
+												disableTypography
+												primary={text}
+												sx={{
+													fontFamily:
+														'Nunito, sans-serif',
+													fontSize: '16px',
+													fontWeight: 700,
+													ml: 1.7,
+												}}
+											/>
+										</ListItemButton>
+									</Tooltip>
 								);
 							})}
 						</Menu>
@@ -317,44 +336,150 @@ export default function Sidebar(props) {
 						const { selectedText, text, icon, onClick } = item;
 						return (
 							<>
-								<ListItemButton
-									key={index + Math.random()}
-									selected={selectedText === selectedPage}
-									sx={{
-										minHeight: 48,
-										justifyContent: open
-											? 'initial'
-											: 'center',
-										px: 2.5,
-									}}
-									onClick={() => onClick(index)}>
-									{icon && (
-										<ListItemIcon
-											key={index + Math.random()}
-											sx={{
-												minWidth: 0,
-												mr: open ? 3 : 'auto',
-												justifyContent: 'center',
-											}}>
-											{icon}
-										</ListItemIcon>
-									)}
-									<ListItemText
+								<Tooltip title={text} arrow placement='right'>
+									<ListItemButton
 										key={index + Math.random()}
-										disableTypography
-										primary={text}
+										selected={selectedText === selectedPage}
 										sx={{
-											fontFamily: 'Poppins, sans-serif',
-											fontSize: '14px',
-											fontWeight: '700',
-											opacity: open ? 1 : 0,
-											color: '#777',
+											minHeight: 48,
+											justifyContent: open
+												? 'initial'
+												: 'center',
+											px: 2.5,
 										}}
-									/>
-								</ListItemButton>
+										onClick={() => onClick(index)}>
+										{icon && (
+											<ListItemIcon
+												key={index + Math.random()}
+												sx={{
+													minWidth: 0,
+													mr: open ? 3 : 'auto',
+													justifyContent: 'center',
+												}}>
+												{icon}
+											</ListItemIcon>
+										)}
+										<ListItemText
+											key={index + Math.random()}
+											disableTypography
+											primary={text}
+											sx={{
+												fontFamily:
+													'Poppins, sans-serif',
+												fontSize: '14px',
+												fontWeight: '700',
+												opacity: open ? 1 : 0,
+												color: '#777',
+											}}
+										/>
+									</ListItemButton>
+								</Tooltip>
 							</>
 						);
 					})}
+					{state?.dataUser.role === ROLES.STAFF ||
+					state?.dataUser.role === ROLES.SUPERVISOR ? (
+						<></>
+					) : (
+						<ListItemButton
+							onClick={handleClickReport}
+							sx={{
+								display: open ? 'flex' : 'none',
+								alignItems: 'center',
+								justifyContent: 'space-between',
+								width: '100%',
+							}}>
+							<>
+								<ListItemText
+									disableTypography
+									sx={{
+										fontSize: '0.7rem',
+										lineHeight: '1.125rem',
+										color: '#888',
+										fontFamily: 'Poppins, sans-serif',
+										fontWeight: '700',
+										opacity: open ? 1 : 0,
+									}}>
+									Report
+								</ListItemText>
+								<ListItemIcon
+									sx={{
+										minWidth: 0,
+										ml: open ? 3 : 'auto',
+										fontWeight: '700',
+									}}>
+									{managementPage ? (
+										<BsChevronContract />
+									) : (
+										<BsChevronExpand />
+									)}
+								</ListItemIcon>
+							</>
+						</ListItemButton>
+					)}
+					<Collapse in={reportPage} timeout='auto' unmountOnExit>
+						{itemsReportList.map((item, index) => {
+							const { selectedText, roles, text, icon, onClick } =
+								item;
+							return (
+								<>
+									{(roles.length === 0 ||
+										roles.includes(
+											state?.dataUser.role,
+										)) && (
+										<Tooltip
+											title={text}
+											arrow
+											placement='right'>
+											<ListItemButton
+												key={index + Math.random()}
+												selected={
+													selectedText ===
+													selectedPage
+												}
+												sx={{
+													px: 2.5,
+													minHeight: 48,
+													justifyContent: open
+														? 'initial'
+														: 'center',
+												}}
+												onClick={() => onClick(index)}>
+												{icon && (
+													<ListItemIcon
+														key={
+															index +
+															Math.random()
+														}
+														sx={{
+															minWidth: 0,
+															mr: open ? 3 : '0',
+															justifyContent:
+																'center',
+														}}>
+														{icon}
+													</ListItemIcon>
+												)}
+												<ListItemText
+													key={index + Math.random()}
+													disableTypography
+													primary={text}
+													sx={{
+														fontFamily:
+															'Poppins, sans-serif',
+														fontSize: '14px',
+														fontWeight: '700',
+														color: '#777',
+														opacity: open ? 1 : 0,
+													}}
+												/>
+											</ListItemButton>
+										</Tooltip>
+									)}
+								</>
+							);
+						})}
+					</Collapse>
 					{state?.dataUser.role === ROLES.STAFF ||
 					state?.dataUser.role === ROLES.SUPERVISOR ? (
 						<></>
@@ -395,7 +520,6 @@ export default function Sidebar(props) {
 							</>
 						</ListItemButton>
 					)}
-
 					<Collapse in={managementPage} timeout='auto' unmountOnExit>
 						{itemsManagementList.map((item, index) => {
 							const { selectedText, roles, text, icon, onClick } =
@@ -406,45 +530,54 @@ export default function Sidebar(props) {
 										roles.includes(
 											state?.dataUser.role,
 										)) && (
-										<ListItemButton
-											key={index + Math.random()}
-											selected={
-												selectedText === selectedPage
-											}
-											sx={{
-												px: 2.5,
-												minHeight: 48,
-												justifyContent: open
-													? 'initial'
-													: 'center',
-											}}
-											onClick={() => onClick(index)}>
-											{icon && (
-												<ListItemIcon
-													key={index + Math.random()}
-													sx={{
-														minWidth: 0,
-														mr: open ? 3 : '0',
-														justifyContent:
-															'center',
-													}}>
-													{icon}
-												</ListItemIcon>
-											)}
-											<ListItemText
+										<Tooltip
+											title={text}
+											arrow
+											placement='right'>
+											<ListItemButton
 												key={index + Math.random()}
-												disableTypography
-												primary={text}
+												selected={
+													selectedText ===
+													selectedPage
+												}
 												sx={{
-													fontFamily:
-														'Poppins, sans-serif',
-													fontSize: '14px',
-													fontWeight: '700',
-													color: '#777',
-													opacity: open ? 1 : 0,
+													px: 2.5,
+													minHeight: 48,
+													justifyContent: open
+														? 'initial'
+														: 'center',
 												}}
-											/>
-										</ListItemButton>
+												onClick={() => onClick(index)}>
+												{icon && (
+													<ListItemIcon
+														key={
+															index +
+															Math.random()
+														}
+														sx={{
+															minWidth: 0,
+															mr: open ? 3 : '0',
+															justifyContent:
+																'center',
+														}}>
+														{icon}
+													</ListItemIcon>
+												)}
+												<ListItemText
+													key={index + Math.random()}
+													disableTypography
+													primary={text}
+													sx={{
+														fontFamily:
+															'Poppins, sans-serif',
+														fontSize: '14px',
+														fontWeight: '700',
+														color: '#777',
+														opacity: open ? 1 : 0,
+													}}
+												/>
+											</ListItemButton>
+										</Tooltip>
 									)}
 								</>
 							);
