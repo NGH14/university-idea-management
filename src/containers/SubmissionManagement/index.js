@@ -32,11 +32,11 @@ import ModalSubmissionManagement from "./modal/ModalSubmissionManagement";
 import { Column } from "./model/Column";
 
 const toastMessages = {
-	WAIT: "Please wait...",
-	SUC_SUB_ADDED: "Create submission successful !!",
-	SUC_SUB_EDITED: "Update submission successful !!",
-	SUC_SUB_DEL: "Delete submission successful !!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+	WAIT: 'Please wait...',
+	SUC_SUB_ADDED: 'Create submission successful !!',
+	SUC_SUB_EDITED: 'Update submission successful !!',
+	SUC_SUB_DEL: 'Delete submission successful !!',
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
 };
 
 function SubmissionManagement() {
@@ -49,7 +49,7 @@ function SubmissionManagement() {
 
 	const [status, setStatus] = useState({
 		visibleModal: false,
-		action: "create",
+		action: 'create',
 	});
 
 	const [pagination, setPagination] = useState({
@@ -76,33 +76,36 @@ function SubmissionManagement() {
 	const columns = [
 		...Column,
 		{
-			field: "actions",
-			headerName: "Action",
+			field: 'actions',
+			headerName: 'Action',
 			width: 75,
-			type: "actions",
+			type: 'actions',
 			disableColumnMenu: true,
 			sortable: false,
 			getActions: (params) => [
 				<GridActionsCellItem
-					icon={<GoInfo color="#3f66da" style={{ fontSize: "20px" }} />}
-					label="Detail"
+					icon={<GoInfo color='#3f66da' style={{ fontSize: '20px' }} />}
+					label='Detail'
 					onClick={() => navigate(`${URL_PATHS.MANAGE_SUB}/${params.id}`)}
 					showInMenu
 				/>,
 
 				<GridActionsCellItem
-					icon={<BiPencil style={{ fontSize: "20px" }} />}
-					label="Update"
-					onClick={() => onOpenModal(params.id, "update")}
+					icon={<BiPencil style={{ fontSize: '20px' }} />}
+					label='Update'
+					onClick={() => onOpenModal(params.id, 'update')}
 					showInMenu
 				/>,
 
 				<GridActionsCellItem
 					icon={
-						<MdOutlineDeleteOutline color="red" style={{ fontSize: "20px" }} />
+						<MdOutlineDeleteOutline
+							color='red'
+							style={{ fontSize: '20px' }}
+						/>
 					}
 					disabled={state?.dataUser?.id === params.id ? true : false}
-					label="Delete"
+					label='Delete'
 					onClick={() => onDelete(params.id)}
 					showInMenu
 				/>,
@@ -111,7 +114,7 @@ function SubmissionManagement() {
 	];
 
 	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_SUB , {
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_SUB + '/table/list', {
 			params: {
 				page: pagination.page + 1,
 				page_size: pagination.pageSize,
@@ -151,10 +154,9 @@ function SubmissionManagement() {
 	const onUpdate = async (value) => {
 		toast
 			.promise(
-				AuthRequest.put(
-					`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`,
-					value,
-				).then(() => sleep(700)),
+				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`, value).then(
+					() => sleep(700),
+				),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_SUB_EDITED,
@@ -226,10 +228,10 @@ function SubmissionManagement() {
 
 	const renderTop = () => {
 		return (
-			<div className="managementsubmission_title">
-				<div className="managementsubmission_heading">
+			<div className='managementsubmission_title'>
+				<div className='managementsubmission_heading'>
 					<h2>Submission Management</h2>
-					<Tooltip title="Table Tool Bar">
+					<Tooltip title='Table Tool Bar'>
 						<IconButton onClick={handleOnClickToolBar}>
 							<MoreVertIcon />
 						</IconButton>
@@ -237,9 +239,9 @@ function SubmissionManagement() {
 				</div>
 
 				<Button
-					variant="contained"
+					variant='contained'
 					endIcon={<AddCircleOutlineIcon />}
-					onClick={() => onOpenModal(null, "create")}
+					onClick={() => onOpenModal(null, 'create')}
 				>
 					Create
 				</Button>
@@ -249,15 +251,15 @@ function SubmissionManagement() {
 
 	const renderContent = () => {
 		return (
-			<div className="managementsubmission_table">
+			<div className='managementsubmission_table'>
 				<DataGridPro
 					components={{
 						NoRowsOverlay: CustomNoRowsOverlay,
 						ColumnSortedDescendingIcon: () => (
-							<ExpandMoreIcon className="icon" />
+							<ExpandMoreIcon className='icon' />
 						),
 						ColumnSortedAscendingIcon: () => (
-							<ExpandLessIcon className="icon" />
+							<ExpandLessIcon className='icon' />
 						),
 						Toolbar: tableToolBar && CustomToolbarSubmission,
 					}}
@@ -267,12 +269,12 @@ function SubmissionManagement() {
 					cell--textCenter
 					pageSize={pagination.pageSize}
 					page={pagination.page}
-					initialState={{ pinnedColumns: { right: ["actions"] } }}
+					initialState={{ pinnedColumns: { right: ['actions'] } }}
 					onPageSizeChange={(pageSize) =>
 						onChangePagination(pageSize, pagination.page)
 					}
 					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
-					style={{ minHeight: "600px" }}
+					style={{ minHeight: '600px' }}
 					rowsPerPageOptions={[5, 10, 25, 50]}
 				/>
 			</div>
@@ -282,10 +284,10 @@ function SubmissionManagement() {
 	return (
 		<div
 			style={{
-				minHeight: "700px",
-				width: "100%",
-				padding: "0 5px",
-				fontFamily: "Poppins",
+				minHeight: '700px',
+				width: '100%',
+				padding: '0 5px',
+				fontFamily: 'Poppins',
 			}}
 		>
 			{renderTop()}

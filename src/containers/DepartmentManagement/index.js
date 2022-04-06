@@ -3,24 +3,21 @@ import "./style.css";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Button from "@mui/material/Button";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Button, IconButton } from "@mui/material";
+import Tooltip from "@mui/material/Tooltip";
+import {
+    GridToolbarColumnsButton,
+    GridToolbarContainer,
+    GridToolbarDensitySelector,
+    GridToolbarFilterButton,
+} from "@mui/x-data-grid";
 import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { BiPencil } from "react-icons/bi";
-import { GoInfo } from "react-icons/go";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { toast } from "react-toastify";
-import {
-	GridToolbarColumnsButton,
-	GridToolbarContainer,
-	GridToolbarDensitySelector,
-	GridToolbarExport,
-	GridToolbarFilterButton,
-} from "@mui/x-data-grid";
-import Tooltip from "@mui/material/Tooltip";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { IconButton } from "@mui/material";
 
 import { AuthRequest, sleep } from "../../common/AppUse";
 import { API_PATHS, DEV_CONFIGS } from "../../common/env";
@@ -30,11 +27,11 @@ import ModalDepartmentManagement from "./modal/ModalDepartmentManagement";
 import { Column } from "./model/Column";
 
 const toastMessages = {
-	WAIT: "Please wait...",
-	SUC_DEP_ADDED: "Create department successful !!",
-	SUC_DEP_EDITED: "Update department successful !!",
-	SUC_DEP_DEL: "Delete department successful !!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+	WAIT: 'Please wait...',
+	SUC_DEP_ADDED: 'Create department successful !!',
+	SUC_DEP_EDITED: 'Update department successful !!',
+	SUC_DEP_DEL: 'Delete department successful !!',
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
 };
 
 function DepartmentManagement() {
@@ -45,7 +42,7 @@ function DepartmentManagement() {
 
 	const [status, setStatus] = useState({
 		visibleModal: false,
-		action: "create",
+		action: 'create',
 	});
 
 	const [pagination, setPagination] = useState({
@@ -66,32 +63,28 @@ function DepartmentManagement() {
 	const columns = [
 		...Column,
 		{
-			field: "actions",
-			headerName: "Action",
+			field: 'actions',
+			headerName: 'Action',
 			width: 75,
-			type: "actions",
+			type: 'actions',
 			disableColumnMenu: true,
 			sortable: false,
 			getActions: (params) => [
 				<GridActionsCellItem
-					icon={<GoInfo color="#3f66da" style={{ fontSize: "20px" }} />}
-					label="Detail"
-					onClick={() => onOpenModal(params.id, "detail")}
-					showInMenu
-				/>,
-
-				<GridActionsCellItem
-					icon={<BiPencil style={{ fontSize: "20px" }} />}
-					label="Update"
-					onClick={() => onOpenModal(params.id, "update")}
+					icon={<BiPencil style={{ fontSize: '20px' }} />}
+					label='Update'
+					onClick={() => onOpenModal(params.id, 'update')}
 					showInMenu
 				/>,
 
 				<GridActionsCellItem
 					icon={
-						<MdOutlineDeleteOutline color="red" style={{ fontSize: "20px" }} />
+						<MdOutlineDeleteOutline
+							color='red'
+							style={{ fontSize: '20px' }}
+						/>
 					}
-					label="Delete"
+					label='Delete'
 					onClick={() => onDelete(params.id)}
 					showInMenu
 				/>,
@@ -100,7 +93,7 @@ function DepartmentManagement() {
 	];
 
 	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_DEP + "/list", {
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_DEP + '/table/list', {
 			params: {
 				page: pagination.page + 1,
 				page_size: pagination.pageSize,
@@ -180,7 +173,7 @@ function DepartmentManagement() {
 		setStatus({
 			...status,
 			visibleModal: false,
-			action: "create",
+			action: 'create',
 		});
 	};
 
@@ -214,30 +207,38 @@ function DepartmentManagement() {
 
 	const renderTop = () => {
 		return (
-			<div className="managementdepartment_title">
-				<div className="managementdepartment_heading">
+			<div className='managementdepartment_title'>
+				<div className='managementdepartment_heading'>
 					<h2>Department Management</h2>
-					<Tooltip title="Table Tool Bar">
+					<Tooltip title='Table Tool Bar'>
 						<IconButton onClick={handleOnClickToolBar}>
 							<MoreVertIcon />
 						</IconButton>
 					</Tooltip>
 				</div>
+
+				<Button
+					variant='contained'
+					endIcon={<AddCircleOutlineIcon />}
+					onClick={() => onOpenModal(null, 'create')}
+				>
+					Create
+				</Button>
 			</div>
 		);
 	};
 
 	const renderContent = () => {
 		return (
-			<div className="managementdepartment_table">
+			<div className='managementdepartment_table'>
 				<DataGridPro
 					components={{
 						NoRowsOverlay: CustomNoRowsOverlay,
 						ColumnSortedDescendingIcon: () => (
-							<ExpandMoreIcon className="icon" />
+							<ExpandMoreIcon className='icon' />
 						),
 						ColumnSortedAscendingIcon: () => (
-							<ExpandLessIcon className="icon" />
+							<ExpandLessIcon className='icon' />
 						),
 						Toolbar: tableToolBar && CustomToolbarDepartment,
 					}}
@@ -247,12 +248,12 @@ function DepartmentManagement() {
 					cell--textCenter
 					pageSize={pagination.pageSize}
 					page={pagination.page}
-					initialState={{ pinnedColumns: { right: ["actions"] } }}
+					initialState={{ pinnedColumns: { right: ['actions'] } }}
 					onPageSizeChange={(pageSize) =>
 						onChangePagination(pageSize, pagination.page)
 					}
 					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
-					style={{ minHeight: "600px" }}
+					style={{ minHeight: '600px' }}
 					rowsPerPageOptions={[10, 25, 50, 100]}
 				/>
 			</div>
@@ -262,10 +263,10 @@ function DepartmentManagement() {
 	return (
 		<div
 			style={{
-				minHeight: "700px",
-				width: "100%",
-				padding: "0 5px",
-				fontFamily: "Poppins",
+				minHeight: '700px',
+				width: '100%',
+				padding: '0 5px',
+				fontFamily: 'Poppins',
 			}}
 		>
 			{renderTop()}

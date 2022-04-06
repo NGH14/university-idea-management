@@ -8,30 +8,29 @@ import { toast } from "react-toastify";
 import { AuthRequest } from "../../../common/AppUse";
 import { API_PATHS, DEV_CONFIGS } from "../../../common/env";
 import CreateDepartmentForm from "../../../components/Department/CreateDepartmentForm";
-import DetailDepartmentForm from "../../../components/Department/DetailDepartmentForm";
 import EditDepartmentForm from "../../../components/Department/EditDepartmentForm";
 import { dataDemo } from "../FakeData";
 
 const style = {
-	position: "relative",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	width: "1000px",
-	bgcolor: "background.paper",
+	position: 'relative',
+	top: '50%',
+	left: '50%',
+	transform: 'translate(-50%, -50%)',
+	width: '1000px',
+	bgcolor: 'background.paper',
 	boxShadow: 24,
 	p: 4,
-	borderRadius: "5px",
-	overflow: "auto",
+	borderRadius: '5px',
+	overflow: 'auto',
 	maxHeight: 380,
-	" @media (max-width: 600px)": {
-		width: "100%",
+	' @media (max-width: 600px)': {
+		width: '100%',
 	},
 };
 
 const toastMessages = {
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
-	ERR_DEP_NOT_FOUND: "Department not found !!",
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
+	ERR_DEP_NOT_FOUND: 'Department not found !!',
 };
 
 const ModalDepartmentManagement = (props) => {
@@ -49,7 +48,7 @@ const ModalDepartmentManagement = (props) => {
 			return;
 		}
 
-		if (action !== "create") {
+		if (action !== 'create') {
 			loadData();
 		}
 	}, [action]);
@@ -62,22 +61,15 @@ const ModalDepartmentManagement = (props) => {
 
 	const renderForm = () => {
 		switch (action) {
-			case "create":
+			case 'create':
 				return (
 					<CreateDepartmentForm onClose={() => onClose()} onCreate={onCreate} />
 				);
-			case "update":
+			case 'update':
 				return (
 					<EditDepartmentForm
 						onClose={() => onClose()}
 						onUpdate={onUpdate}
-						initialValue={initialValue}
-					/>
-				);
-			case "detail":
-				return (
-					<DetailDepartmentForm
-						onClose={() => onClose()}
 						initialValue={initialValue}
 					/>
 				);
@@ -86,14 +78,14 @@ const ModalDepartmentManagement = (props) => {
 		}
 	};
 
-	if (action !== "create" && _.isEmpty(initialValue)) return null;
+	if (action !== 'create' && _.isEmpty(initialValue)) return null;
 
 	return (
 		<Modal
 			open={visible}
 			onClose={() => onClose()}
-			aria-labelledby="modal-modal-title"
-			aria-describedby="modal-modal-description"
+			aria-labelledby='modal-modal-title'
+			aria-describedby='modal-modal-description'
 		>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>

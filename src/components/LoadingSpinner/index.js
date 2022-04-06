@@ -9,21 +9,21 @@ function LoadingSpinner(props) {
 	const { inputHeight } = props;
 	return (
 		<div
-			className="loading_page"
-			style={{ height: inputHeight ? inputHeight : "100vh" }}
+			className='loading_page'
+			style={{ height: inputHeight ? inputHeight : '100vh' }}
 		>
-			<div className="loading_content">
+			<div className='loading_content'>
 				<CircularProgress
 					size={100}
 					sx={{
-						position: "absolute",
+						position: 'absolute',
 						// top: -6,
 						// left: -10,
 						// zIndex: 1,
 					}}
 				/>
 
-				<img className="loading_logo" src={UniLogo} alt="" />
+				<img className='loading_logo' src={UniLogo} alt='' />
 			</div>
 		</div>
 	);

@@ -4,15 +4,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import {
-	Box,
-	Button,
-	CircularProgress,
-	Menu,
-	MenuItem,
-	Pagination,
-	Tooltip,
-} from "@mui/material";
+import { Box, Button, CircularProgress, Menu, MenuItem, Pagination, Tooltip } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -27,40 +19,39 @@ import _ from "lodash";
 import moment from "moment";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import useDrivePicker from "react-google-drive-picker";
 import { BiPencil } from "react-icons/bi";
 import { MdOutlineDeleteOutline } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { AuthRequest, sleep } from "../../../common/AppUse";
 import { API_PATHS } from "../../../common/env";
 import CommentIdea from "../../Idea/CommentIdea";
 import ModalIdea from "../../Idea/ModalIdea";
-import {useNavigate} from "react-router-dom";
 
 const toastMessages = {
-	WAIT: "Please wait...",
-	WAIT_IDEA: "Creating idea...",
-	SUC_IDEA_ADDED: "Create idea successful !!",
-	SUC_IDEA_EDITED: "Update idea successful !!",
-	SUC_IDEA_DEL: "Delete idea successful !!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+	WAIT: 'Please wait...',
+	WAIT_IDEA: 'Creating idea...',
+	SUC_IDEA_ADDED: 'Create idea successful !!',
+	SUC_IDEA_EDITED: 'Update idea successful !!',
+	SUC_IDEA_DEL: 'Delete idea successful !!',
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
 };
 
 const ExpandMore = styled((props) => {
 	const { expand, ...other } = props;
 	return <IconButton {...other} />;
 })(({ theme, expand }) => ({
-	transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-	marginLeft: "auto",
-	transition: theme.transitions.create("transform", {
+	transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+	marginLeft: 'auto',
+	transition: theme.transitions.create('transform', {
 		duration: theme.transitions.duration.shortest,
 	}),
 }));
 
 const Item = styled(Paper)(({ theme }) => ({
 	// backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-	border: "none",
+	border: 'none',
 	...theme.typography.body2,
 	padding: theme.spacing(1),
 	// textAlign: 'center',
@@ -69,62 +60,62 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const fakeData = [
 	{
-		name: "000",
+		name: '000',
 		id: 1,
 		comment: [
 			{
 				id: 1,
-				user: { name: "Data Fake 01 _01" },
-				content: "Data fake demo 01",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _01' },
+				content: 'Data fake demo 01',
+				modified_date: '2022-03-15T13:45:30',
 			},
 			{
 				id: 1,
-				user: { name: "Data Fake 01 _01" },
-				content: "Data fake demo 01",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _01' },
+				content: 'Data fake demo 01',
+				modified_date: '2022-03-15T13:45:30',
 			},
 			{
 				id: 2,
-				user: { name: "Data Fake 01 _01" },
-				content: "Data fake demo 01",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _01' },
+				content: 'Data fake demo 01',
+				modified_date: '2022-03-15T13:45:30',
 			},
 			{
 				id: 2,
-				user: { name: "Data Fake 01 _01" },
-				content: "Data fake demo 01",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _01' },
+				content: 'Data fake demo 01',
+				modified_date: '2022-03-15T13:45:30',
 			},
 		],
 	},
 	{
-		name: "000",
+		name: '000',
 		id: 2,
 		comment: [
 			{
 				id: 1,
-				user: { name: "Data Fake 01 _02" },
-				content: "Data fake demo 02",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _02' },
+				content: 'Data fake demo 02',
+				modified_date: '2022-03-15T13:45:30',
 			},
 			{
 				id: 1,
-				user: { name: "Data Fake 01 _02" },
-				content: "Data fake demo 02",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _02' },
+				content: 'Data fake demo 02',
+				modified_date: '2022-03-15T13:45:30',
 			},
 			{
 				id: 2,
-				user: { name: "Data Fake 01 _02" },
-				content: "Data fake demo 02",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _02' },
+				content: 'Data fake demo 02',
+				modified_date: '2022-03-15T13:45:30',
 			},
 			{
 				id: 2,
-				user: { name: "Data Fake 01 _02" },
-				content: "Data fake demo 02",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _02' },
+				content: 'Data fake demo 02',
+				modified_date: '2022-03-15T13:45:30',
 			},
 		],
 	},
@@ -144,7 +135,7 @@ function IdeaSubView({ ideaData, subData }) {
 
 	const [status, setStatus] = useState({
 		visibleModal: false,
-		action: "update",
+		action: 'update',
 		loading: false,
 	});
 
@@ -183,7 +174,7 @@ function IdeaSubView({ ideaData, subData }) {
 	const loadDataIdea = async () => {
 		setStatus({ ...status, loading: true });
 
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_IDEA + "/list", {
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_IDEA + '/table/list', {
 			params: {
 				page: pagination.page + 1,
 				page_size: pagination.pageSize,
@@ -238,12 +229,10 @@ function IdeaSubView({ ideaData, subData }) {
 	};
 
 	const onCreate = (value) => {
-		let newValue = { ...value, submission_id: subData?.id };
-		console.log(newValue);
-
+		// console.log(123, value);
 		toast
 			.promise(
-				AuthRequest.post(API_PATHS.ADMIN.MANAGE_IDEA, newValue).then(() =>
+				AuthRequest.post(API_PATHS.ADMIN.MANAGE_IDEA, { ...value }).then(() =>
 					sleep(700),
 				),
 				{
@@ -263,16 +252,16 @@ function IdeaSubView({ ideaData, subData }) {
 		return (
 			<CardHeader
 				avatar={
-					<Avatar sx={{ bgcolor: "gray" }} aria-label="recipe">
+					<Avatar sx={{ bgcolor: 'gray' }} aria-label='recipe'>
 						P
 					</Avatar>
 				}
 				action={renderActionIdea(item.id)}
-				title="People Private"
+				title='People Private'
 				subheader={
 					item?.createTime
-						? moment(item?.createTime).format("LLL")
-						: "September 14, 2016"
+						? moment(item?.createTime).format('LLL')
+						: 'September 14, 2016'
 				}
 			/>
 		);
@@ -280,18 +269,18 @@ function IdeaSubView({ ideaData, subData }) {
 
 	const actionButtonIdea = [
 		<Button
-			startIcon={<BiPencil style={{ fontSize: "20px" }} />}
-			style={{ backgroundColor: "#4caf50" }}
-			variant={"contained"}
+			startIcon={<BiPencil style={{ fontSize: '20px' }} />}
+			style={{ backgroundColor: '#4caf50' }}
+			variant={'contained'}
 		>
 			Update Idea
 		</Button>,
 		<Button
 			startIcon={
-				<MdOutlineDeleteOutline style={{ fontSize: "20px" }} color="red" />
+				<MdOutlineDeleteOutline style={{ fontSize: '20px' }} color='red' />
 			}
-			style={{ backgroundColor: "#ba000d" }}
-			variant={"contained"}
+			style={{ backgroundColor: '#ba000d' }}
+			variant={'contained'}
 		>
 			Delete Idea
 		</Button>,
@@ -300,19 +289,19 @@ function IdeaSubView({ ideaData, subData }) {
 		return (
 			<div>
 				<IconButton
-					aria-label="more"
-					id="long-button"
-					aria-controls={open ? "long-menu" : undefined}
-					aria-expanded={open ? "true" : undefined}
-					aria-haspopup="true"
+					aria-label='more'
+					id='long-button'
+					aria-controls={open ? 'long-menu' : undefined}
+					aria-expanded={open ? 'true' : undefined}
+					aria-haspopup='true'
 					onClick={handleClick}
 				>
 					<MoreVertIcon />
 				</IconButton>
 				<Menu
-					id="long-menu"
+					id='long-menu'
 					MenuListProps={{
-						"aria-labelledby": "long-button",
+						'aria-labelledby': 'long-button',
 					}}
 					anchorEl={anchorEl}
 					open={open}
@@ -320,17 +309,17 @@ function IdeaSubView({ ideaData, subData }) {
 					PaperProps={{
 						style: {
 							maxHeight: ITEM_HEIGHT * 4.5,
-							width: "20ch",
+							width: '20ch',
 						},
 					}}
 				>
 					{actionButtonIdea.map((option, index) => (
 						<MenuItem
 							key={option}
-							selected={option === "Pyxis"}
+							selected={option === 'Pyxis'}
 							onClick={() => {
 								handleClose();
-								index === 0 ? onOpenModal("update", id) : onDelete(id);
+								index === 0 ? onOpenModal('update', id) : onDelete(id);
 							}}
 						>
 							{option}
@@ -343,18 +332,25 @@ function IdeaSubView({ ideaData, subData }) {
 	const renderCardContent = (item) => {
 		return (
 			<CardContent>
-				<div style={{ display: "flex" }}>
-					<h3 style={{ marginRight: 10, fontWeight: "bold" }}>
-						{/*{item?.title}*/} Title:{" "}
+				<div style={{ display: 'flex' }}>
+					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>
+						{/*{item?.title}*/} Title:{' '}
 					</h3>
-					<Tooltip title={"Detail submission"}>
+					<Tooltip title={'Detail submission'}>
 						<label
-							onClick={()=>{navigate(`/submission/${item.submissionId || "NDM3YzBiMzktMDBlNy00ZDk3LTgzMTctOTE3NzIwYzJkMzlh"}`)}}
+							onClick={() => {
+								navigate(
+									`/submission/${
+										item.submissionId ||
+										'NDM3YzBiMzktMDBlNy00ZDk3LTgzMTctOTE3NzIwYzJkMzlh'
+									}`,
+								);
+							}}
 							style={{
-								textDecoration: "underline",
-								textDecorationColor: "#1976d2",
-								color:  "#1976d2",
-								cursor: "pointer"
+								textDecoration: 'underline',
+								textDecorationColor: '#1976d2',
+								color: '#1976d2',
+								cursor: 'pointer',
 							}}
 						>
 							{/*{data?.submissionName}*/}Submission name
@@ -363,12 +359,12 @@ function IdeaSubView({ ideaData, subData }) {
 				</div>
 				<br></br>
 				<div>
-					<h3 style={{ fontWeight: "bold" }}>Content</h3>
-					<Typography variant="body2" color="text.secondary">
+					<h3 style={{ fontWeight: 'bold' }}>Content</h3>
+					<Typography variant='body2' color='text.secondary'>
 						{/*{item?.content}*/}
 						This impressive paella is a perfect party dish and a fun meal to
-						cook together with your guests. Add 1 cup of frozen peas along with
-						the mussels, if you like.
+						cook together with your guests. Add 1 cup of frozen peas along
+						with the mussels, if you like.
 					</Typography>
 				</div>
 			</CardContent>
@@ -378,21 +374,21 @@ function IdeaSubView({ ideaData, subData }) {
 		return (
 			<CardActions disableSpacing style={{ paddingRight: 15, paddingLeft: 15 }}>
 				<Button
-					aria-label="add to favorites"
+					aria-label='add to favorites'
 					startIcon={<ThumbUpIcon />}
-					color={"inherit"}
-					variant="contained"
-					size={"small"}
+					color={'inherit'}
+					variant='contained'
+					size={'small'}
 				>
 					Like (0)
 				</Button>
 				<Button
-					aria-label="add to favorites"
+					aria-label='add to favorites'
 					style={{ marginRight: 20, marginLeft: 20 }}
 					startIcon={<ThumbDownIcon />}
-					color={"inherit"}
-					variant="contained"
-					size={"small"}
+					color={'inherit'}
+					variant='contained'
+					size={'small'}
 				>
 					Dislike (0)
 				</Button>
@@ -400,9 +396,9 @@ function IdeaSubView({ ideaData, subData }) {
 					expand={expanded[item.id]}
 					onClick={() => handleExpandClick(item.id)}
 					aria-expanded={expanded[item.id]}
-					aria-label="show more"
+					aria-label='show more'
 				>
-					<Tooltip title={"Show comment"}>
+					<Tooltip title={'Show comment'}>
 						<ExpandMoreIcon />
 					</Tooltip>
 				</ExpandMore>
@@ -412,7 +408,7 @@ function IdeaSubView({ ideaData, subData }) {
 
 	const renderComment = (item) => {
 		return (
-			<Collapse in={expanded[item.id]} timeout="auto" unmountOnExit>
+			<Collapse in={expanded[item.id]} timeout='auto' unmountOnExit>
 				<CommentIdea data={item} ideaId={item.id} />
 			</Collapse>
 		);
@@ -424,7 +420,7 @@ function IdeaSubView({ ideaData, subData }) {
 					<IconButton>
 						<AttachFileIcon />
 					</IconButton>
-					<a href={""}>demo.doc</a>
+					<a href='#/'>demo.doc</a>
 				</Card>
 			);
 		} else {
@@ -445,7 +441,7 @@ function IdeaSubView({ ideaData, subData }) {
 				action={status.action}
 				onClose={onCloseModal}
 				idIdea={ideaId}
-				titleSub={subData.title}
+				submission={subData}
 				onUpdate={onUpdate}
 				onCreate={onCreate}
 			/>
@@ -453,12 +449,12 @@ function IdeaSubView({ ideaData, subData }) {
 	};
 	const renderTop = () => {
 		return (
-			<div style={{ width: "100%", textAlign: "right", marginBottom: 15 }}>
+			<div style={{ width: '100%', textAlign: 'right', marginBottom: 15 }}>
 				<Button
-					size={"small"}
-					variant="contained"
+					size={'small'}
+					variant='contained'
 					endIcon={<AddIcon />}
-					onClick={() => onOpenModal("create")}
+					onClick={() => onOpenModal('create')}
 				>
 					Create Idea
 				</Button>
@@ -474,8 +470,8 @@ function IdeaSubView({ ideaData, subData }) {
 				<Card
 					style={
 						index === 0
-							? { border: "1px solid #90a4ae" }
-							: { border: "1px solid #90a4ae", marginTop: 30 }
+							? { border: '1px solid #90a4ae' }
+							: { border: '1px solid #90a4ae', marginTop: 30 }
 					}
 				>
 					{renderCardHeader(item)}
@@ -488,7 +484,7 @@ function IdeaSubView({ ideaData, subData }) {
 		});
 		if (status.loading) {
 			return (
-				<Box sx={{ display: "flex" }}>
+				<Box sx={{ display: 'flex' }}>
 					<CircularProgress />
 				</Box>
 			);
@@ -497,11 +493,11 @@ function IdeaSubView({ ideaData, subData }) {
 	};
 	const renderFooter = () => {
 		return (
-			<div style={{ marginTop: 15, float: "right" }}>
+			<div style={{ marginTop: 15, float: 'right' }}>
 				<Pagination
 					count={10}
 					onChange={(value) =>
-						onChangePage(_.toNumber(_.get(value.target, "innerText")))
+						onChangePage(_.toNumber(_.get(value.target, 'innerText')))
 					}
 					// rowsPerPage={(value)=>console.log(value, 1)}
 					// onRowsPerPageChange={(value)=>console.log(value, 2)}

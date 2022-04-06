@@ -29,62 +29,62 @@ import ModalIdea from "../../components/Idea/ModalIdea";
 
 const fakeData = [
 	{
-		name: "000",
+		name: '000',
 		id: 1,
 		comment: [
 			{
 				id: 1,
-				user: { name: "Data Fake 01 _01" },
-				content: "Data fake demo 01",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _01' },
+				content: 'Data fake demo 01',
+				modified_date: '2022-03-15T13:45:30',
 			},
 			{
 				id: 1,
-				user: { name: "Data Fake 01 _01" },
-				content: "Data fake demo 01",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _01' },
+				content: 'Data fake demo 01',
+				modified_date: '2022-03-15T13:45:30',
 			},
 			{
 				id: 2,
-				user: { name: "Data Fake 01 _01" },
-				content: "Data fake demo 01",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _01' },
+				content: 'Data fake demo 01',
+				modified_date: '2022-03-15T13:45:30',
 			},
 			{
 				id: 2,
-				user: { name: "Data Fake 01 _01" },
-				content: "Data fake demo 01",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _01' },
+				content: 'Data fake demo 01',
+				modified_date: '2022-03-15T13:45:30',
 			},
 		],
 	},
 	{
-		name: "000",
+		name: '000',
 		id: 2,
 		comment: [
 			{
 				id: 1,
-				user: { name: "Data Fake 01 _02" },
-				content: "Data fake demo 02",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _02' },
+				content: 'Data fake demo 02',
+				modified_date: '2022-03-15T13:45:30',
 			},
 			{
 				id: 1,
-				user: { name: "Data Fake 01 _02" },
-				content: "Data fake demo 02",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _02' },
+				content: 'Data fake demo 02',
+				modified_date: '2022-03-15T13:45:30',
 			},
 			{
 				id: 2,
-				user: { name: "Data Fake 01 _02" },
-				content: "Data fake demo 02",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _02' },
+				content: 'Data fake demo 02',
+				modified_date: '2022-03-15T13:45:30',
 			},
 			{
 				id: 2,
-				user: { name: "Data Fake 01 _02" },
-				content: "Data fake demo 02",
-				modified_date: "2022-03-15T13:45:30",
+				user: { name: 'Data Fake 01 _02' },
+				content: 'Data fake demo 02',
+				modified_date: '2022-03-15T13:45:30',
 			},
 		],
 	},
@@ -93,26 +93,26 @@ const ExpandMore = styled((props) => {
 	const { expand, ...other } = props;
 	return <IconButton {...other} />;
 })(({ theme, expand }) => ({
-	transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-	marginLeft: "auto",
-	transition: theme.transitions.create("transform", {
+	transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+	marginLeft: 'auto',
+	transition: theme.transitions.create('transform', {
 		duration: theme.transitions.duration.shortest,
 	}),
 }));
 const ITEM_HEIGHT = 48;
 
 const toastMessages = {
-	WAIT: "Please wait...",
-	SUC_COMMENT_ADDED: "Create comment successful !!",
-	SUC_COMMENT_EDITED: "Update comment successful !!",
-	SUC_COMMENT_DEL: "Delete comment successful !!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+	WAIT: 'Please wait...',
+	SUC_COMMENT_ADDED: 'Create comment successful !!',
+	SUC_COMMENT_EDITED: 'Update comment successful !!',
+	SUC_COMMENT_DEL: 'Delete comment successful !!',
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
 };
 
 function IdeaManagement() {
 	const [status, setStatus] = useState({
 		visibleModal: false,
-		action: "update",
+		action: 'update',
 		loading: false,
 	});
 	const [expanded, setExpanded] = React.useState([]);
@@ -208,15 +208,15 @@ function IdeaManagement() {
 	const actionButtonIdea = [
 		<Button
 			startIcon={<EditIcon />}
-			style={{ backgroundColor: "#4caf50" }}
-			variant={"contained"}
+			style={{ backgroundColor: '#4caf50' }}
+			variant={'contained'}
 		>
 			Update Idea
 		</Button>,
 		<Button
 			startIcon={<DeleteIcon />}
-			style={{ backgroundColor: "#ba000d" }}
-			variant={"contained"}
+			style={{ backgroundColor: '#ba000d' }}
+			variant={'contained'}
 		>
 			Delete Idea
 		</Button>,
@@ -232,19 +232,19 @@ function IdeaManagement() {
 		return (
 			<div>
 				<IconButton
-					aria-label="more"
-					id="long-button"
-					aria-controls={open ? "long-menu" : undefined}
-					aria-expanded={open ? "true" : undefined}
-					aria-haspopup="true"
+					aria-label='more'
+					id='long-button'
+					aria-controls={open ? 'long-menu' : undefined}
+					aria-expanded={open ? 'true' : undefined}
+					aria-haspopup='true'
 					onClick={handleClick}
 				>
 					<MoreVertIcon />
 				</IconButton>
 				<Menu
-					id="long-menu"
+					id='long-menu'
 					MenuListProps={{
-						"aria-labelledby": "long-button",
+						'aria-labelledby': 'long-button',
 					}}
 					anchorEl={anchorEl}
 					open={open}
@@ -252,17 +252,17 @@ function IdeaManagement() {
 					PaperProps={{
 						style: {
 							maxHeight: ITEM_HEIGHT * 4.5,
-							width: "20ch",
+							width: '20ch',
 						},
 					}}
 				>
 					{actionButtonIdea.map((option, index) => (
 						<MenuItem
 							key={option}
-							selected={option === "Pyxis"}
+							selected={option === 'Pyxis'}
 							onClick={() => {
 								handleClose();
-								index === 0 ? onOpenModal("update", id) : onDelete(id);
+								index === 0 ? onOpenModal('update', id) : onDelete(id);
 							}}
 						>
 							{option}
@@ -274,12 +274,12 @@ function IdeaManagement() {
 	};
 	const renderTop = () => {
 		return (
-			<div style={{ width: "100%", textAlign: "right", marginBottom: 15 }}>
+			<div style={{ width: '100%', textAlign: 'right', marginBottom: 15 }}>
 				<Button
-					size={"small"}
-					variant="contained"
+					size={'small'}
+					variant='contained'
 					endIcon={<AddIcon />}
-					onClick={() => onOpenModal("create")}
+					onClick={() => onOpenModal('create')}
 				>
 					Create Idea
 				</Button>
@@ -302,16 +302,16 @@ function IdeaManagement() {
 		return (
 			<CardHeader
 				avatar={
-					<Avatar sx={{ bgcolor: "gray" }} aria-label="recipe">
+					<Avatar sx={{ bgcolor: 'gray' }} aria-label='recipe'>
 						P
 					</Avatar>
 				}
 				action={renderActionIdea(item.id)}
-				title="People Private"
+				title='People Private'
 				subheader={
 					item?.createTime
-						? moment(item?.createTime).format("LLL")
-						: "September 14, 2016"
+						? moment(item?.createTime).format('LLL')
+						: 'September 14, 2016'
 				}
 			/>
 		);
@@ -320,20 +320,20 @@ function IdeaManagement() {
 	const renderCardContent = (item) => {
 		return (
 			<CardContent>
-				<div style={{ display: "flex" }}>
-					<h3 style={{ marginRight: 10, fontWeight: "bold" }}>
-						{/*{item?.title}*/} Title:{" "}
+				<div style={{ display: 'flex' }}>
+					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>
+						{/*{item?.title}*/} Title:{' '}
 					</h3>
 					<label>Title Idea</label>
 				</div>
 				<br></br>
 				<div>
-					<h3 style={{ fontWeight: "bold" }}>Content</h3>
-					<Typography variant="body2" color="text.secondary">
+					<h3 style={{ fontWeight: 'bold' }}>Content</h3>
+					<Typography variant='body2' color='text.secondary'>
 						{/*{item?.content}*/}
 						This impressive paella is a perfect party dish and a fun meal to
-						cook together with your guests. Add 1 cup of frozen peas along with
-						the mussels, if you like.
+						cook together with your guests. Add 1 cup of frozen peas along
+						with the mussels, if you like.
 					</Typography>
 				</div>
 			</CardContent>
@@ -344,21 +344,21 @@ function IdeaManagement() {
 		return (
 			<CardActions disableSpacing style={{ paddingRight: 15, paddingLeft: 15 }}>
 				<Button
-					aria-label="add to favorites"
+					aria-label='add to favorites'
 					startIcon={<ThumbUpIcon />}
-					color={"inherit"}
-					variant="contained"
-					size={"small"}
+					color={'inherit'}
+					variant='contained'
+					size={'small'}
 				>
 					Like (0)
 				</Button>
 				<Button
-					aria-label="add to favorites"
+					aria-label='add to favorites'
 					style={{ marginRight: 20, marginLeft: 20 }}
 					startIcon={<ThumbDownIcon />}
-					color={"inherit"}
-					variant="contained"
-					size={"small"}
+					color={'inherit'}
+					variant='contained'
+					size={'small'}
 				>
 					Dislike (0)
 				</Button>
@@ -366,9 +366,9 @@ function IdeaManagement() {
 					expand={expanded[item.id]}
 					onClick={() => handleExpandClick(item.id)}
 					aria-expanded={expanded[item.id]}
-					aria-label="show more"
+					aria-label='show more'
 				>
-					<Tooltip title={"Show comment"}>
+					<Tooltip title={'Show comment'}>
 						<ExpandMoreIcon />
 					</Tooltip>
 				</ExpandMore>
@@ -383,7 +383,7 @@ function IdeaManagement() {
 					<IconButton>
 						<AttachFileIcon />
 					</IconButton>
-					<a href={""}>demo.doc</a>
+					<a href={''}>demo.doc</a>
 				</Card>
 			);
 		} else {
@@ -393,7 +393,7 @@ function IdeaManagement() {
 
 	const renderComment = (item) => {
 		return (
-			<Collapse in={expanded[item.id]} timeout="auto" unmountOnExit>
+			<Collapse in={expanded[item.id]} timeout='auto' unmountOnExit>
 				<CommentIdea data={item} ideaId={item.id} />
 			</Collapse>
 		);
@@ -405,8 +405,8 @@ function IdeaManagement() {
 				<Card
 					style={
 						index === 0
-							? { border: "1px solid #90a4ae" }
-							: { border: "1px solid #90a4ae", marginTop: 30 }
+							? { border: '1px solid #90a4ae' }
+							: { border: '1px solid #90a4ae', marginTop: 30 }
 					}
 				>
 					{renderCardHeader(item)}
@@ -419,7 +419,7 @@ function IdeaManagement() {
 		});
 		if (status.loading) {
 			return (
-				<Box sx={{ display: "flex" }}>
+				<Box sx={{ display: 'flex' }}>
 					<CircularProgress />
 				</Box>
 			);
@@ -433,15 +433,15 @@ function IdeaManagement() {
 
 	const renderFooter = () => {
 		return (
-			<div style={{ marginTop: 15, float: "right" }}>
+			<div style={{ marginTop: 15, float: 'right' }}>
 				<Pagination
 					count={10}
-					color="primary"
+					color='primary'
 					onChange={(value) =>
-						onChangePage(_.toNumber(_.get(value.target, "innerText")))
+						onChangePage(_.toNumber(_.get(value.target, 'innerText')))
 					}
-					// rowsPerPage={(value)=>console.log(value, 1)}
-					// onRowsPerPageChange={(value)=>console.log(value, 2)}
+				// rowsPerPage={(value)=>console.log(value, 1)}
+				// onRowsPerPageChange={(value)=>console.log(value, 2)}
 				/>
 			</div>
 		);
@@ -462,24 +462,24 @@ function IdeaManagement() {
 		<>
 			<fieldset
 				style={{
-					border: "1px solid gray",
+					border: '1px solid gray',
 					padding: 12,
 					marginTop: 30,
-					borderRight: "none",
-					borderLeft: "none",
-					borderBottom: "none",
+					borderRight: 'none',
+					borderLeft: 'none',
+					borderBottom: 'none',
 				}}
 			>
 				<legend
 					style={{
-						fontWeight: "bold",
+						fontWeight: 'bold',
 						padding: 8,
 						fontSize: 22,
-						display: "flex",
+						display: 'flex',
 					}}
 				>
-					List Idea{" "}
-				</legend>q
+					List Idea{' '}
+				</legend>
 				{renderContent()}
 			</fieldset>
 			{status.visibleModal && renderModal()}

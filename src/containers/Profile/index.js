@@ -15,15 +15,15 @@ import TabProfile from "../../components/TabProfile";
 import { dataDemo } from "../UserManagement/FakeData";
 
 const toastMessages = {
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
-	ERR_USER_NOT_FOUND: "User not found !!",
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
+	ERR_USER_NOT_FOUND: 'User not found !!',
 };
 
 export default function UpdatePassword() {
 	const [searchParams] = useSearchParams();
 	const [user, setUser] = useState({});
 
-	const email = searchParams.get("email");
+	const email = searchParams.get('email');
 
 	useEffect(() => {
 		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
@@ -49,25 +49,25 @@ export default function UpdatePassword() {
 	};
 
 	return (
-		<div className="profile_wrapper">
-			<div className="avatar_wrapper">
-				<img className="avatar_cover" src={loginImg} alt="avatar_cover" />
-				<Box className="avatar_content" sx={{ display: "flex", gap: 1.5 }}>
+		<div className='profile_wrapper'>
+			<div className='avatar_wrapper'>
+				<img className='avatar_cover' src={loginImg} alt='avatar_cover' />
+				<Box className='avatar_content' sx={{ display: 'flex', gap: 1.5 }}>
 					<Avatar
-						alt={user.full_name ?? ""}
-						src="/static/images/avatar/2.jpg"
-						className="avatar_img"
+						alt={user.full_name ?? ''}
+						src='/static/images/avatar/2.jpg'
+						className='avatar_img'
 					/>
 					<Stack>
 						<Typography fontWeight={700} fontSize={30} sx={{ mt: -1 }}>
-							{user.full_name ?? ""}
+							{user.full_name ?? ''}
 						</Typography>
 						<Typography
-							style={{ textTransform: "capitalize" }}
-							variant="body2"
-							color="text.secondary"
+							style={{ textTransform: 'capitalize' }}
+							variant='body2'
+							color='text.secondary'
 						>
-							{user.role ?? ""}
+							{user.role ?? ''}
 						</Typography>
 					</Stack>
 				</Box>

@@ -8,10 +8,10 @@ import { IconButton } from "@mui/material";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import {
-	GridToolbarColumnsButton,
-	GridToolbarContainer,
-	GridToolbarDensitySelector,
-	GridToolbarFilterButton,
+    GridToolbarColumnsButton,
+    GridToolbarContainer,
+    GridToolbarDensitySelector,
+    GridToolbarFilterButton,
 } from "@mui/x-data-grid";
 import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
 import * as React from "react";
@@ -24,16 +24,16 @@ import { toast } from "react-toastify";
 import { AuthRequest, sleep } from "../../common/AppUse";
 import { API_PATHS, DEV_CONFIGS } from "../../common/env";
 import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
+import { dataDemo } from "./FakeData";
 import ModalTagManagement from "./modal/ModalTagManagement";
 import { Column } from "./model/Column";
-import { dataDemo } from "./FakeData";
 
 const toastMessages = {
-	WAIT: "Please wait...",
-	SUC_TAG_ADDED: "Create tag successful !!",
-	SUC_TAG_EDITED: "Update tag successful !!",
-	SUC_TAG_DEL: "Delete tag successful !!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+	WAIT: 'Please wait...',
+	SUC_TAG_ADDED: 'Create tag successful !!',
+	SUC_TAG_EDITED: 'Update tag successful !!',
+	SUC_TAG_DEL: 'Delete tag successful !!',
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
 };
 
 function TagManagement() {
@@ -43,7 +43,7 @@ function TagManagement() {
 
 	const [status, setStatus] = useState({
 		visibleModal: false,
-		action: "create",
+		action: 'create',
 	});
 
 	const [pagination, setPagination] = useState({
@@ -65,32 +65,35 @@ function TagManagement() {
 	const columns = [
 		...Column,
 		{
-			field: "actions",
-			headerName: "Action",
+			field: 'actions',
+			headerName: 'Action',
 			width: 75,
-			type: "actions",
+			type: 'actions',
 			disableColumnMenu: true,
 			sortable: false,
 			getActions: (params) => [
 				<GridActionsCellItem
-					icon={<GoInfo color="blue" style={{ fontSize: "20px" }} />}
-					label="Detail"
-					onClick={() => onOpenModal(params.id, "detail")}
+					icon={<GoInfo color='blue' style={{ fontSize: '20px' }} />}
+					label='Detail'
+					onClick={() => onOpenModal(params.id, 'detail')}
 					showInMenu
 				/>,
 
 				<GridActionsCellItem
-					icon={<BiPencil style={{ fontSize: "20px" }} />}
-					label="Update"
-					onClick={() => onOpenModal(params.id, "update")}
+					icon={<BiPencil style={{ fontSize: '20px' }} />}
+					label='Update'
+					onClick={() => onOpenModal(params.id, 'update')}
 					showInMenu
 				/>,
 
 				<GridActionsCellItem
 					icon={
-						<MdOutlineDeleteOutline color="red" style={{ fontSize: "20px" }} />
+						<MdOutlineDeleteOutline
+							color='red'
+							style={{ fontSize: '20px' }}
+						/>
 					}
-					label="Delete"
+					label='Delete'
 					onClick={() => onDelete(params.id)}
 					showInMenu
 				/>,
@@ -99,7 +102,7 @@ function TagManagement() {
 	];
 
 	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_TAG + "/list", {
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_TAG + '/table/list', {
 			params: {
 				page: pagination.page + 1,
 				page_size: pagination.pageSize,
@@ -180,7 +183,7 @@ function TagManagement() {
 		setStatus({
 			...status,
 			visibleModal: false,
-			action: "create",
+			action: 'create',
 		});
 	};
 
@@ -214,10 +217,10 @@ function TagManagement() {
 
 	const renderTop = () => {
 		return (
-			<div className="managementtag_title">
-				<div className="managementtag_heading">
+			<div className='managementtag_title'>
+				<div className='managementtag_heading'>
 					<h2>Tag Management</h2>
-					<Tooltip title="Table Tool Bar">
+					<Tooltip title='Table Tool Bar'>
 						<IconButton onClick={handleOnClickToolBar}>
 							<MoreVertIcon />
 						</IconButton>
@@ -225,9 +228,9 @@ function TagManagement() {
 				</div>
 
 				<Button
-					variant="contained"
+					variant='contained'
 					endIcon={<AddCircleOutlineIcon />}
-					onClick={() => onOpenModal(null, "create")}
+					onClick={() => onOpenModal(null, 'create')}
 				>
 					Create
 				</Button>
@@ -237,15 +240,15 @@ function TagManagement() {
 
 	const renderContent = () => {
 		return (
-			<div className="managementtag_table">
+			<div className='managementtag_table'>
 				<DataGridPro
 					components={{
 						NoRowsOverlay: CustomNoRowsOverlay,
 						ColumnSortedDescendingIcon: () => (
-							<ExpandMoreIcon className="icon" />
+							<ExpandMoreIcon className='icon' />
 						),
 						ColumnSortedAscendingIcon: () => (
-							<ExpandLessIcon className="icon" />
+							<ExpandLessIcon className='icon' />
 						),
 						Toolbar: tableToolBar && CustomToolbarTag,
 					}}
@@ -255,12 +258,12 @@ function TagManagement() {
 					cell--textCenter
 					pageSize={pagination.pageSize}
 					page={pagination.page}
-					initialState={{ pinnedColumns: { right: ["actions"] } }}
+					initialState={{ pinnedColumns: { right: ['actions'] } }}
 					onPageSizeChange={(pageSize) =>
 						onChangePagination(pageSize, pagination.page)
 					}
 					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
-					style={{ minHeight: "600px" }}
+					style={{ minHeight: '600px' }}
 					rowsPerPageOptions={[10, 25, 50, 100]}
 				/>
 			</div>
@@ -270,10 +273,10 @@ function TagManagement() {
 	return (
 		<div
 			style={{
-				minHeight: "700px",
-				width: "100%",
-				padding: "0 5px",
-				fontFamily: "Poppins",
+				minHeight: '700px',
+				width: '100%',
+				padding: '0 5px',
+				fontFamily: 'Poppins',
 			}}
 		>
 			{renderTop()}

@@ -14,54 +14,54 @@ import React, { useState } from "react";
 import * as yup from "yup";
 
 const CssTextField = styled(TextField)({
-	".MuiFormHelperText-root": {
-		fontSize: "14px",
-		fontFamily: "Poppins",
+	'.MuiFormHelperText-root': {
+		fontSize: '14px',
+		fontFamily: 'Poppins',
 	},
 
-	"& .MuiInputBase-root": {
-		color: "#000",
-		fontSize: "16px",
-		fontFamily: "Poppins",
+	'& .MuiInputBase-root': {
+		color: '#000',
+		fontSize: '16px',
+		fontFamily: 'Poppins',
 	},
-	"& label.Mui-focused": {
-		color: "#000",
+	'& label.Mui-focused': {
+		color: '#000',
 	},
-	"& .MuiInput-underline:after": {
-		borderBottomColor: "#000",
+	'& .MuiInput-underline:after': {
+		borderBottomColor: '#000',
 	},
-	"& .MuiOutlinedInput-root": {
-		"& fieldset": {
-			borderRadius: "5px",
+	'& .MuiOutlinedInput-root': {
+		'& fieldset': {
+			borderRadius: '5px',
 		},
-		"&:hover fieldset": {
-			border: "1px solid #000000",
+		'&:hover fieldset': {
+			border: '1px solid #000000',
 		},
-		"&.Mui-focused fieldset": {
-			border: "1px solid #000000",
+		'&.Mui-focused fieldset': {
+			border: '1px solid #000000',
 		},
 	},
 });
 
 const ColorButton = styled(Button)(() => ({
-	fontFamily: "Poppins",
-	fontSize: "13px",
-	fontWeight: "bold",
-	textTransform: "none",
+	fontFamily: 'Poppins',
+	fontSize: '13px',
+	fontWeight: 'bold',
+	textTransform: 'none',
 	minWidth: 200,
-	display: "inline-block",
+	display: 'inline-block',
 
-	margin: "10px",
-	padding: "10px",
+	margin: '10px',
+	padding: '10px',
 
-	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
+	'&:disabled ': { cursor: 'not-allowed', pointerEvents: 'all !important' },
 }));
 
 const validationSchema = yup.object({
-	title: yup.string().required("Submission title is required"),
+	title: yup.string().required('Submission title is required'),
 	description: yup.string().nullable(),
-	initial_date: yup.date("Date invalid").nullable().default(undefined),
-	final_date: yup.date("Date invalid").nullable().default(undefined),
+	initial_date: yup.date('Date invalid').nullable().default(undefined),
+	final_date: yup.date('Date invalid').nullable().default(undefined),
 	is_active: yup.bool().default(true),
 });
 
@@ -87,8 +87,8 @@ function EditSubmissionForm(props) {
 	const renderFormDate = (startProps, endProps) => {
 		return (
 			<React.Fragment>
-				<div className="form_content" style={{ width: "100%" }}>
-					<InputLabel required htmlFor="initial_date">
+				<div className='form_content' style={{ width: '100%' }}>
+					<InputLabel required htmlFor='initial_date'>
 						Initial Deadline
 					</InputLabel>
 					<TextField
@@ -96,14 +96,15 @@ function EditSubmissionForm(props) {
 						{...startProps}
 						required={true}
 						label={null}
-						type={"date"}
-						margin="normal"
-						id="initial_date"
-						name="initial_date"
+						type={'date'}
+						margin='normal'
+						id='initial_date'
+						name='initial_date'
 						onChange={formik.handleChange}
 						onBlur={formik.handleBlur}
 						error={
-							formik.touched.initial_date && Boolean(formik.errors.initial_date)
+							formik.touched.initial_date &&
+							Boolean(formik.errors.initial_date)
 						}
 						helperText={
 							formik.touched.initial_date && formik.errors.initial_date
@@ -114,7 +115,7 @@ function EditSubmissionForm(props) {
 					sx={{ mx: 3 }}
 					style={{
 						marginBottom: 8,
-						marginTop: "auto",
+						marginTop: 'auto',
 						height: 56,
 						paddingBottom: 15,
 						paddingTop: 15,
@@ -122,8 +123,8 @@ function EditSubmissionForm(props) {
 				>
 					to
 				</Box>
-				<div className="form_content" style={{ width: "100%" }}>
-					<InputLabel required htmlFor="final_date">
+				<div className='form_content' style={{ width: '100%' }}>
+					<InputLabel required htmlFor='final_date'>
 						Final Deadline
 					</InputLabel>
 					<TextField
@@ -131,10 +132,10 @@ function EditSubmissionForm(props) {
 						{...endProps}
 						label={null}
 						required={true}
-						type={"date"}
-						margin="normal"
-						id="final_date"
-						name="final_date"
+						type={'date'}
+						margin='normal'
+						id='final_date'
+						name='final_date'
 						onChange={formik.handleChange}
 						onBlur={formik.handleBlur}
 						error={
@@ -147,8 +148,8 @@ function EditSubmissionForm(props) {
 		);
 	};
 	return (
-		<div className="editsubmissionform">
-			<div className="editsubmissionform_title">
+		<div className='editsubmissionform'>
+			<div className='editsubmissionform_title'>
 				<h2>Update Submission</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -156,17 +157,17 @@ function EditSubmissionForm(props) {
 			</div>
 			<br />
 
-			<form className="form_grid" onSubmit={formik.handleSubmit}>
-				<div className="form_group">
-					<div className="form_content">
-						<InputLabel required htmlFor="full_name">
+			<form className='form_grid' onSubmit={formik.handleSubmit}>
+				<div className='form_group'>
+					<div className='form_content'>
+						<InputLabel required htmlFor='full_name'>
 							Title
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							margin="normal"
-							id="title"
-							name="title"
+							margin='normal'
+							id='title'
+							name='title'
 							value={formik.values.title}
 							required={true}
 							onChange={formik.handleChange}
@@ -176,13 +177,13 @@ function EditSubmissionForm(props) {
 						/>
 					</div>
 				</div>
-				<div className="form_group">
+				<div className='form_group'>
 					<LocalizationProvider dateAdapter={AdapterDateFns}>
 						<DateRangePicker
-							startText="Initial Deadline "
-							endText="Final Deadline"
-							id="titles"
-							name="titles"
+							startText='Initial Deadline '
+							endText='Final Deadline'
+							id='titles'
+							name='titles'
 							calendars={2}
 							value={dataDateRangePicker}
 							onChange={(newValue) => {
@@ -195,33 +196,33 @@ function EditSubmissionForm(props) {
 						/>
 					</LocalizationProvider>
 				</div>
-				<div className="form_group">
-					<div className="form_content">
-						<InputLabel htmlFor="description">Description</InputLabel>
+				<div className='form_group'>
+					<div className='form_content'>
+						<InputLabel htmlFor='description'>Description</InputLabel>
 						<TextareaAutosize
-							className="description-field"
-							aria-label="minimum height"
-							id="description"
-							name="description"
+							className='description-field'
+							aria-label='minimum height'
+							id='description'
+							name='description'
 							minRows={10}
-							placeholder="Minimum 3 rows"
+							placeholder='Minimum 3 rows'
 							value={formik.values.description}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							style={{
-								width: "100%",
+								width: '100%',
 								marginTop: 16,
 								marginBottom: 8,
-								borderRadius: "5px",
+								borderRadius: '5px',
 							}}
 						/>
 					</div>
 				</div>
-				<div className="editsubmissionform_footer">
-					<ColorButton variant="outlined" onClick={() => onClose()}>
+				<div className='editsubmissionform_footer'>
+					<ColorButton variant='outlined' onClick={() => onClose()}>
 						Cancel
 					</ColorButton>
-					<ColorButton variant="contained" type="submit">
+					<ColorButton variant='contained' type='submit'>
 						Update
 					</ColorButton>
 				</div>

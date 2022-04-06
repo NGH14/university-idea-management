@@ -22,59 +22,59 @@ import { AuthRequest } from "../../../common/AppUse";
 import { API_PATHS, DEV_CONFIGS } from "../../../common/env";
 
 const CssTextField = styled(TextField)({
-	".MuiFormHelperText-root": {
-		fontSize: "14px",
-		fontFamily: "Poppins",
+	'.MuiFormHelperText-root': {
+		fontSize: '14px',
+		fontFamily: 'Poppins',
 	},
 
-	"& .MuiInputBase-root": {
-		color: "#000",
-		fontSize: "16px",
-		fontFamily: "Poppins",
+	'& .MuiInputBase-root': {
+		color: '#000',
+		fontSize: '16px',
+		fontFamily: 'Poppins',
 	},
-	"& label.Mui-focused": {
-		color: "#000",
+	'& label.Mui-focused': {
+		color: '#000',
 	},
-	"& .MuiInput-underline:after": {
-		borderBottomColor: "#000",
+	'& .MuiInput-underline:after': {
+		borderBottomColor: '#000',
 	},
-	"& .MuiOutlinedInput-root": {
-		"& fieldset": {
-			borderRadius: "5px",
+	'& .MuiOutlinedInput-root': {
+		'& fieldset': {
+			borderRadius: '5px',
 		},
-		"&:hover fieldset": {
-			border: "1px solid #000000",
+		'&:hover fieldset': {
+			border: '1px solid #000000',
 		},
-		"&.Mui-focused fieldset": {
-			border: "1px solid #000000",
+		'&.Mui-focused fieldset': {
+			border: '1px solid #000000',
 		},
 	},
 });
 
 const ColorButton = styled(Button)(() => ({
-	fontFamily: "Poppins",
-	fontSize: "13px",
-	fontWeight: "bold",
-	textTransform: "none",
+	fontFamily: 'Poppins',
+	fontSize: '13px',
+	fontWeight: 'bold',
+	textTransform: 'none',
 	minWidth: 200,
-	display: "inline-block",
+	display: 'inline-block',
 
-	margin: "10px",
-	padding: "10px",
+	margin: '10px',
+	padding: '10px',
 
-	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
+	'&:disabled ': { cursor: 'not-allowed', pointerEvents: 'all !important' },
 }));
 
 const toastMessages = {
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
 };
 
 const validationSchema = yup.object({
-	full_name: yup.string().required("Full Name is required"),
-	email: yup.string().email("Email is invalid").required("Email is required"),
-	role: yup.string().required("Role is required"),
+	full_name: yup.string().required('Full Name is required'),
+	email: yup.string().email('Email is invalid').required('Email is required'),
+	role: yup.string().required('Role is required'),
 	department: yup.string().nullable(),
-	date_of_birth: yup.date("Date invalid").nullable(),
+	date_of_birth: yup.date('Date invalid').nullable(),
 });
 
 function EditUserForm(props) {
@@ -92,7 +92,7 @@ function EditUserForm(props) {
 
 	useEffect(() => {
 		if (formik?.values?.length < 1) {
-			toast.error(toastMessages.ERR_SERVER_ERROR, { style: { width: "auto" } });
+			toast.error(toastMessages.ERR_SERVER_ERROR, { style: { width: 'auto' } });
 			return;
 		}
 		getDepartments();
@@ -105,7 +105,7 @@ function EditUserForm(props) {
 			return;
 		}
 
-		await AuthRequest.get(API_PATHS.ADMIN.DEP + "/list")
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_DEP + '/list')
 			.then((res) => setDepartments(res?.data?.result))
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
@@ -116,14 +116,14 @@ function EditUserForm(props) {
 			return;
 		}
 
-		await AuthRequest.get(API_PATHS.SHARED.ROLE + "/list")
+		await AuthRequest.get(API_PATHS.SHARED.ROLE + '/list')
 			.then((res) => setRoles(res?.data?.result))
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
 	return (
-		<div className="edituserform">
-			<div className="edituserform_title">
+		<div className='edituserform'>
+			<div className='edituserform_title'>
 				<h2>Update User</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -131,36 +131,39 @@ function EditUserForm(props) {
 			</div>
 			<br />
 
-			<form className="form_grid" onSubmit={formik.handleSubmit}>
-				<div className="form_group">
-					<div className="form_content">
-						<InputLabel required htmlFor="full_name">
+			<form className='form_grid' onSubmit={formik.handleSubmit}>
+				<div className='form_group'>
+					<div className='form_content'>
+						<InputLabel required htmlFor='full_name'>
 							Full Name
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							margin="normal"
-							id="full_name"
-							name="full_name"
+							margin='normal'
+							id='full_name'
+							name='full_name'
 							value={formik.values.full_name}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							error={
-								formik.touched.full_name && Boolean(formik.errors.full_name)
+								formik.touched.full_name &&
+								Boolean(formik.errors.full_name)
 							}
-							helperText={formik.touched.full_name && formik.errors.full_name}
+							helperText={
+								formik.touched.full_name && formik.errors.full_name
+							}
 						/>
 					</div>
-					<div className="form_content">
-						<InputLabel required htmlFor="email">
+					<div className='form_content'>
+						<InputLabel required htmlFor='email'>
 							Email
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							variant="outlined"
-							id="email"
-							name="email"
-							margin="normal"
+							variant='outlined'
+							id='email'
+							name='email'
+							margin='normal'
 							value={formik.values.email}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
@@ -170,16 +173,16 @@ function EditUserForm(props) {
 					</div>
 				</div>
 
-				<div className="form_group">
-					<div className="form_content">
-						<InputLabel required htmlFor="phone">
+				<div className='form_group'>
+					<div className='form_content'>
+						<InputLabel required htmlFor='phone'>
 							Phone
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							id="phone"
-							name="phone"
-							margin="normal"
+							id='phone'
+							name='phone'
+							margin='normal'
 							value={formik.values.phone}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
@@ -187,41 +190,47 @@ function EditUserForm(props) {
 							helperText={formik.touched.phone && formik.errors.phone}
 						/>
 					</div>
-					<div className="form_content">
-						<InputLabel htmlFor="gender">Gender</InputLabel>
+					<div className='form_content'>
+						<InputLabel htmlFor='gender'>Gender</InputLabel>
 
 						<Select
 							select
 							fullWidth
 							displayEmpty
-							labelId="gender"
-							id="gender"
-							name="gender"
-							value={formik.values.gender ?? ""}
-							defaultValue=""
+							labelId='gender'
+							id='gender'
+							name='gender'
+							value={formik.values.gender ?? ''}
+							defaultValue=''
 							style={
 								formik.values.department != null
-									? { textTransform: "capitalize" }
-									: { color: "#959596" }
+									? { textTransform: 'capitalize' }
+									: { color: '#959596' }
 							}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							error={formik.touched.gender && Boolean(formik.errors.gender)}
 						>
-							<MenuItem value="" disabled={true}>
+							<MenuItem value='' disabled={true}>
 								none
 							</MenuItem>
-							<MenuItem style={{ textTransform: "capitalize" }} value="male">
+							<MenuItem
+								style={{ textTransform: 'capitalize' }}
+								value='male'
+							>
 								male
 							</MenuItem>
-							<MenuItem style={{ textTransform: "capitalize" }} value="female">
+							<MenuItem
+								style={{ textTransform: 'capitalize' }}
+								value='female'
+							>
 								female
 							</MenuItem>
 						</Select>
 					</div>
 
-					<div className="form_content">
-						<InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
+					<div className='form_content'>
+						<InputLabel htmlFor='date_of_birth'>Date of Birth</InputLabel>
 						<LocalizationProvider
 							dateAdapter={AdapterDateFns}
 							locale={enLocale}
@@ -229,57 +238,62 @@ function EditUserForm(props) {
 							<DatePicker
 								fullWidth
 								disableFuture
-								margin="normal"
-								name="date_of_birth"
-								id="date_of_birth"
+								margin='normal'
+								name='date_of_birth'
+								id='date_of_birth'
 								onChange={(val) => {
-									formik.setFieldValue("date_of_birth", val);
+									formik.setFieldValue('date_of_birth', val);
 								}}
 								value={formik.values.date_of_birth}
 								error={
-									formik.errors.date_of_birth && formik.touched.date_of_birth
+									formik.errors.date_of_birth &&
+									formik.touched.date_of_birth
 								}
 								helperText={
-									formik.errors.date_of_birth && formik.touched.date_of_birth
+									formik.errors.date_of_birth &&
+									formik.touched.date_of_birth
 								}
-								renderInput={(params) => <TextField fullWidth {...params} />}
+								renderInput={(params) => (
+									<TextField fullWidth {...params} />
+								)}
 							/>
 						</LocalizationProvider>
 					</div>
 				</div>
 
-				<div className="form_group">
-					<div className="form_content">
-						<InputLabel required htmlFor="department">
+				<div className='form_group'>
+					<div className='form_content'>
+						<InputLabel required htmlFor='department'>
 							Department
 						</InputLabel>
 						<Select
 							select
 							fullWidth
 							displayEmpty
-							labelId="department"
-							id="department"
-							name="department"
-							value={formik.values.department ?? ""}
-							defaultValue=""
+							labelId='department'
+							id='department'
+							name='department'
+							value={formik.values.department ?? ''}
+							defaultValue=''
 							style={
 								formik.values.department != null
-									? { textTransform: "capitalize" }
-									: { color: "#959596" }
+									? { textTransform: 'capitalize' }
+									: { color: '#959596' }
 							}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							error={
-								formik.touched.department && Boolean(formik.errors.department)
+								formik.touched.department &&
+								Boolean(formik.errors.department)
 							}
 						>
-							<MenuItem value="" disabled={true}>
+							<MenuItem value='' disabled={true}>
 								none
 							</MenuItem>
 
 							{depOptions.map((dep) => (
 								<MenuItem
-									style={{ textTransform: "capitalize" }}
+									style={{ textTransform: 'capitalize' }}
 									value={dep?.name}
 								>
 									{dep?.name}
@@ -290,35 +304,35 @@ function EditUserForm(props) {
 							{formik.touched.department && formik.errors.department}
 						</FormHelperText>
 					</div>
-					<div className="form_content">
-						<InputLabel required htmlFor="role">
+					<div className='form_content'>
+						<InputLabel required htmlFor='role'>
 							Role
 						</InputLabel>
 						<Select
 							select
 							fullWidth
 							displayEmpty
-							labelId="role"
-							id="role"
-							name="role"
-							defaultValue=""
+							labelId='role'
+							id='role'
+							name='role'
+							defaultValue=''
 							style={
 								formik.values.department != null
-									? { textTransform: "capitalize" }
-									: { color: "#959596" }
+									? { textTransform: 'capitalize' }
+									: { color: '#959596' }
 							}
-							value={formik.values.role ?? ""}
+							value={formik.values.role ?? ''}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							error={formik.touched.role && Boolean(formik.errors.role)}
 						>
-							<MenuItem value="" disabled={true}>
+							<MenuItem value='' disabled={true}>
 								none
 							</MenuItem>
 
 							{roleOptions.map((role) => (
 								<MenuItem
-									style={{ textTransform: "capitalize" }}
+									style={{ textTransform: 'capitalize' }}
 									value={role.name}
 								>
 									{role.name}
@@ -330,11 +344,11 @@ function EditUserForm(props) {
 						</FormHelperText>
 					</div>
 				</div>
-				<div className="edituserform_footer">
-					<ColorButton variant="outlined" onClick={() => onClose()}>
+				<div className='edituserform_footer'>
+					<ColorButton variant='outlined' onClick={() => onClose()}>
 						Cancel
 					</ColorButton>
-					<ColorButton variant="contained" type="submit">
+					<ColorButton variant='contained' type='submit'>
 						Update
 					</ColorButton>
 				</div>

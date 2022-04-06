@@ -6,7 +6,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import {Box, Button, Chip, CircularProgress, Menu, MenuItem, Pagination, Tooltip} from "@mui/material";
+import { Box, Button, CircularProgress, Menu, MenuItem, Tooltip } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -19,26 +19,24 @@ import Typography from "@mui/material/Typography";
 import _ from "lodash";
 import moment from "moment";
 import * as React from "react";
-import {useContext, useEffect, useState} from "react";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { AuthRequest, sleep } from "../../common/AppUse";
-import {API_PATHS, ROLES} from "../../common/env";
+import { API_PATHS, ROLES } from "../../common/env";
 import CommentIdea from "../../components/Idea/CommentIdea";
 import ModalIdea from "../../components/Idea/ModalIdea";
-import {Tag} from "@mui/icons-material";
-import {useNavigate} from "react-router-dom";
-import {fakeData} from "./FakeDate";
-import {UserContext} from "../../context/AppContext";
-
+import { UserContext } from "../../context/AppContext";
+import { fakeData } from "./FakeDate";
 
 const ExpandMore = styled((props) => {
 	const { expand, ...other } = props;
 	return <IconButton {...other} />;
 })(({ theme, expand }) => ({
-	transform: !expand ? "rotate(0deg)" : "rotate(180deg)",
-	marginLeft: "auto",
-	transition: theme.transitions.create("transform", {
+	transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
+	marginLeft: 'auto',
+	transition: theme.transitions.create('transform', {
 		duration: theme.transitions.duration.shortest,
 	}),
 }));
@@ -46,17 +44,17 @@ const ExpandMore = styled((props) => {
 const ITEM_HEIGHT = 48;
 
 const toastMessages = {
-	WAIT: "Please wait...",
-	SUC_IDEA_ADDED: "Create idea successful !!",
-	SUC_IDEA_EDITED: "Update idea successful !!",
-	SUC_IDEA_DEL: "Delete idea successful !!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+	WAIT: 'Please wait...',
+	SUC_IDEA_ADDED: 'Create idea successful !!',
+	SUC_IDEA_EDITED: 'Update idea successful !!',
+	SUC_IDEA_DEL: 'Delete idea successful !!',
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
 };
 
 function Homepage() {
 	const [status, setStatus] = useState({
 		visibleModal: false,
-		action: "update",
+		action: 'update',
 		loading: false,
 	});
 	const [data, setData] = useState(fakeData);
@@ -78,19 +76,18 @@ function Homepage() {
 	const loadData = async () => {
 		await AuthRequest.get(API_PATHS.SHARED.IDEA, {
 			params: {
-				page:  pagination.page,
-				page_size: pagination.pageSize
+				page: pagination.page,
+				page_size: pagination.pageSize,
 			},
 		})
 			.then((res) => {
-				if(res?.data?.successed){
-					setData({...data, ...res?.data?.result?.rows} ?? []);
+				if (res?.data?.successed) {
+					setData({ ...data, ...res?.data?.result?.rows } ?? []);
 					setPagination({
 						page: res?.data?.result?.index,
-					})
-					setTotalData(res?.data?.result?.total)
+					});
+					setTotalData(res?.data?.result?.total);
 				}
-
 			})
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
@@ -104,15 +101,15 @@ function Homepage() {
 	const actionButtonIdea = [
 		<Button
 			startIcon={<EditIcon />}
-			style={{ backgroundColor: "#4caf50" }}
-			variant={"contained"}
+			style={{ backgroundColor: '#4caf50' }}
+			variant={'contained'}
 		>
 			Update Idea
 		</Button>,
 		<Button
 			startIcon={<DeleteIcon />}
-			style={{ backgroundColor: "#ba000d" }}
-			variant={"contained"}
+			style={{ backgroundColor: '#ba000d' }}
+			variant={'contained'}
 		>
 			Delete Idea
 		</Button>,
@@ -124,13 +121,10 @@ function Homepage() {
 		setExpanded(newExpanded);
 	};
 
-
 	const onCreate = (value) => {
 		toast
 			.promise(
-				AuthRequest.post(API_PATHS.SHARED.IDEA, value).then(() =>
-					sleep(700),
-				),
+				AuthRequest.post(API_PATHS.SHARED.IDEA, value).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_ADDED,
@@ -138,7 +132,7 @@ function Homepage() {
 				},
 			)
 			.then((res) => {
-				navigate(`/submission/${res?.data?.result?.id}`)
+				navigate(`/submission/${res?.data?.result?.id}`);
 			});
 	};
 
@@ -157,22 +151,20 @@ function Homepage() {
 			.then(() => {
 				// loadDataAction();
 				let newData = [...data];
-				const indexData = _.findIndex(newData, x=>x.id === id)
-				newData.splice(indexData, 1)
-				setData(newData)
-				setPagination({...pagination, pageSize: (pagination.pageSize - 1)})
-				toast.success(toastMessages.SUC_IDEA_DEL)
-
+				const indexData = _.findIndex(newData, (x) => x.id === id);
+				newData.splice(indexData, 1);
+				setData(newData);
+				setPagination({ ...pagination, pageSize: pagination.pageSize - 1 });
+				toast.success(toastMessages.SUC_IDEA_DEL);
 			});
 	};
 
 	const onUpdate = (value) => {
 		toast
 			.promise(
-				AuthRequest.put(
-					`${API_PATHS.SHARED.IDEA}/${value?.id}`,
-					value,
-				).then(() => sleep(700)),
+				AuthRequest.put(`${API_PATHS.SHARED.IDEA}/${value?.id}`, value).then(() =>
+					sleep(700),
+				),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_EDITED,
@@ -185,14 +177,12 @@ function Homepage() {
 				}
 				setStatus({ ...status, visibleModal: false });
 				let newData = [...data];
-				const indexData = _.findIndex(newData, x=>x.id === value.id)
+				const indexData = _.findIndex(newData, (x) => x.id === value.id);
 				newData[indexData] = res?.data?.result;
-				setData(newData)
-				toast.success(toastMessages.SUC_IDEA_EDITED)
+				setData(newData);
+				toast.success(toastMessages.SUC_IDEA_EDITED);
 			});
 	};
-
-
 
 	const onCloseModal = () => {
 		setStatus({ ...status, visibleModal: false });
@@ -203,12 +193,12 @@ function Homepage() {
 
 	const renderTop = () => {
 		return (
-			<div style={{ width: "100%", textAlign: "right", marginBottom: 15 }}>
+			<div style={{ width: '100%', textAlign: 'right', marginBottom: 15 }}>
 				<Button
-					size={"small"}
-					variant="contained"
+					size={'small'}
+					variant='contained'
 					endIcon={<AddIcon />}
-					onClick={() => onOpenModal("create")}
+					onClick={() => onOpenModal('create')}
 				>
 					Create Idea
 				</Button>
@@ -228,26 +218,30 @@ function Homepage() {
 	};
 
 	const renderActionIdea = (id, createBy) => {
-		if(createBy !== state.dataUser.id && state.dataUser.role !== ROLES.ADMIN && state.dataUser.role !== ROLES.MANAGER) {
-			return null
+		if (
+			createBy !== state.dataUser.id &&
+			state.dataUser.role !== ROLES.ADMIN &&
+			state.dataUser.role !== ROLES.MANAGER
+		) {
+			return null;
 		}
 		return (
 			<div>
 				<IconButton
-					style={{fontSize: 10}}
-					aria-label="more"
-					id="long-button"
-					aria-controls={open ? "long-menu" : undefined}
-					aria-expanded={open ? "true" : undefined}
-					aria-haspopup="true"
+					style={{ fontSize: 10 }}
+					aria-label='more'
+					id='long-button'
+					aria-controls={open ? 'long-menu' : undefined}
+					aria-expanded={open ? 'true' : undefined}
+					aria-haspopup='true'
 					onClick={handleClick}
 				>
 					<MoreVertIcon />
 				</IconButton>
 				<Menu
-					id="long-menu"
+					id='long-menu'
 					MenuListProps={{
-						"aria-labelledby": "long-button",
+						'aria-labelledby': 'long-button',
 					}}
 					anchorEl={anchorEl}
 					open={open}
@@ -255,17 +249,17 @@ function Homepage() {
 					PaperProps={{
 						style: {
 							maxHeight: ITEM_HEIGHT * 4.5,
-							width: "20ch",
+							width: '20ch',
 						},
 					}}
 				>
 					{actionButtonIdea.map((option, index) => (
 						<MenuItem
 							key={option}
-							selected={option === "Pyxis"}
+							selected={option === 'Pyxis'}
 							onClick={() => {
 								handleClose();
-								index === 0 ? onOpenModal("update", id) : onDelete(id);
+								index === 0 ? onOpenModal('update', id) : onDelete(id);
 							}}
 						>
 							{option}
@@ -280,16 +274,16 @@ function Homepage() {
 		return (
 			<CardHeader
 				avatar={
-					<Avatar sx={{ bgcolor: "gray" }} aria-label="recipe">
+					<Avatar sx={{ bgcolor: 'gray' }} aria-label='recipe'>
 						P
 					</Avatar>
 				}
 				action={renderActionIdea(item?.id, item?.create_by)}
-				title="People Private"
+				title='People Private'
 				subheader={
 					item?.create_at
-						? moment(item?.create_at).format("LLL")
-						: "September 14, 2016"
+						? moment(item?.create_at).format('LLL')
+						: 'September 14, 2016'
 				}
 			/>
 		);
@@ -298,18 +292,23 @@ function Homepage() {
 	const renderCardContent = (item) => {
 		return (
 			<CardContent>
-				<div style={{ display: "flex" }}>
-					<h3 style={{ marginRight: 10, fontWeight: "bold" }}>
-						 Submission:{" "}
-					</h3>
-					<Tooltip title={"Detail submission"}>
+				<div style={{ display: 'flex' }}>
+					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Submission: </h3>
+					<Tooltip title={'Detail submission'}>
 						<label
-							onClick={()=>{navigate(`/submission/${item.submissionId || "NDM3YzBiMzktMDBlNy00ZDk3LTgzMTctOTE3NzIwYzJkMzlh"}`)}}
+							onClick={() => {
+								navigate(
+									`/submission/${
+										item.submissionId ||
+										'NDM3YzBiMzktMDBlNy00ZDk3LTgzMTctOTE3NzIwYzJkMzlh'
+									}`,
+								);
+							}}
 							style={{
-								textDecoration: "underline",
-								textDecorationColor: "#1976d2",
-								color:  "#1976d2",
-								cursor: "pointer"
+								textDecoration: 'underline',
+								textDecorationColor: '#1976d2',
+								color: '#1976d2',
+								cursor: 'pointer',
 							}}
 						>
 							{/*{item?.submissionName}*/}Submission name
@@ -317,33 +316,32 @@ function Homepage() {
 					</Tooltip>
 				</div>
 				<br></br>
-				<div style={{ display: "flex" }}>
-					<h3 style={{ marginRight: 10, fontWeight: "bold" }}>
-						Title:{" "}
-					</h3>
-					<Tooltip title={"Detail submission"}>
+				<div style={{ display: 'flex' }}>
+					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Title: </h3>
+					<Tooltip title={'Detail submission'}>
 						<label
-							onClick={()=>{navigate(`/idea/${item.id}`)}}
+							onClick={() => {
+								navigate(`/idea/${item.id}`);
+							}}
 							style={{
-								textDecoration: "underline",
-								textDecorationColor: "#1976d2",
-								color:  "#1976d2",
-								cursor: "pointer"
+								textDecoration: 'underline',
+								textDecorationColor: '#1976d2',
+								color: '#1976d2',
+								cursor: 'pointer',
 							}}
 						>
 							{/*{item?.title}*/} Title Idea
 						</label>
 					</Tooltip>
-
 				</div>
 				<br></br>
 				<div>
-					<h3 style={{ fontWeight: "bold" }}>Content</h3>
-					<Typography variant="body2" color="text.secondary">
+					<h3 style={{ fontWeight: 'bold' }}>Content</h3>
+					<Typography variant='body2' color='text.secondary'>
 						{/*{item?.content}*/}
 						This impressive paella is a perfect party dish and a fun meal to
-						cook together with your guests. Add 1 cup of frozen peas along with
-						the mussels, if you like.
+						cook together with your guests. Add 1 cup of frozen peas along
+						with the mussels, if you like.
 					</Typography>
 				</div>
 			</CardContent>
@@ -354,21 +352,21 @@ function Homepage() {
 		return (
 			<CardActions disableSpacing style={{ paddingRight: 15, paddingLeft: 15 }}>
 				<Button
-					aria-label="add to favorites"
+					aria-label='add to favorites'
 					startIcon={<ThumbUpIcon />}
-					color={"inherit"}
-					variant="contained"
-					size={"small"}
+					color={'inherit'}
+					variant='contained'
+					size={'small'}
 				>
 					Like (0)
 				</Button>
 				<Button
-					aria-label="add to favorites"
+					aria-label='add to favorites'
 					style={{ marginRight: 20, marginLeft: 20 }}
 					startIcon={<ThumbDownIcon />}
-					color={"inherit"}
-					variant="contained"
-					size={"small"}
+					color={'inherit'}
+					variant='contained'
+					size={'small'}
 				>
 					Dislike (0)
 				</Button>
@@ -376,9 +374,9 @@ function Homepage() {
 					expand={expanded[item.id]}
 					onClick={() => handleExpandClick(item.id)}
 					aria-expanded={expanded[item.id]}
-					aria-label="show more"
+					aria-label='show more'
 				>
-					<Tooltip title={"Show comment"}>
+					<Tooltip title={'Show comment'}>
 						<ExpandMoreIcon />
 					</Tooltip>
 				</ExpandMore>
@@ -403,7 +401,7 @@ function Homepage() {
 
 	const renderComment = (item) => {
 		return (
-			<Collapse in={expanded[item.id]} timeout="auto" unmountOnExit>
+			<Collapse in={expanded[item.id]} timeout='auto' unmountOnExit>
 				<CommentIdea data={item} ideaId={item?.id} />
 			</Collapse>
 		);
@@ -415,8 +413,8 @@ function Homepage() {
 				<Card
 					style={
 						index === 0
-							? { border: "1px solid #90a4ae" }
-							: { border: "1px solid #90a4ae", marginTop: 30 }
+							? { border: '1px solid #90a4ae' }
+							: { border: '1px solid #90a4ae', marginTop: 30 }
 					}
 				>
 					{renderCardHeader(item)}
@@ -429,7 +427,7 @@ function Homepage() {
 		});
 		if (status.loading) {
 			return (
-				<Box sx={{ display: "flex" }}>
+				<Box sx={{ display: 'flex' }}>
 					<CircularProgress />
 				</Box>
 			);
@@ -438,17 +436,25 @@ function Homepage() {
 	};
 
 	const onShowMore = () => {
-		setPagination({...pagination, page: pagination?.page + 1})
-		loadData()
-	}
+		setPagination({ ...pagination, page: pagination?.page + 1 });
+		loadData();
+	};
 
 	const renderFooter = () => {
-		if(_.size(data) === totalData || _.size(data) > totalData){
-			return <div></div>
+		if (_.size(data) === totalData || _.size(data) > totalData) {
+			return <div></div>;
 		}
 		return (
-			<div style={{ marginTop: 15, textAlign: "center" }}>
-				<Button size={"small"} variant={"outlined"} onClick={()=>{onShowMore()}}>More view</Button>
+			<div style={{ marginTop: 15, textAlign: 'center' }}>
+				<Button
+					size={'small'}
+					variant={'outlined'}
+					onClick={() => {
+						onShowMore();
+					}}
+				>
+					More view
+				</Button>
 			</div>
 		);
 	};

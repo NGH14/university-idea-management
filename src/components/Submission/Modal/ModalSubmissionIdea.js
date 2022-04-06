@@ -7,20 +7,20 @@ import CreateIdeaForm from "../../Idea/CreateIdeaForm";
 import EditSubmissionForm from "../EditSubmissionForm";
 
 const style = {
-	position: "relative",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	width: "1000px",
-	bgcolor: "background.paper",
+	position: 'relative',
+	top: '50%',
+	left: '50%',
+	transform: 'translate(-50%, -50%)',
+	width: '1000px',
+	bgcolor: 'background.paper',
 	boxShadow: 24,
 	p: 4,
-	borderRadius: "5px",
-	overflow: "auto",
-	maxHeight: "100%",
+	borderRadius: '5px',
+	overflow: 'auto',
+	maxHeight: '100%',
 
-	" @media (max-width: 600px)": {
-		width: "100%",
+	' @media (max-width: 600px)': {
+		width: '100%',
 	},
 };
 
@@ -29,15 +29,15 @@ const ModalSubmissionIdea = (props) => {
 
 	const renderForm = () => {
 		switch (action) {
-			case "create":
+			case 'create':
 				return (
 					<CreateIdeaForm
 						onClose={() => onClose()}
 						onCreate={onCreate}
-						submissionTitle={initialValue.title}
+						submission={initialValue}
 					/>
 				);
-			case "update":
+			case 'update':
 				return (
 					<EditSubmissionForm
 						onClose={() => onClose()}
@@ -54,8 +54,8 @@ const ModalSubmissionIdea = (props) => {
 		<Modal
 			open={visible}
 			onClose={() => onClose()}
-			aria-labelledby="modal-modal-title"
-			aria-describedby="modal-modal-description"
+			aria-labelledby='modal-modal-title'
+			aria-describedby='modal-modal-description'
 		>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>
