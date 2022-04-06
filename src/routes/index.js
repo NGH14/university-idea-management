@@ -1,88 +1,96 @@
-import React, { useContext } from "react";
-import { Route, Routes } from "react-router-dom";
+import React, { useContext } from 'react';
+import { Route, Routes } from 'react-router-dom';
 
-import { ROLES, URL_PATHS } from "../common/env";
-import LoadingSpinner from "../components/LoadingSpinner";
-import Sidebar from "../components/Sidebar";
-import { UserContext } from "../context/AppContext";
-import PrivateRoute from "./components/PrivateRoute";
-import PublicRoute from "./components/PublicRoute";
+import { ROLES, URL_PATHS } from '../common/env';
+import LoadingSpinner from '../components/LoadingSpinner';
+import Sidebar from '../components/Sidebar';
+import { UserContext } from '../context/AppContext';
+import PrivateRoute from './components/PrivateRoute';
+import PublicRoute from './components/PublicRoute';
 
 const LIST_ROUTES_PRIVATE = [
 	{
 		roles: [],
-		path: "*",
-		component: React.lazy(() => import("../containers/NotMatchPage")),
+		path: '*',
+		component: React.lazy(() => import('../containers/NotMatchPage')),
 	},
 	{
 		roles: [],
 		path: URL_PATHS.DENY_ACCESS,
-		component: React.lazy(() => import("../containers/NoPermissionPage")),
+		component: React.lazy(() => import('../containers/NoPermissionPage')),
 	},
 	{
 		roles: [],
 		path: URL_PATHS.NOT_FOUND,
-		component: React.lazy(() => import("../containers/NotMatchPage")),
+		component: React.lazy(() => import('../containers/NotMatchPage')),
 	},
 	{
 		roles: [],
-		path: "/",
-		component: React.lazy(() => import("../containers/Homepage")),
+		path: '/',
+		component: React.lazy(() => import('../containers/Homepage')),
 	},
 	{
 		roles: [],
 		path: URL_PATHS.HOME,
-		component: React.lazy(() => import("../containers/Homepage")),
+		component: React.lazy(() => import('../containers/Homepage')),
 	},
 	{
 		roles: [ROLES.ADMIN],
 		path: URL_PATHS.MANAGE_DEP,
-		component: React.lazy(() => import("../containers/DepartmentManagement")),
+		component: React.lazy(() =>
+			import('../containers/DepartmentManagement'),
+		),
 	},
 	{
 		roles: [ROLES.ADMIN],
 		path: URL_PATHS.MANAGE_USER,
-		component: React.lazy(() => import("../containers/UserManagement")),
+		component: React.lazy(() => import('../containers/UserManagement')),
 	},
 	{
 		roles: [ROLES.ADMIN],
 		path: URL_PATHS.MANAGE_TAG,
-		component: React.lazy(() => import("../containers/TagManagement")),
+		component: React.lazy(() => import('../containers/TagManagement')),
 	},
 	{
 		roles: [],
 		path: URL_PATHS.MANAGE_SUB_ID,
-		component: React.lazy(() => import("../components/Submission/DetailView")),
+		component: React.lazy(() =>
+			import('../components/Submission/DetailView'),
+		),
 	},
 	{
 		roles: [],
 		path: URL_PATHS.PROFILE,
-		component: React.lazy(() => import("../containers/Profile")),
+		component: React.lazy(() => import('../containers/Profile')),
 	},
 	{
 		roles: [ROLES.ADMIN],
 		path: URL_PATHS.MANAGE_SUB,
-		component: React.lazy(() => import("../containers/SubmissionManagement")),
+		component: React.lazy(() =>
+			import('../containers/SubmissionManagement'),
+		),
 	},
 	{
 		roles: [ROLES.ADMIN],
 		path: URL_PATHS.MANAGE,
-		component: React.lazy(() => import("../containers/Submission")),
+		component: React.lazy(() => import('../containers/Submission')),
 	},
 	{
 		roles: [ROLES.ADMIN],
 		path: URL_PATHS.MANAGE_IDEA,
-		component: React.lazy(() => import("../containers/IdeaMangement")),
+		component: React.lazy(() => import('../containers/IdeaMangement')),
 	},
 	{
-		roles: [],
+		roles: [ROLES.ADMIN],
 		path: URL_PATHS.DASHBOARD,
-		component: React.lazy(() => import("../containers/Dashboard/Dashboard")),
+		component: React.lazy(() =>
+			import('../containers/Dashboard/Dashboard'),
+		),
 	},
 	{
 		roles: [],
 		path: URL_PATHS.IDEA_ID,
-		component: React.lazy(() => import("../containers/IdeaDetailView")),
+		component: React.lazy(() => import('../containers/IdeaDetailView')),
 	},
 ];
 
@@ -127,8 +135,9 @@ export function ListRoute() {
 						<Sidebar>
 							<PrivateRoute roles={route.roles}>
 								<React.Suspense
-									fallback={<LoadingSpinner inputHeight='80vh' />}
-								>
+									fallback={
+										<LoadingSpinner inputHeight='80vh' />
+									}>
 									<route.component />
 								</React.Suspense>
 							</PrivateRoute>
@@ -152,9 +161,7 @@ export function ListRoute() {
 					element={
 						<React.Suspense fallback={<LoadingSpinner />}>
 							<Sidebar>
-								<PrivateRoute>
-
-								</PrivateRoute>
+								<PrivateRoute></PrivateRoute>
 							</Sidebar>
 						</React.Suspense>
 					}

@@ -1,8 +1,8 @@
-import { useContext, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useContext, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import { URL_PATHS } from "../../common/env";
-import { UserContext } from "../../context/AppContext";
+import { URL_PATHS } from '../../common/env';
+import { UserContext } from '../../context/AppContext';
 
 export default function PrivateRoute({ roles = [], children }) {
 	const navigate = useNavigate();
@@ -15,7 +15,7 @@ export default function PrivateRoute({ roles = [], children }) {
 		}
 
 		if (roles.length > 0 && !roles.includes(state?.dataUser.role)) {
-			navigate(URL_PATHS.NOT_FOUND);
+			navigate(URL_PATHS.DENY_ACCESS);
 		}
 	}, [pathname]);
 

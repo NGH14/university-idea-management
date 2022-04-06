@@ -1,15 +1,17 @@
-import "./style.css";
+/** @format */
 
-import CloseIcon from "@mui/icons-material/Close";
-import { TextField } from "@mui/material";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import InputLabel from "@mui/material/InputLabel";
-import { styled } from "@mui/material/styles";
-import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import * as yup from "yup";
+import './style.css';
+
+import CloseIcon from '@mui/icons-material/Close';
+import { TextField } from '@mui/material';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import InputLabel from '@mui/material/InputLabel';
+import { styled } from '@mui/material/styles';
+import { useFormik } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import * as yup from 'yup';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -76,7 +78,9 @@ function EditDepartmentForm(props) {
 
 	useEffect(() => {
 		if (formik?.values?.length < 1) {
-			toast.error(toastMessages.ERR_SERVER_ERROR, { style: { width: 'auto' } });
+			toast.error(toastMessages.ERR_SERVER_ERROR, {
+				style: { width: 'auto' },
+			});
 		}
 	}, []);
 
@@ -90,9 +94,11 @@ function EditDepartmentForm(props) {
 			</div>
 			<br />
 
-			<form className='form_grid' onSubmit={formik.handleSubmit}>
-				<div className='form_group'>
-					<div className='form_content'>
+			<form
+				className='detaildepartmentform_grid'
+				onSubmit={formik.handleSubmit}>
+				<div className='detaildepartmentform_group'>
+					<div className='detaildepartmentform_content'>
 						<InputLabel required htmlFor='full_name'>
 							Department Name
 						</InputLabel>
@@ -104,8 +110,13 @@ function EditDepartmentForm(props) {
 							value={formik.values.name}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={formik.touched.name && Boolean(formik.errors.name)}
-							helperText={formik.touched.name && formik.errors.name}
+							error={
+								formik.touched.name &&
+								Boolean(formik.errors.name)
+							}
+							helperText={
+								formik.touched.name && formik.errors.name
+							}
 						/>
 					</div>
 				</div>

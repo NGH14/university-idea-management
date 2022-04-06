@@ -1,38 +1,38 @@
-import "./style.css";
+import './style.css';
 
-import LogoutIcon from "@mui/icons-material/Logout";
-import MenuIcon from "@mui/icons-material/Menu";
-import PersonIcon from "@mui/icons-material/Person";
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
-import Collapse from "@mui/material/Collapse";
-import CssBaseline from "@mui/material/CssBaseline";
-import IconButton from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Menu from "@mui/material/Menu";
-import Stack from "@mui/material/Stack";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import React, { useContext, useEffect } from "react";
+import LogoutIcon from '@mui/icons-material/Logout';
+import MenuIcon from '@mui/icons-material/Menu';
+import PersonIcon from '@mui/icons-material/Person';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Collapse from '@mui/material/Collapse';
+import CssBaseline from '@mui/material/CssBaseline';
+import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Menu from '@mui/material/Menu';
+import Stack from '@mui/material/Stack';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import React, { useContext, useEffect } from 'react';
 import {
 	BsBookmarksFill,
 	BsChevronContract,
 	BsChevronExpand,
 	BsFillPeopleFill,
 	BsHouseFill,
-} from "react-icons/bs";
-import { FaBuilding, FaLightbulb } from "react-icons/fa";
-import { RiDiscussFill } from "react-icons/ri";
-import { useLocation } from "react-router";
-import { createSearchParams, useNavigate } from "react-router-dom";
+} from 'react-icons/bs';
+import { FaBuilding, FaLightbulb } from 'react-icons/fa';
+import { RiDiscussFill } from 'react-icons/ri';
+import { useLocation } from 'react-router';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 
-import UniTextLogo from "../../assets/images/2021-Greenwich-Black-Eng.webp";
-import { ROLES, URL_PATHS } from "../../common/env";
-import { UserContext } from "../../context/AppContext";
-import { AppBar, ColorButton, Drawer, DrawerHeader } from "./SidebarStyled";
+import UniTextLogo from '../../assets/images/2021-Greenwich-Black-Eng.webp';
+import { ROLES, URL_PATHS } from '../../common/env';
+import { UserContext } from '../../context/AppContext';
+import { AppBar, ColorButton, Drawer, DrawerHeader } from './SidebarStyled';
 
 export default function Sidebar(props) {
 	const { state, setState } = useContext(UserContext);
@@ -60,7 +60,9 @@ export default function Sidebar(props) {
 			onClick: () =>
 				navigate({
 					pathname: URL_PATHS.PROFILE,
-					search: `${createSearchParams({ email: state?.dataUser?.email })}`,
+					search: `${createSearchParams({
+						email: state?.dataUser?.email,
+					})}`,
 				}),
 		},
 		{
@@ -97,9 +99,9 @@ export default function Sidebar(props) {
 			case URL_PATHS.MANAGE_SUB:
 				return 'Submission Management';
 			case URL_PATHS.MANAGE_IDEA:
-				return "Idea Management";
+				return 'Idea Management';
 			case URL_PATHS.DASHBOARD:
-				return "Dashboard";
+				return 'Dashboard';
 			default:
 				return '';
 		}
@@ -107,18 +109,18 @@ export default function Sidebar(props) {
 	const itemsManagementList = [
 		{
 			roles: [ROLES.ADMIN],
-			text: "Dashboard",
-			selectedText: "Dashboard",
-			icon: <FaBuilding className="sidebar_icon" />,
+			text: 'Dashboard',
+			selectedText: 'Dashboard',
+			icon: <FaBuilding className='sidebar_icon' />,
 			onClick: () => {
 				navigate(URL_PATHS.DASHBOARD);
 			},
 		},
 		{
 			roles: [ROLES.ADMIN],
-			text: "User",
-			selectedText: "User Management",
-			icon: <BsFillPeopleFill className="sidebar_icon" />,
+			text: 'User',
+			selectedText: 'User Management',
+			icon: <BsFillPeopleFill className='sidebar_icon' />,
 			onClick: () => {
 				navigate(URL_PATHS.MANAGE_USER);
 			},
@@ -195,8 +197,7 @@ export default function Sidebar(props) {
 				color='inherit'
 				style={{
 					boxShadow: 'none',
-				}}
-			>
+				}}>
 				<CssBaseline />
 
 				<Toolbar
@@ -204,22 +205,19 @@ export default function Sidebar(props) {
 						justifyContent: 'space-between',
 						alignItems: 'center',
 						borderBottom: '0.1px solid #e2e0e0',
-					}}
-				>
+					}}>
 					<Box
 						sx={{
 							display: 'flex',
 							justifyContent: 'center',
 							alignItems: 'center',
 							gap: '10px',
-						}}
-					>
+						}}>
 						<IconButton
 							color='inherit'
 							aria-label='open drawer'
 							onClick={handleDrawerCick}
-							edge='start'
-						>
+							edge='start'>
 							<MenuIcon />
 						</IconButton>
 						<img
@@ -235,13 +233,11 @@ export default function Sidebar(props) {
 								display: 'flex',
 								justifyContent: 'space-between',
 								gap: 5,
-							}}
-						>
+							}}>
 							<ColorButton
 								onClose={handleCloseUserMenu}
 								onClick={handleOpenUserMenu}
-								sx={{ p: 0 }}
-							>
+								sx={{ p: 0 }}>
 								<Avatar
 									alt={state.dataUser.full_name ?? 'Username'}
 									src='/static/images/avatar/2.jpg'
@@ -251,8 +247,7 @@ export default function Sidebar(props) {
 									<Typography
 										fontWeight={500}
 										fontSize={14}
-										fontFamily='Poppins'
-									>
+										fontFamily='Poppins'>
 										{state.dataUser.full_name ?? 'Username'}
 									</Typography>
 									<Typography
@@ -263,8 +258,7 @@ export default function Sidebar(props) {
 										fontFamily='Nunito'
 										sx={{
 											textAlign: 'left',
-										}}
-									>
+										}}>
 										{state.dataUser.role || 'Role'}
 									</Typography>
 								</Stack>
@@ -285,8 +279,7 @@ export default function Sidebar(props) {
 							}}
 							open={Boolean(anchorElUser)}
 							onClose={handleCloseUserMenu}
-							onClick={handleCloseUserMenu}
-						>
+							onClick={handleCloseUserMenu}>
 							{UserMenu.map((item, index) => {
 								const { text, icon, onClick } = item;
 								return (
@@ -296,15 +289,15 @@ export default function Sidebar(props) {
 											justifyContent: 'center',
 											px: 2.5,
 										}}
-										onClick={onClick}
-									>
+										onClick={onClick}>
 										{icon && icon}
 										<ListItemText
 											key={index}
 											disableTypography
 											primary={text}
 											sx={{
-												fontFamily: 'Nunito, sans-serif',
+												fontFamily:
+													'Nunito, sans-serif',
 												fontSize: '16px',
 												fontWeight: 700,
 												ml: 1.7,
@@ -329,11 +322,12 @@ export default function Sidebar(props) {
 									selected={selectedText === selectedPage}
 									sx={{
 										minHeight: 48,
-										justifyContent: open ? 'initial' : 'center',
+										justifyContent: open
+											? 'initial'
+											: 'center',
 										px: 2.5,
 									}}
-									onClick={() => onClick(index)}
-								>
+									onClick={() => onClick(index)}>
 									{icon && (
 										<ListItemIcon
 											key={index + Math.random()}
@@ -341,8 +335,7 @@ export default function Sidebar(props) {
 												minWidth: 0,
 												mr: open ? 3 : 'auto',
 												justifyContent: 'center',
-											}}
-										>
+											}}>
 											{icon}
 										</ListItemIcon>
 									)}
@@ -362,20 +355,18 @@ export default function Sidebar(props) {
 							</>
 						);
 					})}
-
-					<ListItemButton
-						onClick={handleClickManagement}
-						sx={{
-							display: open ? 'flex' : 'none',
-							alignItems: 'center',
-							justifyContent: 'space-between',
-							width: '100%',
-						}}
-					>
-						{state?.dataUser.role === ROLES.STAFF ||
-							state?.dataUser.role === ROLES.SUPERVISOR ? (
-							<></>
-						) : (
+					{state?.dataUser.role === ROLES.STAFF ||
+					state?.dataUser.role === ROLES.SUPERVISOR ? (
+						<></>
+					) : (
+						<ListItemButton
+							onClick={handleClickManagement}
+							sx={{
+								display: open ? 'flex' : 'none',
+								alignItems: 'center',
+								justifyContent: 'space-between',
+								width: '100%',
+							}}>
 							<>
 								<ListItemText
 									disableTypography
@@ -386,8 +377,7 @@ export default function Sidebar(props) {
 										fontFamily: 'Poppins, sans-serif',
 										fontWeight: '700',
 										opacity: open ? 1 : 0,
-									}}
-								>
+									}}>
 									Manage
 								</ListItemText>
 								<ListItemIcon
@@ -395,8 +385,7 @@ export default function Sidebar(props) {
 										minWidth: 0,
 										ml: open ? 3 : 'auto',
 										fontWeight: '700',
-									}}
-								>
+									}}>
 									{managementPage ? (
 										<BsChevronContract />
 									) : (
@@ -404,53 +393,59 @@ export default function Sidebar(props) {
 									)}
 								</ListItemIcon>
 							</>
-						)}
-					</ListItemButton>
+						</ListItemButton>
+					)}
+
 					<Collapse in={managementPage} timeout='auto' unmountOnExit>
 						{itemsManagementList.map((item, index) => {
-							const { selectedText, roles, text, icon, onClick } = item;
+							const { selectedText, roles, text, icon, onClick } =
+								item;
 							return (
 								<>
 									{(roles.length === 0 ||
-										roles.includes(state?.dataUser.role)) && (
-											<ListItemButton
-												key={index + Math.random()}
-												selected={selectedText === selectedPage}
-												sx={{
-													px: 2.5,
-													minHeight: 48,
-													justifyContent: open
-														? 'initial'
-														: 'center',
-												}}
-												onClick={() => onClick(index)}
-											>
-												{icon && (
-													<ListItemIcon
-														key={index + Math.random()}
-														sx={{
-															minWidth: 0,
-															mr: open ? 3 : '0',
-															justifyContent: 'center',
-														}}
-													>
-														{icon}
-													</ListItemIcon>
-												)}
-												<ListItemText
+										roles.includes(
+											state?.dataUser.role,
+										)) && (
+										<ListItemButton
+											key={index + Math.random()}
+											selected={
+												selectedText === selectedPage
+											}
+											sx={{
+												px: 2.5,
+												minHeight: 48,
+												justifyContent: open
+													? 'initial'
+													: 'center',
+											}}
+											onClick={() => onClick(index)}>
+											{icon && (
+												<ListItemIcon
 													key={index + Math.random()}
-													disableTypography
-													primary={text}
 													sx={{
-														fontFamily: 'Poppins, sans-serif',
-														fontSize: '14px',
-														fontWeight: '700',
-														color: '#777',
-														opacity: open ? 1 : 0,
-													}}
-												/>
-											</ListItemButton>
-										)}
+														minWidth: 0,
+														mr: open ? 3 : '0',
+														justifyContent:
+															'center',
+													}}>
+													{icon}
+												</ListItemIcon>
+											)}
+											<ListItemText
+												key={index + Math.random()}
+												disableTypography
+												primary={text}
+												sx={{
+													fontFamily:
+														'Poppins, sans-serif',
+													fontSize: '14px',
+													fontWeight: '700',
+													color: '#777',
+													opacity: open ? 1 : 0,
+												}}
+											/>
+										</ListItemButton>
+									)}
 								</>
 							);
 						})}
@@ -464,8 +459,7 @@ export default function Sidebar(props) {
 					flexGrow: 1,
 					p: 4,
 					fontFamily: 'Poppins',
-				}}
-			>
+				}}>
 				<DrawerHeader />
 				{props.children}
 			</Box>

@@ -1,8 +1,8 @@
-import { createContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { createContext, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
-import { AuthRequest } from "../common/AppUse";
-import { API_PATHS, DEV_CONFIGS, STORAGE_VARS } from "../common/env";
+import { AuthRequest } from '../common/AppUse';
+import { API_PATHS, DEV_CONFIGS, STORAGE_VARS } from '../common/env';
 
 const toastMessages = {
 	ERR_SESSION_OVER: 'Session timeout !!',
@@ -20,7 +20,7 @@ export const AppContext = (props) => {
 					email: 'aptu@mitep.pt',
 					full_name: 'Madge Valdez',
 					department: null,
-					role: 'admin',
+					role: 'staff',
 					gender: 'male',
 					phone_number: '0919927066',
 					date_of_birth: null,
