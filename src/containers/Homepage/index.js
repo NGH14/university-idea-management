@@ -1,34 +1,45 @@
-import AddIcon from "@mui/icons-material/Add";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import { Box, Button, CircularProgress, Menu, MenuItem, Tooltip } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
-import { styled } from "@mui/material/styles";
-import Typography from "@mui/material/Typography";
-import _ from "lodash";
-import moment from "moment";
-import * as React from "react";
-import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import AddIcon from '@mui/icons-material/Add';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import {
+	IoArrowDownCircleOutline,
+	IoArrowUpCircleOutline,
+} from 'react-icons/io5';
 
-import { AuthRequest, sleep } from "../../common/AppUse";
-import { API_PATHS, ROLES } from "../../common/env";
-import CommentIdea from "../../components/Idea/CommentIdea";
-import ModalIdea from "../../components/Idea/ModalIdea";
-import { UserContext } from "../../context/AppContext";
-import { fakeData } from "./FakeDate";
+import {
+	Box,
+	Button,
+	CircularProgress,
+	Menu,
+	MenuItem,
+	Tooltip,
+} from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import _ from 'lodash';
+import moment from 'moment';
+import * as React from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+import { AuthRequest, sleep } from '../../common/AppUse';
+import { API_PATHS, ROLES } from '../../common/env';
+import CommentIdea from '../../components/Idea/CommentIdea';
+import ModalIdea from '../../components/Idea/ModalIdea';
+import { UserContext } from '../../context/AppContext';
+import { fakeData } from './FakeDate';
 
 const ExpandMore = styled((props) => {
 	const { expand, ...other } = props;
@@ -102,15 +113,13 @@ function Homepage() {
 		<Button
 			startIcon={<EditIcon />}
 			style={{ backgroundColor: '#4caf50' }}
-			variant={'contained'}
-		>
+			variant={'contained'}>
 			Update Idea
 		</Button>,
 		<Button
 			startIcon={<DeleteIcon />}
 			style={{ backgroundColor: '#ba000d' }}
-			variant={'contained'}
-		>
+			variant={'contained'}>
 			Delete Idea
 		</Button>,
 	];
@@ -124,7 +133,9 @@ function Homepage() {
 	const onCreate = (value) => {
 		toast
 			.promise(
-				AuthRequest.post(API_PATHS.SHARED.IDEA, value).then(() => sleep(700)),
+				AuthRequest.post(API_PATHS.SHARED.IDEA, value).then(() =>
+					sleep(700),
+				),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_ADDED,
@@ -154,7 +165,10 @@ function Homepage() {
 				const indexData = _.findIndex(newData, (x) => x.id === id);
 				newData.splice(indexData, 1);
 				setData(newData);
-				setPagination({ ...pagination, pageSize: pagination.pageSize - 1 });
+				setPagination({
+					...pagination,
+					pageSize: pagination.pageSize - 1,
+				});
 				toast.success(toastMessages.SUC_IDEA_DEL);
 			});
 	};
@@ -162,9 +176,10 @@ function Homepage() {
 	const onUpdate = (value) => {
 		toast
 			.promise(
-				AuthRequest.put(`${API_PATHS.SHARED.IDEA}/${value?.id}`, value).then(() =>
-					sleep(700),
-				),
+				AuthRequest.put(
+					`${API_PATHS.SHARED.IDEA}/${value?.id}`,
+					value,
+				).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_EDITED,
@@ -177,7 +192,10 @@ function Homepage() {
 				}
 				setStatus({ ...status, visibleModal: false });
 				let newData = [...data];
-				const indexData = _.findIndex(newData, (x) => x.id === value.id);
+				const indexData = _.findIndex(
+					newData,
+					(x) => x.id === value.id,
+				);
 				newData[indexData] = res?.data?.result;
 				setData(newData);
 				toast.success(toastMessages.SUC_IDEA_EDITED);
@@ -193,13 +211,13 @@ function Homepage() {
 
 	const renderTop = () => {
 		return (
-			<div style={{ width: '100%', textAlign: 'right', marginBottom: 15 }}>
+			<div
+				style={{ width: '100%', textAlign: 'right', marginBottom: 15 }}>
 				<Button
 					size={'small'}
 					variant='contained'
 					endIcon={<AddIcon />}
-					onClick={() => onOpenModal('create')}
-				>
+					onClick={() => onOpenModal('create')}>
 					Create Idea
 				</Button>
 			</div>
@@ -234,8 +252,7 @@ function Homepage() {
 					aria-controls={open ? 'long-menu' : undefined}
 					aria-expanded={open ? 'true' : undefined}
 					aria-haspopup='true'
-					onClick={handleClick}
-				>
+					onClick={handleClick}>
 					<MoreVertIcon />
 				</IconButton>
 				<Menu
@@ -251,17 +268,17 @@ function Homepage() {
 							maxHeight: ITEM_HEIGHT * 4.5,
 							width: '20ch',
 						},
-					}}
-				>
+					}}>
 					{actionButtonIdea.map((option, index) => (
 						<MenuItem
 							key={option}
 							selected={option === 'Pyxis'}
 							onClick={() => {
 								handleClose();
-								index === 0 ? onOpenModal('update', id) : onDelete(id);
-							}}
-						>
+								index === 0
+									? onOpenModal('update', id)
+									: onDelete(id);
+							}}>
 							{option}
 						</MenuItem>
 					))}
@@ -291,11 +308,28 @@ function Homepage() {
 
 	const renderCardContent = (item) => {
 		return (
-			<CardContent>
-				<div style={{ display: 'flex' }}>
-					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Submission: </h3>
+			<CardContent sx={{ fontFamily: "'Poppins', sans-serif" }}>
+				<div>
+					<Typography variant='body2' color='text.secondary'>
+						{/*{item?.content}*/}
+						This impressive paella is a perfect party dish and a fun
+						meal to cook together with your guests. Add 1 cup of
+						frozen peas along with the mussels, if you like.
+					</Typography>
+				</div>
+				<br></br>
+				<div
+					style={{
+						display: 'flex',
+						fontSize: '0.8em',
+						padding: '0 5',
+						marginTop: 5,
+						color: '#888',
+					}}>
+					<span style={{ marginRight: 5 }}>in</span>
 					<Tooltip title={'Detail submission'}>
-						<label
+						<a
+							href='\'
 							onClick={() => {
 								navigate(
 									`/submission/${
@@ -309,15 +343,11 @@ function Homepage() {
 								textDecorationColor: '#1976d2',
 								color: '#1976d2',
 								cursor: 'pointer',
-							}}
-						>
+							}}>
 							{/*{item?.submissionName}*/}Submission name
-						</label>
+						</a>
 					</Tooltip>
-				</div>
-				<br></br>
-				<div style={{ display: 'flex' }}>
-					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Title: </h3>
+					<span style={{ marginInline: 5 }}>with title is</span>
 					<Tooltip title={'Detail submission'}>
 						<label
 							onClick={() => {
@@ -328,21 +358,10 @@ function Homepage() {
 								textDecorationColor: '#1976d2',
 								color: '#1976d2',
 								cursor: 'pointer',
-							}}
-						>
+							}}>
 							{/*{item?.title}*/} Title Idea
 						</label>
 					</Tooltip>
-				</div>
-				<br></br>
-				<div>
-					<h3 style={{ fontWeight: 'bold' }}>Content</h3>
-					<Typography variant='body2' color='text.secondary'>
-						{/*{item?.content}*/}
-						This impressive paella is a perfect party dish and a fun meal to
-						cook together with your guests. Add 1 cup of frozen peas along
-						with the mussels, if you like.
-					</Typography>
 				</div>
 			</CardContent>
 		);
@@ -350,32 +369,37 @@ function Homepage() {
 
 	const renderActionButton = (item) => {
 		return (
-			<CardActions disableSpacing style={{ paddingRight: 15, paddingLeft: 15 }}>
+			<CardActions
+				style={{
+					margin: '5px 5px 2px',
+					display: 'flex',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					width: '100%',
+					fontSize: 12,
+				}}>
 				<Button
+					fullWidth
 					aria-label='add to favorites'
-					startIcon={<ThumbUpIcon />}
+					startIcon={<IoArrowUpCircleOutline />}
 					color={'inherit'}
-					variant='contained'
-					size={'small'}
-				>
-					Like (0)
+					size={'large'}>
+					(0)
 				</Button>
 				<Button
+					fullWidth
 					aria-label='add to favorites'
 					style={{ marginRight: 20, marginLeft: 20 }}
-					startIcon={<ThumbDownIcon />}
+					startIcon={<IoArrowDownCircleOutline />}
 					color={'inherit'}
-					variant='contained'
-					size={'small'}
-				>
-					Dislike (0)
+					size={'large'}>
+					(0)
 				</Button>
 				<ExpandMore
 					expand={expanded[item.id]}
 					onClick={() => handleExpandClick(item.id)}
 					aria-expanded={expanded[item.id]}
-					aria-label='show more'
-				>
+					aria-label='show more'>
 					<Tooltip title={'Show comment'}>
 						<ExpandMoreIcon />
 					</Tooltip>
@@ -411,12 +435,12 @@ function Homepage() {
 		const result = _.map(data, (item, index) => {
 			return (
 				<Card
-					style={
-						index === 0
-							? { border: '1px solid #90a4ae' }
-							: { border: '1px solid #90a4ae', marginTop: 30 }
-					}
-				>
+					style={{
+						borderRadius: '5px',
+						boxShadow: '1px 2px 4px rgba(0,0,0,0.3)',
+						padding: '5px',
+						marginTop: 30,
+					}}>
 					{renderCardHeader(item)}
 					{renderCardContent(item)}
 					{renderListFile(item)}
@@ -451,8 +475,7 @@ function Homepage() {
 					variant={'outlined'}
 					onClick={() => {
 						onShowMore();
-					}}
-				>
+					}}>
 					More view
 				</Button>
 			</div>

@@ -408,7 +408,7 @@ export default function Sidebar(props) {
 										ml: open ? 3 : 'auto',
 										fontWeight: '700',
 									}}>
-									{managementPage ? (
+									{reportPage ? (
 										<BsChevronContract />
 									) : (
 										<BsChevronExpand />
