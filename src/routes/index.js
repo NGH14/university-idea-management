@@ -153,9 +153,7 @@ export function ListRoute() {
 						<React.Suspense fallback={<LoadingSpinner />}>
 							<Sidebar>
 								<PrivateRoute>
-									{React.lazy(() =>
-										import('../components/Submission/demo'),
-									)}
+
 								</PrivateRoute>
 							</Sidebar>
 						</React.Suspense>

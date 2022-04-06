@@ -25,9 +25,22 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { AuthRequest, sleep } from "../../../common/AppUse";
-import { API_PATHS } from "../../../common/env";
+import {API_PATHS, DEV_CONFIGS, URL_PATHS} from "../../../common/env";
 import CommentIdea from "../../Idea/CommentIdea";
 import ModalIdea from "../../Idea/ModalIdea";
+import {DataGridPro, GridActionsCellItem} from "@mui/x-data-grid-pro";
+import CustomNoRowsOverlay from "../../Custom/CustomNoRowsOverlay";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import {
+	GridToolbarColumnsButton,
+	GridToolbarContainer,
+	GridToolbarDensitySelector, GridToolbarExport,
+	GridToolbarFilterButton
+} from "@mui/x-data-grid";
+import {dataDemo_submissions} from "../../../containers/SubmissionManagement/FakeData/Submissions";
+import {Column} from "../../../containers/SubmissionManagement/model/Column";
+import {GoInfo} from "react-icons/go";
+import {Columns} from "../../../containers/IdeaMangement/model/Columns";
 
 const toastMessages = {
 	WAIT: 'Please wait...',
@@ -37,26 +50,6 @@ const toastMessages = {
 	SUC_IDEA_DEL: 'Delete idea successful !!',
 	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
 };
-
-const ExpandMore = styled((props) => {
-	const { expand, ...other } = props;
-	return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-	transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-	marginLeft: 'auto',
-	transition: theme.transitions.create('transform', {
-		duration: theme.transitions.duration.shortest,
-	}),
-}));
-
-const Item = styled(Paper)(({ theme }) => ({
-	// backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-	border: 'none',
-	...theme.typography.body2,
-	padding: theme.spacing(1),
-	// textAlign: 'center',
-	color: theme.palette.text.secondary,
-}));
 
 const fakeData = [
 	{
@@ -120,10 +113,21 @@ const fakeData = [
 		],
 	},
 ];
+const CustomToolbarSubmission = () => {
+	return (
+		<GridToolbarContainer sx={{ fontWeight: 700 }}>
+			<GridToolbarColumnsButton />
+			<GridToolbarFilterButton />
+			<GridToolbarDensitySelector />
+			<GridToolbarExport printOptions={{ disableToolbarButton: true }} />
+		</GridToolbarContainer>
+	);
+};
 
 const ITEM_HEIGHT = 48;
 
 function IdeaSubView({ ideaData, subData }) {
+	const [tableToolBar, setTableToolBar] = useState(false);
 	const navigate = useNavigate();
 	const [ideaList, setIdealist] = useState(ideaData);
 	const [rowId, setRowId] = useState(null);
@@ -133,6 +137,45 @@ function IdeaSubView({ ideaData, subData }) {
 		page: 0,
 	});
 
+	const columns = [
+		...Columns,
+		{
+			field: 'actions',
+			headerName: 'Action',
+			width: 75,
+			type: 'actions',
+			disableColumnMenu: true,
+			sortable: false,
+			getActions: (params) => [
+				<GridActionsCellItem
+					icon={<GoInfo color='#3f66da' style={{ fontSize: '20px' }} />}
+					label='Detail'
+					onClick={() => navigate(`${URL_PATHS.MANAGE_SUB}/${params.id}`)}
+					showInMenu
+				/>,
+
+				<GridActionsCellItem
+					icon={<BiPencil style={{ fontSize: '20px' }} />}
+					label='Update'
+					onClick={() => onOpenModal(params.id, 'update')}
+					showInMenu
+				/>,
+
+				<GridActionsCellItem
+					icon={
+						<MdOutlineDeleteOutline
+							color='red'
+							style={{ fontSize: '20px' }}
+						/>
+					}
+					label='Delete'
+					onClick={() => onDelete(params.id)}
+					showInMenu
+				/>,
+			],
+		},
+	];
+
 	const [status, setStatus] = useState({
 		visibleModal: false,
 		action: 'update',
@@ -140,36 +183,11 @@ function IdeaSubView({ ideaData, subData }) {
 	});
 
 	const [ideaId, setIdeaId] = useState(null);
-	const [expanded, setExpanded] = useState([]);
-	const [anchorEl, setAnchorEl] = useState(null);
-
-	const open = Boolean(anchorEl);
 
 	useEffect(() => {
-		if (pagination?.page) {
-			loadDataIdea();
-		}
+
+		loadDataIdea();
 	}, [pagination]);
-
-	useEffect(() => {
-		if (fakeData && !_.isEmpty(fakeData)) {
-			let newExpanded = [];
-			_.map(fakeData, (x) => {
-				const id = x.id;
-				newExpanded[id] = false;
-			});
-			setExpanded(newExpanded);
-		}
-	}, []);
-
-	const handleClick = (event) => setAnchorEl(event.currentTarget);
-	const handleClose = () => setAnchorEl(null);
-
-	const handleExpandClick = (id) => {
-		let newExpanded = [...expanded];
-		newExpanded[id] = !newExpanded[id];
-		setExpanded(newExpanded);
-	};
 
 	const loadDataIdea = async () => {
 		setStatus({ ...status, loading: true });
@@ -192,7 +210,7 @@ function IdeaSubView({ ideaData, subData }) {
 	const onDelete = (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`).then(() =>
+				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`).then(() =>
 					sleep(700),
 				),
 				{
@@ -229,7 +247,6 @@ function IdeaSubView({ ideaData, subData }) {
 	};
 
 	const onCreate = (value) => {
-		// console.log(123, value);
 		toast
 			.promise(
 				AuthRequest.post(API_PATHS.ADMIN.MANAGE_IDEA, { ...value }).then(() =>
@@ -245,190 +262,6 @@ function IdeaSubView({ ideaData, subData }) {
 				setStatus({ ...status, visibleModal: false });
 				loadDataIdea();
 			});
-	};
-	//#endregion
-
-	const renderCardHeader = (item) => {
-		return (
-			<CardHeader
-				avatar={
-					<Avatar sx={{ bgcolor: 'gray' }} aria-label='recipe'>
-						P
-					</Avatar>
-				}
-				action={renderActionIdea(item.id)}
-				title='People Private'
-				subheader={
-					item?.createTime
-						? moment(item?.createTime).format('LLL')
-						: 'September 14, 2016'
-				}
-			/>
-		);
-	};
-
-	const actionButtonIdea = [
-		<Button
-			startIcon={<BiPencil style={{ fontSize: '20px' }} />}
-			style={{ backgroundColor: '#4caf50' }}
-			variant={'contained'}
-		>
-			Update Idea
-		</Button>,
-		<Button
-			startIcon={
-				<MdOutlineDeleteOutline style={{ fontSize: '20px' }} color='red' />
-			}
-			style={{ backgroundColor: '#ba000d' }}
-			variant={'contained'}
-		>
-			Delete Idea
-		</Button>,
-	];
-	const renderActionIdea = (id) => {
-		return (
-			<div>
-				<IconButton
-					aria-label='more'
-					id='long-button'
-					aria-controls={open ? 'long-menu' : undefined}
-					aria-expanded={open ? 'true' : undefined}
-					aria-haspopup='true'
-					onClick={handleClick}
-				>
-					<MoreVertIcon />
-				</IconButton>
-				<Menu
-					id='long-menu'
-					MenuListProps={{
-						'aria-labelledby': 'long-button',
-					}}
-					anchorEl={anchorEl}
-					open={open}
-					onClose={handleClose}
-					PaperProps={{
-						style: {
-							maxHeight: ITEM_HEIGHT * 4.5,
-							width: '20ch',
-						},
-					}}
-				>
-					{actionButtonIdea.map((option, index) => (
-						<MenuItem
-							key={option}
-							selected={option === 'Pyxis'}
-							onClick={() => {
-								handleClose();
-								index === 0 ? onOpenModal('update', id) : onDelete(id);
-							}}
-						>
-							{option}
-						</MenuItem>
-					))}
-				</Menu>
-			</div>
-		);
-	};
-	const renderCardContent = (item) => {
-		return (
-			<CardContent>
-				<div style={{ display: 'flex' }}>
-					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>
-						{/*{item?.title}*/} Title:{' '}
-					</h3>
-					<Tooltip title={'Detail submission'}>
-						<label
-							onClick={() => {
-								navigate(
-									`/submission/${
-										item.submissionId ||
-										'NDM3YzBiMzktMDBlNy00ZDk3LTgzMTctOTE3NzIwYzJkMzlh'
-									}`,
-								);
-							}}
-							style={{
-								textDecoration: 'underline',
-								textDecorationColor: '#1976d2',
-								color: '#1976d2',
-								cursor: 'pointer',
-							}}
-						>
-							{/*{data?.submissionName}*/}Submission name
-						</label>
-					</Tooltip>
-				</div>
-				<br></br>
-				<div>
-					<h3 style={{ fontWeight: 'bold' }}>Content</h3>
-					<Typography variant='body2' color='text.secondary'>
-						{/*{item?.content}*/}
-						This impressive paella is a perfect party dish and a fun meal to
-						cook together with your guests. Add 1 cup of frozen peas along
-						with the mussels, if you like.
-					</Typography>
-				</div>
-			</CardContent>
-		);
-	};
-	const renderActionButton = (item) => {
-		return (
-			<CardActions disableSpacing style={{ paddingRight: 15, paddingLeft: 15 }}>
-				<Button
-					aria-label='add to favorites'
-					startIcon={<ThumbUpIcon />}
-					color={'inherit'}
-					variant='contained'
-					size={'small'}
-				>
-					Like (0)
-				</Button>
-				<Button
-					aria-label='add to favorites'
-					style={{ marginRight: 20, marginLeft: 20 }}
-					startIcon={<ThumbDownIcon />}
-					color={'inherit'}
-					variant='contained'
-					size={'small'}
-				>
-					Dislike (0)
-				</Button>
-				<ExpandMore
-					expand={expanded[item.id]}
-					onClick={() => handleExpandClick(item.id)}
-					aria-expanded={expanded[item.id]}
-					aria-label='show more'
-				>
-					<Tooltip title={'Show comment'}>
-						<ExpandMoreIcon />
-					</Tooltip>
-				</ExpandMore>
-			</CardActions>
-		);
-	};
-
-	const renderComment = (item) => {
-		return (
-			<Collapse in={expanded[item.id]} timeout='auto' unmountOnExit>
-				<CommentIdea data={item} ideaId={item.id} />
-			</Collapse>
-		);
-	};
-	const renderListFile = (item) => {
-		if (item?.file || !_.isEmpty(item?.file)) {
-			return (
-				<Card style={{ marginLeft: 15, marginRight: 15 }}>
-					<IconButton>
-						<AttachFileIcon />
-					</IconButton>
-					<a href='#/'>demo.doc</a>
-				</Card>
-			);
-		} else {
-			return <div></div>;
-		}
-	};
-	const onCloseModal = () => {
-		setStatus({ ...status, visibleModal: false });
 	};
 	const onOpenModal = (action, id) => {
 		id && setIdeaId(id);
@@ -461,46 +294,47 @@ function IdeaSubView({ ideaData, subData }) {
 			</div>
 		);
 	};
-	const onChangePage = async (page) => {
-		setPagination({ ...pagination, page });
-	};
-	const renderContent = () => {
-		const result = _.map(fakeData, (item, index) => {
-			return (
-				<Card
-					style={
-						index === 0
-							? { border: '1px solid #90a4ae' }
-							: { border: '1px solid #90a4ae', marginTop: 30 }
-					}
-				>
-					{renderCardHeader(item)}
-					{renderCardContent(item)}
-					{renderListFile(item)}
-					{renderActionButton(item)}
-					{renderComment(item)}
-				</Card>
-			);
-		});
-		if (status.loading) {
-			return (
-				<Box sx={{ display: 'flex' }}>
-					<CircularProgress />
-				</Box>
-			);
+	const onCloseModal = () => {
+		if (rowId) {
+			setRowId(null);
 		}
-		return result;
+
+		setStatus({
+			...status,
+			visibleModal: false,
+		});
 	};
-	const renderFooter = () => {
+	const onChangePagination = (pageSize, page) => {
+		setPagination({ page, pageSize });
+	};
+	const handleOnClickToolBar = () => setTableToolBar((pre) => !pre);
+	const renderContent = () => {
 		return (
-			<div style={{ marginTop: 15, float: 'right' }}>
-				<Pagination
-					count={10}
-					onChange={(value) =>
-						onChangePage(_.toNumber(_.get(value.target, 'innerText')))
+			<div className='managementsubmission_table'>
+				<DataGridPro
+					components={{
+						NoRowsOverlay: CustomNoRowsOverlay,
+						ColumnSortedDescendingIcon: () => (
+							<ExpandMoreIcon className='icon' />
+						),
+						ColumnSortedAscendingIcon: () => (
+							<ExpandLessIcon className='icon' />
+						),
+						Toolbar: tableToolBar && CustomToolbarSubmission,
+					}}
+					rows={ideaList}
+					columns={columns}
+					pagination={true}
+					cell--textCenter
+					pageSize={pagination.pageSize}
+					page={pagination.page}
+					initialState={{ pinnedColumns: { right: ['actions'] } }}
+					onPageSizeChange={(pageSize) =>
+						onChangePagination(pageSize, pagination.page)
 					}
-					// rowsPerPage={(value)=>console.log(value, 1)}
-					// onRowsPerPageChange={(value)=>console.log(value, 2)}
+					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
+					style={{ minHeight: '600px' }}
+					rowsPerPageOptions={[5, 10, 25, 50]}
 				/>
 			</div>
 		);
@@ -509,7 +343,7 @@ function IdeaSubView({ ideaData, subData }) {
 		<>
 			{renderTop()}
 			{renderContent()}
-			{renderFooter()}
+			{/*{renderFooter()}*/}
 			{status.visibleModal && renderModal()}
 		</>
 	);

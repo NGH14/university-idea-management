@@ -113,25 +113,6 @@ export default function DetailView() {
 			});
 	};
 
-	const onUpdateIdea = async (value) => {
-		setStatus({ ...status, loading: true });
-		toast
-			.promise(
-				AuthRequest.put(
-					`${API_PATHS.ADMIN.MANAGE_IDEA}/${value?.id}`,
-					value,
-				).then(() => sleep(700)),
-				{
-					pending: toastMessages.WAIT,
-					success: toastMessages.SUC.SUB.EDITED,
-					error: toastMessages.ERR.SERVER_ERROR,
-				},
-			)
-			.then(() => {
-				setStatus({ ...status, visibleModal: false });
-				loadData();
-			});
-	};
 
 	const renderModal = () => {
 		return (

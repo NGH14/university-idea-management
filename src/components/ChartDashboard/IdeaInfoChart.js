@@ -15,32 +15,32 @@ import {
 } from "devextreme-react/ui/chart";
 import _ from "lodash";
 import moment from "moment";
+import Box from "@mui/material/Box";
+import {CircularProgress} from "@mui/material";
 
 const energySources = [
-    { value: "comment", name: "Comment" },
-    { value: "disLike", name: "DisLike" },
-    { value: "like", name: "like" },
-
+    { value: "total_ideas", name: "total_ideas" },
+    { value: "total_comments", name: "total_comments" },
+    { value: "total_likes", name: "total_comments" },
+    { value: "total_dislikes", name: "total_comments" },
 ];
 
 
-function IdeaInfoChart({timeKey, data, display}){
-    const dataFake = [
-        { idea: 'Like', numberComment: 222},
-        { idea: 'Dislike', numberComment: 323 },
-        { idea: 'Comment', numberComment: 22},
-    ];
+function IdeaInfoChart({timeKey, data, display, loading}){
+
     const [newData, setNewData] = useState([])
     useEffect(()=>{
         const newArray =  []
         _.map(data, (x, index) => {
-            const day = _.toNumber(moment(x.timeDay).format("DD"))
+            const day = _.toNumber(moment(x.date).format("DD"))
             if(day >= display[0] && day <= display[1]){
+                x.date = moment(x.date).format("DD/MM/YYYY")
                 newArray.push(x)
             }
         })
         setNewData(newArray)
-    }, [display])
+    }, [data,display])
+
     const customizeTooltip = (arg) => {
         return {
             text: arg.valueText
@@ -59,11 +59,16 @@ function IdeaInfoChart({timeKey, data, display}){
         return `${textFrom} to ${textTo}`
 
     }
+    if(loading){
+        return <Box sx={{ display: 'flex' }}>
+            <CircularProgress />
+        </Box>
+    }
 
     return <>
         <Chart palette={"Blue"} dataSource={newData}>
             <CommonSeriesSettings
-                argumentField={"timeDay"}
+                argumentField={"date"}
                 type={"line"}
             />
             {energySources.map(function(item, _) {

@@ -66,12 +66,7 @@ function SubmissionManagement() {
 
 		loadData();
 	}, [pagination]);
-
-	const openUserAction = Boolean(actionUser);
 	const handleOnClickToolBar = () => setTableToolBar((pre) => !pre);
-
-	const handleClick = (event) => setActionUser(event.currentTarget);
-	const handleClose = () => setActionUser(null);
 
 	const columns = [
 		...Column,

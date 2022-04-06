@@ -6,7 +6,7 @@ import _ from "lodash"
 import TotalSubmissionChart from "../../components/ChartDashboard/TotalSubmissionChart";
 import {DateRangePicker, LocalizationProvider} from "@mui/lab";
 import DatePicker from "@mui/lab/DatePicker";
-import {Grid, Slider, TextField} from "@mui/material";
+import {CircularProgress, Grid, Slider, TextField} from "@mui/material";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import {useEffect, useState} from "react";
 import moment from "moment";
@@ -20,74 +20,16 @@ import Card from "@mui/material/Card";
 import {CardMedia} from "@material-ui/core";
 import {Item} from "devextreme-react/box";
 import {styled} from "@mui/material/styles";
-const dataFake = [
-  {
-    month: '1',
-    submissionDeActive: 10,
-    submissionActivity: 5,
-  },
-  {
-    month: '2',
-    submissionDeActive: 11,
-    submissionActivity: 13,
-  },
-  {
-    month: '3',
-    submissionDeActive: 12,
-    submissionActivity: 16,
-  },
-  {
-    month: '4',
-    submissionDeActive: 11,
-    submissionActivity: 11,
-  },
-  {
-    month: '5',
-    submissionDeActive: 12,
-    submissionActivity: 2,
-  },
-  {
-    month: '6',
-    submissionDeActive: 1,
-    submissionActivity: 4,
-  },
-  {
-    month: '7',
-    submissionDeActive: 22,
-    submissionActivity: 12,
-  },
-  {
-    month: '8',
-    submissionDeActive: 13,
-    submissionActivity: 4,
-  },
-  {
-    month: '9',
-    submissionDeActive: 3,
-    submissionActivity: 22,
-  },
-  {
-    month: '10',
-    submissionDeActive: 22,
-    submissionActivity: 5,
-  },
-  {
-    month: '11',
-    submissionDeActive: 22,
-    submissionActivity: 23,
-  },
-  {
-    month: '12',
-    submissionDeActive: 1,
-    submissionActivity: 13,
-  },
-];
+import axios from "axios";
+import {AuthRequest} from "../../common/AppUse";
+
 export default function Dashboard ()  {
   const [data, setData] = useState({
-    totalSUb: dataFake,
+    totalSUb: [],
     topIdea: [],
-    ideaInfo: dataIdeaInfo
+    infoData: []
   })
+  const [loading, setLoading] = useState(false)
   const [display, setDisplay] = useState({
     sub: [1, 6],
     ideaInfo: [1, 15]
@@ -102,29 +44,58 @@ export default function Dashboard ()  {
 
   useEffect(()=>{
     loadData()
-  })
+  }, [])
   const loadData = async () => {
+    setLoading(true)
+    const year = moment(filter.year).format("YYYY")
+    const monthIdea = moment(filter.monthYearIdea).format("MM")
+    const monthInfo = moment(filter.monthYearIdeaInfo).format("MM")
+    axios
+        .all([
+          AuthRequest.get(`dashboard/sum-submissions?year=${year}`),
+          AuthRequest.get(`dashboard/top-ideas?month=${monthIdea}&year=${year}`),
+          AuthRequest.get(`dashboard/activities?month=${monthInfo}&year=${year}`),
+        ])
+        .then(
+            axios.spread(function (resSub, resIdeas, resAct) {
+              console.log(resSub?.data?.result, 987)
+              setData({
+                ...data,
+                totalSUb: resSub?.data?.result,
+                topIdea: resIdeas?.data?.result,
+                infoData: resAct?.data?.result,
+              });
+              setLoading(false)
+            }),
+        );
       //api load Data
   }
   const onYearChange = (value) => {
     const newDate = new Date(value.getFullYear(),0, 1)
-    setFilter({...filter, year: newDate, monthYearIdea: newDate, monthYearIdeaInfo: newDate})
+    setFilter({...filter, year: value, monthYearIdea: newDate, monthYearIdeaInfo: newDate})
     setDisplay({ ...display,
       sub: [1, 6],
       ideaInfo: [1, 15]
     })
     loadData()
   };
-  const onMonthYearChange = (value) => {
-    setFilter({...filter, monthYearIdea: value})
-    //api load data top idea
-    // setData({...data, topIdea: res?.data?.result})
+
+  const onMonthYearChange = async (value) => {
+
+    const res =  await AuthRequest.get(`dashboard/top-ideas?month=${moment(value).format("MM")}&year=${moment(value).format("YYYY")}`, )
+    if(res?.data?.succeeded){
+      setFilter({...filter, monthYearIdea: value})
+      setData({...data, topIdea: res?.data?.result})
+    }
   };
-  const onMonthYearIdeaInfoChange = (value) => {
-    setFilter({...filter, monthYearIdeaInfo: value})
+
+  const onMonthYearIdeaInfoChange = async (value) => {
     setDisplay({...display, ideaInfo: [1, 15]})
-    //api load data top idea
-    // setData({...data, topIdea: res?.data?.result})
+    const res =  await AuthRequest.get(`dashboard/activities?month=${moment(value).format("MM")}&year=${moment(value).format("YYYY")}`)
+    if(res?.data?.succeeded){
+      setFilter({...filter, monthYearIdeaInfo: value})
+      setData({...data, infoData: res?.data?.result})
+    }
   };
 
   const renderPickerYear = () => {
@@ -220,7 +191,7 @@ export default function Dashboard ()  {
       <div style={{textAlign: "right", justifyContent: 'right',width: '100%', display: "flex", paddingTop: 10, paddingRight: 10,}}>
         {renderPickerYear()}
       </div>
-      <TotalSubmissionChart timeKey={filter.year} data={dataFake} display={display.sub}/>
+      <TotalSubmissionChart timeKey={filter.year} data={data.totalSUb} display={display.sub} loading={loading}/>
     </Paper>
   }
 
@@ -230,7 +201,7 @@ export default function Dashboard ()  {
         <div style={{textAlign: "right", justifyContent: 'right',width: '100%', display: "flex", paddingTop: 10, paddingRight: 10, marginBottom: 10}}>
           {renderPickerMonthYearIdea()}
         </div>
-        <IdeaPopularChart timeKey={filter.monthYearIdea} data={data.topIdea}/>
+        <IdeaPopularChart timeKey={filter.monthYearIdea} data={data?.topIdea} loading={loading}/>
       </Paper>
     </div>
   }
@@ -241,7 +212,7 @@ export default function Dashboard ()  {
         <div style={{textAlign: "right", justifyContent: 'right',width: '100%', display: "flex", paddingTop: 10, paddingRight: 10, marginBottom: 6}}>
           {renderPickerMonthYearInfoIdea()}
         </div>
-        <IdeaInfoChart timeKey={filter.monthYearIdea} data={data.ideaInfo} display={display.ideaInfo}/>
+        <IdeaInfoChart timeKey={filter.monthYearIdea} data={data.infoData} display={display.ideaInfo}/>
       </Paper>
     </div>
   }
@@ -289,6 +260,7 @@ export default function Dashboard ()  {
 
     </div>
   }
+
   return (
       <div>
         {renderTop()}
@@ -297,9 +269,7 @@ export default function Dashboard ()  {
           {renderPopularIdea()}
           {renderIdeaInfo()}
         </div>
-
       </div>
-
   );
 
 }

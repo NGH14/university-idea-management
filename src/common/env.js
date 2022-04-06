@@ -43,7 +43,7 @@ export const API_PATHS = {
 		MANAGE_IDEA: 'idea-management',
 		MANAGE_USER: 'user-management',
 		MANAGE_SUB: 'submission-management',
-		MANAGE_COMMENT: 'submission-management',
+		MANAGE_COMMENT: 'comment-management',
 	},
 };
 
@@ -60,7 +60,7 @@ export const URL_PATHS = {
 	MANAGE_DEP: '/department-management',
 	MANAGE_TAG: '/tag-management',
 	MANAGE_SUB: '/submission-management',
-
+	DASHBOARD:'/dashboard',
 	MANAGE: '/submission/:id',
 	PROFILE: '/profile',
 	IDEA_ID: '/idea/:id',

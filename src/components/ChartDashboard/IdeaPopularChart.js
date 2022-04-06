@@ -8,21 +8,11 @@ import PieChart, {
 } from "devextreme-react/pie-chart";
 import _ from "lodash";
 import moment from "moment";
+import Box from "@mui/material/Box";
+import {CircularProgress} from "@mui/material";
 
 // total
-function IdeaPopularChart({timeKey, data}){
-    const dataFake = [
-        { idea: 'idea 1', numberComment: 222},
-        { idea: 'idea 2', numberComment: 323 },
-        { idea: 'idea 3', numberComment: 22},
-        { idea: 'idea 4', numberComment: 7 },
-        { idea: 'idea 5', numberComment: 333},
-        { idea: 'idea 7', numberComment: 442 },
-        { idea: 'idea 6', numberComment: 2},
-        { idea: 'idea 8', numberComment: 55 },
-        { idea: 'idea 9', numberComment: 55 },
-        { idea: 'idea 10', numberComment: 55},
-    ];
+function IdeaPopularChart({timeKey, data, loading}){
     const pointClickHandler = (e) => {
         toggleVisibility(e?.target);
     }
@@ -36,17 +26,22 @@ function IdeaPopularChart({timeKey, data}){
     const toggleVisibility = (item) => {
         item?.isVisible() ? item?.hide() : item.show();
     }
+    if(loading){
+        return <Box sx={{ display: 'flex' }}>
+            <CircularProgress />
+        </Box>
+    }
     return <>
         <PieChart
             id={"pie"}
-            dataSource={data && !_.isEmpty(data) ? data : dataFake}
+            dataSource={data}
             palette={"Bright"}
             title={`${_.toUpper("Top idea have the most comment in")} ${moment(timeKey).format("MM/YYYY")} `}
             // onClick={this.legendClickHandler}
             onPointClick={(e)=>pointClickHandler(e)}
             onLegendClick={(e)=>legendClickHandler(e)}
         >
-            <Series argumentField={"idea"} valueField={"numberComment"}>
+            <Series argumentField={"idea.title"} valueField={"comment_number"}>
                 <Label visible={true}>
                     <Connector visible={true} width={1} />
                 </Label>
