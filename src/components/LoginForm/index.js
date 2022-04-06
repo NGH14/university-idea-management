@@ -17,73 +17,73 @@ import { API_PATHS, AUTH, STORAGE_VARS, URL_PATHS } from "../../common/env";
 import { UserContext } from "../../context/AppContext";
 
 const CssTextField = styled(TextField)({
-	".MuiFormHelperText-root": {
-		fontFamily: "Poppins",
-		fontSize: "14px",
+	'.MuiFormHelperText-root': {
+		fontFamily: 'Poppins',
+		fontSize: '14px',
 	},
-	"& .MuiInputBase-root": {
-		fontFamily: "Poppins",
-		color: "#000",
-		fontSize: "16px",
+	'& .MuiInputBase-root': {
+		fontFamily: 'Poppins',
+		color: '#000',
+		fontSize: '16px',
 	},
 
-	"& .MuiFormLabel-root": {
-		color: "#999",
-		fontFamily: "Poppins",
-		fontSize: "16px",
+	'& .MuiFormLabel-root': {
+		color: '#999',
+		fontFamily: 'Poppins',
+		fontSize: '16px',
 	},
-	"& label.Mui-focused": {
-		color: "#000",
+	'& label.Mui-focused': {
+		color: '#000',
 	},
-	"& .MuiInput-underline:after": {
-		borderBottomColor: "#000",
+	'& .MuiInput-underline:after': {
+		borderBottomColor: '#000',
 	},
-	"& .MuiOutlinedInput-root": {
-		"& fieldset": {
-			boxShadow: "0px 2px 0px rgba(0, 0, 0, 0.25)",
-			borderRadius: "5px",
+	'& .MuiOutlinedInput-root': {
+		'& fieldset': {
+			boxShadow: '0px 2px 0px rgba(0, 0, 0, 0.25)',
+			borderRadius: '5px',
 		},
-		"&:hover fieldset": {
-			border: "1px solid #000000",
+		'&:hover fieldset': {
+			border: '1px solid #000000',
 		},
-		"&.Mui-focused fieldset": {
-			border: "1px solid #000000",
+		'&.Mui-focused fieldset': {
+			border: '1px solid #000000',
 		},
 	},
 });
 
 const ColorButton = styled(Button)(({ bgcolor, hoverbgcolor, textcolor }) => ({
-	fontFamily: "Poppins",
-	fontSize: "13px",
-	fontWeight: "600",
-	textTransform: "none",
-	lineHeight: "30px",
+	fontFamily: 'Poppins',
+	fontSize: '13px',
+	fontWeight: '600',
+	textTransform: 'none',
+	lineHeight: '30px',
 
-	color: textcolor || "#fff",
-	margin: "1rem auto 1.75rem",
-	padding: "10px",
-	backgroundColor: bgcolor || "#333",
+	color: textcolor || '#fff',
+	margin: '1rem auto 1.75rem',
+	padding: '10px',
+	backgroundColor: bgcolor || '#333',
 
-	"&:hover": { backgroundColor: hoverbgcolor || "#000" },
-	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
-	"&:disabled:hover ": { backgroundColor: "rgba(0, 0, 0, 0.12)" },
+	'&:hover': { backgroundColor: hoverbgcolor || '#000' },
+	'&:disabled ': { cursor: 'not-allowed', pointerEvents: 'all !important' },
+	'&:disabled:hover ': { backgroundColor: 'rgba(0, 0, 0, 0.12)' },
 }));
 
 const validationSchema = yup.object({
 	email: yup
-		.string("Enter your email")
-		.email("Enter a valid email")
-		.required("Email is required"),
+		.string('Enter your email')
+		.email('Enter a valid email')
+		.required('Email is required'),
 	password: yup
-		.string("Enter your password")
-		.min(4, "Password should be of minimum 4 characters length")
-		.required("Password is required"),
+		.string('Enter your password')
+		.min(4, 'Password should be of minimum 4 characters length')
+		.required('Password is required'),
 });
 
 const toastMessages = {
-	ERR_INVALID_LOGIN: "Email or password is invalid, Please try again !!",
-	ERR_INVALID_GOOGLE: "Google account is invalid, Please try again !!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+	ERR_INVALID_LOGIN: 'Email or password is invalid, Please try again !!',
+	ERR_INVALID_GOOGLE: 'Google account is invalid, Please try again !!',
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
 };
 
 // ─── MAIN ───────────────────────────────────────────────────────────────────────
@@ -99,8 +99,8 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 
 	const formik = useFormik({
 		initialValues: {
-			email: "",
-			password: "",
+			email: '',
+			password: '',
 		},
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
@@ -131,7 +131,7 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 
 	const onGoogleLogin = async (googleResponse) => {
 		await AnonRequest.post(API_PATHS.SHARED.AUTH.EX_LOGIN, {
-			provider: "google",
+			provider: 'google',
 			id_token: googleResponse.tokenId,
 		})
 			.then((res) => {
@@ -155,44 +155,44 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 	};
 
 	return (
-		<div className="loginform">
-			<div className="loginform-textcontent">
-				<h1 className="loginform-heading">UIM Login</h1>
-				<span className="loginform-subtext">
+		<div className='loginform'>
+			<div className='loginform-textcontent'>
+				<h1 className='loginform-heading'>UIM Login</h1>
+				<span className='loginform-subtext'>
 					Welcome to university idea management
 				</span>
 			</div>
 			<GoogleLogin
-				buttonText="Google"
+				buttonText='Google'
 				render={(renderProps) => (
 					<ColorButton
 						fullWidth
 						startIcon={<GoogleIcon />}
 						onClick={renderProps.onClick}
-						variant="contained"
-						bgcolor={"#fff"}
-						textcolor={"#444"}
-						hoverbgcolor={"#fff"}
+						variant='contained'
+						bgcolor={'#fff'}
+						textcolor={'#444'}
+						hoverbgcolor={'#fff'}
 					>
 						Sign in with Google
 					</ColorButton>
 				)}
 				clientId={AUTH.GAPI_CLIENT_ID}
 				onSuccess={(response) => onGoogleLogin(response)}
-				cookiePolicy="single_host_origin"
+				cookiePolicy='single_host_origin'
 			/>
-			<div className="loginform-loginby">
-				<span className="textwithline">or Sign in with Email</span>
+			<div className='loginform-loginby'>
+				<span className='textwithline'>or Sign in with Email</span>
 			</div>
 
 			<form onSubmit={formik.handleSubmit}>
 				<CssTextField
 					fullWidth
-					id="email"
-					label="Email"
-					name="email"
-					placeholder="E.g., vuhuua@gmail.com"
-					margin="normal"
+					id='email'
+					label='Email'
+					name='email'
+					placeholder='E.g., vuhuua@gmail.com'
+					margin='normal'
 					value={formik.values.email}
 					onChange={formik.handleChange}
 					onBlur={formik.handleBlur}
@@ -201,12 +201,12 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 				/>
 				<CssTextField
 					fullWidth
-					margin="normal"
-					placeholder="Enter your password"
-					id="password"
-					name="password"
-					label="Password"
-					type="password"
+					margin='normal'
+					placeholder='Enter your password'
+					id='password'
+					name='password'
+					label='Password'
+					type='password'
 					value={formik.values.password}
 					onChange={formik.handleChange}
 					onBlur={formik.handleBlur}
@@ -215,11 +215,11 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 				/>
 
 				<ColorButton
-					variant="contained"
-					type="submit"
+					variant='contained'
+					type='submit'
 					endIcon={<SendIcon />}
 					loading={buttonState?.loading}
-					loadingPosition="end"
+					loadingPosition='end'
 					disabled={buttonState.disable}
 					fullWidth
 				>

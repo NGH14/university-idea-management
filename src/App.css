@@ -3,9 +3,9 @@ html {
 }
 
 textarea {
-  padding: 12px;
-  resize: none;
-  min-height: fit-content;
+	padding: 12px;
+	resize: none;
+	min-height: fit-content;
 }
 
 *::-webkit-scrollbar-track {

@@ -7,13 +7,12 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { IconButton } from "@mui/material";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
-
 import {
-	GridToolbarColumnsButton,
-	GridToolbarContainer,
-	GridToolbarDensitySelector,
-	GridToolbarExport,
-	GridToolbarFilterButton,
+    GridToolbarColumnsButton,
+    GridToolbarContainer,
+    GridToolbarDensitySelector,
+    GridToolbarExport,
+    GridToolbarFilterButton,
 } from "@mui/x-data-grid";
 import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
 import * as React from "react";
@@ -32,11 +31,11 @@ import ModalUserManagement from "./modal/ModalUserManagement";
 import { Column } from "./model/Column";
 
 const toastMessages = {
-	WAIT: "Please wait...",
-	SUC_USER_ADDED: "Create user successful !!",
-	SUC_USER_EDITED: "Update user successful !!",
-	SUC_USER_DEL: "Delete user successful !!",
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+	WAIT: 'Please wait...',
+	SUC_USER_ADDED: 'Create user successful !!',
+	SUC_USER_EDITED: 'Update user successful !!',
+	SUC_USER_DEL: 'Delete user successful !!',
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
 };
 
 function UserManagement() {
@@ -47,7 +46,7 @@ function UserManagement() {
 
 	const [status, setStatus] = useState({
 		visibleModal: false,
-		action: "create",
+		action: 'create',
 	});
 
 	const [pagination, setPagination] = useState({
@@ -69,34 +68,37 @@ function UserManagement() {
 	const columns = [
 		...Column,
 		{
-			field: "actions",
-			headerName: "Action",
+			field: 'actions',
+			headerName: 'Action',
 			width: 75,
-			type: "actions",
+			type: 'actions',
 			disableColumnMenu: true,
 			sortable: false,
 			getActions: (params) => [
 				<GridActionsCellItem
-					icon={<GoInfo color="#3f66da" style={{ fontSize: "20px" }} />}
-					label="Detail"
-					onClick={() => onOpenModal(params.id, "detail")}
+					icon={<GoInfo color='#3f66da' style={{ fontSize: '20px' }} />}
+					label='Detail'
+					onClick={() => onOpenModal(params.id, 'detail')}
 					showInMenu
 				/>,
 
 				<GridActionsCellItem
-					icon={<BiPencil style={{ fontSize: "20px" }} />}
-					label="Update"
+					icon={<BiPencil style={{ fontSize: '20px' }} />}
+					label='Update'
 					disabled={state?.dataUser?.id === params.id ? true : false}
-					onClick={() => onOpenModal(params.id, "update")}
+					onClick={() => onOpenModal(params.id, 'update')}
 					showInMenu
 				/>,
 
 				<GridActionsCellItem
 					icon={
-						<MdOutlineDeleteOutline color="red" style={{ fontSize: "20px" }} />
+						<MdOutlineDeleteOutline
+							color='red'
+							style={{ fontSize: '20px' }}
+						/>
 					}
 					disabled={state?.dataUser?.id === params.id ? true : false}
-					label="Delete"
+					label='Delete'
 					onClick={() => onDelete(params.id)}
 					showInMenu
 				/>,
@@ -105,7 +107,7 @@ function UserManagement() {
 	];
 
 	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_USER + "/list", {
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_USER + '/table/list', {
 			params: {
 				page: pagination.page + 1,
 				page_size: pagination.pageSize,
@@ -219,10 +221,10 @@ function UserManagement() {
 
 	const renderTop = () => {
 		return (
-			<div className="managementuser_title">
-				<div className="managementuser_heading">
+			<div className='managementuser_title'>
+				<div className='managementuser_heading'>
 					<h2>User Management</h2>
-					<Tooltip title="Table Tool Bar">
+					<Tooltip title='Table Tool Bar'>
 						<IconButton onClick={handleOnClickToolBar}>
 							<MoreVertIcon />
 						</IconButton>
@@ -230,9 +232,9 @@ function UserManagement() {
 				</div>
 
 				<Button
-					variant="contained"
+					variant='contained'
 					endIcon={<AddCircleOutlineIcon />}
-					onClick={() => onOpenModal(null, "create")}
+					onClick={() => onOpenModal(null, 'create')}
 				>
 					Create
 				</Button>
@@ -242,15 +244,15 @@ function UserManagement() {
 
 	const renderContent = () => {
 		return (
-			<div className="managementuser_table">
+			<div className='managementuser_table'>
 				<DataGridPro
 					components={{
 						NoRowsOverlay: CustomNoRowsOverlay,
 						ColumnSortedDescendingIcon: () => (
-							<ExpandMoreIcon className="icon" />
+							<ExpandMoreIcon className='icon' />
 						),
 						ColumnSortedAscendingIcon: () => (
-							<ExpandLessIcon className="icon" />
+							<ExpandLessIcon className='icon' />
 						),
 						Toolbar: tableToolBar && CustomToolbarUser,
 					}}
@@ -261,12 +263,12 @@ function UserManagement() {
 					cell--textCenter
 					pageSize={pagination.pageSize}
 					page={pagination.page}
-					initialState={{ pinnedColumns: { right: ["actions"] } }}
+					initialState={{ pinnedColumns: { right: ['actions'] } }}
 					onPageSizeChange={(pageSize) =>
 						onChangePagination(pageSize, pagination.page)
 					}
 					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
-					style={{ minHeight: "600px" }}
+					style={{ minHeight: '600px' }}
 					rowsPerPageOptions={[5, 10, 25, 50]}
 				/>
 			</div>
@@ -276,10 +278,10 @@ function UserManagement() {
 	return (
 		<div
 			style={{
-				minHeight: "700px",
-				width: "100%",
-				padding: "0 5px",
-				fontFamily: "Poppins",
+				minHeight: '700px',
+				width: '100%',
+				padding: '0 5px',
+				fontFamily: 'Poppins',
 			}}
 		>
 			{renderTop()}

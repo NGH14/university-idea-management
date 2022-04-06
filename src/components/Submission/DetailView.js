@@ -18,22 +18,22 @@ import IdeaSubView from "./IdeaSubView";
 import ModalSubmissionIdea from "./Modal/ModalSubmissionIdea";
 
 const toastMessages = {
-	WAIT: "Please wait...",
+	WAIT: 'Please wait...',
 	SUC: {
 		SUB: {
-			EDITED: "Update submission successful !!",
-			DEL: "Delete submission successful !!",
+			EDITED: 'Update submission successful !!',
+			DEL: 'Delete submission successful !!',
 		},
 		IDEA: {
-			ADDED: "Create idea successful !!",
-			EDITED: "Update idea successful !!",
-			DEL: "Delete idea successful !!",
+			ADDED: 'Create idea successful !!',
+			EDITED: 'Update idea successful !!',
+			DEL: 'Delete idea successful !!',
 		},
 	},
 	ERR: {
-		SUB_NOT_FOUND: "Submission not found !!",
-		IDEAS_NOT_FOUND: "Ideas not found !!",
-		SERVER_ERROR: "Something went wrong, please try again !!",
+		SUB_NOT_FOUND: 'Submission not found !!',
+		IDEAS_NOT_FOUND: 'Ideas not found !!',
+		SERVER_ERROR: 'Something went wrong, please try again !!',
 	},
 };
 
@@ -49,7 +49,7 @@ export default function DetailView() {
 
 	const [status, setStatus] = useState({
 		visibleModal: false,
-		action: "update",
+		action: 'update',
 		loading: false,
 	});
 
@@ -98,10 +98,9 @@ export default function DetailView() {
 		setStatus({ ...status, loading: true });
 		toast
 			.promise(
-				AuthRequest.put(
-					`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`,
-					value,
-				).then(() => sleep(700)),
+				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`, value).then(
+					() => sleep(700),
+				),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC.SUB.EDITED,
@@ -148,22 +147,22 @@ export default function DetailView() {
 
 	const renderTop = () => {
 		return (
-			<div style={{ textAlign: "right" }}>
+			<div style={{ textAlign: 'right' }}>
 				<Button
-					size={"small"}
-					variant="contained"
-					style={{ backgroundColor: "#9e9e9e", marginRight: 15 }}
+					size={'small'}
+					variant='contained'
+					style={{ backgroundColor: '#9e9e9e', marginRight: 15 }}
 					endIcon={<ArrowBackIcon />}
 					onClick={() => navigate(`${URL_PATHS.MANAGE_SUB}`)}
 				>
 					Back
 				</Button>
 				<Button
-					size={"small"}
-					variant="contained"
-					style={{ backgroundColor: "#4caf50", marginRight: 15 }}
+					size={'small'}
+					variant='contained'
+					style={{ backgroundColor: '#4caf50', marginRight: 15 }}
 					endIcon={<BiPencil />}
-					onClick={() => onOpenModal("update")}
+					onClick={() => onOpenModal('update')}
 				>
 					Edit Submission
 				</Button>
@@ -177,11 +176,11 @@ export default function DetailView() {
 				style={{
 					padding: 12,
 					borderRadius: 8,
-					border: "2px solid gray",
-					textTransform: "capitalize",
+					border: '2px solid gray',
+					textTransform: 'capitalize',
 				}}
 			>
-				<legend style={{ fontWeight: "bold", padding: 8, fontSize: 22 }}>
+				<legend style={{ fontWeight: 'bold', padding: 8, fontSize: 22 }}>
 					submission details
 				</legend>
 				<DetailSubmissionForm initialValue={data?.sub} />
@@ -193,20 +192,20 @@ export default function DetailView() {
 		return (
 			<fieldset
 				style={{
-					border: "1px solid gray",
+					border: '1px solid gray',
 					padding: 12,
 					marginTop: 30,
-					borderRight: "none",
-					borderLeft: "none",
-					borderBottom: "none",
+					borderRight: 'none',
+					borderLeft: 'none',
+					borderBottom: 'none',
 				}}
 			>
 				<legend
 					style={{
-						fontWeight: "bold",
+						fontWeight: 'bold',
 						padding: 8,
 						fontSize: 22,
-						display: "flex",
+						display: 'flex',
 					}}
 				>
 					List Ideas

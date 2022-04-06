@@ -5,37 +5,34 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { AuthRequest } from "../../../common/AppUse";
-import { API_PATHS, DEV_CONFIGS } from "../../../common/env";
-import { dataDemo_ideas } from "../../../containers/SubmissionManagement/FakeData/Ideas";
+import { API_PATHS } from "../../../common/env";
 import CreateIdeaForm from "../../Idea/CreateIdeaForm";
 import UpdateIdeaForm from "../UpdateIdeaForm";
 
 const style = {
-	position: "relative",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	width: "1000px",
-	bgcolor: "background.paper",
+	position: 'relative',
+	top: '50%',
+	left: '50%',
+	transform: 'translate(-50%, -50%)',
+	width: '1000px',
+	bgcolor: 'background.paper',
 	boxShadow: 24,
 	p: 4,
-	borderRadius: "5px",
-	overflow: "auto",
-	maxHeight: "100%",
+	borderRadius: '5px',
+	overflow: 'auto',
+	maxHeight: '100%',
 
-	" @media (max-width: 600px)": {
-		width: "100%",
+	' @media (max-width: 600px)': {
+		width: '100%',
 	},
 };
 const toastMessages = {
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
-	ERR_USER_NOT_FOUND: "User not found !!",
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
+	ERR_USER_NOT_FOUND: 'User not found !!',
 };
 
-
 const ModalIdea = (props) => {
-	const { visible, onClose, onCreate, onUpdate, action, titleSub, idIdea } =
-		props;
+	const { visible, onClose, onCreate, onUpdate, action, submission, idIdea } = props;
 	const [initialValue, setInitialValue] = useState([]);
 
 	useEffect(() => {
@@ -49,7 +46,7 @@ const ModalIdea = (props) => {
 		//     return;
 		// }
 
-		if (action !== "create") {
+		if (action !== 'create') {
 			loadData();
 		}
 	}, [action]);
@@ -62,20 +59,20 @@ const ModalIdea = (props) => {
 
 	const renderForm = () => {
 		switch (action) {
-			case "create":
+			case 'create':
 				return (
 					<CreateIdeaForm
 						onClose={() => onClose()}
 						onCreate={onCreate}
-						submissionTitle={titleSub}
+						submission={submission}
 					/>
 				);
-			case "update":
+			case 'update':
 				return (
 					<UpdateIdeaForm
 						onClose={() => onClose()}
 						onUpdate={onUpdate}
-						submissionTitle={titleSub}
+						submissionTitle={submission}
 						initialValue={initialValue}
 					/>
 				);
@@ -84,13 +81,12 @@ const ModalIdea = (props) => {
 		}
 	};
 
-
 	return (
 		<Modal
 			open={visible}
 			onClose={() => onClose()}
-			aria-labelledby="modal-modal-title"
-			aria-describedby="modal-modal-description"
+			aria-labelledby='modal-modal-title'
+			aria-describedby='modal-modal-description'
 		>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>

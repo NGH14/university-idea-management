@@ -13,25 +13,25 @@ import EditTagForm from "../../../components/Tag/EditTagForm";
 import { dataDemo } from "../FakeData";
 
 const style = {
-	position: "relative",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	width: "1000px",
-	bgcolor: "background.paper",
+	position: 'relative',
+	top: '50%',
+	left: '50%',
+	transform: 'translate(-50%, -50%)',
+	width: '1000px',
+	bgcolor: 'background.paper',
 	boxShadow: 24,
 	p: 4,
-	borderRadius: "5px",
-	overflow: "auto",
+	borderRadius: '5px',
+	overflow: 'auto',
 	maxHeight: 380,
-	" @media (max-width: 600px)": {
-		width: "100%",
+	' @media (max-width: 600px)': {
+		width: '100%',
 	},
 };
 
 const toastMessages = {
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
-	ERR_TAG_NOT_FOUND: "Tag not found !!",
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
+	ERR_TAG_NOT_FOUND: 'Tag not found !!',
 };
 
 const ModalTagManagement = (props) => {
@@ -49,7 +49,7 @@ const ModalTagManagement = (props) => {
 			return;
 		}
 
-		if (action !== "create") {
+		if (action !== 'create') {
 			loadData();
 		}
 	}, [action]);
@@ -62,9 +62,9 @@ const ModalTagManagement = (props) => {
 
 	const renderForm = () => {
 		switch (action) {
-			case "create":
+			case 'create':
 				return <CreateTagForm onClose={() => onClose()} onCreate={onCreate} />;
-			case "update":
+			case 'update':
 				return (
 					<EditTagForm
 						onClose={() => onClose()}
@@ -72,7 +72,7 @@ const ModalTagManagement = (props) => {
 						initialValue={initialValue}
 					/>
 				);
-			case "detail":
+			case 'detail':
 				return (
 					<DetailTagForm
 						onClose={() => onClose()}
@@ -84,14 +84,14 @@ const ModalTagManagement = (props) => {
 		}
 	};
 
-	if (action !== "create" && _.isEmpty(initialValue)) return null;
+	if (action !== 'create' && _.isEmpty(initialValue)) return null;
 
 	return (
 		<Modal
 			open={visible}
 			onClose={() => onClose()}
-			aria-labelledby="modal-modal-title"
-			aria-describedby="modal-modal-description"
+			aria-labelledby='modal-modal-title'
+			aria-describedby='modal-modal-description'
 		>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>

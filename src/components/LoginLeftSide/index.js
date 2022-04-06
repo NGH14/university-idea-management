@@ -7,10 +7,10 @@ import LoginForm from "../LoginForm";
 const LeftSideLogin = ({ src, returnUrl }) => {
 	return (
 		<>
-			<div className="loginpage-leftside">
-				<img src={src} alt="" className="leftside_logo" />
+			<div className='loginpage-leftside'>
+				<img src={src} alt='' className='leftside_logo' />
 
-				<div className="leftside_content">
+				<div className='leftside_content'>
 					<LoginForm returnUrl={returnUrl} />
 				</div>
 			</div>

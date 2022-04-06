@@ -7,7 +7,7 @@ import RightSideLogin from "../../components/LoginRightSide";
 
 export default function Login({ returnUrl }) {
 	return (
-		<div className="loginpage-wrapper">
+		<div className='loginpage-wrapper'>
 			<LeftSideLogin src={logoBlack} returnUrl={returnUrl} />
 			<RightSideLogin src={loginImg} />
 		</div>

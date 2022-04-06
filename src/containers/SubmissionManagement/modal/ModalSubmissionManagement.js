@@ -12,26 +12,26 @@ import EditSubmissionForm from "../../../components/Submission/EditSubmissionFor
 import { dataDemo_submissions } from "../FakeData/Submissions";
 
 const style = {
-	position: "relative",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
-	width: "1000px",
-	bgcolor: "background.paper",
+	position: 'relative',
+	top: '50%',
+	left: '50%',
+	transform: 'translate(-50%, -50%)',
+	width: '1000px',
+	bgcolor: 'background.paper',
 	boxShadow: 24,
 	p: 4,
-	borderRadius: "5px",
-	overflow: "auto",
-	maxHeight: "100%",
+	borderRadius: '5px',
+	overflow: 'auto',
+	maxHeight: '100%',
 
-	" @media (max-width: 600px)": {
-		width: "100%",
+	' @media (max-width: 600px)': {
+		width: '100%',
 	},
 };
 
 const toastMessages = {
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
-	ERR_SUB_NOT_FOUND: "Submission not found !!",
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
+	ERR_SUB_NOT_FOUND: 'Submission not found !!',
 };
 
 const ModalSubmissionManagement = (props) => {
@@ -49,7 +49,7 @@ const ModalSubmissionManagement = (props) => {
 			return;
 		}
 
-		if (action !== "create" && action !== "createIdea") {
+		if (action !== 'create' && action !== 'createIdea') {
 			loadData();
 		}
 	}, [action]);
@@ -62,11 +62,11 @@ const ModalSubmissionManagement = (props) => {
 
 	const renderForm = () => {
 		switch (action) {
-			case "create":
+			case 'create':
 				return (
 					<CreateSubmissionForm onClose={() => onClose()} onCreate={onCreate} />
 				);
-			case "update":
+			case 'update':
 				return (
 					<EditSubmissionForm
 						onClose={() => onClose()}
@@ -81,14 +81,14 @@ const ModalSubmissionManagement = (props) => {
 		}
 	};
 
-	if (action !== "create" && _.isEmpty(initialValue)) return null;
+	if (action !== 'create' && _.isEmpty(initialValue)) return null;
 
 	return (
 		<Modal
 			open={visible}
 			onClose={() => onClose()}
-			aria-labelledby="modal-modal-title"
-			aria-describedby="modal-modal-description"
+			aria-labelledby='modal-modal-title'
+			aria-describedby='modal-modal-description'
 		>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>

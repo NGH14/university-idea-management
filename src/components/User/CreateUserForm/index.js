@@ -22,69 +22,69 @@ import { AuthRequest } from "../../../common/AppUse";
 import { API_PATHS, DEV_CONFIGS } from "../../../common/env";
 
 const CssTextField = styled(TextField)({
-	".MuiFormHelperText-root": {
-		fontSize: "14px",
-		fontFamily: "Poppins",
+	'.MuiFormHelperText-root': {
+		fontSize: '14px',
+		fontFamily: 'Poppins',
 	},
 
-	"& .MuiInputBase-root": {
-		color: "#000",
-		fontSize: "16px",
-		fontFamily: "Poppins",
+	'& .MuiInputBase-root': {
+		color: '#000',
+		fontSize: '16px',
+		fontFamily: 'Poppins',
 	},
-	"& label.Mui-focused": {
-		color: "#000",
+	'& label.Mui-focused': {
+		color: '#000',
 	},
-	"& .MuiInput-underline:after": {
-		borderBottomColor: "#000",
+	'& .MuiInput-underline:after': {
+		borderBottomColor: '#000',
 	},
-	"& .MuiOutlinedInput-root": {
-		"& fieldset": {
-			borderRadius: "5px",
+	'& .MuiOutlinedInput-root': {
+		'& fieldset': {
+			borderRadius: '5px',
 		},
-		"&:hover fieldset": {
-			border: "1px solid #000000",
+		'&:hover fieldset': {
+			border: '1px solid #000000',
 		},
-		"&.Mui-focused fieldset": {
-			border: "1px solid #000000",
+		'&.Mui-focused fieldset': {
+			border: '1px solid #000000',
 		},
 	},
 });
 
 const toastMessages = {
-	ERR_SERVER_ERROR: "Something went wrong, please try again !!",
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
 };
 
 const ColorButton = styled(Button)(() => ({
-	fontFamily: "Poppins",
-	fontSize: "13px",
-	fontWeight: "bold",
-	textTransform: "none",
+	fontFamily: 'Poppins',
+	fontSize: '13px',
+	fontWeight: 'bold',
+	textTransform: 'none',
 	minWidth: 200,
-	display: "inline-block",
+	display: 'inline-block',
 
-	margin: "10px 0",
-	padding: "10px",
+	margin: '10px 0',
+	padding: '10px',
 
-	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
+	'&:disabled ': { cursor: 'not-allowed', pointerEvents: 'all !important' },
 }));
 
 const validationSchema = yup.object({
-	full_name: yup.string().required("Full Name is required"),
+	full_name: yup.string().required('Full Name is required'),
 	phone: yup.string().nullable(),
-	email: yup.string().email("Email is invalid").required("Email is required"),
-	role: yup.string().required("Role is required"),
-	department: yup.string().required("Department is required"),
-	date_of_birth: yup.date("Date invalid").nullable(),
+	email: yup.string().email('Email is invalid').required('Email is required'),
+	role: yup.string().required('Role is required'),
+	department: yup.string().required('Department is required'),
+	date_of_birth: yup.date('Date invalid').nullable(),
 });
 
 const initialValues = {
-	email: "",
-	full_name: "",
-	role: "",
-	phone: "",
-	department: "",
-	gender: "",
+	email: '',
+	full_name: '',
+	role: '',
+	phone: '',
+	department: '',
+	gender: '',
 	date_of_birth: null,
 };
 
@@ -112,8 +112,8 @@ function CreateUserForm(prop) {
 			return;
 		}
 
-		await AuthRequest.get(API_PATHS.SHARED.ROLE + "/list")
-			.then((res) => setRoles(res?.data?.result))
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_DEP + '/list')
+			.then((res) => setDepartments(res?.data?.result))
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
@@ -123,14 +123,14 @@ function CreateUserForm(prop) {
 			return;
 		}
 
-		await AuthRequest.get(API_PATHS.ADMIN.DEP + "/list")
-			.then((res) => setDepartments(res?.data?.result))
+		await AuthRequest.get(API_PATHS.SHARED.ROLE + '/list')
+			.then((res) => setRoles(res?.data?.result))
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
 	return (
-		<div className="createuserform">
-			<div className="createuserform_title">
+		<div className='createuserform'>
+			<div className='createuserform_title'>
 				<h2>Create New User</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -138,36 +138,39 @@ function CreateUserForm(prop) {
 			</div>
 			<br />
 
-			<form className="form_grid" onSubmit={formik.handleSubmit}>
-				<div className="form_group">
-					<div className="form_content">
-						<InputLabel required htmlFor="full_name">
+			<form className='form_grid' onSubmit={formik.handleSubmit}>
+				<div className='form_group'>
+					<div className='form_content'>
+						<InputLabel required htmlFor='full_name'>
 							Full Name
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							margin="normal"
-							id="full_name"
-							name="full_name"
+							margin='normal'
+							id='full_name'
+							name='full_name'
 							value={formik.values.full_name}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							error={
-								formik.touched.full_name && Boolean(formik.errors.full_name)
+								formik.touched.full_name &&
+								Boolean(formik.errors.full_name)
 							}
-							helperText={formik.touched.full_name && formik.errors.full_name}
+							helperText={
+								formik.touched.full_name && formik.errors.full_name
+							}
 						/>
 					</div>
-					<div className="form_content">
-						<InputLabel required htmlFor="email">
+					<div className='form_content'>
+						<InputLabel required htmlFor='email'>
 							Email
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							variant="outlined"
-							id="email"
-							name="email"
-							margin="normal"
+							variant='outlined'
+							id='email'
+							name='email'
+							margin='normal'
 							value={formik.values.email}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
@@ -177,17 +180,17 @@ function CreateUserForm(prop) {
 					</div>
 				</div>
 
-				<div className="form_group">
-					<div className="form_content">
-						<InputLabel required htmlFor="phone">
+				<div className='form_group'>
+					<div className='form_content'>
+						<InputLabel required htmlFor='phone'>
 							Phone
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							variant="outlined"
-							id="phone"
-							name="phone"
-							margin="normal"
+							variant='outlined'
+							id='phone'
+							name='phone'
+							margin='normal'
 							value={formik.values.phone}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
@@ -195,23 +198,23 @@ function CreateUserForm(prop) {
 							helperText={formik.touched.phone && formik.errors.phone}
 						/>
 					</div>
-					<div className="form_content">
-						<InputLabel htmlFor="gender">Gender</InputLabel>
+					<div className='form_content'>
+						<InputLabel htmlFor='gender'>Gender</InputLabel>
 
 						<Select
 							select
 							fullWidth
 							displayEmpty
-							margin="normal"
-							labelId="gender"
-							id="gender"
-							name="gender"
+							margin='normal'
+							labelId='gender'
+							id='gender'
+							name='gender'
 							value={formik.values.gender}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							style={{ textTransform: "capitalize" }}
+							style={{ textTransform: 'capitalize' }}
 							renderValue={
-								formik.values.gender !== ""
+								formik.values.gender !== ''
 									? undefined
 									: () => (
 											<placeholder>
@@ -228,16 +231,22 @@ function CreateUserForm(prop) {
 							}
 							error={formik.touched.gender && Boolean(formik.errors.gender)}
 						>
-							<MenuItem style={{ textTransform: "capitalize" }} value="male">
+							<MenuItem
+								style={{ textTransform: 'capitalize' }}
+								value='male'
+							>
 								male
 							</MenuItem>
-							<MenuItem style={{ textTransform: "capitalize" }} value="female">
+							<MenuItem
+								style={{ textTransform: 'capitalize' }}
+								value='female'
+							>
 								female
 							</MenuItem>
 						</Select>
 					</div>
-					<div className="form_content">
-						<InputLabel htmlFor="date_of_birth">Date of Birth</InputLabel>
+					<div className='form_content'>
+						<InputLabel htmlFor='date_of_birth'>Date of Birth</InputLabel>
 
 						<LocalizationProvider
 							dateAdapter={AdapterDateFns}
@@ -246,43 +255,47 @@ function CreateUserForm(prop) {
 							<DatePicker
 								fullWidth
 								disableFuture
-								margin="normal"
-								name="date_of_birth"
-								id="date_of_birth"
+								margin='normal'
+								name='date_of_birth'
+								id='date_of_birth'
 								onChange={(val) => {
-									formik.setFieldValue("date_of_birth", val);
+									formik.setFieldValue('date_of_birth', val);
 								}}
 								value={formik.values.date_of_birth}
 								error={
-									formik.errors.date_of_birth && formik.touched.date_of_birth
+									formik.errors.date_of_birth &&
+									formik.touched.date_of_birth
 								}
 								helperText={
-									formik.errors.date_of_birth && formik.touched.date_of_birth
+									formik.errors.date_of_birth &&
+									formik.touched.date_of_birth
 								}
-								renderInput={(params) => <TextField fullWidth {...params} />}
+								renderInput={(params) => (
+									<TextField fullWidth {...params} />
+								)}
 							/>
 						</LocalizationProvider>
 					</div>
 				</div>
 
-				<div className="form_group">
-					<div className="form_content">
-						<InputLabel required htmlFor="department">
+				<div className='form_group'>
+					<div className='form_content'>
+						<InputLabel required htmlFor='department'>
 							Department
 						</InputLabel>
 						<Select
 							select
 							fullWidth
 							displayEmpty
-							labelId="department"
-							id="department"
-							name="department"
+							labelId='department'
+							id='department'
+							name='department'
 							value={formik.values.department}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							style={{ textTransform: "capitalize" }}
+							style={{ textTransform: 'capitalize' }}
 							renderValue={
-								formik.values.department !== ""
+								formik.values.department !== ''
 									? undefined
 									: () => (
 											<placeholder>
@@ -298,12 +311,13 @@ function CreateUserForm(prop) {
 									  )
 							}
 							error={
-								formik.touched.department && Boolean(formik.errors.department)
+								formik.touched.department &&
+								Boolean(formik.errors.department)
 							}
 						>
 							{depOptions.map((dep) => (
 								<MenuItem
-									style={{ textTransform: "capitalize" }}
+									style={{ textTransform: 'capitalize' }}
 									value={dep.name}
 								>
 									{dep.name}
@@ -315,23 +329,23 @@ function CreateUserForm(prop) {
 						</FormHelperText>
 					</div>
 
-					<div className="form_content">
-						<InputLabel required htmlFor="role">
+					<div className='form_content'>
+						<InputLabel required htmlFor='role'>
 							Role
 						</InputLabel>
 						<Select
 							select
 							fullWidth
 							displayEmpty
-							labelId="role"
-							id="role"
-							name="role"
+							labelId='role'
+							id='role'
+							name='role'
 							value={formik.values.role}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							style={{ textTransform: "capitalize" }}
+							style={{ textTransform: 'capitalize' }}
 							renderValue={
-								formik.values.role !== ""
+								formik.values.role !== ''
 									? undefined
 									: () => (
 											<placeholder>
@@ -350,7 +364,7 @@ function CreateUserForm(prop) {
 						>
 							{roleOptions.map((role) => (
 								<MenuItem
-									style={{ textTransform: "capitalize" }}
+									style={{ textTransform: 'capitalize' }}
 									value={role.name}
 								>
 									{role.name}
@@ -362,11 +376,11 @@ function CreateUserForm(prop) {
 						</FormHelperText>
 					</div>
 				</div>
-				<div className="createuserform_footer">
-					<ColorButton variant="outlined" onClick={() => onClose()}>
+				<div className='createuserform_footer'>
+					<ColorButton variant='outlined' onClick={() => onClose()}>
 						Cancel
 					</ColorButton>
-					<ColorButton variant="contained" type="submit">
+					<ColorButton variant='contained' type='submit'>
 						Create User
 					</ColorButton>
 				</div>

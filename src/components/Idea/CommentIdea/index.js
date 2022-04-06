@@ -15,31 +15,31 @@ import { API_PATHS } from "../../../common/env";
 const fakeData = [
 	{
 		ideaId: 1,
-		title: "sadsa",
-		user: { name: "Data Fake 01" },
-		content: "Data fake demo 01",
-		createAt: "2022-03-15T13:45:30",
+		title: 'sadsa',
+		user: { name: 'Data Fake 01' },
+		content: 'Data fake demo 01',
+		createAt: '2022-03-15T13:45:30',
 	},
 	{
 		ideaId: 1,
-		title: "sadsa",
-		user: { name: "Data Fake 02" },
-		content: "Data fake demo 02",
-		createAt: "2022-03-15T13:45:30",
+		title: 'sadsa',
+		user: { name: 'Data Fake 02' },
+		content: 'Data fake demo 02',
+		createAt: '2022-03-15T13:45:30',
 	},
 	{
 		ideaId: 2,
-		title: "sadsa",
-		user: { name: "Data Fake 01 _ 01" },
-		content: "Data fake demo 01",
-		createAt: "2022-03-15T13:45:30",
+		title: 'sadsa',
+		user: { name: 'Data Fake 01 _ 01' },
+		content: 'Data fake demo 01',
+		createAt: '2022-03-15T13:45:30',
 	},
 	{
 		ideaId: 2,
-		title: "sadsa",
-		user: { name: "Data Fake 02 _ 02" },
-		content: "Data fake demo 02",
-		createAt: "2022-03-15T13:45:30",
+		title: 'sadsa',
+		user: { name: 'Data Fake 02 _ 02' },
+		content: 'Data fake demo 02',
+		createAt: '2022-03-15T13:45:30',
 	},
 ];
 
@@ -59,31 +59,28 @@ function CommentIdea({ data, ideaId }) {
 			params: {
 				ideaId,
 				page: pagination?.page,
-			}
-
+			},
 		})
 			.then((res) => {
-				setDataComment([...dataComment, res?.data?.result?.row])
+				setDataComment([...dataComment, res?.data?.result?.row]);
 			})
 			.catch(() => {});
-	}
+	};
 	// ref 80 condition display button show more
 	const onShowMoreComment = async () => {
-		setPagination(pagination?.page + 1)
-		loadData()
+		setPagination(pagination?.page + 1);
+		loadData();
 	};
 
-	const loadDataAction = () => {
-
-	}
+	const loadDataAction = () => {};
 
 	const onCreateComment = async (value) => {
 		// api create Comment
 		const newValue = { ...value, ideaId };
 		await AuthRequest.post(`${API_PATHS.ADMIN.MANAGE_COMMENT}`, newValue)
 			.then((res) => {
-				setDataComment([{...res?.data?.result}, ...dataComment])
-				setTotalComment(totalComment+1)
+				setDataComment([{ ...res?.data?.result }, ...dataComment]);
+				setTotalComment(totalComment + 1);
 			})
 			.catch(() => {});
 	};
@@ -91,37 +88,41 @@ function CommentIdea({ data, ideaId }) {
 	const renderContent = () => {
 		const comments = _.map(dataComment, (item) => {
 			return (
-				<Paper style={{ padding: 15, boxShadow: "none" }}>
-					<Grid container wrap="nowrap" spacing={2}>
+				<Paper style={{ padding: 15, boxShadow: 'none' }}>
+					<Grid container wrap='nowrap' spacing={2}>
 						<Grid item>
-							<Avatar alt="Remy Sharp" />
+							<Avatar alt='Remy Sharp' />
 						</Grid>
-						<Grid justifyContent="left" item xs zeroMinWidth>
+						<Grid justifyContent='left' item xs zeroMinWidth>
 							<div
-								style={{ borderRadius: 15, padding: 10, background: "#F0F2F5" }}
+								style={{
+									borderRadius: 15,
+									padding: 10,
+									background: '#F0F2F5',
+								}}
 							>
 								<p
 									style={{
 										margin: 0,
-										textAlign: "left",
-										fontWeight: "bold",
+										textAlign: 'left',
+										fontWeight: 'bold',
 										fontSize: 18,
-										color: "black",
+										color: 'black',
 									}}
 								>
 									{item?.user?.name}
 								</p>
-								<p style={{ textAlign: "left" }}>{item?.content}</p>
+								<p style={{ textAlign: 'left' }}>{item?.content}</p>
 							</div>
 							<p
 								style={{
-									textAlign: "left",
-									color: "gray",
+									textAlign: 'left',
+									color: 'gray',
 									marginTop: 8,
 									marginLeft: 15,
 								}}
 							>
-								Commented {moment(item.createAt, "YYYYMMDD").fromNow()}
+								Commented {moment(item.createAt, 'YYYYMMDD').fromNow()}
 							</p>
 						</Grid>
 					</Grid>
@@ -132,14 +133,18 @@ function CommentIdea({ data, ideaId }) {
 		return (
 			<div>
 				{comments}
-				{_.size(dataComment) === totalComment || totalComment === 0 ? <div></div> : <div
-					style={{ textAlign: "center", marginTop: 15, marginBottom: 15 }}
-					onClick={() => {
-						onShowMoreComment();
-					}}
-				>
-					<Button variant={"outlined  "}>View More ...</Button>
-				</div>}
+				{_.size(dataComment) === totalComment || totalComment === 0 ? (
+					<div></div>
+				) : (
+					<div
+						style={{ textAlign: 'center', marginTop: 15, marginBottom: 15 }}
+						onClick={() => {
+							onShowMoreComment();
+						}}
+					>
+						<Button variant={'outlined  '}>View More ...</Button>
+					</div>
+				)}
 			</div>
 		);
 	};
@@ -147,26 +152,26 @@ function CommentIdea({ data, ideaId }) {
 		<>
 			<div>
 				<Paper
-					component="form"
+					component='form'
 					sx={{
-						p: "2px 4px",
-						display: "flex",
-						alignItems: "center",
-						width: "100%",
-						background: "#F0F2F5",
+						p: '2px 4px',
+						display: 'flex',
+						alignItems: 'center',
+						width: '100%',
+						background: '#F0F2F5',
 					}}
 				>
 					<InputBase
 						sx={{ ml: 1, flex: 1 }}
-						placeholder="Comment idea ..."
+						placeholder='Comment idea ...'
 						onClick={() => {
 							console.log(123);
 						}}
 					/>
-					<Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+					<Divider sx={{ height: 28, m: 0.5 }} orientation='vertical' />
 					<IconButton
-						sx={{ p: "10px" }}
-						aria-label="directions"
+						sx={{ p: '10px' }}
+						aria-label='directions'
 						onClick={() => {
 							onCreateComment();
 						}}

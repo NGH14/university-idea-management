@@ -13,47 +13,47 @@ import React, { useEffect, useState } from "react";
 import Dropzone from "react-dropzone";
 
 const CssTextField = styled(TextField)({
-	".MuiFormHelperText-root": {
-		fontSize: "14px",
-		fontFamily: "Poppins",
+	'.MuiFormHelperText-root': {
+		fontSize: '14px',
+		fontFamily: 'Poppins',
 	},
 
-	"& .MuiInputBase-root": {
-		color: "#000",
-		fontSize: "16px",
-		fontFamily: "Poppins",
+	'& .MuiInputBase-root': {
+		color: '#000',
+		fontSize: '16px',
+		fontFamily: 'Poppins',
 	},
-	"& label.Mui-focused": {
-		color: "#000",
+	'& label.Mui-focused': {
+		color: '#000',
 	},
-	"& .MuiInput-underline:after": {
-		borderBottomColor: "#000",
+	'& .MuiInput-underline:after': {
+		borderBottomColor: '#000',
 	},
-	"& .MuiOutlinedInput-root": {
-		"& fieldset": {
-			borderRadius: "5px",
+	'& .MuiOutlinedInput-root': {
+		'& fieldset': {
+			borderRadius: '5px',
 		},
-		"&:hover fieldset": {
-			border: "1px solid #000000",
+		'&:hover fieldset': {
+			border: '1px solid #000000',
 		},
-		"&.Mui-focused fieldset": {
-			border: "1px solid #000000",
+		'&.Mui-focused fieldset': {
+			border: '1px solid #000000',
 		},
 	},
 });
 
 const ColorButton = styled(Button)(() => ({
-	fontFamily: "Poppins",
-	fontSize: "13px",
-	fontWeight: "bold",
-	textTransform: "none",
+	fontFamily: 'Poppins',
+	fontSize: '13px',
+	fontWeight: 'bold',
+	textTransform: 'none',
 	minWidth: 200,
-	display: "inline-block",
+	display: 'inline-block',
 
-	margin: "10px",
-	padding: "10px",
+	margin: '10px',
+	padding: '10px',
 
-	"&:disabled ": { cursor: "not-allowed", pointerEvents: "all !important" },
+	'&:disabled ': { cursor: 'not-allowed', pointerEvents: 'all !important' },
 }));
 
 //ref 147 option sub
@@ -91,14 +91,14 @@ function UpdateIdeaForm(props) {
 		reader.readAsDataURL(values.file[0]); //start conversion...
 		reader.onload = function () {
 			//.. once finished..
-			const rawLog = reader.result.split(",")[1]; //extract only thee file data part
+			const rawLog = reader.result.split(',')[1]; //extract only thee file data part
 			const dataSend = {
 				dataReq: { data: rawLog, name: file.name, type: file.type },
-				fname: "uploadFilesToGoogleDrive",
+				fname: 'uploadFilesToGoogleDrive',
 			}; //preapre info to send to API
 			fetch(
-				"https://script.google.com/macros/s/AKfycbzOsDnvlUIHyq6y2dpzWevLym82dPqM9ZVTbvpB2KpoFN9GHoiodwvMMNpRDeupSeFO/exec", //your AppsScript URL
-				{ method: "POST", body: JSON.stringify(dataSend) },
+				'https://script.google.com/macros/s/AKfycbzOsDnvlUIHyq6y2dpzWevLym82dPqM9ZVTbvpB2KpoFN9GHoiodwvMMNpRDeupSeFO/exec', //your AppsScript URL
+				{ method: 'POST', body: JSON.stringify(dataSend) },
 			) //send to Api
 				.then((res) => res.json())
 				.then((infoFile) => {
@@ -117,17 +117,17 @@ function UpdateIdeaForm(props) {
 	};
 	const onUploadFile = (value) => {
 		setFileState(value || null);
-		formik.setFieldValue("file", [...value]);
+		formik.setFieldValue('file', [...value]);
 		formik.resetForm();
 	};
 	const onDeleteFile = () => {
 		setFileState(null);
-		formik.setFieldValue("file", null);
+		formik.setFieldValue('file', null);
 		formik.resetForm();
 	};
 	return (
-		<div className="createuserform">
-			<div className="createuserform_title">
+		<div className='createuserform'>
+			<div className='createuserform_title'>
 				<h2>Create Idea</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -135,16 +135,16 @@ function UpdateIdeaForm(props) {
 			</div>
 			<br />
 
-			<form className="form_grid" onSubmit={formik.handleSubmit}>
-				<div className="form_group">
-					<div className="form_content">
-						<InputLabel htmlFor="full_name">Title Submission</InputLabel>
+			<form className='form_grid' onSubmit={formik.handleSubmit}>
+				<div className='form_group'>
+					<div className='form_content'>
+						<InputLabel htmlFor='full_name'>Title Submission</InputLabel>
 						{submissionTitle ? (
 							<CssTextField
 								fullWidth
-								margin="normal"
-								id="titleSub"
-								name="titleSub"
+								margin='normal'
+								id='titleSub'
+								name='titleSub'
 								value={submissionTitle}
 								onChange={formik.handleChange}
 								onBlur={formik.handleBlur}
@@ -159,16 +159,16 @@ function UpdateIdeaForm(props) {
 						)}
 					</div>
 				</div>
-				<div className="form_group">
-					<div className="form_content">
-						<InputLabel required={true} htmlFor="full_name">
+				<div className='form_group'>
+					<div className='form_content'>
+						<InputLabel required={true} htmlFor='full_name'>
 							Title Idea
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							margin="normal"
-							id="title"
-							name="title"
+							margin='normal'
+							id='title'
+							name='title'
 							value={formik.values.title}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
@@ -178,30 +178,30 @@ function UpdateIdeaForm(props) {
 					</div>
 				</div>
 
-				<div className="form_group">
-					<div className="form_content">
-						<InputLabel required={true} htmlFor="full_name">
+				<div className='form_group'>
+					<div className='form_content'>
+						<InputLabel required={true} htmlFor='full_name'>
 							Content
 						</InputLabel>
 						<TextareaAutosize
-							className="description-field"
-							aria-label="minimum height"
-							id="content"
-							name="content"
+							className='description-field'
+							aria-label='minimum height'
+							id='content'
+							name='content'
 							minRows={8}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							style={{
-								width: "100%",
+								width: '100%',
 								marginTop: 16,
 								marginBottom: 8,
-								borderRadius: "5px",
+								borderRadius: '5px',
 							}}
 						/>
 					</div>
 				</div>
-				<div className="form_group">
-					<div className="form_content" style={{ display: "flex" }}>
+				<div className='form_group'>
+					<div className='form_content' style={{ display: 'flex' }}>
 						<Dropzone
 							onDrop={(value) => onUploadFile(value)}
 							disabled={fileState && !_.isEmpty(fileState) ? true : false}
@@ -210,14 +210,18 @@ function UpdateIdeaForm(props) {
 						>
 							{({ getRootProps, getInputProps }) => (
 								<div
-									{...getRootProps({ className: "dropzone" })}
-									style={{ height: "100%" }}
+									{...getRootProps({ className: 'dropzone' })}
+									style={{ height: '100%' }}
 								>
-									<input {...getInputProps()} type={"file"} />
+									<input {...getInputProps()} type={'file'} />
 									<Button
-										disabled={fileState && !_.isEmpty(fileState) ? true : false}
-										variant={"contained"}
-										style={{ background: "darkgray" }}
+										disabled={
+											fileState && !_.isEmpty(fileState)
+												? true
+												: false
+										}
+										variant={'contained'}
+										style={{ background: 'darkgray' }}
 									>
 										Upload Image
 									</Button>
@@ -228,18 +232,18 @@ function UpdateIdeaForm(props) {
 						{fileState && !_.isEmpty(fileState) && (
 							<div
 								style={{
-									marginTop: "auto",
-									marginBottom: "auto",
-									marginLeft: "15px",
-									display: "flex",
+									marginTop: 'auto',
+									marginBottom: 'auto',
+									marginLeft: '15px',
+									display: 'flex',
 								}}
 							>
 								{fileState?.url ? (
 									<a
 										style={{
-											marginTop: "auto",
-											marginBottom: "auto",
-											marginRight: "15px",
+											marginTop: 'auto',
+											marginBottom: 'auto',
+											marginRight: '15px',
 										}}
 										href={fileState?.url}
 									>
@@ -248,16 +252,16 @@ function UpdateIdeaForm(props) {
 								) : (
 									<p
 										style={{
-											marginTop: "auto",
-											marginBottom: "auto",
-											marginRight: "15px",
+											marginTop: 'auto',
+											marginBottom: 'auto',
+											marginRight: '15px',
 										}}
 									>
 										{fileState?.[0].name}
 									</p>
 								)}
 								<IconButton
-									style={{ color: "darkred" }}
+									style={{ color: 'darkred' }}
 									onClick={() => {
 										onDeleteFile();
 									}}
@@ -268,11 +272,11 @@ function UpdateIdeaForm(props) {
 						)}
 					</div>
 				</div>
-				<div className="createuserform_footer">
-					<ColorButton variant="outlined" onClick={() => onClose()}>
+				<div className='createuserform_footer'>
+					<ColorButton variant='outlined' onClick={() => onClose()}>
 						Cancel
 					</ColorButton>
-					<ColorButton variant="contained" type="submit">
+					<ColorButton variant='contained' type='submit'>
 						Create
 					</ColorButton>
 				</div>
