@@ -298,6 +298,8 @@ export default function Sidebar(props) {
 								const { text, icon, onClick } = item;
 								return (
 									<Tooltip
+										disableFocusListener
+										disableTouchListener
 										title={text}
 										arrow
 										placement='left'>
@@ -336,7 +338,12 @@ export default function Sidebar(props) {
 						const { selectedText, text, icon, onClick } = item;
 						return (
 							<>
-								<Tooltip title={text} arrow placement='right'>
+								<Tooltip
+									disableFocusListener
+									disableTouchListener
+									title={text}
+									arrow
+									placement='right'>
 									<ListItemButton
 										key={index + Math.random()}
 										selected={selectedText === selectedPage}
@@ -428,6 +435,8 @@ export default function Sidebar(props) {
 											state?.dataUser.role,
 										)) && (
 										<Tooltip
+											disableFocusListener
+											disableTouchListener
 											title={text}
 											arrow
 											placement='right'>
@@ -531,6 +540,8 @@ export default function Sidebar(props) {
 											state?.dataUser.role,
 										)) && (
 										<Tooltip
+											disableFocusListener
+											disableTouchListener
 											title={text}
 											arrow
 											placement='right'>
