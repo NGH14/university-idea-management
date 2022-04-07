@@ -5,10 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import {
-	IoArrowDownCircleOutline,
-	IoArrowUpCircleOutline,
-} from 'react-icons/io5';
+import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
 
 import {
 	Box,
@@ -381,7 +378,7 @@ function Homepage() {
 				<Button
 					fullWidth
 					aria-label='add to favorites'
-					startIcon={<IoArrowUpCircleOutline />}
+					startIcon={<IoMdArrowRoundUp />}
 					color={'inherit'}
 					size={'large'}>
 					(0)
@@ -390,7 +387,7 @@ function Homepage() {
 					fullWidth
 					aria-label='add to favorites'
 					style={{ marginRight: 20, marginLeft: 20 }}
-					startIcon={<IoArrowDownCircleOutline />}
+					startIcon={<IoMdArrowRoundDown />}
 					color={'inherit'}
 					size={'large'}>
 					(0)
