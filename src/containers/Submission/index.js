@@ -1,20 +1,20 @@
-import "../../containers/UserManagement/style.css";
+import '../../containers/UserManagement/style.css';
 
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import Button from "@mui/material/Button";
-import axios from "axios";
-import _ from "lodash";
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import Button from '@mui/material/Button';
+import axios from 'axios';
+import _ from 'lodash';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from "../../common/AppUse";
-import { API_PATHS, DEV_CONFIGS, URL_PATHS } from "../../common/env";
-import IdeaSubViewStaff from "../../components/Idea/IdeaSubViewStaff";
-import DetailSubmissionForm from "../../components/Submission/DetailSubmissionForm";
-import ModalSubmissionIdea from "../../components/Submission/Modal/ModalSubmissionIdea";
-import { dataDemo_ideas } from "../../containers/SubmissionManagement/FakeData/Ideas";
+import { AuthRequest, sleep } from '../../common/AppUse';
+import { API_PATHS, DEV_CONFIGS, URL_PATHS } from '../../common/env';
+import IdeaSubViewStaff from '../../components/Idea/IdeaSubViewStaff';
+import DetailSubmissionForm from '../../components/Submission/DetailSubmissionForm';
+import ModalSubmissionIdea from '../../components/Submission/Modal/ModalSubmissionIdea';
+import { dataDemo } from '../../containers/IdeaMangement/FakeData';
 
 const toastMessages = {
 	WAIT: 'Please wait...',
@@ -56,7 +56,7 @@ export default function Submission() {
 
 	useEffect(() => {
 		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			let ideas = dataDemo_ideas.find((_) => _.submission_id === id);
+			let ideas = dataDemo.find((_) => _.submission_id === id);
 			if (!ideas) {
 				toast.error(toastMessages.ERR.IDEAS_NOT_FOUND);
 				setStatus({ ...status, loading: false });

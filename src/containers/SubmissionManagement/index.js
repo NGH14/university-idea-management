@@ -1,35 +1,35 @@
-import "./style.css";
+import './style.css';
 
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { IconButton } from "@mui/material";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { IconButton } from '@mui/material';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 import {
 	GridToolbarColumnsButton,
 	GridToolbarContainer,
 	GridToolbarDensitySelector,
 	GridToolbarExport,
 	GridToolbarFilterButton,
-} from "@mui/x-data-grid";
-import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
-import * as React from "react";
-import { useContext, useEffect, useState } from "react";
-import { BiPencil } from "react-icons/bi";
-import { GoInfo } from "react-icons/go";
-import { MdOutlineDeleteOutline } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+} from '@mui/x-data-grid';
+import { DataGridPro, GridActionsCellItem } from '@mui/x-data-grid-pro';
+import * as React from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { BiPencil } from 'react-icons/bi';
+import { GoInfo } from 'react-icons/go';
+import { MdOutlineDeleteOutline } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from "../../common/AppUse";
-import { API_PATHS, DEV_CONFIGS, URL_PATHS } from "../../common/env";
-import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
-import { UserContext } from "../../context/AppContext";
-import { dataDemo_submissions } from "./FakeData/Submissions";
-import ModalSubmissionManagement from "./modal/ModalSubmissionManagement";
-import { Column } from "./model/Column";
+import { AuthRequest, sleep } from '../../common/AppUse';
+import { API_PATHS, DEV_CONFIGS, URL_PATHS } from '../../common/env';
+import CustomNoRowsOverlay from '../../components/Custom/CustomNoRowsOverlay';
+import { UserContext } from '../../context/AppContext';
+import { dataDemo } from './FakeData';
+import ModalSubmissionManagement from './modal/ModalSubmissionManagement';
+import { Column } from './model/Column';
 
 const toastMessages = {
 	WAIT: 'Please wait...',
@@ -59,7 +59,7 @@ function SubmissionManagement() {
 
 	useEffect(() => {
 		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			setData(dataDemo_submissions);
+			setData(dataDemo);
 			setRowId(null);
 			return;
 		}

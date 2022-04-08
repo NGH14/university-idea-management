@@ -1,4 +1,4 @@
-export const dataDemo_ideas = [
+export const dataDemo = [
 	{
 		id: 'a1656abf-f57d-50b8-90da-888c48780e69',
 		title: 'Future Interactions Specialist',

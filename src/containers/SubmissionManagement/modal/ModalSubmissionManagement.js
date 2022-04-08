@@ -1,15 +1,15 @@
-import { Modal } from "@mui/material";
-import Box from "@mui/material/Box";
-import _ from "lodash";
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { Modal } from '@mui/material';
+import Box from '@mui/material/Box';
+import _ from 'lodash';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
-import { AuthRequest } from "../../../common/AppUse";
-import { API_PATHS, DEV_CONFIGS } from "../../../common/env";
-import CreateSubmissionForm from "../../../components/Submission/CreateSubmissionForm";
-import EditSubmissionForm from "../../../components/Submission/EditSubmissionForm";
-import { dataDemo_submissions } from "../FakeData/Submissions";
+import { AuthRequest } from '../../../common/AppUse';
+import { API_PATHS, DEV_CONFIGS } from '../../../common/env';
+import CreateSubmissionForm from '../../../components/Submission/CreateSubmissionForm';
+import EditSubmissionForm from '../../../components/Submission/EditSubmissionForm';
+import { dataDemo } from '../FakeData';
 
 const style = {
 	position: 'relative',
@@ -40,7 +40,7 @@ const ModalSubmissionManagement = (props) => {
 
 	useEffect(() => {
 		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			let user = dataDemo_submissions.find((_) => _.id === rowId);
+			let user = dataDemo.find((_) => _.id === rowId);
 			if (!user) {
 				toast.error(toastMessages.ERR_SUB_NOT_FOUND);
 				return;

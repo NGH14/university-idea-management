@@ -46,7 +46,7 @@ import {
 	GridToolbarExport,
 	GridToolbarFilterButton,
 } from '@mui/x-data-grid';
-import { dataDemo_submissions } from '../../../containers/SubmissionManagement/FakeData/Submissions';
+import { dataDemo } from '../../../containers/SubmissionManagement/FakeData';
 import { Column } from '../../../containers/SubmissionManagement/model/Column';
 import { GoInfo } from 'react-icons/go';
 import { Columns } from '../../../containers/IdeaMangement/model/Columns';

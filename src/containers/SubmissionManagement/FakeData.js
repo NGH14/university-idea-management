@@ -1,4 +1,4 @@
-export const dataDemo_submissions = [
+export const dataDemo = [
 	{
 		id: '5e0074fb-3978-56e9-b1dc-389babc8a03f',
 		title: 'Principal Group Strategist',

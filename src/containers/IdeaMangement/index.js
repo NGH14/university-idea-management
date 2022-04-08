@@ -1,5 +1,7 @@
 import './style.css';
 
+import { dataDemo } from './FakeData';
+
 import AddIcon from '@mui/icons-material/Add';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -23,7 +25,7 @@ import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { toast } from 'react-toastify';
 
 import { AuthRequest, sleep } from '../../common/AppUse';
-import { API_PATHS, URL_PATHS } from '../../common/env';
+import { API_PATHS, DEV_CONFIGS, URL_PATHS } from '../../common/env';
 import CustomNoRowsOverlay from '../../components/Custom/CustomNoRowsOverlay';
 import ModalIdea from '../../components/Idea/ModalIdea';
 import { Columns } from './model/Columns';
@@ -57,6 +59,10 @@ function IdeaManagement() {
 	const [data, setData] = useState([]);
 
 	useEffect(() => {
+		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
+			setData(dataDemo);
+			return;
+		}
 		loadData();
 	}, [pagination]);
 

@@ -257,8 +257,9 @@ function UserManagement() {
 					}}
 					rows={data?.rows ?? []}
 					columns={columns}
+					rowCount={pagination.pageSize}
 					columnVisibilityModel={{}}
-					pagination={false}
+					pagination={true}
 					cell--textCenter
 					pageSize={pagination.pageSize}
 					page={pagination.page - 1}
@@ -275,7 +276,7 @@ function UserManagement() {
 						alignItems: 'center',
 					}}
 				>
-					{!data?.rows ?? (
+					{data?.rows ? (
 						<UimPagination
 							totalPages={Math.floor(data?.total / pagination.pageSize) + 1}
 							currentPage={pagination.page}
@@ -291,6 +292,8 @@ function UserManagement() {
 							}
 							pageSizeOptions={[5, 10, 25, 50]}
 						/>
+					) : (
+						<></>
 					)}
 				</div>
 			</div>
