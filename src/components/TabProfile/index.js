@@ -80,7 +80,6 @@ function GeneralList() {
 		>
 			{GeneralListItems.map((_value, _index) => {
 				const { text, describe } = _value;
-				console.log(text);
 
 				return (
 					<>

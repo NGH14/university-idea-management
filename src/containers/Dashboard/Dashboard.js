@@ -43,9 +43,8 @@ export default function Dashboard() {
 
 	useEffect(() => {
 		loadData();
-	}, []);
+	}, [filter]);
 	const loadData = async () => {
-		setLoading(true);
 		const year = moment(filter.year).format('YYYY');
 		const monthIdea = moment(filter.monthYearIdea).format('MM');
 		const monthInfo = moment(filter.monthYearIdeaInfo).format('MM');
@@ -61,268 +60,50 @@ export default function Dashboard() {
 			])
 			.then(
 				axios.spread(function (resSub, resIdeas, resAct) {
-					console.log(resSub?.data?.result, 987);
 					setData({
 						...data,
 						totalSUb: resSub?.data?.result,
 						topIdea: resIdeas?.data?.result,
 						infoData: resAct?.data?.result,
 					});
-					setLoading(false);
 				}),
 			);
 		//api load Data
 	};
-	const onYearChange = (value) => {
-		const newDate = new Date(value.getFullYear(), 0, 1);
-		setFilter({
-			...filter,
-			year: value,
-			monthYearIdea: newDate,
-			monthYearIdeaInfo: newDate,
-		});
-		setDisplay({ ...display, sub: [1, 6], ideaInfo: [1, 15] });
-		loadData();
-	};
 
-	const onMonthYearChange = async (value) => {
-		const res = await AuthRequest.get(
-			`dashboard/top-ideas?month=${moment(value).format(
-				'MM',
-			)}&year=${moment(value).format('YYYY')}`,
-		);
-		if (res?.data?.succeeded) {
-			setFilter({ ...filter, monthYearIdea: value });
-			setData({ ...data, topIdea: res?.data?.result });
-		}
-	};
 
-	const onMonthYearIdeaInfoChange = async (value) => {
-		setDisplay({ ...display, ideaInfo: [1, 15] });
-		const res = await AuthRequest.get(
-			`dashboard/activities?month=${moment(value).format(
-				'MM',
-			)}&year=${moment(value).format('YYYY')}`,
-		);
-		if (res?.data?.succeeded) {
-			setFilter({ ...filter, monthYearIdeaInfo: value });
-			setData({ ...data, infoData: res?.data?.result });
-		}
-	};
 
-	const renderPickerYear = () => {
-		return (
-			<LocalizationProvider dateAdapter={AdapterDateFns}>
-				<div
-					style={{
-						width: '100%',
-						display: 'flex',
-						justifyContent: 'right',
-					}}>
-					<div style={{ marginRight: 20, padding: 0, width: 150 }}>
-						<DatePicker
-							inputFormat='yyyy'
-							views={['year']}
-							label='Year'
-							value={filter.year}
-							onChange={(value) => {
-								onYearChange(value);
-							}}
-							renderInput={(params) => (
-								<TextField {...params} helperText={null} />
-							)}
-						/>
-					</div>
-
-					<div>
-						<Box sx={{ width: 250, textAlign: 'right', margin: 0 }}>
-							<Typography
-								id='input-slider'
-								gutterBottom
-								textAlign={'left'}
-								style={{ margin: 0 }}>
-								Month: {display.sub[0]} - {display.sub[1]}
-							</Typography>
-							<Slider
-								aria-label='Small steps'
-								value={display.sub}
-								onChange={(value) => {
-									setDisplay({
-										...display,
-										sub: value?.target?.value,
-									});
-								}}
-								valueLabelDisplay='auto'
-								disableSwap
-								min={1}
-								max={12}
-								step={1}
-							/>
-						</Box>
-					</div>
-				</div>
-			</LocalizationProvider>
-		);
-	};
-
-	const renderPickerMonthYearInfoIdea = () => {
-		return (
-			<LocalizationProvider dateAdapter={AdapterDateFns}>
-				<div
-					style={{
-						width: '100%',
-						display: 'flex',
-						justifyContent: 'right',
-					}}>
-					<div style={{ marginRight: 20, padding: 0, width: 150 }}>
-						<DatePicker
-							inputFormat='MM/yyyy'
-							views={['month']}
-							label='Month year'
-							value={filter.monthYearIdeaInfo}
-							onChange={(value) => {
-								onMonthYearIdeaInfoChange(value);
-							}}
-							renderInput={(params) => (
-								<TextField {...params} helperText={null} />
-							)}
-						/>
-					</div>
-
-					<div>
-						<Box sx={{ width: 250, textAlign: 'right', margin: 0 }}>
-							<Typography
-								id='input-slider'
-								gutterBottom
-								textAlign={'left'}
-								style={{ margin: 0 }}>
-								Day: {display.ideaInfo[0]} -{' '}
-								{display.ideaInfo[1]}
-							</Typography>
-							<Slider
-								aria-label='Small steps'
-								value={display.ideaInfo}
-								onChange={(value) => {
-									setDisplay({
-										...display,
-										ideaInfo: value?.target?.value,
-									});
-								}}
-								valueLabelDisplay='auto'
-								disableSwap
-								min={1}
-								max={new Date(
-									filter.monthYearIdeaInfo.getFullYear(),
-									_.toNumber(
-										moment(filter.monthYearIdeaInfo).format(
-											'MM',
-										),
-									),
-									0,
-								).getDate()}
-								step={1}
-							/>
-						</Box>
-					</div>
-				</div>
-			</LocalizationProvider>
-		);
-	};
-
-	const renderPickerMonthYearIdea = () => {
-		return (
-			<LocalizationProvider dateAdapter={AdapterDateFns}>
-				<div style={{ width: 150 }}>
-					<DatePicker
-						inputFormat='MM/yyyy'
-						views={['month']}
-						label='Month year'
-						value={filter.monthYearIdea}
-						onChange={(value) => {
-							onMonthYearChange(value);
-						}}
-						renderInput={(params) => (
-							<TextField {...params} helperText={null} />
-						)}
-					/>
-				</div>
-			</LocalizationProvider>
-		);
-	};
 
 	const renderChartSubmissionTotal = () => {
 		return (
-			<Paper>
-				<div
-					style={{
-						textAlign: 'right',
-						justifyContent: 'right',
-						width: '100%',
-						display: 'flex',
-						paddingTop: 10,
-						paddingRight: 10,
-					}}>
-					{renderPickerYear()}
-				</div>
-				<TotalSubmissionChart
-					timeKey={filter.year}
-					data={data.totalSUb}
-					display={display.sub}
-					loading={loading}
-				/>
-			</Paper>
+			<TotalSubmissionChart
+				filter={filter}
+				setFilter={setFilter}
+				data={data.totalSUb}
+				loadData={loadData}
+			/>
+
 		);
 	};
 
 	const renderPopularIdea = () => {
 		return (
-			<div style={{ marginRight: 20, width: '100%', height: 300 }}>
-				<Paper>
-					<div
-						style={{
-							textAlign: 'right',
-							justifyContent: 'right',
-							width: '100%',
-							display: 'flex',
-							paddingTop: 10,
-							paddingRight: 10,
-							marginBottom: 10,
-						}}>
-						{renderPickerMonthYearIdea()}
-					</div>
-					<IdeaPopularChart
-						timeKey={filter.monthYearIdea}
-						data={data?.topIdea}
-						loading={loading}
-					/>
-				</Paper>
-			</div>
+			<IdeaPopularChart
+				timeKey={filter.monthYearIdea}
+				data={data?.topIdea}
+			/>
+
 		);
 	};
 
 	const renderIdeaInfo = () => {
 		return (
-			<div style={{ marginLeft: 20, width: '100%' }}>
-				<Paper>
-					<div
-						style={{
-							textAlign: 'right',
-							justifyContent: 'right',
-							width: '100%',
-							display: 'flex',
-							paddingTop: 10,
-							paddingRight: 10,
-							marginBottom: 6,
-						}}>
-						{renderPickerMonthYearInfoIdea()}
-					</div>
-					<IdeaInfoChart
-						timeKey={filter.monthYearIdea}
-						data={data.infoData}
-						display={display.ideaInfo}
-					/>
-				</Paper>
-			</div>
+			<IdeaInfoChart
+				timeKey={filter.monthYearIdea}
+				data={data.infoData}
+				display={display.ideaInfo}
+			/>
+
 		);
 	};
 	const Item = styled(Paper)(({ theme }) => ({

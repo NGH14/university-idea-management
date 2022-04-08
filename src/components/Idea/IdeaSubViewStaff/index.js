@@ -236,7 +236,6 @@ function IdeaSubViewStaff({ ideaData, subData, paginationIdea }) {
 
 	const onCreate = (value) => {
 		let newValue = { ...value, submission_id: subData?.id };
-		console.log(newValue);
 		// toast
 		//     .promise(
 		//         AuthRequest.post(API_PATHS.ADMIN.MANAGE_IDEA, newValue).then(() =>
