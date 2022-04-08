@@ -15,13 +15,17 @@ import {AuthRequest} from "../../common/AppUse";
 import {LocalizationProvider} from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import DatePicker from "@mui/lab/DatePicker";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 
 // total
 
 function IdeaPopularChart({timeKey, data}){
     const [newFilter, setNewFilter] = useState(new Date(timeKey))
-    const [newData, setNewDate] = useState(data)
+    const [newData, setNewData] = useState(data)
+    useEffect(()=>{
+        setNewFilter(new Date(timeKey))
+        setNewData (data)
+    }, [data])
 
     const pointClickHandler = (e) => {
         toggleVisibility(e?.target);
@@ -49,7 +53,7 @@ function IdeaPopularChart({timeKey, data}){
         );
         if (res?.data?.succeeded) {
             setNewFilter(value);
-            setNewDate(res?.data?.result);
+            setNewData(res?.data?.result);
         }
     };
 

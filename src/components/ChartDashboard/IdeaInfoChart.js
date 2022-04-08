@@ -56,6 +56,7 @@ function IdeaInfoChart({timeKey, data, loading}){
                 newArray.push(x)
             }
         })
+        setNewFilter({display: [1, 15], timeKey: new Date(timeKey)})
         setNewData(newArray)
     }, [data])
 

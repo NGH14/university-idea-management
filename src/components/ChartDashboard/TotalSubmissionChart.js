@@ -119,7 +119,7 @@ function TotalSubmissionChart({ data, loading, setFilter, filter}){
         </div>
         <Chart
             id={'chart'}
-            title={`${_.toUpper("Total submission in year")} ${moment(filter).format("YYYY")}`}
+            title={`${_.toUpper("Total submission in year")} ${moment(filter.year).format("YYYY")}`}
             dataSource={newData}
             // palette={palette}
         >
