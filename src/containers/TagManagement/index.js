@@ -1,32 +1,32 @@
-import "./style.css";
+import './style.css';
 
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { IconButton } from "@mui/material";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { IconButton } from '@mui/material';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 import {
-    GridToolbarColumnsButton,
-    GridToolbarContainer,
-    GridToolbarDensitySelector,
-    GridToolbarFilterButton,
-} from "@mui/x-data-grid";
-import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { BiPencil } from "react-icons/bi";
-import { GoInfo } from "react-icons/go";
-import { MdOutlineDeleteOutline } from "react-icons/md";
-import { toast } from "react-toastify";
+	GridToolbarColumnsButton,
+	GridToolbarContainer,
+	GridToolbarDensitySelector,
+	GridToolbarFilterButton,
+} from '@mui/x-data-grid';
+import { DataGridPro, GridActionsCellItem } from '@mui/x-data-grid-pro';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { BiPencil } from 'react-icons/bi';
+import { GoInfo } from 'react-icons/go';
+import { MdOutlineDeleteOutline } from 'react-icons/md';
+import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from "../../common/AppUse";
-import { API_PATHS, DEV_CONFIGS } from "../../common/env";
-import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
-import { dataDemo } from "./FakeData";
-import ModalTagManagement from "./modal/ModalTagManagement";
-import { Column } from "./model/Column";
+import { AuthRequest, sleep } from '../../common/AppUse';
+import { API_PATHS, DEV_CONFIGS } from '../../common/env';
+import CustomNoRowsOverlay from '../../components/Custom/CustomNoRowsOverlay';
+import { dataDemo } from './FakeData';
+import ModalTagManagement from './modal/ModalTagManagement';
+import { Column } from './model/Column';
 
 const toastMessages = {
 	WAIT: 'Please wait...',
@@ -134,7 +134,6 @@ function TagManagement() {
 					error: toastMessages.ERR_SERVER_ERROR,
 				},
 			)
-			.then(() => sleep(700))
 			.then(() => {
 				setStatus({ ...status, visibleModal: false });
 				loadData();
@@ -264,7 +263,7 @@ function TagManagement() {
 					}
 					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
 					style={{ minHeight: '600px' }}
-					rowsPerPageOptions={[10, 25, 50, 100]}
+					rowsPerPageOptions={[5, 10, 25, 50]}
 				/>
 			</div>
 		);

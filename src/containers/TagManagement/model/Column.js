@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from 'moment';
 
 export const Column = [
 	{
@@ -33,7 +33,7 @@ export const Column = [
 		flex: 1,
 	},
 	{
-		field: 'modified_date',
+		field: 'modified_at',
 		headerName: 'Modified Date',
 		disableColumnMenu: true,
 		sortable: true,
@@ -42,8 +42,8 @@ export const Column = [
 		width: 170,
 		type: 'date',
 		renderCell: (value) =>
-			value?.row?.modified_date
-				? moment(value?.row?.modified_date).format('DD/MM/YYYY')
+			value?.row?.modified_at
+				? moment(value?.row?.modified_at).format('DD/MM/YYYY')
 				: '-',
 	},
 ];

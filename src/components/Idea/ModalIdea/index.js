@@ -1,13 +1,13 @@
-import { Modal } from "@mui/material";
-import Box from "@mui/material/Box";
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { Modal } from '@mui/material';
+import Box from '@mui/material/Box';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
-import { AuthRequest } from "../../../common/AppUse";
-import { API_PATHS } from "../../../common/env";
-import CreateIdeaForm from "../../Idea/CreateIdeaForm";
-import UpdateIdeaForm from "../UpdateIdeaForm";
+import { AuthRequest } from '../../../common/AppUse';
+import { API_PATHS } from '../../../common/env';
+import CreateIdeaForm from '../../Idea/CreateIdeaForm';
+import UpdateIdeaForm from '../UpdateIdeaForm';
 
 const style = {
 	position: 'relative',
@@ -72,7 +72,7 @@ const ModalIdea = (props) => {
 					<UpdateIdeaForm
 						onClose={() => onClose()}
 						onUpdate={onUpdate}
-						submissionTitle={submission}
+						submission={submission}
 						initialValue={initialValue}
 					/>
 				);

@@ -1,31 +1,24 @@
-import * as React from 'react';
-import Paper from '@mui/material/Paper';
-import LineAxisIcon from '@mui/icons-material/LineAxis';
-import IdeaPopularChart from '../../components/ChartDashboard/IdeaPopularChart';
-import _ from 'lodash';
-import TotalSubmissionChart from '../../components/ChartDashboard/TotalSubmissionChart';
-import { DateRangePicker, LocalizationProvider } from '@mui/lab';
-import DatePicker from '@mui/lab/DatePicker';
-import { CircularProgress, Grid, Slider, TextField } from '@mui/material';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { useEffect, useState } from 'react';
-import moment from 'moment';
-import IdeaInfoChart from '../../components/ChartDashboard/IdeaInfoChart';
+import { Grid } from '@mui/material';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { dataIdeaInfo } from '../../components/ChartDashboard/FakeData';
-import AddIcon from '@mui/icons-material/Add';
-import CardContent from '@mui/material/CardContent';
-import Card from '@mui/material/Card';
-import { CardMedia } from '@material-ui/core';
-import { Item } from 'devextreme-react/box';
+import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
 import axios from 'axios';
+import _ from 'lodash';
+import moment from 'moment';
+import { fake_subTotal, fake_topIdeas, fake_activities } from './FakeData';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+
 import { AuthRequest } from '../../common/AppUse';
+import { DEV_CONFIGS } from '../../common/env';
+import IdeaInfoChart from '../../components/ChartDashboard/IdeaInfoChart';
+import IdeaPopularChart from '../../components/ChartDashboard/IdeaPopularChart';
+import TotalSubmissionChart from '../../components/ChartDashboard/TotalSubmissionChart';
 
 export default function Dashboard() {
 	const [data, setData] = useState({
-		totalSUb: [],
+		totalSub: [],
 		topIdea: [],
 		infoData: [],
 	});
@@ -42,8 +35,19 @@ export default function Dashboard() {
 	});
 
 	useEffect(() => {
+		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
+			setData({
+				...data,
+				totalSub: fake_subTotal,
+				topIdea: fake_topIdeas,
+				infoData: fake_activities,
+			});
+			return;
+		}
+
 		loadData();
 	}, [filter]);
+
 	const loadData = async () => {
 		const year = moment(filter.year).format('YYYY');
 		const monthIdea = moment(filter.monthYearIdea).format('MM');
@@ -51,18 +55,14 @@ export default function Dashboard() {
 		axios
 			.all([
 				AuthRequest.get(`dashboard/sum-submissions?year=${year}`),
-				AuthRequest.get(
-					`dashboard/top-ideas?month=${monthIdea}&year=${year}`,
-				),
-				AuthRequest.get(
-					`dashboard/activities?month=${monthInfo}&year=${year}`,
-				),
+				AuthRequest.get(`dashboard/top-ideas?month=${monthIdea}&year=${year}`),
+				AuthRequest.get(`dashboard/activities?month=${monthInfo}&year=${year}`),
 			])
 			.then(
 				axios.spread(function (resSub, resIdeas, resAct) {
 					setData({
 						...data,
-						totalSUb: resSub?.data?.result,
+						totalSub: resSub?.data?.result,
 						topIdea: resIdeas?.data?.result,
 						infoData: resAct?.data?.result,
 					});
@@ -71,29 +71,19 @@ export default function Dashboard() {
 		//api load Data
 	};
 
-
-
-
 	const renderChartSubmissionTotal = () => {
 		return (
 			<TotalSubmissionChart
 				filter={filter}
 				setFilter={setFilter}
-				data={data.totalSUb}
+				data={data.totalSub}
 				loadData={loadData}
 			/>
-
 		);
 	};
 
 	const renderPopularIdea = () => {
-		return (
-			<IdeaPopularChart
-				timeKey={filter.monthYearIdea}
-				data={data?.topIdea}
-			/>
-
-		);
+		return <IdeaPopularChart timeKey={filter.monthYearIdea} data={data?.topIdea} />;
 	};
 
 	const renderIdeaInfo = () => {
@@ -103,7 +93,6 @@ export default function Dashboard() {
 				data={data.infoData}
 				display={display.ideaInfo}
 			/>
-
 		);
 	};
 	const Item = styled(Paper)(({ theme }) => ({
@@ -113,6 +102,7 @@ export default function Dashboard() {
 		textAlign: 'center',
 		color: theme.palette.text.secondary,
 	}));
+	console.log(data);
 	const renderTop = () => {
 		return (
 			<div style={{ width: '100%', marginBottom: 20 }}>
@@ -125,23 +115,27 @@ export default function Dashboard() {
 						<Grid
 							container
 							spacing={{ xs: 4, md: 8 }}
-							columns={{ xs: 4, sm: 8, md: 16 }}>
+							columns={{ xs: 4, sm: 8, md: 16 }}
+						>
 							<Grid item xs={4} sm={4} md={4}>
 								<Item
 									style={{
 										height: 100,
 										backgroundColor: '#fff',
-									}}>
+									}}
+								>
 									<h1
 										style={{
 											fontSize: 12,
-										}}>
+										}}
+									>
 										{_.toUpper('Total submission')}
 									</h1>
 									<span
 										style={{
 											fontSize: 32,
-										}}>
+										}}
+									>
 										500
 									</span>
 								</Item>
@@ -151,17 +145,20 @@ export default function Dashboard() {
 									style={{
 										height: 100,
 										backgroundColor: '#fff',
-									}}>
+									}}
+								>
 									<h1
 										style={{
 											fontSize: 12,
-										}}>
+										}}
+									>
 										{_.toUpper('Total idea')}
 									</h1>
 									<span
 										style={{
 											fontSize: 32,
-										}}>
+										}}
+									>
 										500
 									</span>
 								</Item>
@@ -171,17 +168,20 @@ export default function Dashboard() {
 									style={{
 										height: 100,
 										backgroundColor: '#fff',
-									}}>
+									}}
+								>
 									<h1
 										style={{
 											fontSize: 12,
-										}}>
+										}}
+									>
 										{_.toUpper('Total like')}
 									</h1>
 									<span
 										style={{
 											fontSize: 32,
-										}}>
+										}}
+									>
 										500
 									</span>
 								</Item>
@@ -191,17 +191,20 @@ export default function Dashboard() {
 									style={{
 										height: 100,
 										backgroundColor: '#fff',
-									}}>
+									}}
+								>
 									<h1
 										style={{
 											fontSize: 12,
-										}}>
+										}}
+									>
 										{_.toUpper('Total dislike')}
 									</h1>
 									<span
 										style={{
 											fontSize: 32,
-										}}>
+										}}
+									>
 										500
 									</span>
 								</Item>

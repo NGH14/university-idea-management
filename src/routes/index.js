@@ -37,9 +37,7 @@ const LIST_ROUTES_PRIVATE = [
 	{
 		roles: [ROLES.ADMIN],
 		path: URL_PATHS.MANAGE_DEP,
-		component: React.lazy(() =>
-			import('../containers/DepartmentManagement'),
-		),
+		component: React.lazy(() => import('../containers/DepartmentManagement')),
 	},
 	{
 		roles: [ROLES.ADMIN],
@@ -54,9 +52,7 @@ const LIST_ROUTES_PRIVATE = [
 	{
 		roles: [],
 		path: URL_PATHS.MANAGE_SUB_ID,
-		component: React.lazy(() =>
-			import('../components/Submission/DetailView'),
-		),
+		component: React.lazy(() => import('../components/Submission/DetailView')),
 	},
 	{
 		roles: [],
@@ -66,13 +62,11 @@ const LIST_ROUTES_PRIVATE = [
 	{
 		roles: [ROLES.ADMIN],
 		path: URL_PATHS.MANAGE_SUB,
-		component: React.lazy(() =>
-			import('../containers/SubmissionManagement'),
-		),
+		component: React.lazy(() => import('../containers/SubmissionManagement')),
 	},
 	{
 		roles: [ROLES.ADMIN],
-		path: URL_PATHS.MANAGE,
+		path: URL_PATHS.SUB_ID,
 		component: React.lazy(() => import('../containers/Submission')),
 	},
 	{
@@ -83,9 +77,7 @@ const LIST_ROUTES_PRIVATE = [
 	{
 		roles: [ROLES.ADMIN],
 		path: URL_PATHS.DASHBOARD,
-		component: React.lazy(() =>
-			import('../containers/Dashboard/Dashboard'),
-		),
+		component: React.lazy(() => import('../containers/Dashboard/Dashboard')),
 	},
 	{
 		roles: [],
@@ -135,9 +127,8 @@ export function ListRoute() {
 						<Sidebar>
 							<PrivateRoute roles={route.roles}>
 								<React.Suspense
-									fallback={
-										<LoadingSpinner inputHeight='80vh' />
-									}>
+									fallback={<LoadingSpinner inputHeight='80vh' />}
+								>
 									<route.component />
 								</React.Suspense>
 							</PrivateRoute>

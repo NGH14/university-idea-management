@@ -1,27 +1,27 @@
-import AttachFileIcon from "@mui/icons-material/AttachFile";
-import EditIcon from "@mui/icons-material/Edit";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import { Button, Tooltip } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import _ from "lodash";
-import moment from "moment";
-import * as React from "react";
-import { useContext, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import EditIcon from '@mui/icons-material/Edit';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import { Button, Tooltip } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import _ from 'lodash';
+import moment from 'moment';
+import * as React from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from "../../common/AppUse";
-import { API_PATHS, ROLES } from "../../common/env";
-import CommentIdea from "../../components/Idea/CommentIdea";
-import { UserContext } from "../../context/AppContext";
-import ModalIdeaDetailView from "./ModalIdeaDetailView";
+import { AuthRequest, sleep } from '../../common/AppUse';
+import { API_PATHS, ROLES } from '../../common/env';
+import CommentIdea from '../../components/Idea/CommentIdea';
+import { UserContext } from '../../context/AppContext';
+import ModalIdeaDetailView from './ModalIdeaDetailView';
 
 const toastMessages = {
 	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
@@ -41,20 +41,22 @@ function IdeaDetailView() {
 		action: 'update',
 		loading: false,
 	});
+
 	useEffect(() => {
 		LoadData();
 	}, []);
+
 	const LoadData = async () => {
-		await AuthRequest.get(`${API_PATHS.SHARED.IDEA}/${id}`, {
-			params: {},
-		})
+		console.log(12312);
+		await AuthRequest.get(`${API_PATHS.SHARED.IDEA}/${id}`)
 			.then((res) => {
 				if (res?.data?.successed) {
-					setData(res?.data?.result && []);
+					setData(res?.data?.result ?? {});
 				}
 			})
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
+
 	const renderCardContent = () => {
 		return (
 			<CardContent>

@@ -180,7 +180,8 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 						variant='contained'
 						bgcolor={'#fff'}
 						textcolor={'#444'}
-						hoverbgcolor={'#fff'}>
+						hoverbgcolor={'#fff'}
+					>
 						Sign in with Google
 					</ColorButton>
 				)}
@@ -198,6 +199,7 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 					id='email'
 					label='Email'
 					name='email'
+					margin='normal'
 					placeholder='E.g., vuhuua@gmail.com'
 					value={formik.values.email}
 					onChange={formik.handleChange}
@@ -212,16 +214,12 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 					name='password'
 					label='Password'
 					type='password'
+					margin='normal'
 					value={formik.values.password}
 					onChange={formik.handleChange}
 					onBlur={formik.handleBlur}
-					error={
-						formik.touched.password &&
-						Boolean(formik.errors.password)
-					}
-					helperText={
-						formik.touched.password && formik.errors.password
-					}
+					error={formik.touched.password && Boolean(formik.errors.password)}
+					helperText={formik.touched.password && formik.errors.password}
 				/>
 
 				<ColorButton
@@ -231,7 +229,8 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 					loading={buttonState?.loading}
 					loadingPosition='end'
 					disabled={buttonState.disable}
-					fullWidth>
+					fullWidth
+				>
 					Sign in
 				</ColorButton>
 			</form>

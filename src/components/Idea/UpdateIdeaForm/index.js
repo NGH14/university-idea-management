@@ -1,16 +1,31 @@
 import './style.css';
 
-import ClearIcon from '@mui/icons-material/Clear';
 import CloseIcon from '@mui/icons-material/Close';
-import { TextareaAutosize, TextField } from '@mui/material';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import {
+	FormHelperText,
+	MenuItem,
+	OutlinedInput,
+	TextareaAutosize,
+	TextField,
+} from '@mui/material';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
+import List from '@mui/material/List';
+import ListItemText from '@mui/material/ListItemText';
+import Select from '@mui/material/Select';
 import { styled } from '@mui/material/styles';
 import { useFormik } from 'formik';
-import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import Dropzone from 'react-dropzone';
+import { toast } from 'react-toastify';
+import * as yup from 'yup';
+
+import { AuthRequest, getGuid, toReadableFileSize } from '../../../common/AppUse';
+import { API_PATHS } from '../../../common/env';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -42,6 +57,18 @@ const CssTextField = styled(TextField)({
 	},
 });
 
+const ListItem = styled('li')(({ theme }) => ({
+	margin: theme.spacing(0.5),
+}));
+
+const toastMessages = {
+	ERR_MAX_FILES_NUMBER: 'Maximum files is 4 !!',
+	ERR_FILE_ADD_FAILED: 'Failed to add file !!',
+	ERR_FILE_REJECTED: 'File is invalid !!',
+	ERR_FILE_BIG: 'cannot be added !!',
+	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
+};
+
 const ColorButton = styled(Button)(() => ({
 	fontFamily: 'Poppins',
 	fontSize: '13px',
@@ -49,85 +76,117 @@ const ColorButton = styled(Button)(() => ({
 	textTransform: 'none',
 	minWidth: 200,
 	display: 'inline-block',
-
 	margin: '10px',
 	padding: '10px',
 
 	'&:disabled ': { cursor: 'not-allowed', pointerEvents: 'all !important' },
 }));
 
-//ref 147 option sub
+const validationSchema = yup.object({
+	title: yup.string().required('Idea title is required'),
+	content: yup.string().required('Please Provide content'),
+	tags: yup.array().max(3, 'Only 3 tags per idea').nullable(),
+	attachments: yup.array().nullable(),
+	is_anonymous: yup.bool(),
+	submission_id: yup.string().required('Please specify the submission for this idea'),
+});
 
 function UpdateIdeaForm(props) {
-	const { onClose, onUpdate, submissionTitle, initialValue } = props;
-	// const initialValue = {file:{
-	//         // name: "demo.docx",
-	//         // url: "demo"
-	//     }}
+	const { onClose, onUpdate, submission: externalSubData, initialValues } = props;
+	const [attachments, setAttachments] = useState([]);
+	const [subOptions, setSubOptions] = useState([]);
+	const [tagOptions, setTagOptions] = useState([]);
 
-	const [fileState, setFileState] = useState(initialValue?.file);
-	const [isExitFile, setIsExitFile] = useState(false);
-	useEffect(() => {
-		if (initialValue?.file && !_.isEmpty(initialValue?.file)) {
-			setIsExitFile(true);
-		}
-	}, []);
 	const formik = useFormik({
-		initialValues: initialValue || {},
+		initialValues: initialValues,
+		validationSchema: validationSchema,
 		onSubmit: (values) => {
-			const NewValue = { ...values, exitFile: isExitFile };
-			if (values.file && !_.isEmpty(values.file)) {
-				//delete
-				onSubmitForm(NewValue);
-			}
-			if (!isExitFile) {
-				onUpdate(onUpdate(NewValue));
-			}
+			onUpdate({
+				...values,
+				attachments: attachments.map((_) => {
+					delete _.guid;
+					delete _.size;
+					return _;
+				}),
+			});
 		},
 	});
-	const onSubmitForm = (values) => {
-		const file = values.file[0]; //the file
-		const reader = new FileReader(); //this for convert to Base64
-		reader.readAsDataURL(values.file[0]); //start conversion...
-		reader.onload = function () {
-			//.. once finished..
-			const rawLog = reader.result.split(',')[1]; //extract only thee file data part
-			const dataSend = {
-				dataReq: { data: rawLog, name: file.name, type: file.type },
-				fname: 'uploadFilesToGoogleDrive',
-			}; //preapre info to send to API
-			fetch(
-				'https://script.google.com/macros/s/AKfycbzOsDnvlUIHyq6y2dpzWevLym82dPqM9ZVTbvpB2KpoFN9GHoiodwvMMNpRDeupSeFO/exec', //your AppsScript URL
-				{ method: 'POST', body: JSON.stringify(dataSend) },
-			) //send to Api
-				.then((res) => res.json())
-				.then((infoFile) => {
-					onUpdate({
-						...values,
-						file: {
-							id: infoFile.id,
-							url: infoFile.url,
+
+	useEffect(() => {
+		if (!externalSubData) {
+			loadSubmissions();
+		} else {
+			formik.setFieldValue('submission_id', externalSubData.id);
+		}
+		loadTags();
+	}, []);
+
+	const loadSubmissions = async () => {
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_SUB + '/list')
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
+			.then((res) => {
+				setSubOptions(res?.data?.result);
+			});
+	};
+
+	const loadTags = async () => {
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_TAG + '/list')
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
+			.then((res) => {
+				setTagOptions(res?.data?.result);
+			});
+	};
+
+	const FILE_SIZE = 1e7;
+
+	const handleDrop = (acceptedFiles) => {
+		try {
+			if (attachments?.length === 4) {
+				toast.error(toastMessages.ERR_MAX_FILES_NUMBER);
+				return;
+			}
+
+			for (const file of acceptedFiles) {
+				if (
+					attachments.reduce((a, b) => a + (b['size'] || 0), 0) + file.size >
+					FILE_SIZE
+				) {
+					toast.error(`${file.name} ${toastMessages.ERR_FILE_BIG}`);
+					return;
+				}
+
+				const reader = new FileReader();
+				reader.readAsDataURL(file);
+				reader.onload = () => {
+					setAttachments((oldArr) => [
+						...oldArr,
+						{
+							guid: `${getGuid()}_${file.name}`,
+							size: file.size,
+							data: reader.result.split(',')[1],
 							name: file.name,
-							type: file.type,
+							description: file.name,
+							mime: file.type,
 						},
-					}); //See response
-				})
-				.catch((e) => console.log(e)); // Or Error in console // Or Error in console
-		};
+					]);
+				};
+			}
+		} catch (err) {
+			toast.error(toastMessages.ERR_FILE_ADD_FAILED);
+		}
 	};
-	const onUploadFile = (value) => {
-		setFileState(value || null);
-		formik.setFieldValue('file', [...value]);
-		formik.resetForm();
+
+	const handleDeleteAttachment = (attachmentToDelete) => () => {
+		setAttachments((attachments) =>
+			attachments.filter(
+				(attachment) => attachment.guid !== attachmentToDelete.guid,
+			),
+		);
 	};
-	const onDeleteFile = () => {
-		setFileState(null);
-		formik.setFieldValue('file', null);
-		formik.resetForm();
-	};
+
 	return (
-		<div className='createuserform'>
-			<div className='createuserform_title'>
+		<div className='updateideaform'>
+			<div className='updateideaform_title'>
 				<h2>Create Idea</h2>
 				<IconButton>
 					<CloseIcon onClick={() => onClose()} />
@@ -135,52 +194,99 @@ function UpdateIdeaForm(props) {
 			</div>
 			<br />
 
-			<form className='form_grid' onSubmit={formik.handleSubmit}>
-				<div className='form_group'>
-					<div className='form_content'>
-						<InputLabel htmlFor='full_name'>
-							Title Submission
-						</InputLabel>
-						{submissionTitle ? (
-							<CssTextField
+			<form className='updateideaform_grid' onSubmit={formik.handleSubmit}>
+				<div className='updateideaform_group'>
+					<div className='updateideaform_content'>
+						<InputLabel htmlFor='titleSub'>Title Submission</InputLabel>
+						{externalSubData ? (
+							<Select
+								disabled={true}
 								fullWidth
-								id='titleSub'
-								name='titleSub'
-								value={submissionTitle}
-								onChange={formik.handleChange}
-								onBlur={formik.handleBlur}
-								inputProps={{
-									readOnly: true,
-								}}
-								// error={formik.touched.title && Boolean(formik.errors.title)}
-								// helperText={formik.touched.title && formik.errors.title}
-							/>
+								labelId='submission_id'
+								id='submission_id'
+								name='submission_id'
+								value={formik.values.submission_id}
+								style={{ textTransform: 'capitalize' }}
+							>
+								<MenuItem value={formik.values.submission_id}>
+									{externalSubData.title}
+								</MenuItem>
+							</Select>
 						) : (
-							<>{/*Option Submission*/}</>
+							<>
+								<Select
+									select
+									fullWidth
+									displayEmpty
+									labelId='submission_id'
+									id='submission_id'
+									name='submission_id'
+									defaultValue=''
+									value={formik.values.submission_id}
+									onChange={formik.handleChange}
+									onBlur={formik.handleBlur}
+									style={{ textTransform: 'capitalize' }}
+									renderValue={
+										formik.values.submission_id !== null
+											? undefined
+											: () => (
+													<placeholder>
+														<em
+															style={{
+																textTransform:
+																	'lowercase',
+																opacity: 0.6,
+																fontSize: 14,
+															}}
+														>
+															-- submission --
+														</em>
+													</placeholder>
+											  )
+									}
+									error={
+										formik.touched.submission_id &&
+										Boolean(formik.errors.submission_id)
+									}
+								>
+									{subOptions?.map((sub) => (
+										<MenuItem
+											style={{
+												textTransform: 'capitalize',
+											}}
+											value={sub.id}
+										>
+											{sub.title}
+										</MenuItem>
+									))}
+								</Select>
+								<FormHelperText error>
+									{formik.touched.submission_id &&
+										formik.errors.submission_id}
+								</FormHelperText>
+							</>
 						)}
 					</div>
-				</div>
-				<div className='form_group'>
-					<div className='form_content'>
-						<InputLabel required={true} htmlFor='full_name'>
+					<div className='updateideaform_content'>
+						<InputLabel required={true} htmlFor='title'>
 							Title Idea
 						</InputLabel>
 						<CssTextField
 							fullWidth
 							id='title'
 							name='title'
-							value={formik.values.title}
+							value={formik.values?.title}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							// error={formik.touched.title && Boolean(formik.errors.title)}
-							// helperText={formik.touched.title && formik.errors.title}
+							error={formik.touched.title && Boolean(formik.errors.title)}
+							helperText={formik.touched.title && formik.errors.title}
 						/>
 					</div>
 				</div>
 
-				<div className='form_group'>
-					<div className='form_content'>
-						<InputLabel required={true} htmlFor='full_name'>
+				<div className='updateideaform_group'>
+					<div className='updateideaform_content'>
+						<InputLabel required={true} htmlFor='content'>
 							Content
 						</InputLabel>
 						<TextareaAutosize
@@ -200,81 +306,145 @@ function UpdateIdeaForm(props) {
 						/>
 					</div>
 				</div>
-				<div className='form_group'>
-					<div className='form_content' style={{ display: 'flex' }}>
-						<Dropzone
-							onDrop={(value) => onUploadFile(value)}
-							disabled={
-								fileState && !_.isEmpty(fileState)
-									? true
-									: false
+
+				<div className='updateideaform_group'>
+					<div className='updateideaform_content'>
+						<InputLabel required={true} htmlFor='tags'>
+							Tags
+						</InputLabel>
+						<Select
+							select
+							fullWidth
+							multiple
+							labelId='tags'
+							id='tags'
+							name='tags'
+							input={<OutlinedInput label='Tag' />}
+							value={formik.values.tags ?? []}
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							MenuProps={{
+								PaperProps: {
+									style: { maxHeight: 224, width: 250 },
+								},
+							}}
+							renderValue={(selected) =>
+								formik.values.tags !== null ? (
+									<List
+										sx={{
+											display: 'flex',
+											justifyContent: 'center',
+											flexWrap: 'wrap',
+											listStyle: 'none',
+											p: 0.5,
+											m: 0,
+										}}
+									>
+										{selected.map((value, index) => (
+											<ListItem key={index}>
+												<Chip
+													label={value}
+													style={{
+														background: '#d2d2d2',
+													}}
+												/>
+											</ListItem>
+										))}
+									</List>
+								) : (
+									<placeholder>
+										<em
+											style={{
+												opacity: 0.6,
+												fontSize: 14,
+											}}
+										>
+											-- tags --
+										</em>
+									</placeholder>
+								)
 							}
-							maxFiles={1}
-							multiple={true}>
+							error={formik.touched.tags && Boolean(formik.errors.tags)}
+						>
+							{tagOptions?.map((tag) => (
+								<MenuItem
+									style={{ textTransform: 'capitalize' }}
+									value={tag.name}
+								>
+									<Checkbox
+										checked={
+											formik.values.tags?.indexOf(tag.name) > -1
+										}
+									/>
+									<ListItemText primary={tag.name} />
+								</MenuItem>
+							))}
+						</Select>
+						<FormHelperText error>
+							{formik.touched.tags && formik.errors.tags}
+						</FormHelperText>
+					</div>
+				</div>
+
+				{attachments.length === 0 ? null : (
+					<div className='updateideaform_group'>
+						<div className='updateideaform_content'>
+							<List
+								sx={{
+									display: 'flex',
+									justifyContent: 'center',
+									flexWrap: 'wrap',
+									listStyle: 'none',
+									p: 0.5,
+									m: 0,
+								}}
+							>
+								{attachments.map((file, index) => (
+									<ListItem key={index}>
+										<Chip
+											clickable
+											icon={<InsertDriveFileIcon />}
+											onDelete={handleDeleteAttachment(file)}
+											label={`${file.name} · ${toReadableFileSize(
+												file.size,
+											)}`}
+											style={{ background: '#d2d2d2' }}
+										/>
+									</ListItem>
+								))}
+							</List>
+						</div>
+					</div>
+				)}
+
+				<div className='updateideaform_group'>
+					<div className='updateideaform_content'>
+						<Dropzone
+							onDrop={handleDrop}
+							onDropRejected={() =>
+								toast.error(toastMessages.ERR_FILE_REJECTED)
+							}
+						>
 							{({ getRootProps, getInputProps }) => (
 								<div
-									{...getRootProps({ className: 'dropzone' })}
-									style={{ height: '100%' }}>
-									<input {...getInputProps()} type={'file'} />
-									<Button
-										disabled={
-											fileState && !_.isEmpty(fileState)
-												? true
-												: false
-										}
-										variant={'contained'}
-										style={{ background: 'darkgray' }}>
-										Upload Image
-									</Button>
+									{...getRootProps({
+										className: 'dropzone',
+									})}
+								>
+									<input {...getInputProps()} />
+									<p>Drag &#38; drop files, or click to select files</p>
 								</div>
 							)}
 						</Dropzone>
-
-						{fileState && !_.isEmpty(fileState) && (
-							<div
-								style={{
-									marginTop: 'auto',
-									marginBottom: 'auto',
-									marginLeft: '15px',
-									display: 'flex',
-								}}>
-								{fileState?.url ? (
-									<a
-										style={{
-											marginTop: 'auto',
-											marginBottom: 'auto',
-											marginRight: '15px',
-										}}
-										href={fileState?.url}>
-										{fileState?.name}
-									</a>
-								) : (
-									<p
-										style={{
-											marginTop: 'auto',
-											marginBottom: 'auto',
-											marginRight: '15px',
-										}}>
-										{fileState?.[0].name}
-									</p>
-								)}
-								<IconButton
-									style={{ color: 'darkred' }}
-									onClick={() => {
-										onDeleteFile();
-									}}>
-									<ClearIcon />
-								</IconButton>
-							</div>
-						)}
 					</div>
 				</div>
-				<div className='createuserform_footer'>
+
+				<div className='updateideaform_footer'>
 					<ColorButton variant='outlined' onClick={() => onClose()}>
 						Cancel
 					</ColorButton>
 					<ColorButton variant='contained' type='submit'>
-						Create
+						Update
 					</ColorButton>
 				</div>
 			</form>

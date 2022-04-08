@@ -24,11 +24,7 @@ import Dropzone from 'react-dropzone';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
-import {
-	AuthRequest,
-	getGuid,
-	toReadableFileSize,
-} from '../../../common/AppUse';
+import { AuthRequest, getGuid, toReadableFileSize } from '../../../common/AppUse';
 import { API_PATHS } from '../../../common/env';
 
 const CssTextField = styled(TextField)({
@@ -92,9 +88,7 @@ const validationSchema = yup.object({
 	tags: yup.array().max(3, 'Only 3 tags per idea').nullable(),
 	attachments: yup.array().nullable(),
 	is_anonymous: yup.bool(),
-	submission_id: yup
-		.string()
-		.required('Please specify the submission for this idea'),
+	submission_id: yup.string().required('Please specify the submission for this idea'),
 });
 
 const initialValues = {
@@ -109,7 +103,6 @@ const initialValues = {
 function CreateIdeaForm(props) {
 	const { onClose, onCreate, submission: externalSubData } = props;
 	const [attachments, setAttachments] = useState([]);
-	const [tags, setTags] = useState([]);
 	const [subOptions, setSubOptions] = useState([]);
 	const [tagOptions, setTagOptions] = useState([]);
 
@@ -164,8 +157,7 @@ function CreateIdeaForm(props) {
 
 			for (const file of acceptedFiles) {
 				if (
-					attachments.reduce((a, b) => a + (b['size'] || 0), 0) +
-						file.size >
+					attachments.reduce((a, b) => a + (b['size'] || 0), 0) + file.size >
 					FILE_SIZE
 				) {
 					toast.error(`${file.name} ${toastMessages.ERR_FILE_BIG}`);
@@ -211,26 +203,20 @@ function CreateIdeaForm(props) {
 			</div>
 			<br />
 
-			<form
-				className='createideaform_grid'
-				onSubmit={formik.handleSubmit}>
+			<form className='createideaform_grid' onSubmit={formik.handleSubmit}>
 				<div className='createideaform_group'>
 					<div className='createideaform_content'>
-						<InputLabel htmlFor='titleSub'>
-							Title Submission
-						</InputLabel>
+						<InputLabel htmlFor='titleSub'>Title Submission</InputLabel>
 						{externalSubData ? (
 							<Select
 								disabled={true}
 								fullWidth
 								labelId='submission_id'
-								id='titleSub'
+								id='submission_id'
 								name='submission_id'
 								value={formik.values.submission_id}
-								style={{
-									textTransform: 'capitalize',
-									color: 'black',
-								}}>
+								style={{ textTransform: 'capitalize' }}
+							>
 								<MenuItem value={formik.values.submission_id}>
 									{externalSubData.title}
 								</MenuItem>
@@ -260,7 +246,8 @@ function CreateIdeaForm(props) {
 																	'lowercase',
 																opacity: 0.6,
 																fontSize: 14,
-															}}>
+															}}
+														>
 															-- submission --
 														</em>
 													</placeholder>
@@ -269,13 +256,15 @@ function CreateIdeaForm(props) {
 									error={
 										formik.touched.submission_id &&
 										Boolean(formik.errors.submission_id)
-									}>
+									}
+								>
 									{subOptions?.map((sub) => (
 										<MenuItem
 											style={{
 												textTransform: 'capitalize',
 											}}
-											value={sub.id}>
+											value={sub.id}
+										>
 											{sub.title}
 										</MenuItem>
 									))}
@@ -298,13 +287,8 @@ function CreateIdeaForm(props) {
 							value={formik.values?.title}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={
-								formik.touched.title &&
-								Boolean(formik.errors.title)
-							}
-							helperText={
-								formik.touched.title && formik.errors.title
-							}
+							error={formik.touched.title && Boolean(formik.errors.title)}
+							helperText={formik.touched.title && formik.errors.title}
 						/>
 					</div>
 				</div>
@@ -363,7 +347,8 @@ function CreateIdeaForm(props) {
 											listStyle: 'none',
 											p: 0.5,
 											m: 0,
-										}}>
+										}}
+									>
 										{selected.map((value, index) => (
 											<ListItem key={index}>
 												<Chip
@@ -381,25 +366,23 @@ function CreateIdeaForm(props) {
 											style={{
 												opacity: 0.6,
 												fontSize: 14,
-											}}>
+											}}
+										>
 											-- tags --
 										</em>
 									</placeholder>
 								)
 							}
-							error={
-								formik.touched.tags &&
-								Boolean(formik.errors.tags)
-							}>
+							error={formik.touched.tags && Boolean(formik.errors.tags)}
+						>
 							{tagOptions?.map((tag) => (
 								<MenuItem
 									style={{ textTransform: 'capitalize' }}
-									value={tag.name}>
+									value={tag.name}
+								>
 									<Checkbox
 										checked={
-											formik.values.tags?.indexOf(
-												tag.name,
-											) > -1
+											formik.values.tags?.indexOf(tag.name) > -1
 										}
 									/>
 									<ListItemText primary={tag.name} />
@@ -423,18 +406,15 @@ function CreateIdeaForm(props) {
 									listStyle: 'none',
 									p: 0.5,
 									m: 0,
-								}}>
+								}}
+							>
 								{attachments.map((file, index) => (
 									<ListItem key={index}>
 										<Chip
 											clickable
 											icon={<InsertDriveFileIcon />}
-											onDelete={handleDeleteAttachment(
-												file,
-											)}
-											label={`${
-												file.name
-											} · ${toReadableFileSize(
+											onDelete={handleDeleteAttachment(file)}
+											label={`${file.name} · ${toReadableFileSize(
 												file.size,
 											)}`}
 											style={{ background: '#d2d2d2' }}
@@ -452,17 +432,16 @@ function CreateIdeaForm(props) {
 							onDrop={handleDrop}
 							onDropRejected={() =>
 								toast.error(toastMessages.ERR_FILE_REJECTED)
-							}>
+							}
+						>
 							{({ getRootProps, getInputProps }) => (
 								<div
 									{...getRootProps({
 										className: 'dropzone',
-									})}>
+									})}
+								>
 									<input {...getInputProps()} />
-									<p>
-										Drag'n'drop files, or click to select
-										files
-									</p>
+									<p>Drag &#38; drop files, or click to select files</p>
 								</div>
 							)}
 						</Dropzone>

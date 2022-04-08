@@ -8,6 +8,7 @@ import InputLabel from '@mui/material/InputLabel';
 import { styled } from '@mui/material/styles';
 import { useFormik } from 'formik';
 import React from 'react';
+import moment from 'moment';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -131,7 +132,7 @@ function DetailTagForm(props) {
 							fullWidth
 							id='created_at'
 							name='created_at'
-							value={formik.values.created_at}
+							value={moment(formik.values.created_at).format('DD/MM/YYYY')}
 							variant='standard'
 							inputProps={{
 								readOnly: true,
@@ -146,7 +147,7 @@ function DetailTagForm(props) {
 							fullWidth
 							id='modified_at'
 							name='modified_at'
-							value={formik.values.modified_at}
+							value={moment(formik.values.modified_at).format('DD/MM/YYYY')}
 							variant='standard'
 							inputProps={{
 								readOnly: true,

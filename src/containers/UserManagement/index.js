@@ -31,6 +31,7 @@ import { UserContext } from '../../context/AppContext';
 import { dataDemo } from './FakeData';
 import ModalUserManagement from './modal/ModalUserManagement';
 import { Column } from './model/Column';
+import UimPagination from '../../components/UimPagination';
 
 const toastMessages = {
 	WAIT: 'Please wait...',
@@ -260,7 +261,7 @@ function UserManagement() {
 					pagination={false}
 					cell--textCenter
 					pageSize={pagination.pageSize}
-					page={pagination.page}
+					page={pagination.page - 1}
 					hideFooterSelectedRowCount={true}
 					hideFooterPagination={true}
 					hideFooterRowCount={true}
@@ -274,28 +275,23 @@ function UserManagement() {
 						alignItems: 'center',
 					}}
 				>
-					<Select
-						labelId='row-size'
-						id='row-size'
-						defaultValue={5}
-						label='Rows'
-						onChange={(event) =>
-							setPagination({
-								...pagination,
-								pageSize: event.target.value,
-								page: 1,
-							})
-						}
-					>
-						<MenuItem value={5}>5</MenuItem>
-						<MenuItem value={10}>10</MenuItem>
-						<MenuItem value={25}>25</MenuItem>
-						<MenuItem value={50}>50</MenuItem>
-					</Select>
-					<Pagination
-						count={Math.floor(data?.total / pagination.pageSize) + 1}
-						onChange={(_, page) => setPagination({ ...pagination, page })}
-					/>
+					{!data?.rows ?? (
+						<UimPagination
+							totalPages={Math.floor(data?.total / pagination.pageSize) + 1}
+							currentPage={pagination.page}
+							onChangePageSize={(_, value) =>
+								setPagination({
+									...pagination,
+									pageSize: value,
+									page: 1,
+								})
+							}
+							onChangePageIndex={(_, value) =>
+								setPagination({ ...pagination, value })
+							}
+							pageSizeOptions={[5, 10, 25, 50]}
+						/>
+					)}
 				</div>
 			</div>
 		);

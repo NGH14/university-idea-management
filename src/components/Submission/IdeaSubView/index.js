@@ -1,46 +1,55 @@
-import AddIcon from "@mui/icons-material/Add";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import { Box, Button, CircularProgress, Menu, MenuItem, Pagination, Tooltip } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
-import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
-import Typography from "@mui/material/Typography";
-import _ from "lodash";
-import moment from "moment";
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { BiPencil } from "react-icons/bi";
-import { MdOutlineDeleteOutline } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import AddIcon from '@mui/icons-material/Add';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import {
+	Box,
+	Button,
+	CircularProgress,
+	Menu,
+	MenuItem,
+	Pagination,
+	Tooltip,
+} from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import _ from 'lodash';
+import moment from 'moment';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { BiPencil } from 'react-icons/bi';
+import { MdOutlineDeleteOutline } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from "../../../common/AppUse";
-import {API_PATHS, DEV_CONFIGS, URL_PATHS} from "../../../common/env";
-import CommentIdea from "../../Idea/CommentIdea";
-import ModalIdea from "../../Idea/ModalIdea";
-import {DataGridPro, GridActionsCellItem} from "@mui/x-data-grid-pro";
-import CustomNoRowsOverlay from "../../Custom/CustomNoRowsOverlay";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import { AuthRequest, sleep } from '../../../common/AppUse';
+import { API_PATHS, DEV_CONFIGS, URL_PATHS } from '../../../common/env';
+import CommentIdea from '../../Idea/CommentIdea';
+import ModalIdea from '../../Idea/ModalIdea';
+import { DataGridPro, GridActionsCellItem } from '@mui/x-data-grid-pro';
+import CustomNoRowsOverlay from '../../Custom/CustomNoRowsOverlay';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import {
 	GridToolbarColumnsButton,
 	GridToolbarContainer,
-	GridToolbarDensitySelector, GridToolbarExport,
-	GridToolbarFilterButton
-} from "@mui/x-data-grid";
-import {dataDemo_submissions} from "../../../containers/SubmissionManagement/FakeData/Submissions";
-import {Column} from "../../../containers/SubmissionManagement/model/Column";
-import {GoInfo} from "react-icons/go";
-import {Columns} from "../../../containers/IdeaMangement/model/Columns";
+	GridToolbarDensitySelector,
+	GridToolbarExport,
+	GridToolbarFilterButton,
+} from '@mui/x-data-grid';
+import { dataDemo_submissions } from '../../../containers/SubmissionManagement/FakeData/Submissions';
+import { Column } from '../../../containers/SubmissionManagement/model/Column';
+import { GoInfo } from 'react-icons/go';
+import { Columns } from '../../../containers/IdeaMangement/model/Columns';
 
 const toastMessages = {
 	WAIT: 'Please wait...',
@@ -185,7 +194,7 @@ function IdeaSubView({ ideaData, subData }) {
 	const [ideaId, setIdeaId] = useState(null);
 
 	useEffect(() => {
-
+		console.log(subData);
 		loadDataIdea();
 	}, [pagination]);
 
@@ -196,6 +205,7 @@ function IdeaSubView({ ideaData, subData }) {
 			params: {
 				page: pagination.page + 1,
 				page_size: pagination.pageSize,
+				submission_id: subData.id,
 			},
 		})
 			.then((res) => {

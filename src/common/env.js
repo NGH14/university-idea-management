@@ -1,6 +1,6 @@
 export const DEV_CONFIGS = {
-	IS_LOGIN: false,
-	IS_OFFLINE_DEV: false,
+	IS_LOGIN: true,
+	IS_OFFLINE_DEV: true,
 	FAKE_ROLES: [
 		{ name: 'admin' },
 		{ name: 'manager' },
@@ -57,13 +57,15 @@ export const URL_PATHS = {
 	MANAGE_USER: '/user-management',
 	MANAGE_IDEA: '/idea-management',
 	MANAGE_SUB_ID: '/submission-management/:id',
+	MANAGE_SUB: '/submission-management',
 	MANAGE_DEP: '/department-management',
 	MANAGE_TAG: '/tag-management',
-	MANAGE_SUB: '/submission-management',
-	DASHBOARD:'/dashboard',
-	MANAGE: '/submission/:id',
+	DASHBOARD: '/dashboard',
 	PROFILE: '/profile',
+	SUB: '/submission',
+	SUB_ID: '/submission/:id',
 	IDEA_ID: '/idea/:id',
+	IDEA: '/idea',
 	DEMO: '/demo',
 };
 

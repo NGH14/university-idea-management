@@ -1,30 +1,39 @@
-import AddIcon from "@mui/icons-material/Add";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Button} from "@mui/material";
-import _ from "lodash";
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import './style.css';
 
-import { AuthRequest, sleep } from "../../common/AppUse";
-import {API_PATHS} from "../../common/env";
-import ModalIdea from "../../components/Idea/ModalIdea";
-import {DataGridPro, GridActionsCellItem} from "@mui/x-data-grid-pro";
-import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import {GoInfo} from "react-icons/go";
-import {BiPencil} from "react-icons/bi";
-import {MdOutlineDeleteOutline} from "react-icons/md";
-import {Columns} from "./model/Columns";
+import AddIcon from '@mui/icons-material/Add';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Button, IconButton } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
 import {
 	GridToolbarColumnsButton,
 	GridToolbarContainer,
-	GridToolbarDensitySelector, GridToolbarExport,
-	GridToolbarFilterButton
-} from "@mui/x-data-grid";
+	GridToolbarDensitySelector,
+	GridToolbarExport,
+	GridToolbarFilterButton,
+} from '@mui/x-data-grid';
+import { DataGridPro, GridActionsCellItem } from '@mui/x-data-grid-pro';
+import _ from 'lodash';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { BiPencil } from 'react-icons/bi';
+import { GoInfo } from 'react-icons/go';
+import { MdOutlineDeleteOutline } from 'react-icons/md';
+import { toast } from 'react-toastify';
+
+import { AuthRequest, sleep } from '../../common/AppUse';
+import { API_PATHS, URL_PATHS } from '../../common/env';
+import CustomNoRowsOverlay from '../../components/Custom/CustomNoRowsOverlay';
+import ModalIdea from '../../components/Idea/ModalIdea';
+import { Columns } from './model/Columns';
+import { useNavigate } from 'react-router-dom';
 
 const toastMessages = {
 	WAIT: 'Please wait...',
+	SUC_IDEA_ADDED: 'Create comment successful !!',
+	SUC_IDEA_EDITED: 'Update comment successful !!',
+	SUC_IDEA_DEL: 'Delete comment successful !!',
 	SUC_COMMENT_ADDED: 'Create comment successful !!',
 	SUC_COMMENT_EDITED: 'Update comment successful !!',
 	SUC_COMMENT_DEL: 'Delete comment successful !!',
@@ -32,30 +41,35 @@ const toastMessages = {
 };
 
 function IdeaManagement() {
+	const navigate = useNavigate();
 	const [status, setStatus] = useState({
 		visibleModal: false,
 		action: 'update',
 		loading: false,
 	});
 	const [tableToolBar, setTableToolBar] = useState(false);
+
 	const [pagination, setPagination] = useState({
-		page: 1,
+		pageSize: 5,
+		page: 0,
 	});
+
 	const [data, setData] = useState([]);
 
 	useEffect(() => {
 		loadData();
 	}, [pagination]);
+
+	const handleOnClickToolBar = () => setTableToolBar((pre) => !pre);
+
 	const loadData = async () => {
-		await AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_IDEA}/table/list/${null}`, {
+		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_IDEA + '/table/list', {
 			params: {
-				page: pagination.page,
-				page_size: 5,
+				page: pagination.page + 1,
+				page_size: pagination.pageSize,
 			},
 		})
-			.then((res) => {
-				setData(res?.data?.result?.rows ?? []);
-			})
+			.then((res) => setData(res?.data?.result?.rows ?? []))
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
@@ -70,9 +84,7 @@ function IdeaManagement() {
 		);
 	};
 
-	const onChangePagination = (pageSize, page) => {
-		setPagination({ page, pageSize });
-	};
+	const onChangePagination = (pageSize, page) => setPagination({ page, pageSize });
 
 	const columns = [
 		...Columns,
@@ -87,7 +99,7 @@ function IdeaManagement() {
 				<GridActionsCellItem
 					icon={<GoInfo color='#3f66da' style={{ fontSize: '20px' }} />}
 					label='Detail'
-					// onClick={() => navigate(`${URL_PATHS.MANAGE_SUB}/${params.id}`)}
+					onClick={() => navigate(`${URL_PATHS.IDEA}/${params.id}`)}
 					showInMenu
 				/>,
 
@@ -116,7 +128,7 @@ function IdeaManagement() {
 	const onDelete = (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`).then(() =>
+				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`).then(() =>
 					sleep(700),
 				),
 				{
@@ -170,72 +182,69 @@ function IdeaManagement() {
 			});
 	};
 
-
-
-	const onCloseModal = () => {
-		setStatus({ ...status, visibleModal: false });
-	};
-	const onOpenModal = (action, id) => {
+	const onCloseModal = () => setStatus({ ...status, visibleModal: false });
+	const onOpenModal = (action, id) =>
 		setStatus({ ...status, visibleModal: true, action: action });
-	};
 
-	const renderTop = () => {
-		return (
-			<div style={{ width: '100%', textAlign: 'right', marginBottom: 15 }}>
-				<Button
-					size={'small'}
-					variant='contained'
-					endIcon={<AddIcon />}
-					onClick={() => onOpenModal('create')}
-				>
-					Create Idea
-				</Button>
+	const renderTop = () => (
+		<div className='managementidea_title'>
+			<div className='managementidea_heading'>
+				<h2>Idea Management</h2>
+				<Tooltip title='Table Tool Bar'>
+					<IconButton onClick={handleOnClickToolBar}>
+						<MoreVertIcon />
+					</IconButton>
+				</Tooltip>
 			</div>
-		);
-	};
-	const renderModal = () => {
-		return (
-			<ModalIdea
-				visible={status.visibleModal}
-				action={status.action}
-				onClose={onCloseModal}
-				onUpdate={onUpdate}
-				onCreate={onCreate}
+
+			<Button
+				size={'small'}
+				variant='contained'
+				endIcon={<AddIcon />}
+				onClick={() => onOpenModal('create')}
+			>
+				Create
+			</Button>
+		</div>
+	);
+
+	const renderModal = () => (
+		<ModalIdea
+			visible={status.visibleModal}
+			action={status.action}
+			onClose={onCloseModal}
+			onUpdate={onUpdate}
+			onCreate={onCreate}
+		/>
+	);
+
+	const renderContent = () => (
+		<div className='managementidea_table'>
+			<DataGridPro
+				components={{
+					NoRowsOverlay: CustomNoRowsOverlay,
+					ColumnSortedDescendingIcon: () => <ExpandMoreIcon className='icon' />,
+					ColumnSortedAscendingIcon: () => <ExpandLessIcon className='icon' />,
+					Toolbar: tableToolBar && CustomToolbarSubmission,
+				}}
+				rows={data}
+				columns={columns}
+				pagination={true}
+				cell--textCenter
+				pageSize={pagination.pageSize}
+				page={pagination.page}
+				initialState={{ pinnedColumns: { right: ['actions'] } }}
+				onPageSizeChange={(pageSize) =>
+					onChangePagination(pageSize, pagination.page)
+				}
+				onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
+				style={{ minHeight: '600px' }}
+				rowsPerPageOptions={[5, 10, 25, 50]}
 			/>
-		);
-	};
+		</div>
+	);
 
-	const renderContent = () => {
-		return (
-			<div className='managementsubmission_table'>
-				<DataGridPro
-					components={{
-						NoRowsOverlay: CustomNoRowsOverlay,
-						ColumnSortedDescendingIcon: () => (
-							<ExpandMoreIcon className='icon' />
-						),
-						ColumnSortedAscendingIcon: () => (
-							<ExpandLessIcon className='icon' />
-						),
-						Toolbar: tableToolBar && CustomToolbarSubmission,
-					}}
-					rows={data}
-					columns={columns}
-					pagination={true}
-					cell--textCenter
-					pageSize={pagination.pageSize}
-					page={pagination.page}
-					initialState={{ pinnedColumns: { right: ['actions'] } }}
-					onPageSizeChange={(pageSize) =>
-						onChangePagination(pageSize, pagination.page)
-					}
-					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
-					style={{ minHeight: '600px' }}
-					rowsPerPageOptions={[5, 10, 25, 50]}
-				/>
-			</div>
-		);
-	};
+	if (!data) return;
 
 	return (
 		<>
@@ -254,4 +263,5 @@ function IdeaManagement() {
 		</>
 	);
 }
+
 export default IdeaManagement;

@@ -1,8 +1,8 @@
-import { Modal } from "@mui/material";
-import Box from "@mui/material/Box";
-import * as React from "react";
+import { Modal } from '@mui/material';
+import Box from '@mui/material/Box';
+import * as React from 'react';
 
-import UpdateIdeaForm from "../../components/Idea/UpdateIdeaForm";
+import UpdateIdeaForm from '../../components/Idea/UpdateIdeaForm';
 
 const style = {
 	position: 'relative',
@@ -40,7 +40,7 @@ const ModalIdeaDetailView = (props) => {
 				<UpdateIdeaForm
 					onClose={() => onClose()}
 					onUpdate={onUpdate}
-					submissionTitle={null}
+					submission={null}
 					initialValue={initialValue}
 				/>
 			</Box>
