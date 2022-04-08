@@ -22,7 +22,7 @@ const style = {
 	overflow: 'auto',
 	maxHeight: '100%',
 
-	' @media (max-width: 600px)': {
+	' @media (max-width: 950px)': {
 		width: '100%',
 	},
 };
@@ -32,7 +32,8 @@ const toastMessages = {
 };
 
 const ModalIdea = (props) => {
-	const { visible, onClose, onCreate, onUpdate, action, submission, idIdea } = props;
+	const { visible, onClose, onCreate, onUpdate, action, submission, idIdea } =
+		props;
 	const [initialValue, setInitialValue] = useState([]);
 
 	useEffect(() => {
@@ -86,8 +87,7 @@ const ModalIdea = (props) => {
 			open={visible}
 			onClose={() => onClose()}
 			aria-labelledby='modal-modal-title'
-			aria-describedby='modal-modal-description'
-		>
+			aria-describedby='modal-modal-description'>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>
 	);

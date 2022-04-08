@@ -1,15 +1,15 @@
-import { Modal } from "@mui/material";
-import Box from "@mui/material/Box";
-import _ from "lodash";
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { Modal } from '@mui/material';
+import Box from '@mui/material/Box';
+import _ from 'lodash';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
-import { AuthRequest } from "../../../common/AppUse";
-import { API_PATHS, DEV_CONFIGS } from "../../../common/env";
-import CreateDepartmentForm from "../../../components/Department/CreateDepartmentForm";
-import EditDepartmentForm from "../../../components/Department/EditDepartmentForm";
-import { dataDemo } from "../FakeData";
+import { AuthRequest } from '../../../common/AppUse';
+import { API_PATHS, DEV_CONFIGS } from '../../../common/env';
+import CreateDepartmentForm from '../../../components/Department/CreateDepartmentForm';
+import EditDepartmentForm from '../../../components/Department/EditDepartmentForm';
+import { dataDemo } from '../FakeData';
 
 const style = {
 	position: 'relative',
@@ -23,7 +23,7 @@ const style = {
 	borderRadius: '5px',
 	overflow: 'auto',
 	maxHeight: 380,
-	' @media (max-width: 600px)': {
+	' @media (max-width: 950px)': {
 		width: '100%',
 	},
 };
@@ -63,7 +63,10 @@ const ModalDepartmentManagement = (props) => {
 		switch (action) {
 			case 'create':
 				return (
-					<CreateDepartmentForm onClose={() => onClose()} onCreate={onCreate} />
+					<CreateDepartmentForm
+						onClose={() => onClose()}
+						onCreate={onCreate}
+					/>
 				);
 			case 'update':
 				return (
@@ -85,8 +88,7 @@ const ModalDepartmentManagement = (props) => {
 			open={visible}
 			onClose={() => onClose()}
 			aria-labelledby='modal-modal-title'
-			aria-describedby='modal-modal-description'
-		>
+			aria-describedby='modal-modal-description'>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>
 	);

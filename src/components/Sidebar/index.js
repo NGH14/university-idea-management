@@ -34,7 +34,7 @@ import { RiDiscussFill } from 'react-icons/ri';
 import { useLocation } from 'react-router';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 
-import UniTextLogo from '../../assets/images/2021-Greenwich-Black-Eng.webp';
+import UniTextLogo from '../../assets/images/logo-500.webp';
 import { ROLES, URL_PATHS } from '../../common/env';
 import { UserContext } from '../../context/AppContext';
 import { AppBar, ColorButton, Drawer, DrawerHeader } from './SidebarStyled';

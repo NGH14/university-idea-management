@@ -17,7 +17,7 @@ const style = {
 	overflow: 'auto',
 	maxHeight: '100%',
 
-	' @media (max-width: 600px)': {
+	' @media (max-width: 950px)': {
 		width: '100%',
 	},
 };
@@ -34,8 +34,7 @@ const ModalIdeaDetailView = (props) => {
 			open={visible}
 			onClose={() => onClose()}
 			aria-labelledby='modal-modal-title'
-			aria-describedby='modal-modal-description'
-		>
+			aria-describedby='modal-modal-description'>
 			<Box sx={style}>
 				<UpdateIdeaForm
 					onClose={() => onClose()}

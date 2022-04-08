@@ -4,7 +4,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+
+import { BiCommentDetail } from 'react-icons/bi';
+
 import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
 
 import {
@@ -30,6 +32,7 @@ import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 import { AuthRequest, sleep } from '../../common/AppUse';
 import { API_PATHS, ROLES } from '../../common/env';
@@ -37,12 +40,14 @@ import CommentIdea from '../../components/Idea/CommentIdea';
 import ModalIdea from '../../components/Idea/ModalIdea';
 import { UserContext } from '../../context/AppContext';
 import { fakeData } from './FakeDate';
+import './style.css';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 
 const ExpandMore = styled((props) => {
 	const { expand, ...other } = props;
-	return <IconButton {...other} />;
+	return <Button {...other} />;
 })(({ theme, expand }) => ({
-	transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
 	marginLeft: 'auto',
 	transition: theme.transitions.create('transform', {
 		duration: theme.transitions.duration.shortest,
@@ -66,6 +71,7 @@ function Homepage() {
 		loading: false,
 	});
 	const [data, setData] = useState(fakeData);
+
 	const { state } = useContext(UserContext);
 	const [anchorEl, setAnchorEl] = React.useState(null);
 	const open = Boolean(anchorEl);
@@ -106,20 +112,14 @@ function Homepage() {
 	const handleClose = () => {
 		setAnchorEl(null);
 	};
-	const actionButtonIdea = [
-		<Button
-			startIcon={<EditIcon />}
-			style={{ backgroundColor: '#4caf50' }}
-			variant={'contained'}>
-			Update Idea
-		</Button>,
-		<Button
-			startIcon={<DeleteIcon />}
-			style={{ backgroundColor: '#ba000d' }}
-			variant={'contained'}>
-			Delete Idea
-		</Button>,
-	];
+
+	// NOTE: What is this ?
+	// const actionButtonIdea = [
+	// 	<Button variant={'contained'}>Update Idea</Button>,
+	// 	<Button style={{ backgroundColor: '#ba000d' }} variant={'contained'}>
+	// 		Delete Idea
+	// 	</Button>,
+	// ];
 
 	const handleExpandClick = (id) => {
 		let newExpanded = [...expanded];
@@ -208,14 +208,25 @@ function Homepage() {
 
 	const renderTop = () => {
 		return (
-			<div
-				style={{ width: '100%', textAlign: 'right', marginBottom: 15 }}>
+			<div className='homepage_title'>
+				<div className='homepage_heading'>
+					<h2>Hi, {state.dataUser.full_name} </h2>
+					<i
+						style={{
+							fontWeight: 600,
+							fontSize: 14,
+							color: '#999',
+							opacity: '0.7',
+						}}>
+						Welcome to the UIM &#10084;&#65039;
+					</i>
+				</div>
+
 				<Button
-					size={'small'}
-					variant='contained'
-					endIcon={<AddIcon />}
+					variant='outlined'
+					startIcon={<AddCircleOutlineIcon />}
 					onClick={() => onOpenModal('create')}>
-					Create Idea
+					Submit your Ideas
 				</Button>
 			</div>
 		);
@@ -233,65 +244,74 @@ function Homepage() {
 	};
 
 	const renderActionIdea = (id, createBy) => {
-		if (
-			createBy !== state.dataUser.id &&
-			state.dataUser.role !== ROLES.ADMIN &&
-			state.dataUser.role !== ROLES.MANAGER
-		) {
-			return null;
-		}
-		return (
-			<div>
-				<IconButton
-					style={{ fontSize: 10 }}
-					aria-label='more'
-					id='long-button'
-					aria-controls={open ? 'long-menu' : undefined}
-					aria-expanded={open ? 'true' : undefined}
-					aria-haspopup='true'
-					onClick={handleClick}>
-					<MoreVertIcon />
-				</IconButton>
-				<Menu
-					id='long-menu'
-					MenuListProps={{
-						'aria-labelledby': 'long-button',
-					}}
-					anchorEl={anchorEl}
-					open={open}
-					onClose={handleClose}
-					PaperProps={{
-						style: {
-							maxHeight: ITEM_HEIGHT * 4.5,
-							width: '20ch',
-						},
-					}}>
-					{actionButtonIdea.map((option, index) => (
-						<MenuItem
-							key={option}
-							selected={option === 'Pyxis'}
-							onClick={() => {
-								handleClose();
-								index === 0
-									? onOpenModal('update', id)
-									: onDelete(id);
-							}}>
-							{option}
-						</MenuItem>
-					))}
-				</Menu>
-			</div>
-		);
+		// NOTE: What is this
+		// if (
+		// 	createBy !== state.dataUser.id &&
+		// 	state.dataUser.role !== ROLES.ADMIN &&
+		// 	state.dataUser.role !== ROLES.MANAGER
+		// ) {
+		// 	return null;
+		// }
+		// return (
+		// 	<div>
+		// 		<IconButton
+		// 			style={{ fontSize: 10 }}
+		// 			aria-label='more'
+		// 			id='long-button'
+		// 			aria-controls={open ? 'long-menu' : undefined}
+		// 			aria-expanded={open ? 'true' : undefined}
+		// 			aria-haspopup='true'
+		// 			onClick={handleClick}>
+		// 			<MoreVertIcon />
+		// 		</IconButton>
+		// 		<Menu
+		// 			id='long-menu'
+		// 			MenuListProps={{
+		// 				'aria-labelledby': 'long-button',
+		// 			}}
+		// 			anchorEl={anchorEl}
+		// 			open={open}
+		// 			onClose={handleClose}
+		// 			PaperProps={{
+		// 				style: {
+		// 					maxHeight: ITEM_HEIGHT * 4.5,
+		// 					width: '20ch',
+		// 				},
+		// 			}}>
+		// 			{actionButtonIdea.map((option, index) => (
+		// 				<ListItemButton
+		// 					key={option}
+		// 					selected={option === 'Pyxis'}
+		// 					onClick={() => {
+		// 						handleClose();
+		// 						index === 0
+		// 							? onOpenModal('update', id)
+		// 							: onDelete(id);
+		// 					}}>
+		// 					{option}
+		// 				</ListItemButton>
+		// 			))}
+		// 		</Menu>
+		// 	</div>
+		// );
 	};
 
 	const renderCardHeader = (item) => {
+		const hex = Math.floor(Math.random() * 0xffffff);
+		const color = '#' + hex.toString(16);
 		return (
 			<CardHeader
 				avatar={
-					<Avatar sx={{ bgcolor: 'gray' }} aria-label='recipe'>
+					<Avatar
+						style={{
+							backgroundColor: color,
+							filter: 'grayscale(80%)',
+						}}
+						aria-label='avatar'>
 						P
 					</Avatar>
 				}
+				className='idea_header'
 				action={renderActionIdea(item?.id, item?.create_by)}
 				title='People Private'
 				subheader={
@@ -314,16 +334,15 @@ function Homepage() {
 						frozen peas along with the mussels, if you like.
 					</Typography>
 				</div>
-				<br></br>
+
 				<div
 					style={{
 						display: 'flex',
 						fontSize: '0.8em',
 						padding: '0 5',
-						marginTop: 5,
+						marginTop: 30,
 						color: '#888',
 					}}>
-					<span style={{ marginRight: 5 }}>in</span>
 					<Tooltip title={'Detail submission'}>
 						<a
 							href='\'
@@ -356,7 +375,7 @@ function Homepage() {
 								color: '#1976d2',
 								cursor: 'pointer',
 							}}>
-							{/*{item?.title}*/} Title Idea
+							{/*{item?.title}*/}Title Idea
 						</label>
 					</Tooltip>
 				</div>
@@ -376,16 +395,18 @@ function Homepage() {
 					fontSize: 12,
 				}}>
 				<Button
+					className='idea_action'
 					fullWidth
-					aria-label='add to favorites'
+					aria-label='up vote'
 					startIcon={<IoMdArrowRoundUp />}
 					color={'inherit'}
 					size={'large'}>
 					(0)
 				</Button>
 				<Button
+					className='idea_action'
 					fullWidth
-					aria-label='add to favorites'
+					aria-label='down vote'
 					style={{ marginRight: 20, marginLeft: 20 }}
 					startIcon={<IoMdArrowRoundDown />}
 					color={'inherit'}
@@ -393,14 +414,16 @@ function Homepage() {
 					(0)
 				</Button>
 				<ExpandMore
+					className='idea_action'
+					fullWidth
 					expand={expanded[item.id]}
 					onClick={() => handleExpandClick(item.id)}
+					style={{ marginRight: 20, marginLeft: 20 }}
 					aria-expanded={expanded[item.id]}
-					aria-label='show more'>
-					<Tooltip title={'Show comment'}>
-						<ExpandMoreIcon />
-					</Tooltip>
-				</ExpandMore>
+					color={'inherit'}
+					size={'large'}
+					startIcon={<BiCommentDetail />}
+					aria-label='show more'></ExpandMore>
 			</CardActions>
 		);
 	};
@@ -473,7 +496,7 @@ function Homepage() {
 					onClick={() => {
 						onShowMore();
 					}}>
-					More view
+					More
 				</Button>
 			</div>
 		);

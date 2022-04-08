@@ -24,7 +24,7 @@ const style = {
 	overflow: 'auto',
 	maxHeight: '100%',
 
-	' @media (max-width: 600px)': {
+	' @media (max-width: 950px)': {
 		width: '100%',
 	},
 };
@@ -64,7 +64,10 @@ const ModalSubmissionManagement = (props) => {
 		switch (action) {
 			case 'create':
 				return (
-					<CreateSubmissionForm onClose={() => onClose()} onCreate={onCreate} />
+					<CreateSubmissionForm
+						onClose={() => onClose()}
+						onCreate={onCreate}
+					/>
 				);
 			case 'update':
 				return (
@@ -88,8 +91,7 @@ const ModalSubmissionManagement = (props) => {
 			open={visible}
 			onClose={() => onClose()}
 			aria-labelledby='modal-modal-title'
-			aria-describedby='modal-modal-description'
-		>
+			aria-describedby='modal-modal-description'>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>
 	);

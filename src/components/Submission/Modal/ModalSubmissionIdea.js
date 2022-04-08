@@ -1,10 +1,10 @@
-import { Modal } from "@mui/material";
-import Box from "@mui/material/Box";
-import * as React from "react";
-import { useEffect, useState } from "react";
+import { Modal } from '@mui/material';
+import Box from '@mui/material/Box';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
 
-import CreateIdeaForm from "../../Idea/CreateIdeaForm";
-import EditSubmissionForm from "../EditSubmissionForm";
+import CreateIdeaForm from '../../Idea/CreateIdeaForm';
+import EditSubmissionForm from '../EditSubmissionForm';
 
 const style = {
 	position: 'relative',
@@ -19,13 +19,14 @@ const style = {
 	overflow: 'auto',
 	maxHeight: '100%',
 
-	' @media (max-width: 600px)': {
+	' @media (max-width: 950px)': {
 		width: '100%',
 	},
 };
 
 const ModalSubmissionIdea = (props) => {
-	const { visible, onClose, onCreate, onUpdate, action, initialValue } = props;
+	const { visible, onClose, onCreate, onUpdate, action, initialValue } =
+		props;
 
 	const renderForm = () => {
 		switch (action) {
@@ -55,8 +56,7 @@ const ModalSubmissionIdea = (props) => {
 			open={visible}
 			onClose={() => onClose()}
 			aria-labelledby='modal-modal-title'
-			aria-describedby='modal-modal-description'
-		>
+			aria-describedby='modal-modal-description'>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>
 	);

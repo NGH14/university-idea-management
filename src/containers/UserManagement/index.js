@@ -53,7 +53,7 @@ function UserManagement() {
 	});
 
 	const [pagination, setPagination] = useState({
-		pageSize: 5,
+		pageSize: 10,
 		page: 1,
 	});
 
@@ -79,7 +79,9 @@ function UserManagement() {
 			sortable: false,
 			getActions: (params) => [
 				<GridActionsCellItem
-					icon={<GoInfo color='#3f66da' style={{ fontSize: '20px' }} />}
+					icon={
+						<GoInfo color='#3f66da' style={{ fontSize: '20px' }} />
+					}
 					label='Detail'
 					onClick={() => onOpenModal(params.id, 'detail')}
 					showInMenu
@@ -133,8 +135,8 @@ function UserManagement() {
 	const onDelete = async (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`).then(() =>
-					sleep(700),
+				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`).then(
+					() => sleep(700),
 				),
 				{
 					pending: toastMessages.WAIT,
@@ -200,7 +202,9 @@ function UserManagement() {
 				<GridToolbarColumnsButton />
 				<GridToolbarFilterButton />
 				<GridToolbarDensitySelector />
-				<GridToolbarExport printOptions={{ disableToolbarButton: true }} />
+				<GridToolbarExport
+					printOptions={{ disableToolbarButton: true }}
+				/>
 			</GridToolbarContainer>
 		);
 	};
@@ -233,8 +237,7 @@ function UserManagement() {
 				<Button
 					variant='contained'
 					endIcon={<AddCircleOutlineIcon />}
-					onClick={() => onOpenModal(null, 'create')}
-				>
+					onClick={() => onOpenModal(null, 'create')}>
 					Create
 				</Button>
 			</div>
@@ -255,7 +258,7 @@ function UserManagement() {
 						),
 						Toolbar: tableToolBar && CustomToolbarUser,
 					}}
-					rows={data?.rows ?? []}
+					rows={data?.rows ?? dataDemo}
 					columns={columns}
 					rowCount={pagination.pageSize}
 					columnVisibilityModel={{}}
@@ -267,18 +270,15 @@ function UserManagement() {
 					hideFooterPagination={true}
 					hideFooterRowCount={true}
 					initialState={{ pinnedColumns: { right: ['actions'] } }}
-					style={{ minHeight: '60vh' }}
+					style={{ minHeight: '70vh' }}
 				/>
-				<div
-					style={{
-						display: 'flex',
-						justifyContent: 'flex-end',
-						alignItems: 'center',
-					}}
-				>
+				<div className='usertable_footer'>
 					{data?.rows ? (
 						<UimPagination
-							totalPages={Math.floor(data?.total / pagination.pageSize) + 1}
+							totalPages={
+								Math.floor(data?.total / pagination.pageSize) +
+								1
+							}
 							currentPage={pagination.page}
 							onChangePageSize={(_, value) =>
 								setPagination({
@@ -290,7 +290,7 @@ function UserManagement() {
 							onChangePageIndex={(_, value) =>
 								setPagination({ ...pagination, value })
 							}
-							pageSizeOptions={[5, 10, 25, 50]}
+							pageSizeOptions={[10, 15, 25, 50]}
 						/>
 					) : (
 						<></>
@@ -303,12 +303,11 @@ function UserManagement() {
 	return (
 		<div
 			style={{
-				minHeight: '700px',
+				minHeight: '200px',
 				width: '100%',
 				padding: '0 5px',
 				fontFamily: 'Poppins',
-			}}
-		>
+			}}>
 			{renderTop()}
 			{renderContent()}
 			{status.visibleModal && renderModal()}
