@@ -18,22 +18,38 @@ import DatePicker from "@mui/lab/DatePicker";
 import {useEffect, useState} from "react";
 
 // total
+const dataNull = {
+    title: "No data",
+    comment_number: 0,
+    null: true
+}
 
 function IdeaPopularChart({timeKey, data}){
     const [newFilter, setNewFilter] = useState(new Date(timeKey))
     const [newData, setNewData] = useState(data)
     useEffect(()=>{
+        const newArray = [];
+        if(data && !_.isEmpty(data)){
+            const arrData = _.cloneDeep(data)
+            _.map(arrData, x => {
+                const title = x.idea?.title;
+                const arr = {
+                    ...x, title
+                }
+                newArray.push(arr)
+            })
+        } else {
+            newArray.push(dataNull)
+        }
         setNewFilter(new Date(timeKey))
-        setNewData (data)
+        setNewData(newArray)
+
     }, [data])
 
     const pointClickHandler = (e) => {
         toggleVisibility(e?.target);
     }
-    const dataNull = [{
-        title: "No data",
-        comment_number: 0
-    }]
+
 
     const legendClickHandler = (e) => {
         let arg = e?.target;
@@ -52,8 +68,21 @@ function IdeaPopularChart({timeKey, data}){
             )}&year=${moment(value).format('YYYY')}`,
         );
         if (res?.data?.succeeded) {
-            setNewFilter(value);
-            setNewData(res?.data?.result);
+            const newArray = [];
+            const arrData = _.cloneDeep(res?.data?.result)
+            if(arrData && !_.isEmpty(arrData)){
+                _.map(arrData, x => {
+                    const title = x.idea?.title;
+                    const arr = {
+                        ...x, title
+                    }
+                    newArray.push(arr)
+                })
+            } else {
+                newArray.push(dataNull)
+            }
+            setNewFilter(new Date(value));
+            setNewData(newArray);
         }
     };
 
@@ -94,14 +123,14 @@ function IdeaPopularChart({timeKey, data}){
                 </div>
                 <PieChart
                     id={"pie"}
-                    dataSource={_.isEmpty(newData) || data ? dataNull : dataNull}
+                    dataSource={newData}
                     palette={"Bright"}
-                    title={`${_.toUpper("Top idea have the most comment in")} ${moment(timeKey).format("MM/YYYY")} `}
+                    title={`${_.toUpper("Top idea have the most comment in")} ${moment(newFilter).format("MM/YYYY")} `}
                     // onClick={this.legendClickHandler}
                     onPointClick={(e)=>pointClickHandler(e)}
                     onLegendClick={(e)=>legendClickHandler(e)}
                 >
-                    <Series argumentField={"title"} valueField={"comment_number"}>
+                    <Series argumentField={"title"} valueField={"comment_number"} color={newData[0]?.null ? "darkGray" : ""}>
                         <Label visible={true}>
                             <Connector visible={true} width={1} />
                         </Label>
