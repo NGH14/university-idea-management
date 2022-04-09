@@ -43,7 +43,7 @@ export default function Sidebar(props) {
 	const { state, setState } = useContext(UserContext);
 	const [anchorElUser, setAnchorElUser] = React.useState(null);
 	const navigate = useNavigate();
-	const [open, setOpen] = React.useState(true);
+	const [open, setOpen] = React.useState(false);
 	const [selectedPage, setSelectedPage] = React.useState('Homepage');
 	const [managementPage, setManagementPage] = React.useState(true);
 	const [reportPage, setReportPage] = React.useState(true);

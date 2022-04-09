@@ -1,0 +1,48 @@
+.dashboard_title {
+	margin-bottom: 20px;
+	display: flex;
+	justify-content: space-between !important;
+	flex-wrap: wrap-reverse;
+	align-items: center;
+	gap: 20px;
+	font-size: 1em;
+	line-height: 1.8;
+	letter-spacing: 0.01071em;
+	width: 100%;
+	border-radius: 4px;
+}
+
+.dashboard_heading {
+	font-weight: 600;
+	font-size: 30px;
+	display: flex;
+	flex-direction: column;
+	gap: 0px;
+}
+
+.dashgrid_collection {
+	display: flex;
+	gap: 10px;
+	justify-content: space-around;
+	align-items: center;
+	flex-wrap: wrap;
+    font-family: "Poppins", sans-serif;
+    
+}
+.dashgrid_collection .MuiOutlinedInput-root {
+    border: none;
+}
+
+.dashgrid_item {
+    font-family: "Poppins", sans-serif;
+	border-radius: 5px;
+}
+.dataCardItems {
+    font-size: 2rem;
+
+}
+.dashboard_textname {
+    font-size: 14px;
+    color: #888;
+    font-weight: 500;
+}

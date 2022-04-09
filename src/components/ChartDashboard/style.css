@@ -1,0 +1,9 @@
+.chart svg {
+    margin: auto !important;
+}
+.dxc-title text {
+    font-weight: 700;
+}
+.datepicker_input {
+    border: none;
+}
