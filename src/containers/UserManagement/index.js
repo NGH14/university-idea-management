@@ -53,7 +53,7 @@ function UserManagement() {
 	});
 
 	const [pagination, setPagination] = useState({
-		pageSize: 10,
+		pageSize: 5,
 		page: 1,
 	});
 
@@ -79,9 +79,7 @@ function UserManagement() {
 			sortable: false,
 			getActions: (params) => [
 				<GridActionsCellItem
-					icon={
-						<GoInfo color='#3f66da' style={{ fontSize: '20px' }} />
-					}
+					icon={<GoInfo color='#3f66da' style={{ fontSize: '20px' }} />}
 					label='Detail'
 					onClick={() => onOpenModal(params.id, 'detail')}
 					showInMenu
@@ -135,8 +133,8 @@ function UserManagement() {
 	const onDelete = async (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`).then(
-					() => sleep(700),
+				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`).then(() =>
+					sleep(700),
 				),
 				{
 					pending: toastMessages.WAIT,
@@ -202,9 +200,7 @@ function UserManagement() {
 				<GridToolbarColumnsButton />
 				<GridToolbarFilterButton />
 				<GridToolbarDensitySelector />
-				<GridToolbarExport
-					printOptions={{ disableToolbarButton: true }}
-				/>
+				<GridToolbarExport printOptions={{ disableToolbarButton: true }} />
 			</GridToolbarContainer>
 		);
 	};
@@ -237,7 +233,8 @@ function UserManagement() {
 				<Button
 					variant='contained'
 					endIcon={<AddCircleOutlineIcon />}
-					onClick={() => onOpenModal(null, 'create')}>
+					onClick={() => onOpenModal(null, 'create')}
+				>
 					Create
 				</Button>
 			</div>
@@ -275,10 +272,7 @@ function UserManagement() {
 				<div className='usertable_footer'>
 					{data?.rows ? (
 						<UimPagination
-							totalPages={
-								Math.floor(data?.total / pagination.pageSize) +
-								1
-							}
+							totalPages={Math.floor(data?.total / pagination.pageSize) + 1}
 							currentPage={pagination.page}
 							onChangePageSize={(_, value) =>
 								setPagination({
@@ -290,7 +284,7 @@ function UserManagement() {
 							onChangePageIndex={(_, value) =>
 								setPagination({ ...pagination, value })
 							}
-							pageSizeOptions={[10, 15, 25, 50]}
+							pageSizeOptions={[5, 10, 25, 50]}
 						/>
 					) : (
 						<></>
@@ -307,7 +301,8 @@ function UserManagement() {
 				width: '100%',
 				padding: '0 5px',
 				fontFamily: 'Poppins',
-			}}>
+			}}
+		>
 			{renderTop()}
 			{renderContent()}
 			{status.visibleModal && renderModal()}

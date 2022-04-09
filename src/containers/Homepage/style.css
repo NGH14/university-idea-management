@@ -18,6 +18,8 @@
 	display: flex;
 	flex-direction: column;
 	gap: 0px;
+	margin-inline: auto;
+	text-align: center;
 }
 .idea_action .MuiButton-root {
     font-family: "Poppins", sans-serif;

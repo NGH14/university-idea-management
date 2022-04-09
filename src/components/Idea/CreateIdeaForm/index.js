@@ -3,6 +3,7 @@ import './style.css';
 import CloseIcon from '@mui/icons-material/Close';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import {
+	Autocomplete,
 	FormHelperText,
 	MenuItem,
 	OutlinedInput,
@@ -122,29 +123,18 @@ function CreateIdeaForm(props) {
 	});
 
 	useEffect(() => {
-		if (!externalSubData) {
-			loadSubmissions();
-		} else {
-			formik.setFieldValue('submission_id', externalSubData.id);
-		}
-		loadTags();
+		(async () => {
+			!externalSubData
+				? await AuthRequest.get(API_PATHS.ADMIN.MANAGE_SUB + '/list')
+						.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
+						.then((res) => setSubOptions(res?.data?.result))
+				: formik.setFieldValue('submission_id', externalSubData.id);
+
+			await AuthRequest.get(API_PATHS.ADMIN.MANAGE_TAG + '/list')
+				.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
+				.then((res) => setTagOptions(res?.data?.result));
+		})();
 	}, []);
-
-	const loadSubmissions = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_SUB + '/list')
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
-			.then((res) => {
-				setSubOptions(res?.data?.result);
-			});
-	};
-
-	const loadTags = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_TAG + '/list')
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
-			.then((res) => {
-				setTagOptions(res?.data?.result);
-			});
-	};
 
 	const FILE_SIZE = 1e7;
 
@@ -208,67 +198,35 @@ function CreateIdeaForm(props) {
 					<div className='createideaform_content'>
 						<InputLabel htmlFor='titleSub'>Title Submission</InputLabel>
 						{externalSubData ? (
-							<Select
-								disabled={true}
+							<CssTextField
 								fullWidth
-								labelId='submission_id'
+								variant='standard'
 								id='submission_id'
 								name='submission_id'
-								value={formik.values.submission_id}
-								style={{ textTransform: 'capitalize' }}
-							>
-								<MenuItem value={formik.values.submission_id}>
-									{externalSubData.title}
-								</MenuItem>
-							</Select>
+								value={externalSubData.title}
+								inputProps={{
+									disabled: true,
+									readOnly: true,
+								}}
+							/>
 						) : (
 							<>
-								<Select
-									select
+								<Autocomplete
+									freeSolo
 									fullWidth
-									displayEmpty
-									labelId='submission_id'
 									id='submission_id'
-									name='submission_id'
-									defaultValue=''
-									value={formik.values.submission_id}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									style={{ textTransform: 'capitalize' }}
-									renderValue={
-										formik.values.submission_id !== null
-											? undefined
-											: () => (
-													<placeholder>
-														<em
-															style={{
-																textTransform:
-																	'lowercase',
-																opacity: 0.6,
-																fontSize: 14,
-															}}
-														>
-															-- submission --
-														</em>
-													</placeholder>
-											  )
+									options={subOptions}
+									defaultValue=''
+									value={formik?.values?.submission_id || null}
+									getOptionLabel={(option) =>
+										option?.title?.length > 50
+											? option?.title?.substr(0, 50 - 1) + '...'
+											: option?.title
 									}
-									error={
-										formik.touched.submission_id &&
-										Boolean(formik.errors.submission_id)
-									}
-								>
-									{subOptions?.map((sub) => (
-										<MenuItem
-											style={{
-												textTransform: 'capitalize',
-											}}
-											value={sub.id}
-										>
-											{sub.title}
-										</MenuItem>
-									))}
-								</Select>
+									renderInput={(params) => <TextField {...params} />}
+								/>
 								<FormHelperText error>
 									{formik.touched.submission_id &&
 										formik.errors.submission_id}

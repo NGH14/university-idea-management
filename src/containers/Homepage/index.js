@@ -1,22 +1,9 @@
-import AddIcon from '@mui/icons-material/Add';
+import './style.css';
+
+import { Add } from '@mui/icons-material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-
-import { BiCommentDetail } from 'react-icons/bi';
-
-import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
-
-import {
-	Box,
-	Button,
-	CircularProgress,
-	Menu,
-	MenuItem,
-	Tooltip,
-} from '@mui/material';
+import { Box, Button, CircularProgress, Link, Tooltip } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -30,19 +17,17 @@ import _ from 'lodash';
 import moment from 'moment';
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
+import { BiCommentDetail } from 'react-icons/bi';
+import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 import { AuthRequest, sleep } from '../../common/AppUse';
-import { API_PATHS, ROLES } from '../../common/env';
+import { API_PATHS, URL_PATHS } from '../../common/env';
+import FloatingButton from '../../components/Custom/FloatingButton';
 import CommentIdea from '../../components/Idea/CommentIdea';
 import ModalIdea from '../../components/Idea/ModalIdea';
 import { UserContext } from '../../context/AppContext';
-import { fakeData } from './FakeDate';
-import './style.css';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 
 const ExpandMore = styled((props) => {
 	const { expand, ...other } = props;
@@ -54,8 +39,6 @@ const ExpandMore = styled((props) => {
 	}),
 }));
 
-const ITEM_HEIGHT = 48;
-
 const toastMessages = {
 	WAIT: 'Please wait...',
 	SUC_IDEA_ADDED: 'Create idea successful !!',
@@ -64,62 +47,42 @@ const toastMessages = {
 	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
 };
 
-function Homepage() {
+export default function Homepage() {
+	const navigate = useNavigate();
+	const { state } = useContext(UserContext);
+	const [data, setData] = useState([]);
+	const [postTotal, setPostTotal] = useState(0);
+	const [anchorEl, setAnchorEl] = useState(null);
+	const [expanded, setExpanded] = useState([]);
+
 	const [status, setStatus] = useState({
 		visibleModal: false,
 		action: 'update',
 		loading: false,
 	});
-	const [data, setData] = useState(fakeData);
 
-	const { state } = useContext(UserContext);
-	const [anchorEl, setAnchorEl] = React.useState(null);
-	const open = Boolean(anchorEl);
-	const [expanded, setExpanded] = React.useState([]);
 	const [pagination, setPagination] = useState({
-		page: 1,
 		pageSize: 5,
+		page: 1,
 	});
-	const [totalData, setTotalData] = useState(0);
-	const navigate = useNavigate();
 
 	useEffect(() => {
 		loadData();
 	}, []);
 
 	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.SHARED.IDEA, {
-			params: {
-				page: pagination.page,
-				page_size: pagination.pageSize,
-			},
+		await AuthRequest.get(API_PATHS.SHARED.IDEA + '/table/list', {
+			params: { ...pagination },
 		})
 			.then((res) => {
-				if (res?.data?.successed) {
-					setData({ ...data, ...res?.data?.result?.rows } ?? []);
-					setPagination({
-						page: res?.data?.result?.index,
-					});
-					setTotalData(res?.data?.result?.total);
-				}
+				setData((oldData) => [...oldData, ...res?.data?.result?.rows]);
+				setPostTotal(res?.data?.result?.total);
 			})
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};
 
-	const handleClick = (event) => {
-		setAnchorEl(event.currentTarget);
-	};
-	const handleClose = () => {
-		setAnchorEl(null);
-	};
-
-	// NOTE: What is this ?
-	// const actionButtonIdea = [
-	// 	<Button variant={'contained'}>Update Idea</Button>,
-	// 	<Button style={{ backgroundColor: '#ba000d' }} variant={'contained'}>
-	// 		Delete Idea
-	// 	</Button>,
-	// ];
+	const handleClick = (event) => setAnchorEl(event.currentTarget);
+	const handleClose = () => setAnchorEl(null);
 
 	const handleExpandClick = (id) => {
 		let newExpanded = [...expanded];
@@ -127,87 +90,75 @@ function Homepage() {
 		setExpanded(newExpanded);
 	};
 
-	const onCreate = (value) => {
-		toast
-			.promise(
-				AuthRequest.post(API_PATHS.SHARED.IDEA, value).then(() =>
-					sleep(700),
-				),
+	// TODO: At BE, return entity after created
+	const apiRequests = {
+		create: (value) =>
+			toast.promise(
+				AuthRequest.post(API_PATHS.SHARED.IDEA, value).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_IDEA_ADDED,
 					error: toastMessages.ERR_SERVER_ERROR,
+					success: {
+						render({ data: res }) {
+							return (
+								<Link
+									onClick={() =>
+										navigate(
+											`${URL_PATHS.IDEA}/${res?.data?.result?.id}`,
+										)
+									}
+								>
+									{data?.result?.title}
+								</Link>
+							);
+						},
+					},
 				},
-			)
-			.then((res) => {
-				navigate(`/submission/${res?.data?.result?.id}`);
-			});
-	};
+			),
 
-	const onDelete = (id) => {
-		toast
-			.promise(
+		delete: (id) =>
+			toast.promise(
 				AuthRequest.delete(`${API_PATHS.SHARED.IDEA}/${id}`).then(() =>
 					sleep(700),
 				),
 				{
 					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_IDEA_DEL,
 					error: toastMessages.ERR_SERVER_ERROR,
+					success: {
+						render() {
+							const indexData = data.findIndex((_) => _.id === id);
+							data.splice(indexData, 1);
+							setData((oldData) => [...oldData, data]);
+							loadData();
+							return toastMessages.SUC_IDEA_DEL;
+						},
+					},
 				},
-			)
-			.then(() => {
-				// loadDataAction();
-				let newData = [...data];
-				const indexData = _.findIndex(newData, (x) => x.id === id);
-				newData.splice(indexData, 1);
-				setData(newData);
-				setPagination({
-					...pagination,
-					pageSize: pagination.pageSize - 1,
-				});
-				toast.success(toastMessages.SUC_IDEA_DEL);
-			});
-	};
+			),
 
-	const onUpdate = (value) => {
-		toast
-			.promise(
-				AuthRequest.put(
-					`${API_PATHS.SHARED.IDEA}/${value?.id}`,
-					value,
-				).then(() => sleep(700)),
+		update: (value) =>
+			toast.promise(
+				AuthRequest.put(`${API_PATHS.SHARED.IDEA}/${value?.id}`, value).then(() =>
+					sleep(700),
+				),
 				{
 					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_IDEA_EDITED,
 					error: toastMessages.ERR_SERVER_ERROR,
+					success: {
+						render({ data: res }) {
+							setStatus({ ...status, visibleModal: false });
+							const indexData = data.findIndex((x) => x.id === value.id);
+							data[indexData] = res?.data?.result;
+							setData((oldData) => [...oldData, data]);
+							return toastMessages.SUC_IDEA_EDITED;
+						},
+					},
 				},
-			)
-			.then((res) => {
-				if (value?.exitFile && value?.file && !_.isEmpty(value?.file)) {
-					// delete file API
-				}
-				setStatus({ ...status, visibleModal: false });
-				let newData = [...data];
-				const indexData = _.findIndex(
-					newData,
-					(x) => x.id === value.id,
-				);
-				newData[indexData] = res?.data?.result;
-				setData(newData);
-				toast.success(toastMessages.SUC_IDEA_EDITED);
-			});
+			),
 	};
 
-	const onCloseModal = () => {
-		setStatus({ ...status, visibleModal: false });
-	};
-	const onOpenModal = (action, id) => {
-		setStatus({ ...status, visibleModal: true, action: action });
-	};
-
-	const renderTop = () => {
-		return (
+	const renderTop = () => (
+		<div style={{ marginInline: 'auto' }}>
 			<div className='homepage_title'>
 				<div className='homepage_heading'>
 					<h2>Hi, {state.dataUser.full_name} </h2>
@@ -217,83 +168,78 @@ function Homepage() {
 							fontSize: 14,
 							color: '#999',
 							opacity: '0.7',
-						}}>
+						}}
+					>
 						Welcome to the UIM &#10084;&#65039;
 					</i>
 				</div>
-
-				<Button
-					variant='outlined'
-					startIcon={<AddCircleOutlineIcon />}
-					onClick={() => onOpenModal('create')}>
-					Submit your Ideas
-				</Button>
 			</div>
-		);
-	};
+		</div>
+	);
+
 	const renderModal = () => {
 		return (
 			<ModalIdea
 				visible={status.visibleModal}
 				action={status.action}
-				onClose={onCloseModal}
-				onUpdate={onUpdate}
-				onCreate={onCreate}
+				onClose={() => setStatus({ ...status, visibleModal: false })}
+				onUpdate={apiRequests.update}
+				onCreate={apiRequests.create}
 			/>
 		);
 	};
 
 	const renderActionIdea = (id, createBy) => {
 		// NOTE: What is this
-		// if (
-		// 	createBy !== state.dataUser.id &&
-		// 	state.dataUser.role !== ROLES.ADMIN &&
-		// 	state.dataUser.role !== ROLES.MANAGER
-		// ) {
-		// 	return null;
-		// }
-		// return (
-		// 	<div>
-		// 		<IconButton
-		// 			style={{ fontSize: 10 }}
-		// 			aria-label='more'
-		// 			id='long-button'
-		// 			aria-controls={open ? 'long-menu' : undefined}
-		// 			aria-expanded={open ? 'true' : undefined}
-		// 			aria-haspopup='true'
-		// 			onClick={handleClick}>
-		// 			<MoreVertIcon />
-		// 		</IconButton>
-		// 		<Menu
-		// 			id='long-menu'
-		// 			MenuListProps={{
-		// 				'aria-labelledby': 'long-button',
-		// 			}}
-		// 			anchorEl={anchorEl}
-		// 			open={open}
-		// 			onClose={handleClose}
-		// 			PaperProps={{
-		// 				style: {
-		// 					maxHeight: ITEM_HEIGHT * 4.5,
-		// 					width: '20ch',
-		// 				},
-		// 			}}>
-		// 			{actionButtonIdea.map((option, index) => (
-		// 				<ListItemButton
-		// 					key={option}
-		// 					selected={option === 'Pyxis'}
-		// 					onClick={() => {
-		// 						handleClose();
-		// 						index === 0
-		// 							? onOpenModal('update', id)
-		// 							: onDelete(id);
-		// 					}}>
-		// 					{option}
-		// 				</ListItemButton>
-		// 			))}
-		// 		</Menu>
-		// 	</div>
-		// );
+		/* if (
+			createBy !== state.dataUser.id &&
+			state.dataUser.role !== ROLES.ADMIN &&
+			state.dataUser.role !== ROLES.MANAGER
+		) {
+			return null;
+		}
+		return (
+			<div>
+				<IconButton
+					style={{ fontSize: 10 }}
+					aria-label='more'
+					id='long-button'
+					aria-controls={open ? 'long-menu' : undefined}
+					aria-expanded={open ? 'true' : undefined}
+					aria-haspopup='true'
+					onClick={handleClick}>
+					<MoreVertIcon />
+				</IconButton>
+				<Menu
+					id='long-menu'
+					MenuListProps={{
+						'aria-labelledby': 'long-button',
+					}}
+					anchorEl={anchorEl}
+					open={open}
+					onClose={handleClose}
+					PaperProps={{
+						style: {
+							maxHeight: ITEM_HEIGHT * 4.5,
+							width: '20ch',
+						},
+					}}>
+					{actionButtonIdea.map((option, index) => (
+						<ListItemButton
+							key={option}
+							selected={option === 'Pyxis'}
+							onClick={() => {
+								handleClose();
+								index === 0
+									? onOpenModal('update', id)
+									: onDelete(id);
+							}}>
+							{option}
+						</ListItemButton>
+					))}
+				</Menu>
+			</div>
+		); */
 	};
 
 	const renderCardHeader = (item) => {
@@ -307,7 +253,8 @@ function Homepage() {
 							backgroundColor: color,
 							filter: 'grayscale(80%)',
 						}}
-						aria-label='avatar'>
+						aria-label='avatar'
+					>
 						P
 					</Avatar>
 				}
@@ -323,15 +270,15 @@ function Homepage() {
 		);
 	};
 
-	const renderCardContent = (item) => {
+	const renderCardContent = (post) => {
 		return (
-			<CardContent sx={{ fontFamily: "'Poppins', sans-serif" }}>
+			<CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
 				<div>
 					<Typography variant='body2' color='text.secondary'>
 						{/*{item?.content}*/}
-						This impressive paella is a perfect party dish and a fun
-						meal to cook together with your guests. Add 1 cup of
-						frozen peas along with the mussels, if you like.
+						This impressive paella is a perfect party dish and a fun meal to
+						cook together with your guests. Add 1 cup of frozen peas along
+						with the mussels, if you like.
 					</Typography>
 				</div>
 
@@ -342,14 +289,15 @@ function Homepage() {
 						padding: '0 5',
 						marginTop: 30,
 						color: '#888',
-					}}>
+					}}
+				>
 					<Tooltip title={'Detail submission'}>
 						<a
 							href='\'
 							onClick={() => {
 								navigate(
 									`/submission/${
-										item.submissionId ||
+										post.submissionId ||
 										'NDM3YzBiMzktMDBlNy00ZDk3LTgzMTctOTE3NzIwYzJkMzlh'
 									}`,
 								);
@@ -359,7 +307,8 @@ function Homepage() {
 								textDecorationColor: '#1976d2',
 								color: '#1976d2',
 								cursor: 'pointer',
-							}}>
+							}}
+						>
 							{/*{item?.submissionName}*/}Submission name
 						</a>
 					</Tooltip>
@@ -367,14 +316,15 @@ function Homepage() {
 					<Tooltip title={'Detail submission'}>
 						<label
 							onClick={() => {
-								navigate(`/idea/${item.id}`);
+								navigate(`/idea/${post.id}`);
 							}}
 							style={{
 								textDecoration: 'underline',
 								textDecorationColor: '#1976d2',
 								color: '#1976d2',
 								cursor: 'pointer',
-							}}>
+							}}
+						>
 							{/*{item?.title}*/}Title Idea
 						</label>
 					</Tooltip>
@@ -393,14 +343,16 @@ function Homepage() {
 					alignItems: 'center',
 					width: '100%',
 					fontSize: 12,
-				}}>
+				}}
+			>
 				<Button
 					className='idea_action'
 					fullWidth
 					aria-label='up vote'
 					startIcon={<IoMdArrowRoundUp />}
 					color={'inherit'}
-					size={'large'}>
+					size={'large'}
+				>
 					(0)
 				</Button>
 				<Button
@@ -410,7 +362,8 @@ function Homepage() {
 					style={{ marginRight: 20, marginLeft: 20 }}
 					startIcon={<IoMdArrowRoundDown />}
 					color={'inherit'}
-					size={'large'}>
+					size={'large'}
+				>
 					(0)
 				</Button>
 				<ExpandMore
@@ -423,7 +376,8 @@ function Homepage() {
 					color={'inherit'}
 					size={'large'}
 					startIcon={<BiCommentDetail />}
-					aria-label='show more'></ExpandMore>
+					aria-label='show more'
+				></ExpandMore>
 			</CardActions>
 		);
 	};
@@ -451,66 +405,68 @@ function Homepage() {
 		);
 	};
 
-	const renderContentIdea = () => {
-		const result = _.map(data, (item, index) => {
-			return (
+	const renderContentIdea = () =>
+		!status.loading ? (
+			data?.map((item, index) => (
 				<Card
+					key={index}
 					style={{
 						borderRadius: '5px',
 						boxShadow: '1px 2px 4px rgba(0,0,0,0.3)',
 						padding: '5px',
 						marginTop: 30,
-					}}>
+						maxWidth: '70rem',
+						marginInline: 'auto',
+					}}
+				>
 					{renderCardHeader(item)}
 					{renderCardContent(item)}
 					{renderListFile(item)}
 					{renderActionButton(item)}
 					{renderComment(item)}
 				</Card>
-			);
-		});
-		if (status.loading) {
-			return (
-				<Box sx={{ display: 'flex' }}>
-					<CircularProgress />
-				</Box>
-			);
-		}
-		return result;
-	};
+			))
+		) : (
+			<Box sx={{ display: 'flex' }}>
+				<CircularProgress />
+			</Box>
+		);
 
 	const onShowMore = () => {
 		setPagination({ ...pagination, page: pagination?.page + 1 });
 		loadData();
 	};
 
-	const renderFooter = () => {
-		if (_.size(data) === totalData || _.size(data) > totalData) {
-			return <div></div>;
-		}
-		return (
+	const renderFooter = () =>
+		!(_.size(data) === postTotal || _.size(data) > postTotal) ? (
 			<div style={{ marginTop: 15, textAlign: 'center' }}>
-				<Button
-					size={'small'}
-					variant={'outlined'}
-					onClick={() => {
-						onShowMore();
-					}}>
+				<Button size='small' variant='outlined' onClick={() => onShowMore()}>
 					More
 				</Button>
 			</div>
+		) : (
+			<></>
 		);
-	};
 
 	return (
-		<>
-			<>
-				{renderTop()}
-				{renderContentIdea()}
-				{renderFooter()}
-			</>
+		<div style={{ marginInline: '100px' }}>
+			{renderTop()}
+			{renderContentIdea()}
+			{renderFooter()}
+
+			<Tooltip arrow placement='left' title='Submit a new idea'>
+				<FloatingButton
+					onClick={() =>
+						setStatus({ ...status, visibleModal: true, action: 'create' })
+					}
+					size='medium'
+					color='primary'
+					ariaLabel='submit new idea'
+					icon={<Add />}
+				/>
+			</Tooltip>
+
 			{status.visibleModal && renderModal()}
-		</>
+		</div>
 	);
 }
-export default Homepage;

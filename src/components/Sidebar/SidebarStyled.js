@@ -1,7 +1,7 @@
-import MuiAppBar from "@mui/material/AppBar";
-import Button from "@mui/material/Button";
-import MuiDrawer from "@mui/material/Drawer";
-import { styled } from "@mui/material/styles";
+import MuiAppBar from '@mui/material/AppBar';
+import Button from '@mui/material/Button';
+import MuiDrawer from '@mui/material/Drawer';
+import { styled } from '@mui/material/styles';
 
 const drawerWidth = 240;
 

@@ -101,13 +101,8 @@ function DetailUserForm(props) {
 							value={formik.values.phone}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={
-								formik.touched.phone &&
-								Boolean(formik.errors.phone)
-							}
-							helperText={
-								formik.touched.phone && formik.errors.phone
-							}
+							error={formik.touched.phone && Boolean(formik.errors.phone)}
+							helperText={formik.touched.phone && formik.errors.phone}
 						/>
 					</div>
 				</div>
@@ -142,9 +137,7 @@ function DetailUserForm(props) {
 						/>
 					</div>
 					<div className='form_content'>
-						<InputLabel htmlFor='date_of_birth'>
-							Date of Birth
-						</InputLabel>
+						<InputLabel htmlFor='date_of_birth'>Date of Birth</InputLabel>
 						<CssTextField
 							fullWidth
 							variant='standard'
@@ -174,13 +167,8 @@ function DetailUserForm(props) {
 							value={formik.values.gender}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={
-								formik.touched.gender &&
-								Boolean(formik.errors.gender)
-							}
-							helperText={
-								formik.touched.gender && formik.errors.gender
-							}
+							error={formik.touched.gender && Boolean(formik.errors.gender)}
+							helperText={formik.touched.gender && formik.errors.gender}
 						/>
 					</div>
 				</div>
