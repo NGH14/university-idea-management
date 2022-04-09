@@ -92,13 +92,8 @@ function CreateDepartmentForm(props) {
 							value={formik.values.name}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={
-								formik.touched.name &&
-								Boolean(formik.errors.name)
-							}
-							helperText={
-								formik.touched.name && formik.errors.name
-							}
+							error={formik.touched.name && Boolean(formik.errors.name)}
+							helperText={formik.touched.name && formik.errors.name}
 						/>
 					</div>
 				</div>

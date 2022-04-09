@@ -1,16 +1,13 @@
 import { Divider, Grid } from '@material-ui/core';
-import SendIcon from '@mui/icons-material/Send';
 import { Button, InputBase } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
+import { AuthRequest } from 'common/AppUse';
+import { API_PATHS } from 'common/env';
 import _ from 'lodash';
 import moment from 'moment';
 import * as React from 'react';
 import { useState } from 'react';
-
-import { AuthRequest } from '../../../common/AppUse';
-import { API_PATHS } from '../../../common/env';
 
 const fakeData = [
 	{
@@ -92,7 +89,8 @@ function CommentIdea({ data, ideaId }) {
 					style={{
 						padding: 15,
 						boxShadow: 'none',
-					}}>
+					}}
+				>
 					<Grid container wrap='nowrap' spacing={2}>
 						<Grid item>
 							<Avatar alt='Remy Sharp' />
@@ -104,7 +102,8 @@ function CommentIdea({ data, ideaId }) {
 									padding: 10,
 									background: '#F0F2F5',
 									lineHeight: '20px',
-								}}>
+								}}
+							>
 								<p
 									style={{
 										marginBottom: 10,
@@ -114,7 +113,8 @@ function CommentIdea({ data, ideaId }) {
 										fontFamily: 'Helvetica',
 										color: 'rgba(0, 0, 0, 0.87)',
 										lineHeight: '20px',
-									}}>
+									}}
+								>
 									{item?.user?.name}
 								</p>
 								<p
@@ -124,7 +124,8 @@ function CommentIdea({ data, ideaId }) {
 										color: 'rgba(0, 0, 0, 0.6)',
 										fontFamily: 'Helvetica',
 										lineHeight: '20px',
-									}}>
+									}}
+								>
 									{item?.content}
 								</p>
 							</div>
@@ -136,9 +137,9 @@ function CommentIdea({ data, ideaId }) {
 									marginLeft: 10,
 									fontSize: 12,
 									fontFamily: 'Helvetica',
-								}}>
-								Commented{' '}
-								{moment(item.createAt, 'YYYYMMDD').fromNow()}
+								}}
+							>
+								Commented {moment(item.createAt, 'YYYYMMDD').fromNow()}
 							</p>
 						</Grid>
 					</Grid>
@@ -160,7 +161,8 @@ function CommentIdea({ data, ideaId }) {
 						}}
 						onClick={() => {
 							onShowMoreComment();
-						}}>
+						}}
+					>
 						<Button variant={'outlined  '}>View More</Button>
 					</div>
 				)}
@@ -178,7 +180,8 @@ function CommentIdea({ data, ideaId }) {
 						alignItems: 'center',
 						width: '100%',
 						borderTop: '0.5px solid rgba(0,0,0,0.1)',
-					}}>
+					}}
+				>
 					<InputBase
 						fullWidth
 						sx={{ ml: 1, flex: 1 }}
@@ -187,16 +190,14 @@ function CommentIdea({ data, ideaId }) {
 							console.log(123);
 						}}
 					/>
-					<Divider
-						sx={{ height: 28, m: 0.5 }}
-						orientation='vertical'
-					/>
+					<Divider sx={{ height: 28, m: 0.5 }} orientation='vertical' />
 					<Button
 						sx={{ p: '10px' }}
 						aria-label='directions'
 						onClick={() => {
 							onCreateComment();
-						}}>
+						}}
+					>
 						Post
 					</Button>
 				</Paper>
@@ -207,7 +208,8 @@ function CommentIdea({ data, ideaId }) {
 					paddingLeft: 15,
 					marginTop: 15,
 					fontSize: 14,
-				}}>
+				}}
+			>
 				<strong>Comment ({totalComment || 10})</strong>
 			</div>
 			{renderContent()}

@@ -17,10 +17,10 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from '../../common/AppUse';
-import { API_PATHS, ROLES } from '../../common/env';
-import CommentIdea from '../../components/Idea/CommentIdea';
-import { UserContext } from '../../context/AppContext';
+import { AuthRequest, sleep } from 'common/AppUse';
+import { API_PATHS, ROLES } from 'common/env';
+import CommentIdea from 'components/Idea/CommentIdea';
+import { UserContext } from 'context/AppContext';
 import ModalIdeaDetailView from './ModalIdeaDetailView';
 
 const toastMessages = {

@@ -5,10 +5,10 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { AuthRequest } from '../../../common/AppUse';
-import { API_PATHS, DEV_CONFIGS } from '../../../common/env';
-import CreateSubmissionForm from '../../../components/Submission/CreateSubmissionForm';
-import EditSubmissionForm from '../../../components/Submission/EditSubmissionForm';
+import { AuthRequest } from 'common/AppUse';
+import { API_PATHS, DEV_CONFIGS } from 'common/env';
+import CreateSubmissionForm from 'components/Submission/CreateSubmissionForm';
+import EditSubmissionForm from 'components/Submission/EditSubmissionForm';
 import { dataDemo } from '../FakeData';
 
 const style = {
@@ -64,10 +64,7 @@ const ModalSubmissionManagement = (props) => {
 		switch (action) {
 			case 'create':
 				return (
-					<CreateSubmissionForm
-						onClose={() => onClose()}
-						onCreate={onCreate}
-					/>
+					<CreateSubmissionForm onClose={() => onClose()} onCreate={onCreate} />
 				);
 			case 'update':
 				return (
@@ -91,7 +88,8 @@ const ModalSubmissionManagement = (props) => {
 			open={visible}
 			onClose={() => onClose()}
 			aria-labelledby='modal-modal-title'
-			aria-describedby='modal-modal-description'>
+			aria-describedby='modal-modal-description'
+		>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>
 	);

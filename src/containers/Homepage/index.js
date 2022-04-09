@@ -21,13 +21,15 @@ import { BiCommentDetail } from 'react-icons/bi';
 import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { dataDemo } from '../IdeaMangement/FakeData';
 
-import { AuthRequest, sleep } from '../../common/AppUse';
-import { API_PATHS, URL_PATHS } from '../../common/env';
-import FloatingButton from '../../components/Custom/FloatingButton';
-import CommentIdea from '../../components/Idea/CommentIdea';
-import ModalIdea from '../../components/Idea/ModalIdea';
-import { UserContext } from '../../context/AppContext';
+import { AuthRequest, sleep } from 'common/AppUse';
+import { API_PATHS, URL_PATHS } from 'common/env';
+import FloatingButton from 'components/Custom/FloatingButton';
+import CommentIdea from 'components/Idea/CommentIdea';
+import ModalIdea from 'components/Idea/ModalIdea';
+import { UserContext } from 'context/AppContext';
+import { DEV_CONFIGS } from 'common/env';
 
 const ExpandMore = styled((props) => {
 	const { expand, ...other } = props;
@@ -67,6 +69,10 @@ export default function Homepage() {
 	});
 
 	useEffect(() => {
+		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
+			setData(dataDemo);
+			return;
+		}
 		loadData();
 	}, []);
 
@@ -270,12 +276,11 @@ export default function Homepage() {
 		);
 	};
 
-	const renderCardContent = (post) => {
+	const renderCardContent = (item) => {
 		return (
 			<CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
 				<div>
 					<Typography variant='body2' color='text.secondary'>
-						{/*{item?.content}*/}
 						This impressive paella is a perfect party dish and a fun meal to
 						cook together with your guests. Add 1 cup of frozen peas along
 						with the mussels, if you like.
@@ -292,16 +297,10 @@ export default function Homepage() {
 					}}
 				>
 					<Tooltip title={'Detail submission'}>
-						<a
-							href='\'
-							onClick={() => {
-								navigate(
-									`/submission/${
-										post.submissionId ||
-										'NDM3YzBiMzktMDBlNy00ZDk3LTgzMTctOTE3NzIwYzJkMzlh'
-									}`,
-								);
-							}}
+						<Link
+							onClick={() =>
+								navigate(`${URL_PATHS.SUB}/${item.submissionId}`)
+							}
 							style={{
 								textDecoration: 'underline',
 								textDecorationColor: '#1976d2',
@@ -309,14 +308,14 @@ export default function Homepage() {
 								cursor: 'pointer',
 							}}
 						>
-							{/*{item?.submissionName}*/}Submission name
-						</a>
+							{item?.submissionName}
+						</Link>
 					</Tooltip>
 					<span style={{ marginInline: 5 }}>with title is</span>
 					<Tooltip title={'Detail submission'}>
 						<label
 							onClick={() => {
-								navigate(`/idea/${post.id}`);
+								navigate(`/idea/${item.id}`);
 							}}
 							style={{
 								textDecoration: 'underline',
@@ -325,7 +324,7 @@ export default function Homepage() {
 								cursor: 'pointer',
 							}}
 						>
-							{/*{item?.title}*/}Title Idea
+							{item?.title}
 						</label>
 					</Tooltip>
 				</div>
@@ -382,28 +381,23 @@ export default function Homepage() {
 		);
 	};
 
-	const renderListFile = (item) => {
-		if (item?.file || !_.isEmpty(item?.file)) {
-			return (
-				<Card style={{ marginLeft: 15, marginRight: 15 }}>
-					<IconButton>
-						<AttachFileIcon />
-					</IconButton>
-					<a href={`${item?.file?.name}`}>{item?.file?.name}</a>
-				</Card>
-			);
-		} else {
-			return <div></div>;
-		}
-	};
-
-	const renderComment = (item) => {
-		return (
-			<Collapse in={expanded[item.id]} timeout='auto' unmountOnExit>
-				<CommentIdea data={item} ideaId={item?.id} />
-			</Collapse>
+	const renderListFile = (item) =>
+		item?.file && !item?.file?.isEmpty() ? (
+			<Card style={{ marginLeft: 15, marginRight: 15 }}>
+				<IconButton>
+					<AttachFileIcon />
+				</IconButton>
+				<a href={`${item?.file?.name}`}>{item?.file?.name}</a>
+			</Card>
+		) : (
+			<></>
 		);
-	};
+
+	const renderComment = (item) => (
+		<Collapse in={expanded[item.id]} timeout='auto' unmountOnExit>
+			<CommentIdea data={item} ideaId={item?.id} />
+		</Collapse>
+	);
 
 	const renderContentIdea = () =>
 		!status.loading ? (

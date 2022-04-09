@@ -24,8 +24,8 @@ import Dropzone from 'react-dropzone';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
-import { AuthRequest, getGuid, toReadableFileSize } from '../../../common/AppUse';
-import { API_PATHS } from '../../../common/env';
+import { AuthRequest, getGuid, toReadableFileSize } from 'common/AppUse';
+import { API_PATHS } from 'common/env';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {

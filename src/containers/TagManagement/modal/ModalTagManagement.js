@@ -5,11 +5,11 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { AuthRequest } from '../../../common/AppUse';
-import { API_PATHS, DEV_CONFIGS } from '../../../common/env';
-import CreateTagForm from '../../../components/Tag/CreateTagForm';
-import DetailTagForm from '../../../components/Tag/DetailTagForm';
-import EditTagForm from '../../../components/Tag/EditTagForm';
+import { AuthRequest } from 'common/AppUse';
+import { API_PATHS, DEV_CONFIGS } from 'common/env';
+import CreateTagForm from 'components/Tag/CreateTagForm';
+import DetailTagForm from 'components/Tag/DetailTagForm';
+import EditTagForm from 'components/Tag/EditTagForm';
 import { dataDemo } from '../FakeData';
 
 const style = {
@@ -63,12 +63,7 @@ const ModalTagManagement = (props) => {
 	const renderForm = () => {
 		switch (action) {
 			case 'create':
-				return (
-					<CreateTagForm
-						onClose={() => onClose()}
-						onCreate={onCreate}
-					/>
-				);
+				return <CreateTagForm onClose={() => onClose()} onCreate={onCreate} />;
 			case 'update':
 				return (
 					<EditTagForm
@@ -96,7 +91,8 @@ const ModalTagManagement = (props) => {
 			open={visible}
 			onClose={() => onClose()}
 			aria-labelledby='modal-modal-title'
-			aria-describedby='modal-modal-description'>
+			aria-describedby='modal-modal-description'
+		>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>
 	);

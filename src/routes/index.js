@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import { ROLES, URL_PATHS } from '../common/env';
-import LoadingSpinner from '../components/LoadingSpinner';
-import Sidebar from '../components/Sidebar';
-import { UserContext } from '../context/AppContext';
+import { ROLES, URL_PATHS } from 'common/env';
+import LoadingSpinner from 'components/LoadingSpinner';
+import Sidebar from 'components/Sidebar';
+import { UserContext } from 'context/AppContext';
 import PrivateRoute from './components/PrivateRoute';
 import PublicRoute from './components/PublicRoute';
 
@@ -52,7 +52,7 @@ const LIST_ROUTES_PRIVATE = [
 	{
 		roles: [],
 		path: URL_PATHS.MANAGE_SUB_ID,
-		component: React.lazy(() => import('../components/Submission/DetailView')),
+		component: React.lazy(() => import('components/Submission/DetailView')),
 	},
 	{
 		roles: [],

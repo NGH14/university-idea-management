@@ -1,8 +1,8 @@
-import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { URL_PATHS } from "../../common/env";
-import { UserContext } from "../../context/AppContext";
+import { URL_PATHS } from 'common/env';
+import { UserContext } from 'context/AppContext';
 
 export default function PublicRoute({ children }) {
 	const navigate = useNavigate();

@@ -18,8 +18,8 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
-import { AuthRequest } from '../../../common/AppUse';
-import { API_PATHS, DEV_CONFIGS } from '../../../common/env';
+import { AuthRequest } from 'common/AppUse';
+import { API_PATHS, DEV_CONFIGS } from 'common/env';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -151,8 +151,7 @@ function EditUserForm(props) {
 								Boolean(formik.errors.full_name)
 							}
 							helperText={
-								formik.touched.full_name &&
-								formik.errors.full_name
+								formik.touched.full_name && formik.errors.full_name
 							}
 						/>
 					</div>
@@ -168,13 +167,8 @@ function EditUserForm(props) {
 							value={formik.values.email}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={
-								formik.touched.email &&
-								Boolean(formik.errors.email)
-							}
-							helperText={
-								formik.touched.email && formik.errors.email
-							}
+							error={formik.touched.email && Boolean(formik.errors.email)}
+							helperText={formik.touched.email && formik.errors.email}
 						/>
 					</div>
 				</div>
@@ -191,13 +185,8 @@ function EditUserForm(props) {
 							value={formik.values.phone}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={
-								formik.touched.phone &&
-								Boolean(formik.errors.phone)
-							}
-							helperText={
-								formik.touched.phone && formik.errors.phone
-							}
+							error={formik.touched.phone && Boolean(formik.errors.phone)}
+							helperText={formik.touched.phone && formik.errors.phone}
 						/>
 					</div>
 					<div className='form_content'>
@@ -219,33 +208,32 @@ function EditUserForm(props) {
 							}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={
-								formik.touched.gender &&
-								Boolean(formik.errors.gender)
-							}>
+							error={formik.touched.gender && Boolean(formik.errors.gender)}
+						>
 							<MenuItem value='' disabled={true}>
 								none
 							</MenuItem>
 							<MenuItem
 								style={{ textTransform: 'capitalize' }}
-								value='male'>
+								value='male'
+							>
 								male
 							</MenuItem>
 							<MenuItem
 								style={{ textTransform: 'capitalize' }}
-								value='female'>
+								value='female'
+							>
 								female
 							</MenuItem>
 						</Select>
 					</div>
 
 					<div className='form_content'>
-						<InputLabel htmlFor='date_of_birth'>
-							Date of Birth
-						</InputLabel>
+						<InputLabel htmlFor='date_of_birth'>Date of Birth</InputLabel>
 						<LocalizationProvider
 							dateAdapter={AdapterDateFns}
-							locale={enLocale}>
+							locale={enLocale}
+						>
 							<DatePicker
 								fullWidth
 								disableFuture
@@ -295,7 +283,8 @@ function EditUserForm(props) {
 							error={
 								formik.touched.department &&
 								Boolean(formik.errors.department)
-							}>
+							}
+						>
 							<MenuItem value='' disabled={true}>
 								none
 							</MenuItem>
@@ -303,14 +292,14 @@ function EditUserForm(props) {
 							{depOptions.map((dep) => (
 								<MenuItem
 									style={{ textTransform: 'capitalize' }}
-									value={dep?.name}>
+									value={dep?.name}
+								>
 									{dep?.name}
 								</MenuItem>
 							))}
 						</Select>
 						<FormHelperText error>
-							{formik.touched.department &&
-								formik.errors.department}
+							{formik.touched.department && formik.errors.department}
 						</FormHelperText>
 					</div>
 					<div className='form_content'>
@@ -333,10 +322,8 @@ function EditUserForm(props) {
 							value={formik.values.role ?? ''}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={
-								formik.touched.role &&
-								Boolean(formik.errors.role)
-							}>
+							error={formik.touched.role && Boolean(formik.errors.role)}
+						>
 							<MenuItem value='' disabled={true}>
 								none
 							</MenuItem>
@@ -344,7 +331,8 @@ function EditUserForm(props) {
 							{roleOptions.map((role) => (
 								<MenuItem
 									style={{ textTransform: 'capitalize' }}
-									value={role.name}>
+									value={role.name}
+								>
 									{role.name}
 								</MenuItem>
 							))}

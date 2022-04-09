@@ -1,34 +1,42 @@
-import AddIcon from "@mui/icons-material/Add";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import ThumbDownIcon from "@mui/icons-material/ThumbDown";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import { Box, Button, CircularProgress, Menu, MenuItem, Pagination, Tooltip } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
-import Collapse from "@mui/material/Collapse";
-import IconButton from "@mui/material/IconButton";
-import Paper from "@mui/material/Paper";
-import { styled } from "@mui/material/styles";
-import Typography from "@mui/material/Typography";
-import _ from "lodash";
-import moment from "moment";
-import * as React from "react";
-import { useContext, useEffect, useState } from "react";
-import { BiPencil } from "react-icons/bi";
-import { MdOutlineDeleteOutline } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import AddIcon from '@mui/icons-material/Add';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import {
+	Box,
+	Button,
+	CircularProgress,
+	Menu,
+	MenuItem,
+	Pagination,
+	Tooltip,
+} from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
+import Paper from '@mui/material/Paper';
+import { styled } from '@mui/material/styles';
+import Typography from '@mui/material/Typography';
+import _ from 'lodash';
+import moment from 'moment';
+import * as React from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { BiPencil } from 'react-icons/bi';
+import { MdOutlineDeleteOutline } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from "../../../common/AppUse";
-import { API_PATHS, ROLES } from "../../../common/env";
-import { UserContext } from "../../../context/AppContext";
-import CommentIdea from "../../Idea/CommentIdea";
-import ModalIdea from "../../Idea/ModalIdea";
+import { AuthRequest, sleep } from 'common/AppUse';
+import { API_PATHS, ROLES } from 'common/env';
+import { UserContext } from 'context/AppContext';
+import CommentIdea from '../CommentIdea';
+import ModalIdea from '../ModalIdea';
 
 const toastMessages = {
 	WAIT: 'Please wait...',

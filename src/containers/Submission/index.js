@@ -9,11 +9,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from '../../common/AppUse';
-import { API_PATHS, DEV_CONFIGS, URL_PATHS } from '../../common/env';
-import IdeaSubViewStaff from '../../components/Idea/IdeaSubViewStaff';
-import DetailSubmissionForm from '../../components/Submission/DetailSubmissionForm';
-import ModalSubmissionIdea from '../../components/Submission/Modal/ModalSubmissionIdea';
+import { AuthRequest, sleep } from 'common/AppUse';
+import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
+import IdeaSubViewStaff from 'components/Idea/IdeaSubViewStaff';
+import DetailSubmissionForm from 'components/Submission/DetailSubmissionForm';
+import ModalSubmissionIdea from 'components/Submission/Modal/ModalSubmissionIdea';
 import { dataDemo } from '../../containers/IdeaMangement/FakeData';
 
 const toastMessages = {

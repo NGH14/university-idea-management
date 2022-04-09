@@ -34,9 +34,9 @@ import { RiDiscussFill } from 'react-icons/ri';
 import { useLocation } from 'react-router';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 
-import UniTextLogo from '../../assets/images/logo-500.webp';
-import { ROLES, URL_PATHS } from '../../common/env';
-import { UserContext } from '../../context/AppContext';
+import UniTextLogo from 'assets/images/logo-500.webp';
+import { ROLES, URL_PATHS } from 'common/env';
+import { UserContext } from 'context/AppContext';
 import { AppBar, ColorButton, Drawer, DrawerHeader } from './SidebarStyled';
 
 export default function Sidebar(props) {
@@ -211,7 +211,8 @@ export default function Sidebar(props) {
 				color='inherit'
 				style={{
 					boxShadow: 'none',
-				}}>
+				}}
+			>
 				<CssBaseline />
 
 				<Toolbar
@@ -219,19 +220,22 @@ export default function Sidebar(props) {
 						justifyContent: 'space-between',
 						alignItems: 'center',
 						borderBottom: '0.1px solid #e2e0e0',
-					}}>
+					}}
+				>
 					<Box
 						sx={{
 							display: 'flex',
 							justifyContent: 'center',
 							alignItems: 'center',
 							gap: '10px',
-						}}>
+						}}
+					>
 						<IconButton
 							color='inherit'
 							aria-label='open drawer'
 							onClick={handleDrawerCick}
-							edge='start'>
+							edge='start'
+						>
 							<MenuIcon />
 						</IconButton>
 						<img
@@ -247,11 +251,13 @@ export default function Sidebar(props) {
 								display: 'flex',
 								justifyContent: 'space-between',
 								gap: 5,
-							}}>
+							}}
+						>
 							<ColorButton
 								onClose={handleCloseUserMenu}
 								onClick={handleOpenUserMenu}
-								sx={{ p: 0 }}>
+								sx={{ p: 0 }}
+							>
 								<Avatar
 									alt={state.dataUser.full_name ?? 'Username'}
 									src='/static/images/avatar/2.jpg'
@@ -261,7 +267,8 @@ export default function Sidebar(props) {
 									<Typography
 										fontWeight={500}
 										fontSize={14}
-										fontFamily='Poppins'>
+										fontFamily='Poppins'
+									>
 										{state.dataUser.full_name ?? 'Username'}
 									</Typography>
 									<Typography
@@ -272,7 +279,8 @@ export default function Sidebar(props) {
 										fontFamily='Nunito'
 										sx={{
 											textAlign: 'left',
-										}}>
+										}}
+									>
 										{state.dataUser.role || 'Role'}
 									</Typography>
 								</Stack>
@@ -293,7 +301,8 @@ export default function Sidebar(props) {
 							}}
 							open={Boolean(anchorElUser)}
 							onClose={handleCloseUserMenu}
-							onClick={handleCloseUserMenu}>
+							onClick={handleCloseUserMenu}
+						>
 							{UserMenu.map((item, index) => {
 								const { text, icon, onClick } = item;
 								return (
@@ -302,22 +311,23 @@ export default function Sidebar(props) {
 										disableTouchListener
 										title={text}
 										arrow
-										placement='left'>
+										placement='left'
+									>
 										<ListItemButton
 											key={index + Math.random()}
 											sx={{
 												justifyContent: 'center',
 												px: 2.5,
 											}}
-											onClick={onClick}>
+											onClick={onClick}
+										>
 											{icon && icon}
 											<ListItemText
 												key={index}
 												disableTypography
 												primary={text}
 												sx={{
-													fontFamily:
-														'Nunito, sans-serif',
+													fontFamily: 'Nunito, sans-serif',
 													fontSize: '16px',
 													fontWeight: 700,
 													ml: 1.7,
@@ -343,18 +353,18 @@ export default function Sidebar(props) {
 									disableTouchListener
 									title={text}
 									arrow
-									placement='right'>
+									placement='right'
+								>
 									<ListItemButton
 										key={index + Math.random()}
 										selected={selectedText === selectedPage}
 										sx={{
 											minHeight: 48,
-											justifyContent: open
-												? 'initial'
-												: 'center',
+											justifyContent: open ? 'initial' : 'center',
 											px: 2.5,
 										}}
-										onClick={() => onClick(index)}>
+										onClick={() => onClick(index)}
+									>
 										{icon && (
 											<ListItemIcon
 												key={index + Math.random()}
@@ -362,7 +372,8 @@ export default function Sidebar(props) {
 													minWidth: 0,
 													mr: open ? 3 : 'auto',
 													justifyContent: 'center',
-												}}>
+												}}
+											>
 												{icon}
 											</ListItemIcon>
 										)}
@@ -371,8 +382,7 @@ export default function Sidebar(props) {
 											disableTypography
 											primary={text}
 											sx={{
-												fontFamily:
-													'Poppins, sans-serif',
+												fontFamily: 'Poppins, sans-serif',
 												fontSize: '14px',
 												fontWeight: '700',
 												opacity: open ? 1 : 0,
@@ -395,7 +405,8 @@ export default function Sidebar(props) {
 								alignItems: 'center',
 								justifyContent: 'space-between',
 								width: '100%',
-							}}>
+							}}
+						>
 							<>
 								<ListItemText
 									disableTypography
@@ -406,7 +417,8 @@ export default function Sidebar(props) {
 										fontFamily: 'Poppins, sans-serif',
 										fontWeight: '700',
 										opacity: open ? 1 : 0,
-									}}>
+									}}
+								>
 									Report
 								</ListItemText>
 								<ListItemIcon
@@ -414,7 +426,8 @@ export default function Sidebar(props) {
 										minWidth: 0,
 										ml: open ? 3 : 'auto',
 										fontWeight: '700',
-									}}>
+									}}
+								>
 									{reportPage ? (
 										<BsChevronContract />
 									) : (
@@ -426,26 +439,21 @@ export default function Sidebar(props) {
 					)}
 					<Collapse in={reportPage} timeout='auto' unmountOnExit>
 						{itemsReportList.map((item, index) => {
-							const { selectedText, roles, text, icon, onClick } =
-								item;
+							const { selectedText, roles, text, icon, onClick } = item;
 							return (
 								<>
 									{(roles.length === 0 ||
-										roles.includes(
-											state?.dataUser.role,
-										)) && (
+										roles.includes(state?.dataUser.role)) && (
 										<Tooltip
 											disableFocusListener
 											disableTouchListener
 											title={text}
 											arrow
-											placement='right'>
+											placement='right'
+										>
 											<ListItemButton
 												key={index + Math.random()}
-												selected={
-													selectedText ===
-													selectedPage
-												}
+												selected={selectedText === selectedPage}
 												sx={{
 													px: 2.5,
 													minHeight: 48,
@@ -453,19 +461,17 @@ export default function Sidebar(props) {
 														? 'initial'
 														: 'center',
 												}}
-												onClick={() => onClick(index)}>
+												onClick={() => onClick(index)}
+											>
 												{icon && (
 													<ListItemIcon
-														key={
-															index +
-															Math.random()
-														}
+														key={index + Math.random()}
 														sx={{
 															minWidth: 0,
 															mr: open ? 3 : '0',
-															justifyContent:
-																'center',
-														}}>
+															justifyContent: 'center',
+														}}
+													>
 														{icon}
 													</ListItemIcon>
 												)}
@@ -474,8 +480,7 @@ export default function Sidebar(props) {
 													disableTypography
 													primary={text}
 													sx={{
-														fontFamily:
-															'Poppins, sans-serif',
+														fontFamily: 'Poppins, sans-serif',
 														fontSize: '14px',
 														fontWeight: '700',
 														color: '#777',
@@ -500,7 +505,8 @@ export default function Sidebar(props) {
 								alignItems: 'center',
 								justifyContent: 'space-between',
 								width: '100%',
-							}}>
+							}}
+						>
 							<>
 								<ListItemText
 									disableTypography
@@ -511,7 +517,8 @@ export default function Sidebar(props) {
 										fontFamily: 'Poppins, sans-serif',
 										fontWeight: '700',
 										opacity: open ? 1 : 0,
-									}}>
+									}}
+								>
 									Manage
 								</ListItemText>
 								<ListItemIcon
@@ -519,7 +526,8 @@ export default function Sidebar(props) {
 										minWidth: 0,
 										ml: open ? 3 : 'auto',
 										fontWeight: '700',
-									}}>
+									}}
+								>
 									{managementPage ? (
 										<BsChevronContract />
 									) : (
@@ -531,26 +539,21 @@ export default function Sidebar(props) {
 					)}
 					<Collapse in={managementPage} timeout='auto' unmountOnExit>
 						{itemsManagementList.map((item, index) => {
-							const { selectedText, roles, text, icon, onClick } =
-								item;
+							const { selectedText, roles, text, icon, onClick } = item;
 							return (
 								<>
 									{(roles.length === 0 ||
-										roles.includes(
-											state?.dataUser.role,
-										)) && (
+										roles.includes(state?.dataUser.role)) && (
 										<Tooltip
 											disableFocusListener
 											disableTouchListener
 											title={text}
 											arrow
-											placement='right'>
+											placement='right'
+										>
 											<ListItemButton
 												key={index + Math.random()}
-												selected={
-													selectedText ===
-													selectedPage
-												}
+												selected={selectedText === selectedPage}
 												sx={{
 													px: 2.5,
 													minHeight: 48,
@@ -558,19 +561,17 @@ export default function Sidebar(props) {
 														? 'initial'
 														: 'center',
 												}}
-												onClick={() => onClick(index)}>
+												onClick={() => onClick(index)}
+											>
 												{icon && (
 													<ListItemIcon
-														key={
-															index +
-															Math.random()
-														}
+														key={index + Math.random()}
 														sx={{
 															minWidth: 0,
 															mr: open ? 3 : '0',
-															justifyContent:
-																'center',
-														}}>
+															justifyContent: 'center',
+														}}
+													>
 														{icon}
 													</ListItemIcon>
 												)}
@@ -579,8 +580,7 @@ export default function Sidebar(props) {
 													disableTypography
 													primary={text}
 													sx={{
-														fontFamily:
-															'Poppins, sans-serif',
+														fontFamily: 'Poppins, sans-serif',
 														fontSize: '14px',
 														fontWeight: '700',
 														color: '#777',
@@ -603,7 +603,8 @@ export default function Sidebar(props) {
 					flexGrow: 1,
 					p: 4,
 					fontFamily: 'Poppins',
-				}}>
+				}}
+			>
 				<DrawerHeader />
 				{props.children}
 			</Box>

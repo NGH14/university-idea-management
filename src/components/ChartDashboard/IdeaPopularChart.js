@@ -1,30 +1,24 @@
-import * as React from 'react';
-import PieChart, {
-	Series,
-	Label,
-	Connector,
-	Size,
-	Export,
-	Font,
-	Title,
-} from 'devextreme-react/pie-chart';
-import _ from 'lodash';
-import moment from 'moment';
-import Box from '@mui/material/Box';
-import {
-	autocompleteClasses,
-	CircularProgress,
-	TextField,
-} from '@mui/material';
-import Paper from '@mui/material/Paper';
-import { AuthRequest } from '../../common/AppUse';
+import './style.css';
+
 import { LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DatePicker from '@mui/lab/DatePicker';
-import './style.css';
-import { useEffect, useState } from 'react';
+import { TextField } from '@mui/material';
+import Paper from '@mui/material/Paper';
+import { AuthRequest } from 'common/AppUse';
+import PieChart, {
+	Connector,
+	Export,
+	Font,
+	Label,
+	Series,
+	Title,
+} from 'devextreme-react/pie-chart';
 import { AdaptiveLayout } from 'devextreme-react/polar-chart';
-import { Legend } from '@devexpress/dx-react-chart';
+import _ from 'lodash';
+import moment from 'moment';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
 
 // total
 const dataNull = {
@@ -71,9 +65,9 @@ function IdeaPopularChart({ timeKey, data }) {
 
 	const onMonthYearChange = async (value) => {
 		const res = await AuthRequest.get(
-			`dashboard/top-ideas?month=${moment(value).format(
-				'MM',
-			)}&year=${moment(value).format('YYYY')}`,
+			`dashboard/top-ideas?month=${moment(value).format('MM')}&year=${moment(
+				value,
+			).format('YYYY')}`,
 		);
 		if (res?.data?.succeeded) {
 			const newArray = [];
@@ -107,7 +101,8 @@ function IdeaPopularChart({ timeKey, data }) {
 						gap: 10,
 						marginInline: 10,
 						fontFamily: 'Poppins',
-					}}>
+					}}
+				>
 					<DatePicker
 						inputFormat='MM/yyyy'
 						views={['month']}
@@ -117,11 +112,7 @@ function IdeaPopularChart({ timeKey, data }) {
 							onMonthYearChange(value);
 						}}
 						renderInput={(params) => (
-							<TextField
-								variant='standard'
-								{...params}
-								helperText={null}
-							/>
+							<TextField variant='standard' {...params} helperText={null} />
 						)}
 					/>
 				</div>
@@ -144,7 +135,8 @@ function IdeaPopularChart({ timeKey, data }) {
 							paddingRight: 10,
 							marginBottom: 10,
 							maxHeight: '300px',
-						}}>
+						}}
+					>
 						{renderPickerMonthYearIdea()}
 					</div>
 					<PieChart
@@ -153,23 +145,22 @@ function IdeaPopularChart({ timeKey, data }) {
 						palette={'Soft Pastel'}
 						// onClick={this.legendClickHandler}
 						onPointClick={(e) => pointClickHandler(e)}
-						onLegendClick={(e) => legendClickHandler(e)}>
+						onLegendClick={(e) => legendClickHandler(e)}
+					>
 						<Title
 							text={`${_.toUpper(
 								'Top idea have the most comment in',
-							)} ${moment(newFilter).format('MM/YYYY')} `}>
+							)} ${moment(newFilter).format('MM/YYYY')} `}
+						>
 							<Font color='#000' size='20' weight='700' />
 						</Title>
-						<AdaptiveLayout
-							height={150}
-							width={0}
-							keepLabels={false}
-						/>
+						<AdaptiveLayout height={150} width={0} keepLabels={false} />
 
 						<Series
 							argumentField={'title'}
 							valueField={'comment_number'}
-							color={newData[0]?.null ? 'darkGray' : ''}>
+							color={newData[0]?.null ? 'darkGray' : ''}
+						>
 							<Label visible={true}>
 								<Connector visible={true} width={1} />
 							</Label>

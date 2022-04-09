@@ -4,8 +4,8 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { AuthRequest } from '../../../common/AppUse';
-import { API_PATHS } from '../../../common/env';
+import { AuthRequest } from 'common/AppUse';
+import { API_PATHS } from 'common/env';
 import CreateIdeaForm from '../../Idea/CreateIdeaForm';
 import UpdateIdeaForm from '../UpdateIdeaForm';
 
@@ -32,8 +32,7 @@ const toastMessages = {
 };
 
 const ModalIdea = (props) => {
-	const { visible, onClose, onCreate, onUpdate, action, submission, idIdea } =
-		props;
+	const { visible, onClose, onCreate, onUpdate, action, submission, idIdea } = props;
 	const [initialValue, setInitialValue] = useState([]);
 
 	useEffect(() => {
@@ -87,7 +86,8 @@ const ModalIdea = (props) => {
 			open={visible}
 			onClose={() => onClose()}
 			aria-labelledby='modal-modal-title'
-			aria-describedby='modal-modal-description'>
+			aria-describedby='modal-modal-description'
+		>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>
 	);

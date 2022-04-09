@@ -19,9 +19,9 @@ import { BiPencil } from 'react-icons/bi';
 import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from '../../common/AppUse';
-import { API_PATHS, DEV_CONFIGS } from '../../common/env';
-import CustomNoRowsOverlay from '../../components/Custom/CustomNoRowsOverlay';
+import { AuthRequest, sleep } from 'common/AppUse';
+import { API_PATHS, DEV_CONFIGS } from 'common/env';
+import CustomNoRowsOverlay from 'components/Custom/CustomNoRowsOverlay';
 import { dataDemo } from './FakeData';
 import ModalDepartmentManagement from './modal/ModalDepartmentManagement';
 import { Column } from './model/Column';

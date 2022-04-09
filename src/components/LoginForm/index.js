@@ -12,9 +12,9 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
-import { AnonRequest } from '../../common/AppUse';
-import { API_PATHS, AUTH, STORAGE_VARS, URL_PATHS } from '../../common/env';
-import { UserContext } from '../../context/AppContext';
+import { AnonRequest } from 'common/AppUse';
+import { API_PATHS, AUTH, STORAGE_VARS, URL_PATHS } from 'common/env';
+import { UserContext } from 'context/AppContext';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {

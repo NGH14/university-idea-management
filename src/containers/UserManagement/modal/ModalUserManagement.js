@@ -1,16 +1,16 @@
-import { Modal } from "@mui/material";
-import Box from "@mui/material/Box";
-import _ from "lodash";
-import * as React from "react";
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { Modal } from '@mui/material';
+import Box from '@mui/material/Box';
+import _ from 'lodash';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
-import { AuthRequest } from "../../../common/AppUse";
-import { API_PATHS, DEV_CONFIGS } from "../../../common/env";
-import CreateUserForm from "../../../components/User/CreateUserForm";
-import DetailUserForm from "../../../components/User/DetailUserForm";
-import EditUserForm from "../../../components/User/EditUserForm";
-import { dataDemo } from "../FakeData";
+import { AuthRequest } from 'common/AppUse';
+import { API_PATHS, DEV_CONFIGS } from 'common/env';
+import CreateUserForm from 'components/User/CreateUserForm';
+import DetailUserForm from 'components/User/DetailUserForm';
+import EditUserForm from 'components/User/EditUserForm';
+import { dataDemo } from '../FakeData';
 
 const style = {
 	position: 'relative',

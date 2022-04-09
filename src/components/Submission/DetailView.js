@@ -10,8 +10,8 @@ import { BiPencil } from 'react-icons/bi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from '../../common/AppUse';
-import { API_PATHS, DEV_CONFIGS, URL_PATHS } from '../../common/env';
+import { AuthRequest, sleep } from 'common/AppUse';
+import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
 import { dataDemo } from '../../containers/IdeaMangement/FakeData';
 import DetailSubmissionForm from './DetailSubmissionForm';
 import IdeaSubView from './IdeaSubView';

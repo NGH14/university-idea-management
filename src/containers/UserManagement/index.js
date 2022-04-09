@@ -1,14 +1,11 @@
 import './style.css';
-
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { IconButton, Pagination } from '@mui/material';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
+import {
+	PlusCircleOutlined,
+	MoreOutlined,
+	LeftOutlined,
+	RightOutlined,
+} from '@ant-design/icons';
+import { IconButton } from '@mui/material';
 import {
 	GridToolbarColumnsButton,
 	GridToolbarContainer,
@@ -16,7 +13,10 @@ import {
 	GridToolbarExport,
 	GridToolbarFilterButton,
 } from '@mui/x-data-grid';
-import { DataGridPro, GridActionsCellItem } from '@mui/x-data-grid-pro';
+import { Button, Dropdown, Menu, Table } from 'antd';
+import { AuthRequest, sleep } from 'common/AppUse';
+import { API_PATHS, DEV_CONFIGS, ROLES } from 'common/env';
+import { UserContext } from 'context/AppContext';
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { BiPencil } from 'react-icons/bi';
@@ -24,14 +24,9 @@ import { GoInfo } from 'react-icons/go';
 import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from '../../common/AppUse';
-import { API_PATHS, DEV_CONFIGS } from '../../common/env';
-import CustomNoRowsOverlay from '../../components/Custom/CustomNoRowsOverlay';
-import { UserContext } from '../../context/AppContext';
 import { dataDemo } from './FakeData';
 import ModalUserManagement from './modal/ModalUserManagement';
-import { Column } from './model/Column';
-import UimPagination from '../../components/UimPagination';
+import { Columns } from './model/Column';
 
 const toastMessages = {
 	WAIT: 'Please wait...',
@@ -69,43 +64,57 @@ function UserManagement() {
 	const handleOnClickToolBar = () => setTableToolBar((pre) => !pre);
 
 	const columns = [
-		...Column,
+		...Columns,
 		{
-			field: 'actions',
-			headerName: 'Action',
-			width: 75,
-			type: 'actions',
-			disableColumnMenu: true,
-			sortable: false,
-			getActions: (params) => [
-				<GridActionsCellItem
-					icon={<GoInfo color='#3f66da' style={{ fontSize: '20px' }} />}
-					label='Detail'
-					onClick={() => onOpenModal(params.id, 'detail')}
-					showInMenu
-				/>,
-
-				<GridActionsCellItem
-					icon={<BiPencil style={{ fontSize: '20px' }} />}
-					label='Update'
-					disabled={state?.dataUser?.id === params.id ? true : false}
-					onClick={() => onOpenModal(params.id, 'update')}
-					showInMenu
-				/>,
-
-				<GridActionsCellItem
-					icon={
-						<MdOutlineDeleteOutline
-							color='red'
-							style={{ fontSize: '20px' }}
-						/>
+			title: 'Action',
+			key: 'Action',
+			align: 'center',
+			width: '5%',
+			render: (_text, record) => (
+				<Dropdown
+					overlay={
+						<Menu>
+							<Menu.Item
+								key={1}
+								icon={
+									<GoInfo
+										color='#3f66da'
+										style={{ fontSize: '20px' }}
+									/>
+								}
+								onClick={() => onOpenModal(record.id, 'detail')}
+							>
+								Detail
+							</Menu.Item>
+							<Menu.Item
+								key={2}
+								icon={<BiPencil style={{ fontSize: '20px' }} />}
+								disabled={record.role === ROLES.ADMIN}
+								onClick={() => onOpenModal(record.id, 'update')}
+							>
+								Update
+							</Menu.Item>
+							<Menu.Item
+								key={3}
+								icon={
+									<MdOutlineDeleteOutline
+										color='red'
+										style={{ fontSize: '20px' }}
+									/>
+								}
+								disabled={record.role === ROLES.ADMIN}
+								onClick={() => onDelete(record.id)}
+							>
+								Delete
+							</Menu.Item>
+						</Menu>
 					}
-					disabled={state?.dataUser?.id === params.id ? true : false}
-					label='Delete'
-					onClick={() => onDelete(params.id)}
-					showInMenu
-				/>,
-			],
+					placement='bottomRight'
+					trigger={['click']}
+				>
+					<Button icon={<MoreOutlined />} shape='circle' />
+				</Dropdown>
+			),
 		},
 	];
 
@@ -220,22 +229,21 @@ function UserManagement() {
 
 	const renderTop = () => {
 		return (
-			<div className='managementuser_title'>
+			<div className='managementuser_title' style={{}}>
 				<div className='managementuser_heading'>
 					<h2>User Management</h2>
-					<Tooltip title='Table Tool Bar'>
-						<IconButton onClick={handleOnClickToolBar}>
-							<MoreVertIcon />
-						</IconButton>
-					</Tooltip>
+					<IconButton onClick={handleOnClickToolBar}>
+						<MoreOutlined />
+					</IconButton>
 				</div>
 
 				<Button
-					variant='contained'
-					endIcon={<AddCircleOutlineIcon />}
+					type='primary'
 					onClick={() => onOpenModal(null, 'create')}
+					style={{ borderRadius: '5px', fontSize: '18px', height: 'auto' }}
 				>
 					Create
+					<PlusCircleOutlined />
 				</Button>
 			</div>
 		);
@@ -244,52 +252,26 @@ function UserManagement() {
 	const renderContent = () => {
 		return (
 			<div className='managementuser_table'>
-				<DataGridPro
-					components={{
-						NoRowsOverlay: CustomNoRowsOverlay,
-						ColumnSortedDescendingIcon: () => (
-							<ExpandMoreIcon className='icon' />
-						),
-						ColumnSortedAscendingIcon: () => (
-							<ExpandLessIcon className='icon' />
-						),
-						Toolbar: tableToolBar && CustomToolbarUser,
-					}}
-					rows={data?.rows ?? dataDemo}
+				<Table
+					style={{ height: '40rem' }}
 					columns={columns}
-					rowCount={pagination.pageSize}
-					columnVisibilityModel={{}}
-					pagination={true}
-					cell--textCenter
-					pageSize={pagination.pageSize}
-					page={pagination.page - 1}
-					hideFooterSelectedRowCount={true}
-					hideFooterPagination={true}
-					hideFooterRowCount={true}
-					initialState={{ pinnedColumns: { right: ['actions'] } }}
-					style={{ minHeight: '70vh' }}
+					dataSource={data?.rows}
+					pagination={{
+						showSizeChanger: true,
+						current: pagination.page,
+						pageSize: pagination.pageSize,
+						total: data?.total,
+						selectPrefixCls: '',
+						pageSizeOptions: [5, 10, 25, 50],
+						responsive: true,
+						nextIcon: <RightOutlined />,
+						prevIcon: <LeftOutlined />,
+						onChange: (page, pageSize) =>
+							setPagination({ ...pagination, page, pageSize }),
+						onShowSizeChange: (_current, pageSize) =>
+							setPagination({ ...pagination, page: 1, pageSize }),
+					}}
 				/>
-				<div className='usertable_footer'>
-					{data?.rows ? (
-						<UimPagination
-							totalPages={Math.floor(data?.total / pagination.pageSize) + 1}
-							currentPage={pagination.page}
-							onChangePageSize={(_, value) =>
-								setPagination({
-									...pagination,
-									pageSize: value,
-									page: 1,
-								})
-							}
-							onChangePageIndex={(_, value) =>
-								setPagination({ ...pagination, value })
-							}
-							pageSizeOptions={[5, 10, 25, 50]}
-						/>
-					) : (
-						<></>
-					)}
-				</div>
 			</div>
 		);
 	};

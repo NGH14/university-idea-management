@@ -2,7 +2,7 @@ import { Modal } from '@mui/material';
 import Box from '@mui/material/Box';
 import * as React from 'react';
 
-import UpdateIdeaForm from '../../components/Idea/UpdateIdeaForm';
+import UpdateIdeaForm from 'components/Idea/UpdateIdeaForm';
 
 const style = {
 	position: 'relative',
@@ -34,7 +34,8 @@ const ModalIdeaDetailView = (props) => {
 			open={visible}
 			onClose={() => onClose()}
 			aria-labelledby='modal-modal-title'
-			aria-describedby='modal-modal-description'>
+			aria-describedby='modal-modal-description'
+		>
 			<Box sx={style}>
 				<UpdateIdeaForm
 					onClose={() => onClose()}

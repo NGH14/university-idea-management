@@ -24,10 +24,10 @@ import { GoInfo } from 'react-icons/go';
 import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from '../../common/AppUse';
-import { API_PATHS, DEV_CONFIGS, URL_PATHS } from '../../common/env';
-import CustomNoRowsOverlay from '../../components/Custom/CustomNoRowsOverlay';
-import ModalIdea from '../../components/Idea/ModalIdea';
+import { AuthRequest, sleep } from 'common/AppUse';
+import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
+import CustomNoRowsOverlay from 'components/Custom/CustomNoRowsOverlay';
+import ModalIdea from 'components/Idea/ModalIdea';
 import { Columns } from './model/Columns';
 import { useNavigate } from 'react-router-dom';
 

@@ -1,10 +1,10 @@
-import "./style.css";
+import './style.css';
 
-import Button from "@mui/material/Button";
-import React from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import Button from '@mui/material/Button';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import Icon404 from "../../assets/images/MnQWcWb6SrY.svg";
+import Icon404 from 'assets/images/MnQWcWb6SrY.svg';
 
 export default function NotMatchPage() {
 	const location = useLocation();

@@ -1,10 +1,10 @@
-import "./style.css";
+import './style.css';
 
-import Button from "@mui/material/Button";
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import Button from '@mui/material/Button';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import Icon404 from "../../assets/images/undraw_cancel_re_pkdm.svg";
+import Icon404 from 'assets/images/undraw_cancel_re_pkdm.svg';
 
 export default function NotPermisstionPage() {
 	const navigate = useNavigate();

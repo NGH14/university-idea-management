@@ -1,25 +1,25 @@
-import { Modal } from "@mui/material";
-import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardHeader from "@mui/material/CardHeader";
-import Button from "@mui/material/IconButton";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
-import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
-import Typography from "@mui/material/Typography";
-import moment from "moment";
-import PropTypes from "prop-types";
-import * as React from "react";
-import { useContext, useState } from "react";
-import { BiUserPin } from "react-icons/bi";
-import { RiContactsBook2Line } from "react-icons/ri";
-import { VscKey } from "react-icons/vsc";
+import { Modal } from '@mui/material';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Button from '@mui/material/IconButton';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import Typography from '@mui/material/Typography';
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import * as React from 'react';
+import { useContext, useState } from 'react';
+import { BiUserPin } from 'react-icons/bi';
+import { RiContactsBook2Line } from 'react-icons/ri';
+import { VscKey } from 'react-icons/vsc';
 
-import { UserContext } from "../../context/AppContext";
-import UpdatePasswordForm from "../UpdatePasswordForm";
+import { UserContext } from 'context/AppContext';
+import UpdatePasswordForm from '../UpdatePasswordForm';
 
 const tabItems = [
 	{ text: 'About', component: <AboutTab /> },

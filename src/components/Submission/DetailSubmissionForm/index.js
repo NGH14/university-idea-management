@@ -1,12 +1,12 @@
-import "./style.css";
+import './style.css';
 
-import { TextField } from "@mui/material";
-import InputLabel from "@mui/material/InputLabel";
-import { useFormik } from "formik";
-import moment from "moment";
-import React, { useContext } from "react";
+import { TextField } from '@mui/material';
+import InputLabel from '@mui/material/InputLabel';
+import { useFormik } from 'formik';
+import moment from 'moment';
+import React, { useContext } from 'react';
 
-import { UserContext } from "../../../context/AppContext";
+import { UserContext } from 'context/AppContext';
 
 function DetailSubmissionForm({ initialValue }) {
 	const formik = useFormik({ initialValues: initialValue });

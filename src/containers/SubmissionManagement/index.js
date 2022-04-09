@@ -23,10 +23,10 @@ import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from '../../common/AppUse';
-import { API_PATHS, DEV_CONFIGS, URL_PATHS } from '../../common/env';
-import CustomNoRowsOverlay from '../../components/Custom/CustomNoRowsOverlay';
-import { UserContext } from '../../context/AppContext';
+import { AuthRequest, sleep } from 'common/AppUse';
+import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
+import CustomNoRowsOverlay from 'components/Custom/CustomNoRowsOverlay';
+import { UserContext } from 'context/AppContext';
 import { dataDemo } from './FakeData';
 import ModalSubmissionManagement from './modal/ModalSubmissionManagement';
 import { Column } from './model/Column';

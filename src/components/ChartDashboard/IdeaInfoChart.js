@@ -1,31 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import SelectBox from 'devextreme-react/ui/select-box';
+import './style.css';
+
+import { LocalizationProvider } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import DatePicker from '@mui/lab/DatePicker';
+import { Slider, TextField } from '@mui/material';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import { AuthRequest } from 'common/AppUse';
+import { Font } from 'devextreme-react/bar-gauge';
 import {
-	Chart,
-	Series,
 	ArgumentAxis,
+	Chart,
 	CommonSeriesSettings,
 	Export,
 	Grid,
 	Legend,
 	Margin,
-	Title,
+	Series,
 	Subtitle,
+	Title,
 	Tooltip,
 } from 'devextreme-react/ui/chart';
 import _ from 'lodash';
 import moment from 'moment';
-import Box from '@mui/material/Box';
-import { CircularProgress, Slider, TextField } from '@mui/material';
-import Paper from '@mui/material/Paper';
-import { LocalizationProvider } from '@mui/lab';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import DatePicker from '@mui/lab/DatePicker';
-import Typography from '@mui/material/Typography';
-import { AuthRequest } from '../../common/AppUse';
-import { AdaptiveLayout } from 'devextreme-react/funnel';
-import './style.css';
-import { Font } from 'devextreme-react/bar-gauge';
+import React, { useEffect, useState } from 'react';
 
 const energySources = [
 	{ value: 'total_ideas', name: 'total Idea' },
@@ -75,30 +74,22 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 	};
 
 	const renderText = () => {
-		let textFrom = `${newFilter.display[0]}/${moment(timeKey).format(
-			'MM/YYYY',
-		)}`;
-		let textTo = `${newFilter.display[1]}/${moment(timeKey).format(
-			'MM/YYYY',
-		)}`;
+		let textFrom = `${newFilter.display[0]}/${moment(timeKey).format('MM/YYYY')}`;
+		let textTo = `${newFilter.display[1]}/${moment(timeKey).format('MM/YYYY')}`;
 		if (newFilter.display[0] < 10) {
-			textFrom = `0${newFilter.display[0]}/${moment(timeKey).format(
-				'MM/YYYY',
-			)}`;
+			textFrom = `0${newFilter.display[0]}/${moment(timeKey).format('MM/YYYY')}`;
 		}
 		if (newFilter.display[1] < 10) {
-			textTo = `0${newFilter.display[1]}/${moment(timeKey).format(
-				'MM/YYYY',
-			)}`;
+			textTo = `0${newFilter.display[1]}/${moment(timeKey).format('MM/YYYY')}`;
 		}
 		return `${textFrom} to ${textTo}`;
 	};
 
 	const onMonthYearIdeaInfoChange = async (value) => {
 		const res = await AuthRequest.get(
-			`dashboard/activities?month=${moment(value).format(
-				'MM',
-			)}&year=${moment(value).format('YYYY')}`,
+			`dashboard/activities?month=${moment(value).format('MM')}&year=${moment(
+				value,
+			).format('YYYY')}`,
 		);
 		if (res?.data?.succeeded) {
 			let arrDate = _.cloneDeep(res?.data?.result);
@@ -125,7 +116,8 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 						alignItems: 'center',
 						gap: 10,
 						fontFamily: 'Poppins',
-					}}>
+					}}
+				>
 					<div style={{ marginRight: 20, padding: 0, width: 150 }}>
 						<DatePicker
 							inputFormat='MM/yyyy'
@@ -155,14 +147,15 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 								alignItems: 'center',
 								gap: 3,
 								marginBlock: '20px',
-							}}>
+							}}
+						>
 							<Typography
 								id='input-slider'
 								gutterBottom
 								textAlign={'left'}
-								style={{ margin: 0 }}>
-								Day: {newFilter.display[0]} -
-								{newFilter.display[1]}
+								style={{ margin: 0 }}
+							>
+								Day: {newFilter.display[0]} -{newFilter.display[1]}
 							</Typography>
 							<Slider
 								aria-label='Small steps'
@@ -176,9 +169,7 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 								min={1}
 								max={new Date(
 									newFilter.timeKey.getFullYear(),
-									_.toNumber(
-										moment(newFilter.timeKey).format('MM'),
-									),
+									_.toNumber(moment(newFilter.timeKey).format('MM')),
 									0,
 								).getDate()}
 								step={1}
@@ -204,13 +195,15 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 							paddingTop: 10,
 							paddingRight: 10,
 							marginBottom: 6,
-						}}>
+						}}
+					>
 						{renderPickerMonthYearInfoIdea()}
 					</div>
 					<Chart
 						className={'chart'}
 						palette={'Soft Pastel'}
-						dataSource={newData}>
+						dataSource={newData}
+					>
 						<CommonSeriesSettings
 							argumentField={'date'}
 							type={'stackedBar'}
@@ -227,14 +220,16 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 						<Title
 							text={`${_.toUpper(
 								'Top idea have the most comment in',
-							)} ${moment(newFilter).format('MM/YYYY')} `}>
+							)} ${moment(newFilter).format('MM/YYYY')} `}
+						>
 							<Font color='#000' size='20' weight='700' />
 						</Title>
 
 						<Margin bottom={20} />
 						<ArgumentAxis
 							valueMarginsEnabled={false}
-							discreteAxisDivisionMode={'crossLabels'}>
+							discreteAxisDivisionMode={'crossLabels'}
+						>
 							<Grid visible={true} />
 						</ArgumentAxis>
 						<Legend

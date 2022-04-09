@@ -1,8 +1,8 @@
 import { createContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { AuthRequest } from '../common/AppUse';
-import { API_PATHS, DEV_CONFIGS, STORAGE_VARS } from '../common/env';
+import { AuthRequest } from 'common/AppUse';
+import { API_PATHS, DEV_CONFIGS, STORAGE_VARS } from 'common/env';
 
 const toastMessages = {
 	ERR_SESSION_OVER: 'Session timeout !!',

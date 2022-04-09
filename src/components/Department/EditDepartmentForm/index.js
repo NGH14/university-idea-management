@@ -1,5 +1,3 @@
-/** @format */
-
 import './style.css';
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -94,9 +92,7 @@ function EditDepartmentForm(props) {
 			</div>
 			<br />
 
-			<form
-				className='detaildepartmentform_grid'
-				onSubmit={formik.handleSubmit}>
+			<form className='detaildepartmentform_grid' onSubmit={formik.handleSubmit}>
 				<div className='detaildepartmentform_group'>
 					<div className='detaildepartmentform_content'>
 						<InputLabel required htmlFor='full_name'>
@@ -109,13 +105,8 @@ function EditDepartmentForm(props) {
 							value={formik.values.name}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={
-								formik.touched.name &&
-								Boolean(formik.errors.name)
-							}
-							helperText={
-								formik.touched.name && formik.errors.name
-							}
+							error={formik.touched.name && Boolean(formik.errors.name)}
+							helperText={formik.touched.name && formik.errors.name}
 						/>
 					</div>
 				</div>

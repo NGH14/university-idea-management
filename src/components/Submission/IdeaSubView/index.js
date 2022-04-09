@@ -32,8 +32,8 @@ import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from '../../../common/AppUse';
-import { API_PATHS, DEV_CONFIGS, URL_PATHS } from '../../../common/env';
+import { AuthRequest, sleep } from 'common/AppUse';
+import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
 import CommentIdea from '../../Idea/CommentIdea';
 import ModalIdea from '../../Idea/ModalIdea';
 import { DataGridPro, GridActionsCellItem } from '@mui/x-data-grid-pro';

@@ -10,11 +10,11 @@ import { fake_subTotal, fake_topIdeas, fake_activities } from './FakeData';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
-import { AuthRequest } from '../../common/AppUse';
-import { DEV_CONFIGS } from '../../common/env';
-import IdeaInfoChart from '../../components/ChartDashboard/IdeaInfoChart';
-import IdeaPopularChart from '../../components/ChartDashboard/IdeaPopularChart';
-import TotalSubmissionChart from '../../components/ChartDashboard/TotalSubmissionChart';
+import { AuthRequest } from 'common/AppUse';
+import { DEV_CONFIGS } from 'common/env';
+import IdeaInfoChart from 'components/ChartDashboard/IdeaInfoChart';
+import IdeaPopularChart from 'components/ChartDashboard/IdeaPopularChart';
+import TotalSubmissionChart from 'components/ChartDashboard/TotalSubmissionChart';
 import { CgArrowUpR, CgArrowDownR } from 'react-icons/cg';
 import { BsFileRichtext } from 'react-icons/bs';
 import { TiLightbulb } from 'react-icons/ti';
@@ -86,12 +86,8 @@ export default function Dashboard() {
 		axios
 			.all([
 				AuthRequest.get(`dashboard/sum-submissions?year=${year}`),
-				AuthRequest.get(
-					`dashboard/top-ideas?month=${monthIdea}&year=${year}`,
-				),
-				AuthRequest.get(
-					`dashboard/activities?month=${monthInfo}&year=${year}`,
-				),
+				AuthRequest.get(`dashboard/top-ideas?month=${monthIdea}&year=${year}`),
+				AuthRequest.get(`dashboard/activities?month=${monthInfo}&year=${year}`),
 			])
 			.then(
 				axios.spread(function (resSub, resIdeas, resAct) {
@@ -118,12 +114,7 @@ export default function Dashboard() {
 	};
 
 	const renderPopularIdea = () => {
-		return (
-			<IdeaPopularChart
-				timeKey={filter.monthYearIdea}
-				data={data?.topIdea}
-			/>
-		);
+		return <IdeaPopularChart timeKey={filter.monthYearIdea} data={data?.topIdea} />;
 	};
 
 	const renderIdeaInfo = () => {
@@ -155,7 +146,8 @@ export default function Dashboard() {
 								fontSize: 14,
 								color: '#999',
 								opacity: '0.7',
-							}}>
+							}}
+						>
 							UIM Card
 						</i>
 					</div>
@@ -177,14 +169,11 @@ export default function Dashboard() {
 										alignItems: 'flex-start',
 										flexDirection: 'column',
 										borderRadius: '15px',
-									}}>
+									}}
+								>
 									{item.icon}
-									<p className='dashboard_textname'>
-										{item.name}
-									</p>
-									<strong className='value'>
-										{item.value}
-									</strong>
+									<p className='dashboard_textname'>{item.name}</p>
+									<strong className='value'>{item.value}</strong>
 								</Card>
 							</div>
 						);
@@ -206,7 +195,8 @@ export default function Dashboard() {
 							color: '#999',
 							opacity: '0.7',
 							marginTop: '30px',
-						}}>
+						}}
+					>
 						UIM Chart
 					</i>
 				</div>
@@ -219,7 +209,8 @@ export default function Dashboard() {
 					marginTop: 20,
 					justifyContent: 'center',
 					alignContent: 'center',
-				}}>
+				}}
+			>
 				{renderPopularIdea()}
 				{renderChartSubmissionTotal()}
 			</div>

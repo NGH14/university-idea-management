@@ -1,18 +1,18 @@
-import "./style.css";
+import './style.css';
 
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import React, { useContext, useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { toast } from "react-toastify";
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import React, { useContext, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
-import loginImg from "../../assets/images/Contact-CIC-Education-2-1024x858.webp";
-import { AuthRequest } from "../../common/AppUse";
-import { API_PATHS, DEV_CONFIGS } from "../../common/env";
-import TabProfile from "../../components/TabProfile";
-import { dataDemo } from "../UserManagement/FakeData";
+import loginImg from 'assets/images/Contact-CIC-Education-2-1024x858.webp';
+import { AuthRequest } from 'common/AppUse';
+import { API_PATHS, DEV_CONFIGS } from 'common/env';
+import TabProfile from 'components/TabProfile';
+import { dataDemo } from '../UserManagement/FakeData';
 
 const toastMessages = {
 	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
