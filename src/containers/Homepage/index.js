@@ -25,7 +25,7 @@ import { dataDemo } from '../IdeaMangement/FakeData';
 
 import { AuthRequest, sleep } from 'common/AppUse';
 import { API_PATHS, URL_PATHS } from 'common/env';
-import FloatingButton from 'components/Custom/FloatingButton';
+import FloatButton from 'components/Custom/FloatButton';
 import CommentIdea from 'components/Idea/CommentIdea';
 import ModalIdea from 'components/Idea/ModalIdea';
 import { UserContext } from 'context/AppContext';
@@ -50,22 +50,19 @@ const toastMessages = {
 };
 
 export default function Homepage() {
-	const navigate = useNavigate();
+	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
+	const [postTotal, setPostTotal] = useState(0);
 	const { state } = useContext(UserContext);
 	const [data, setData] = useState([]);
-	const [postTotal, setPostTotal] = useState(0);
-	const [anchorEl, setAnchorEl] = useState(null);
+
 	const [expanded, setExpanded] = useState([]);
+	const [, setAnchorEl] = useState(null);
+	const navigate = useNavigate();
 
 	const [status, setStatus] = useState({
 		visibleModal: false,
 		action: 'update',
 		loading: false,
-	});
-
-	const [pagination, setPagination] = useState({
-		pageSize: 5,
-		page: 1,
 	});
 
 	useEffect(() => {
@@ -76,7 +73,7 @@ export default function Homepage() {
 		loadData();
 	}, []);
 
-	const loadData = async () => {
+	const loadData = async () =>
 		await AuthRequest.get(API_PATHS.SHARED.IDEA + '/table/list', {
 			params: { ...pagination },
 		})
@@ -85,7 +82,6 @@ export default function Homepage() {
 				setPostTotal(res?.data?.result?.total);
 			})
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
-	};
 
 	const handleClick = (event) => setAnchorEl(event.currentTarget);
 	const handleClose = () => setAnchorEl(null);
@@ -96,10 +92,10 @@ export default function Homepage() {
 		setExpanded(newExpanded);
 	};
 
-	// TODO: At BE, return entity after created
+	// TODO: @Henry, return entity after created
 	const apiRequests = {
-		create: (value) =>
-			toast.promise(
+		create: async (value) =>
+			await toast.promise(
 				AuthRequest.post(API_PATHS.SHARED.IDEA, value).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
@@ -122,8 +118,8 @@ export default function Homepage() {
 				},
 			),
 
-		delete: (id) =>
-			toast.promise(
+		delete: async (id) =>
+			await toast.promise(
 				AuthRequest.delete(`${API_PATHS.SHARED.IDEA}/${id}`).then(() =>
 					sleep(700),
 				),
@@ -142,8 +138,8 @@ export default function Homepage() {
 				},
 			),
 
-		update: (value) =>
-			toast.promise(
+		update: async (value) =>
+			await toast.promise(
 				AuthRequest.put(`${API_PATHS.SHARED.IDEA}/${value?.id}`, value).then(() =>
 					sleep(700),
 				),
@@ -382,7 +378,7 @@ export default function Homepage() {
 	};
 
 	const renderListFile = (item) =>
-		item?.file && !item?.file?.isEmpty() ? (
+		item?.file && !item?.file?.length === 0 ? (
 			<Card style={{ marginLeft: 15, marginRight: 15 }}>
 				<IconButton>
 					<AttachFileIcon />
@@ -449,7 +445,7 @@ export default function Homepage() {
 			{renderFooter()}
 
 			<Tooltip arrow placement='left' title='Submit a new idea'>
-				<FloatingButton
+				<FloatButton
 					onClick={() =>
 						setStatus({ ...status, visibleModal: true, action: 'create' })
 					}

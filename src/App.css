@@ -1,26 +1,3 @@
-@import '~antd/dist/antd.css';
-
-.ant-table-wrapper {
-  height: 100%;
-  overflow: hidden;
-}
-
-.ant-table-wrapper .ant-spin-nested-loading {
-  height: 100%;
-}
-
-.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-}
-
-.ant-table-wrapper .ant-spin-nested-loading .ant-spin-container .ant-table {
-  max-height: 90%;
-  overflow: auto;
-}
-
 html {
   font-family: "Poppins", sans-serif;
   scroll-behavior: smooth;

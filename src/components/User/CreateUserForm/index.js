@@ -12,14 +12,14 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { styled } from '@mui/material/styles';
+import axios from 'axios';
+import { AuthRequest } from 'common/AppUse';
+import { API_PATHS, DEV_CONFIGS } from 'common/env';
 import enLocale from 'date-fns/locale/en-GB';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
-
-import { AuthRequest } from 'common/AppUse';
-import { API_PATHS, DEV_CONFIGS } from 'common/env';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -102,31 +102,26 @@ function CreateUserForm(prop) {
 	});
 
 	useEffect(() => {
-		getDepartments();
-		getRoles();
-	}, []);
-
-	const getDepartments = async () => {
 		if (DEV_CONFIGS.IS_DEV) {
 			setDepartments(DEV_CONFIGS.FAKE_DEPS);
-			return;
-		}
-
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_DEP + '/list')
-			.then((res) => setDepartments(res?.data?.result))
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
-	};
-
-	const getRoles = async () => {
-		if (DEV_CONFIGS.IS_DEV) {
 			setRoles(DEV_CONFIGS.FAKE_ROLES);
 			return;
 		}
-
-		await AuthRequest.get(API_PATHS.SHARED.ROLE + '/list')
-			.then((res) => setRoles(res?.data?.result))
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
-	};
+		(async () => {
+			await axios
+				.all([
+					AuthRequest.get(API_PATHS.ADMIN.MANAGE_DEP + '/list'),
+					AuthRequest.get(API_PATHS.SHARED.ROLE + '/list'),
+				])
+				.then(
+					axios.spread((resDeps, resRoles) => {
+						setDepartments(resDeps?.data?.result);
+						setRoles(resRoles?.data?.result);
+					}),
+				)
+				.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+		})();
+	}, []);
 
 	return (
 		<div className='createuserform'>
@@ -144,7 +139,7 @@ function CreateUserForm(prop) {
 						<InputLabel required htmlFor='full_name'>
 							Full Name
 						</InputLabel>
-						<CssTextField
+						<TextField
 							fullWidth
 							id='full_name'
 							name='full_name'

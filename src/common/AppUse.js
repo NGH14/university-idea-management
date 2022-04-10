@@ -77,8 +77,6 @@ export function toReadableFileSize(bytes) {
 		return bytes + ' B';
 	}
 
-	// kB | MB | GB | TB | PB | EB | ZB | YB
-	// KiB | MiB | GiB | TiB | PiB | EiB | ZiB | YiB
 	const units = ['kB', 'MB'];
 
 	let u = -1;
@@ -91,3 +89,18 @@ export function toReadableFileSize(bytes) {
 
 	return bytes.toFixed(dp) + ' ' + units[u];
 }
+
+export const toastMessages = {
+	WAIT: 'Please wait...',
+	errs: {
+		added: (entity) => `Failed to create ${entity} !!`,
+		edited: (entity) => `Failed to update ${entity} !!`,
+		deleted: (entity) => `Failed to delete ${entity} !!`,
+		UNEXPECTED: 'Something went wrong, please try again !!',
+	},
+	succs: {
+		added: (entity) => `Create ${entity} successful !!`,
+		edited: (entity) => `Update ${entity} successful !!`,
+		deleted: (entity) => `Delete ${entity} successful !!`,
+	},
+};

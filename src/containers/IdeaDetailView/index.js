@@ -47,7 +47,6 @@ function IdeaDetailView() {
 	}, []);
 
 	const LoadData = async () => {
-		console.log(12312);
 		await AuthRequest.get(`${API_PATHS.SHARED.IDEA}/${id}`)
 			.then((res) => {
 				if (res?.data?.successed) {

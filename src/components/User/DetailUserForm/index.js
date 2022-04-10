@@ -45,6 +45,8 @@ function DetailUserForm(props) {
 		initialValues: initialValue,
 	});
 
+	// TODO: @Henry, Fix user data on create and return
+
 	return (
 		<div className='detailuserform'>
 			<div className='detailuserform_title'>
@@ -63,7 +65,7 @@ function DetailUserForm(props) {
 							fullWidth
 							id='full_name'
 							name='full_name'
-							value={formik.values.full_name}
+							value={formik.values.full_name ?? ''}
 							variant='standard'
 							inputProps={{
 								disabled: true,
@@ -78,7 +80,7 @@ function DetailUserForm(props) {
 							variant='standard'
 							id='email'
 							name='email'
-							value={formik.values.email}
+							value={formik.values.email ?? ''}
 							inputProps={{
 								disabled: true,
 								readOnly: true,
@@ -98,7 +100,7 @@ function DetailUserForm(props) {
 								disabled: true,
 								readOnly: true,
 							}}
-							value={formik.values.phone}
+							value={formik.values.phone ?? ''}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							error={formik.touched.phone && Boolean(formik.errors.phone)}
@@ -114,7 +116,7 @@ function DetailUserForm(props) {
 							variant='standard'
 							id='department'
 							name='department'
-							value={formik.values.department}
+							value={formik.values.department ?? ''}
 							inputProps={{
 								disabled: true,
 								readOnly: true,
@@ -129,7 +131,7 @@ function DetailUserForm(props) {
 							variant='standard'
 							id='role'
 							name='role'
-							value={formik.values.role}
+							value={formik.values.role ?? ''}
 							inputProps={{
 								disabled: true,
 								readOnly: true,
@@ -147,7 +149,7 @@ function DetailUserForm(props) {
 								disabled: true,
 								readOnly: true,
 							}}
-							value={formik.values.date_of_birth}
+							value={formik.values.date_of_birth ?? ''}
 						/>
 					</div>
 
@@ -164,7 +166,7 @@ function DetailUserForm(props) {
 								disabled: true,
 								readOnly: true,
 							}}
-							value={formik.values.gender}
+							value={formik.values.gender ?? ''}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							error={formik.touched.gender && Boolean(formik.errors.gender)}

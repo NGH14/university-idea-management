@@ -1,7 +1,7 @@
 import { Box, Fab, Zoom } from '@mui/material';
 import React from 'react';
 
-export default function FloatingButton({
+export default function FloatButton({
 	onClick: handleClick,
 	icon,
 	color,

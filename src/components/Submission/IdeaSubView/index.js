@@ -10,7 +10,7 @@ import {
 	CircularProgress,
 	Menu,
 	MenuItem,
-	Pagination,
+	MuiPagination,
 	Tooltip,
 } from '@mui/material';
 import Avatar from '@mui/material/Avatar';

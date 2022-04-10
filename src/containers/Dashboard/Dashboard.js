@@ -1,29 +1,23 @@
-import { Grid, IconButton } from '@mui/material';
-import Box from '@mui/material/Box';
+import './style.css';
+
+import Card from '@mui/material/Card';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
 import axios from 'axios';
-import _ from 'lodash';
-import moment from 'moment';
-import { fake_subTotal, fake_topIdeas, fake_activities } from './FakeData';
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-
 import { AuthRequest } from 'common/AppUse';
 import { DEV_CONFIGS } from 'common/env';
 import IdeaInfoChart from 'components/ChartDashboard/IdeaInfoChart';
 import IdeaPopularChart from 'components/ChartDashboard/IdeaPopularChart';
 import TotalSubmissionChart from 'components/ChartDashboard/TotalSubmissionChart';
-import { CgArrowUpR, CgArrowDownR } from 'react-icons/cg';
+import _ from 'lodash';
+import moment from 'moment';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
 import { BsFileRichtext } from 'react-icons/bs';
+import { CgArrowDownR, CgArrowUpR } from 'react-icons/cg';
 import { TiLightbulb } from 'react-icons/ti';
 
-import './style.css';
-import Card from '@mui/material/Card';
-import { AdapterDateFns } from '@mui/lab/AdapterDateFns';
-import { SpeedDialAction } from '@mui/material/SpeedDialAction';
-import { Center } from 'devextreme-react/map';
+import { fake_activities, fake_subTotal, fake_topIdeas } from './FakeData';
 
 export default function Dashboard() {
 	const [data, setData] = useState({
