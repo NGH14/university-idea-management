@@ -50,7 +50,18 @@
 	text-align: center;
 }
 
-@media only screen and (max-width: 950px) {
+
+@media only screen and (max-width: 1150px) {
+	.loginpage-rightside {
+		width: 40%;
+	}
+
+	.loginpage-rightside_textoverlay {
+		font-size: 1em;
+	}
+}
+
+@media only screen and (max-width: 800px) {
 	.loginpage-rightside {
 		width: 0;
 		display: none;
