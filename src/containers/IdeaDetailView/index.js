@@ -17,7 +17,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from 'common/AppUse';
+import { axiocRequests, sleep } from 'common';
 import { API_PATHS, ROLES } from 'common/env';
 import CommentIdea from 'components/Idea/CommentIdea';
 import { UserContext } from 'context/AppContext';
@@ -47,7 +47,8 @@ function IdeaDetailView() {
 	}, []);
 
 	const LoadData = async () => {
-		await AuthRequest.get(`${API_PATHS.SHARED.IDEA}/${id}`)
+		await axiocRequests
+			.get(`${API_PATHS.SHARED.IDEA}/${id}`)
 			.then((res) => {
 				if (res?.data?.successed) {
 					setData(res?.data?.result ?? {});
@@ -155,9 +156,9 @@ function IdeaDetailView() {
 	const onUpdate = (value) => {
 		toast
 			.promise(
-				AuthRequest.put(`${API_PATHS.SHARED.IDEA}/${value?.id}`, value).then(() =>
-					sleep(700),
-				),
+				axiocRequests
+					.put(`${API_PATHS.SHARED.IDEA}/${value?.id}`, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_EDITED,

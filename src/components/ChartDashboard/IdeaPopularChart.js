@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
 import { LocalizationProvider } from '@mui/lab';
@@ -5,7 +6,6 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DatePicker from '@mui/lab/DatePicker';
 import { TextField } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import { AuthRequest } from 'common/AppUse';
 import PieChart, {
 	Connector,
 	Export,
@@ -19,8 +19,8 @@ import _ from 'lodash';
 import moment from 'moment';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { axiocRequests } from 'common';
 
-// total
 const dataNull = {
 	title: 'No data',
 	comment_number: 0,
@@ -30,6 +30,7 @@ const dataNull = {
 function IdeaPopularChart({ timeKey, data }) {
 	const [newFilter, setNewFilter] = useState(new Date(timeKey));
 	const [newData, setNewData] = useState(data);
+
 	useEffect(() => {
 		const newArray = [];
 		if (data && !_.isEmpty(data)) {
@@ -64,29 +65,26 @@ function IdeaPopularChart({ timeKey, data }) {
 	};
 
 	const onMonthYearChange = async (value) => {
-		const res = await AuthRequest.get(
-			`dashboard/top-ideas?month=${moment(value).format('MM')}&year=${moment(
-				value,
-			).format('YYYY')}`,
-		);
-		if (res?.data?.succeeded) {
-			const newArray = [];
-			const arrData = _.cloneDeep(res?.data?.result);
-			if (arrData && !_.isEmpty(arrData)) {
-				_.map(arrData, (x) => {
-					const title = x.idea?.title;
-					const arr = {
-						...x,
-						title,
-					};
-					newArray.push(arr);
-				});
-			} else {
-				newArray.push(dataNull);
-			}
-			setNewFilter(new Date(value));
-			setNewData(newArray);
-		}
+		axiocRequests.dash
+			.getTopIdeas(moment(value).format('MM'), moment(value).format('YYYY'))
+			.then((res) => {
+				const newArray = [];
+				const arrData = _.cloneDeep(res?.data?.result);
+				if (arrData && !_.isEmpty(arrData)) {
+					_.map(arrData, (x) => {
+						const title = x.idea?.title;
+						const arr = {
+							...x,
+							title,
+						};
+						newArray.push(arr);
+					});
+				} else {
+					newArray.push(dataNull);
+				}
+				setNewFilter(new Date(value));
+				setNewData(newArray);
+			});
 	};
 
 	const renderPickerMonthYearIdea = () => {

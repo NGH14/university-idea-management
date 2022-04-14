@@ -41,13 +41,6 @@
 	gap: 3px;
 }
 
-.usertable_footer {
-	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-	flex-wrap: wrap;
-}
-
 @media (max-width: 600px) {
 	.usertable_footer {
 		justify-content: flex-start;

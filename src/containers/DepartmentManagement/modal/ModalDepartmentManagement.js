@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { AuthRequest } from 'common/AppUse';
+import { axiocRequests } from 'common';
 import { API_PATHS, DEV_CONFIGS } from 'common/env';
 import CreateDepartmentForm from 'components/Department/CreateDepartmentForm';
 import EditDepartmentForm from 'components/Department/EditDepartmentForm';
@@ -54,7 +54,8 @@ const ModalDepartmentManagement = (props) => {
 	}, [action]);
 
 	const loadData = async () => {
-		await AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_DEP}/${rowId}`)
+		await axiocRequests
+			.get(`${API_PATHS.ADMIN.MANAGE_DEP}/${rowId}`)
 			.then((res) => setInitialValue(res?.data?.result))
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};

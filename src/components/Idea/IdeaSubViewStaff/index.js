@@ -32,7 +32,7 @@ import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from 'common/AppUse';
+import { axiocRequests, sleep } from 'common';
 import { API_PATHS, ROLES } from 'common/env';
 import { UserContext } from 'context/AppContext';
 import CommentIdea from '../CommentIdea';
@@ -189,15 +189,16 @@ function IdeaSubViewStaff({ ideaData, subData, paginationIdea }) {
 	const loadDataIdea = async () => {
 		setStatus({ ...status, loading: true });
 
-		await AuthRequest.get(API_PATHS.SHARED.IDEA + '/table/list', {
-			params: {
-				page: pagination.page + 1,
-				page_size: pagination.pageSize,
-			},
-		})
+		await axiocRequests
+			.get(API_PATHS.SHARED.IDEA + '/table/list', {
+				params: {
+					page: pagination.page + 1,
+					page_size: pagination.pageSize,
+				},
+			})
 			.then((res) => {
 				setStatus({ ...status, loading: false });
-				setIdealist(res?.data?.result?.rows ?? []);
+				setIdealist(res?.data?.result?.rows);
 				// setRowId(null);
 			})
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
@@ -206,9 +207,9 @@ function IdeaSubViewStaff({ ideaData, subData, paginationIdea }) {
 	const onDelete = (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`).then(() =>
-					sleep(700),
-				),
+				axiocRequests
+					.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_DEL,
@@ -223,10 +224,9 @@ function IdeaSubViewStaff({ ideaData, subData, paginationIdea }) {
 	const onUpdate = (value) => {
 		toast
 			.promise(
-				AuthRequest.put(
-					`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`,
-					value,
-				).then(() => sleep(700)),
+				axiocRequests
+					.put(`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_EDITED,
@@ -246,7 +246,7 @@ function IdeaSubViewStaff({ ideaData, subData, paginationIdea }) {
 		let newValue = { ...value, submission_id: subData?.id };
 		// toast
 		//     .promise(
-		//         AuthRequest.post(API_PATHS.ADMIN.MANAGE_IDEA, newValue).then(() =>
+		//         axiocRequests.post(API_PATHS.ADMIN.MANAGE_IDEA, newValue).then(() =>
 		//             sleep(700),
 		//         ),
 		//         {

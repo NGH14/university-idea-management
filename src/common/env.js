@@ -16,9 +16,7 @@ export const DEV_CONFIGS = {
 	],
 };
 
-export const AUTH = {
-	GAPI_CLIENT_ID: process.env.REACT_APP_GAPI_CLIENT_ID,
-};
+export const GAPI_CLIENT_ID = process.env.REACT_APP_GAPI_CLIENT_ID;
 
 export const API_PATHS = {
 	SHARED: {
@@ -38,6 +36,11 @@ export const API_PATHS = {
 		COMMENT: 'comment',
 	},
 	ADMIN: {
+		DASHBOAD: {
+			SUM_SUBS: 'dashboard/sum-submissions',
+			TOP_IDEAS: 'dashboard/top-ideas',
+			ACTIVITIES: 'dashboard/activities',
+		},
 		MANAGE_DEP: 'department-management',
 		MANAGE_TAG: 'tag-management',
 		MANAGE_IDEA: 'idea-management',
@@ -56,15 +59,12 @@ export const URL_PATHS = {
 	SIGNIN: '/signin',
 	MANAGE_USER: '/user-management',
 	MANAGE_IDEA: '/idea-management',
-	MANAGE_SUB_ID: '/submission-management/:id',
 	MANAGE_SUB: '/submission-management',
 	MANAGE_DEP: '/department-management',
 	MANAGE_TAG: '/tag-management',
 	DASHBOARD: '/dashboard',
 	PROFILE: '/profile',
 	SUB: '/submission',
-	SUB_ID: '/submission/:id',
-	IDEA_ID: '/idea/:id',
 	IDEA: '/idea',
 	DEMO: '/demo',
 };

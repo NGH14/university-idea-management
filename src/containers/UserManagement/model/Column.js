@@ -4,6 +4,7 @@ export const Columns = [
 		headerName: '#',
 		disableColumnMenu: true,
 		sortable: false,
+		filter: true,
 		type: 'number',
 		width: 80,
 		align: 'center',
@@ -39,7 +40,9 @@ export const Columns = [
 		disableColumnMenu: true,
 		type: 'string',
 		sortable: true,
-		width: 250,
+		width: 'auto',
+		minWidth: 200,
+		flex: 1,
 		renderCell: (value) => (
 			<div style={{ textTransform: 'capitalize' }}>{value?.row?.department}</div>
 		),
@@ -51,7 +54,9 @@ export const Columns = [
 		headerAlign: 'center',
 		disableColumnMenu: true,
 		sortable: true,
-		width: 170,
+		width: 'auto',
+		minWidth: 200,
+		flex: 1,
 		renderCell: (value) => (
 			<div style={{ textTransform: 'capitalize' }}>{value?.row?.role}</div>
 		),

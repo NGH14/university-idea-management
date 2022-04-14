@@ -1,73 +1,18 @@
 import './style.css';
 
-import CloseIcon from '@mui/icons-material/Close';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import DatePicker from '@mui/lab/DatePicker';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import { TextField } from '@mui/material';
-import Button from '@mui/material/Button';
-import FormHelperText from '@mui/material/FormHelperText';
-import IconButton from '@mui/material/IconButton';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import { styled } from '@mui/material/styles';
-import enLocale from 'date-fns/locale/en-GB';
+import axios from 'axios';
+import { axiocRequests, toastMessages } from 'common';
+import { API_PATHS } from 'common/env';
+import {
+	UimAutoComplete,
+	UimDatePicker,
+	UimModalForm,
+	UimTextField,
+} from 'components/Uim';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
-
-import { AuthRequest } from 'common/AppUse';
-import { API_PATHS, DEV_CONFIGS } from 'common/env';
-
-const CssTextField = styled(TextField)({
-	'.MuiFormHelperText-root': {
-		fontSize: '14px',
-		fontFamily: 'Poppins',
-	},
-
-	'& .MuiInputBase-root': {
-		color: '#000',
-		fontSize: '16px',
-		fontFamily: 'Poppins',
-	},
-	'& label.Mui-focused': {
-		color: '#000',
-	},
-	'& .MuiInput-underline:after': {
-		borderBottomColor: '#000',
-	},
-	'& .MuiOutlinedInput-root': {
-		'& fieldset': {
-			borderRadius: '5px',
-		},
-		'&:hover fieldset': {
-			border: '1px solid #000000',
-		},
-		'&.Mui-focused fieldset': {
-			border: '1px solid #000000',
-		},
-	},
-});
-
-const ColorButton = styled(Button)(() => ({
-	fontFamily: 'Poppins',
-	fontSize: '13px',
-	fontWeight: 'bold',
-	textTransform: 'none',
-	minWidth: 200,
-	display: 'inline-block',
-
-	margin: '10px',
-	padding: '10px',
-
-	'&:disabled ': { cursor: 'not-allowed', pointerEvents: 'all !important' },
-}));
-
-const toastMessages = {
-	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
-};
 
 const validationSchema = yup.object({
 	full_name: yup.string().required('Full Name is required'),
@@ -85,273 +30,145 @@ function EditUserForm(props) {
 	const formik = useFormik({
 		initialValues: initialValue,
 		validationSchema: validationSchema,
-		onSubmit: (values) => {
-			onUpdate(values);
-		},
+		onSubmit: (values) => onUpdate(values),
 	});
 
-	useEffect(() => {
-		if (formik?.values?.length < 1) {
-			toast.error(toastMessages.ERR_SERVER_ERROR, {
-				style: { width: 'auto' },
-			});
-			return;
-		}
-		getDepartments();
-		getRoles();
-	}, []);
-
-	const getDepartments = async () => {
-		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			setDepartments(DEV_CONFIGS.FAKE_DEPS);
-			return;
-		}
-
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_DEP + '/list')
-			.then((res) => setDepartments(res?.data?.result))
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
-	};
-
-	const getRoles = async () => {
-		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			setRoles(DEV_CONFIGS.FAKE_ROLES);
-			return;
-		}
-
-		await AuthRequest.get(API_PATHS.SHARED.ROLE + '/list')
-			.then((res) => setRoles(res?.data?.result))
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
-	};
+	useEffect(
+		() =>
+			(async () => {
+				await axios
+					.all([
+						axiocRequests.get(API_PATHS.ADMIN.MANAGE_DEP + '/list'),
+						axiocRequests.get(API_PATHS.SHARED.ROLE + '/list'),
+					])
+					.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
+					.then(
+						axios.spread((resDeps, resRoles) => {
+							setDepartments(resDeps?.data?.result);
+							setRoles(resRoles?.data?.result);
+						}),
+					);
+			})(),
+		[],
+	);
 
 	return (
-		<div className='edituserform'>
-			<div className='edituserform_title'>
-				<h2>Update User</h2>
-				<IconButton>
-					<CloseIcon onClick={() => onClose()} />
-				</IconButton>
+		<UimModalForm
+			title='Edit User'
+			onClose={() => onClose()}
+			ClassName='edituserform'
+			onSubmit={formik.handleSubmit}
+			showActionButton={true}
+		>
+			<div className='form_group'>
+				<div className='form_content'>
+					<UimTextField
+						label='Full Name'
+						required={true}
+						propName='full_name'
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						dynamic={{
+							value: formik.values.full_name,
+							error: formik.errors.full_name,
+							touched: formik.touched.full_name,
+						}}
+					/>
+				</div>
+				<div className='form_content'>
+					<UimTextField
+						label='Email'
+						required={true}
+						propName='email'
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						dynamic={{
+							value: formik.values.email,
+							error: formik.errors.email,
+							touched: formik.touched.email,
+						}}
+					/>
+				</div>
 			</div>
-			<br />
-
-			<form className='form_grid' onSubmit={formik.handleSubmit}>
-				<div className='form_group'>
-					<div className='form_content'>
-						<InputLabel required htmlFor='full_name'>
-							Full Name
-						</InputLabel>
-						<CssTextField
-							fullWidth
-							id='full_name'
-							name='full_name'
-							value={formik.values.full_name}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							error={
-								formik.touched.full_name &&
-								Boolean(formik.errors.full_name)
-							}
-							helperText={
-								formik.touched.full_name && formik.errors.full_name
-							}
-						/>
-					</div>
-					<div className='form_content'>
-						<InputLabel required htmlFor='email'>
-							Email
-						</InputLabel>
-						<CssTextField
-							fullWidth
-							variant='outlined'
-							id='email'
-							name='email'
-							value={formik.values.email}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							error={formik.touched.email && Boolean(formik.errors.email)}
-							helperText={formik.touched.email && formik.errors.email}
-						/>
-					</div>
+			<div className='form_group'>
+				<div className='form_content'>
+					<UimTextField
+						label='Phone'
+						required={true}
+						propName='phone'
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						dynamic={{
+							value: formik.values.phone,
+							error: formik.errors.phone,
+							touched: formik.touched.phone,
+						}}
+					/>
 				</div>
-
-				<div className='form_group'>
-					<div className='form_content'>
-						<InputLabel required htmlFor='phone'>
-							Phone
-						</InputLabel>
-						<CssTextField
-							fullWidth
-							id='phone'
-							name='phone'
-							value={formik.values.phone}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							error={formik.touched.phone && Boolean(formik.errors.phone)}
-							helperText={formik.touched.phone && formik.errors.phone}
-						/>
-					</div>
-					<div className='form_content'>
-						<InputLabel htmlFor='gender'>Gender</InputLabel>
-
-						<Select
-							select
-							fullWidth
-							displayEmpty
-							labelId='gender'
-							id='gender'
-							name='gender'
-							value={formik.values.gender ?? ''}
-							defaultValue=''
-							style={
-								formik.values.department != null
-									? { textTransform: 'capitalize' }
-									: { color: '#959596' }
-							}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							error={formik.touched.gender && Boolean(formik.errors.gender)}
-						>
-							<MenuItem value='' disabled={true}>
-								none
-							</MenuItem>
-							<MenuItem
-								style={{ textTransform: 'capitalize' }}
-								value='male'
-							>
-								male
-							</MenuItem>
-							<MenuItem
-								style={{ textTransform: 'capitalize' }}
-								value='female'
-							>
-								female
-							</MenuItem>
-						</Select>
-					</div>
-
-					<div className='form_content'>
-						<InputLabel htmlFor='date_of_birth'>Date of Birth</InputLabel>
-						<LocalizationProvider
-							dateAdapter={AdapterDateFns}
-							locale={enLocale}
-						>
-							<DatePicker
-								fullWidth
-								disableFuture
-								name='date_of_birth'
-								id='date_of_birth'
-								onChange={(val) => {
-									formik.setFieldValue('date_of_birth', val);
-								}}
-								value={formik.values.date_of_birth}
-								error={
-									formik.errors.date_of_birth &&
-									formik.touched.date_of_birth
-								}
-								helperText={
-									formik.errors.date_of_birth &&
-									formik.touched.date_of_birth
-								}
-								renderInput={(params) => (
-									<TextField fullWidth {...params} />
-								)}
-							/>
-						</LocalizationProvider>
-					</div>
+				<div className='form_content'>
+					<UimAutoComplete.DropDown
+						label='Gender'
+						required={true}
+						propName='gender'
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						options={[{ name: 'male' }, { name: 'female' }]}
+						dynamic={{
+							value: formik.values.gender,
+							error: formik.errors.gender,
+							touched: formik.touched.gender,
+						}}
+					/>
 				</div>
-
-				<div className='form_group'>
-					<div className='form_content'>
-						<InputLabel required htmlFor='department'>
-							Department
-						</InputLabel>
-						<Select
-							select
-							fullWidth
-							displayEmpty
-							labelId='department'
-							id='department'
-							name='department'
-							value={formik.values.department ?? ''}
-							defaultValue=''
-							style={
-								formik.values.department != null
-									? { textTransform: 'capitalize' }
-									: { color: '#959596' }
-							}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							error={
-								formik.touched.department &&
-								Boolean(formik.errors.department)
-							}
-						>
-							<MenuItem value='' disabled={true}>
-								none
-							</MenuItem>
-
-							{depOptions.map((dep) => (
-								<MenuItem
-									style={{ textTransform: 'capitalize' }}
-									value={dep?.name}
-								>
-									{dep?.name}
-								</MenuItem>
-							))}
-						</Select>
-						<FormHelperText error>
-							{formik.touched.department && formik.errors.department}
-						</FormHelperText>
-					</div>
-					<div className='form_content'>
-						<InputLabel required htmlFor='role'>
-							Role
-						</InputLabel>
-						<Select
-							select
-							fullWidth
-							displayEmpty
-							labelId='role'
-							id='role'
-							name='role'
-							defaultValue=''
-							style={
-								formik.values.department != null
-									? { textTransform: 'capitalize' }
-									: { color: '#959596' }
-							}
-							value={formik.values.role ?? ''}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							error={formik.touched.role && Boolean(formik.errors.role)}
-						>
-							<MenuItem value='' disabled={true}>
-								none
-							</MenuItem>
-
-							{roleOptions.map((role) => (
-								<MenuItem
-									style={{ textTransform: 'capitalize' }}
-									value={role.name}
-								>
-									{role.name}
-								</MenuItem>
-							))}
-						</Select>
-						<FormHelperText error>
-							{formik.touched.role && formik.errors.role}
-						</FormHelperText>
-					</div>
+				<div className='form_content'>
+					<UimDatePicker
+						label='Date of Birth'
+						required={true}
+						propName='date_of_birth'
+						onChange={(val) => formik.setFieldValue('date_of_birth', val)}
+						onBlur={formik.handleBlur}
+						renderInput={(params) => <UimTextField fullWidth {...params} />}
+						dynamic={{
+							value: formik.values.date_of_birth,
+							error: formik.errors.date_of_birth,
+							touched: formik.touched.date_of_birth,
+						}}
+					/>
 				</div>
-				<div className='edituserform_footer'>
-					<ColorButton variant='outlined' onClick={() => onClose()}>
-						Cancel
-					</ColorButton>
-					<ColorButton variant='contained' type='submit'>
-						Update
-					</ColorButton>
+			</div>
+			<div className='form_group'>
+				<div className='form_content'>
+					<UimAutoComplete.Select
+						label='Department'
+						required={true}
+						propName='department'
+						onChange={(_, value) => formik.setFieldValue('department', value)}
+						onBlur={formik.handleBlur}
+						options={depOptions}
+						dynamic={{
+							value: formik.values.department,
+							error: formik.errors.department,
+							touched: formik.touched.department,
+						}}
+					/>
 				</div>
-			</form>
-		</div>
+				<div className='form_content'>
+					<UimAutoComplete.DropDown
+						label='Role'
+						required={true}
+						propName='role'
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						options={roleOptions}
+						dynamic={{
+							value: formik.values.role,
+							error: formik.errors.role,
+							touched: formik.touched.role,
+						}}
+					/>
+				</div>
+			</div>
+		</UimModalForm>
 	);
 }
 

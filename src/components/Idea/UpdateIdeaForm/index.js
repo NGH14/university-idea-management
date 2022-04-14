@@ -24,8 +24,7 @@ import Dropzone from 'react-dropzone';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
-import { AuthRequest, getGuid, toReadableFileSize } from 'common/AppUse';
-import { API_PATHS } from 'common/env';
+import { axiocRequests, getGuid, toReadableFileSize, API_PATHS } from 'common';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -122,7 +121,8 @@ function UpdateIdeaForm(props) {
 	}, []);
 
 	const loadSubmissions = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_SUB + '/list')
+		await axiocRequests
+			.get(API_PATHS.ADMIN.MANAGE_SUB + '/list')
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
 			.then((res) => {
 				setSubOptions(res?.data?.result);
@@ -130,7 +130,8 @@ function UpdateIdeaForm(props) {
 	};
 
 	const loadTags = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_TAG + '/list')
+		await axiocRequests
+			.get(API_PATHS.ADMIN.MANAGE_TAG + '/list')
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
 			.then((res) => {
 				setTagOptions(res?.data?.result);
@@ -320,7 +321,7 @@ function UpdateIdeaForm(props) {
 							id='tags'
 							name='tags'
 							input={<OutlinedInput label='Tag' />}
-							value={formik.values.tags ?? []}
+							value={formik?.values?.tags}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							MenuProps={{

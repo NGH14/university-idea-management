@@ -1,96 +1,54 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
-import { dataDemo } from './FakeData';
+import { API_PATHS, axiocRequests, sleep, toastMessages, URL_PATHS } from 'common';
+import ContentHeader from 'components/ContentHeader';
+import ModalIdea from 'components/Idea/ModalIdea';
 
-import AddIcon from '@mui/icons-material/Add';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Button, IconButton } from '@mui/material';
-import Tooltip from '@mui/material/Tooltip';
-import {
-	GridToolbarColumnsButton,
-	GridToolbarContainer,
-	GridToolbarDensitySelector,
-	GridToolbarExport,
-	GridToolbarFilterButton,
-} from '@mui/x-data-grid';
-import { DataGridPro, GridActionsCellItem } from '@mui/x-data-grid-pro';
-import _ from 'lodash';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { BiPencil } from 'react-icons/bi';
-import { GoInfo } from 'react-icons/go';
-import { MdOutlineDeleteOutline } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from 'common/AppUse';
-import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
-import CustomNoRowsOverlay from 'components/Custom/CustomNoRowsOverlay';
-import ModalIdea from 'components/Idea/ModalIdea';
 import { Columns } from './model/Columns';
-import { useNavigate } from 'react-router-dom';
+import { UimActionButtons, UimTable } from 'components/Uim';
 
-const toastMessages = {
-	WAIT: 'Please wait...',
-	SUC_IDEA_ADDED: 'Create comment successful !!',
-	SUC_IDEA_EDITED: 'Update comment successful !!',
-	SUC_IDEA_DEL: 'Delete comment successful !!',
-	SUC_COMMENT_ADDED: 'Create comment successful !!',
-	SUC_COMMENT_EDITED: 'Update comment successful !!',
-	SUC_COMMENT_DEL: 'Delete comment successful !!',
-	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
-};
-
-function IdeaManagement() {
+export default function IdeaManagement() {
 	const navigate = useNavigate();
+	const [data, setData] = useState();
+	const [rowId, setRowId] = useState(null);
+
+	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
+	const [tableToolBar, setTableToolBar] = useState(false);
 	const [status, setStatus] = useState({
 		visibleModal: false,
 		action: 'update',
 		loading: false,
 	});
-	const [tableToolBar, setTableToolBar] = useState(false);
 
-	const [pagination, setPagination] = useState({
-		pageSize: 5,
-		page: 0,
-	});
-
-	const [data, setData] = useState([]);
-
-	useEffect(() => {
-		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			setData(dataDemo);
-			return;
-		}
-		loadData();
-	}, [pagination]);
-
-	const handleOnClickToolBar = () => setTableToolBar((pre) => !pre);
+	useEffect(() => loadData(), [pagination]);
 
 	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_IDEA + '/table/list', {
-			params: {
-				page: pagination.page + 1,
-				page_size: pagination.pageSize,
-			},
-		})
-			.then((res) => setData(res?.data?.result?.rows ?? []))
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+		await axiocRequests
+			.get(API_PATHS.ADMIN.MANAGE_IDEA + '/table/list', {
+				params: {
+					page: pagination.page,
+					page_size: pagination.pageSize,
+				},
+			})
+			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
+			.then((res) => setData(res?.data?.result));
 	};
 
-	const CustomToolbarSubmission = () => {
-		return (
-			<GridToolbarContainer sx={{ fontWeight: 700 }}>
-				<GridToolbarColumnsButton />
-				<GridToolbarFilterButton />
-				<GridToolbarDensitySelector />
-				<GridToolbarExport printOptions={{ disableToolbarButton: true }} />
-			</GridToolbarContainer>
-		);
+	const onOpenModal = (id, action) => {
+		id && setRowId(id);
+		setStatus({ ...status, visibleModal: true, action });
 	};
 
-	const onChangePagination = (pageSize, page) => setPagination({ page, pageSize });
+	const onCloseModal = () => {
+		rowId && setRowId(null);
+		setStatus({ ...status, visibleModal: false, action: 'create' });
+	};
 
 	const columns = [
 		...Columns,
@@ -101,173 +59,110 @@ function IdeaManagement() {
 			type: 'actions',
 			disableColumnMenu: true,
 			sortable: false,
-			getActions: (params) => [
-				<GridActionsCellItem
-					icon={<GoInfo color='#3f66da' style={{ fontSize: '20px' }} />}
-					label='Detail'
-					onClick={() => navigate(`${URL_PATHS.IDEA}/${params.id}`)}
-					showInMenu
-				/>,
-
-				<GridActionsCellItem
-					icon={<BiPencil style={{ fontSize: '20px' }} />}
-					label='Update'
-					onClick={() => onOpenModal(params.id, 'update')}
-					showInMenu
-				/>,
-
-				<GridActionsCellItem
-					icon={
-						<MdOutlineDeleteOutline
-							color='red'
-							style={{ fontSize: '20px' }}
-						/>
-					}
-					label='Delete'
-					onClick={() => onDelete(params.id)}
-					showInMenu
-				/>,
-			],
+			getActions: (params) =>
+				UimActionButtons(params, {
+					detailAction: () => navigate(`${URL_PATHS.IDEA}/${params.id}`),
+					updateAction: () => onOpenModal(params?.id, 'update'),
+					deleteAction: () => requests.delete(params?.id),
+				}),
 		},
 	];
 
-	const onDelete = (id) => {
-		toast
-			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`).then(() =>
-					sleep(700),
-				),
+	const requests = {
+		create: (value) =>
+			toast.promise(
+				axiocRequests
+					.post(API_PATHS.ADMIN.MANAGE_IDEA, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_IDEA_DEL,
-					error: toastMessages.ERR_SERVER_ERROR,
+					error: toastMessages.errs.added('Idea'),
+					success: {
+						render() {
+							loadData();
+							setStatus({ ...status, visibleModal: false });
+							return toastMessages.succs.added('Idea');
+						},
+					},
 				},
-			)
-			.then(() => {
-				loadData();
-			});
-	};
-
-	const onUpdate = (value) => {
-		toast
-			.promise(
-				AuthRequest.put(
-					`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`,
-					value,
-				).then(() => sleep(700)),
+			),
+		update: (value) =>
+			toast.promise(
+				axiocRequests
+					.put(`${API_PATHS.ADMIN.MANAGE_IDEA}/${value?.id}`, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_IDEA_EDITED,
-					error: toastMessages.ERR_SERVER_ERROR,
+					error: toastMessages.errs.edited('Idea'),
+					success: {
+						render() {
+							loadData();
+							setStatus({ ...status, visibleModal: false });
+							return toastMessages.succs.edited('Idea');
+						},
+					},
 				},
-			)
-			.then(() => {
-				if (value?.exitFile && value?.file && !_.isEmpty(value?.file)) {
-					// delete file API
-				}
-				setStatus({ ...status, visibleModal: false });
-				loadData();
-			});
-	};
-
-	const onCreate = (value) => {
-		toast
-			.promise(
-				AuthRequest.post(API_PATHS.ADMIN.MANAGE_IDEA, value).then(() =>
-					sleep(700),
-				),
+			),
+		delete: (id) =>
+			toast.promise(
+				axiocRequests
+					.delete(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_IDEA_ADDED,
-					error: toastMessages.ERR_SERVER_ERROR,
+					error: toastMessages.errs.deleted('Idea'),
+					success: {
+						render() {
+							setStatus({ ...status, visibleModal: false });
+							loadData();
+							return toastMessages.succs.deleted('Idea');
+						},
+					},
 				},
-			)
-			.then(() => {
-				setStatus({ ...status, visibleModal: false });
-				loadData();
-			});
+			),
 	};
-
-	const onCloseModal = () => setStatus({ ...status, visibleModal: false });
-	const onOpenModal = (action, id) =>
-		setStatus({ ...status, visibleModal: true, action: action });
-
-	const renderTop = () => (
-		<div className='managementidea_title'>
-			<div className='managementidea_heading'>
-				<h2>Idea Management</h2>
-				<Tooltip title='Table Tool Bar'>
-					<IconButton onClick={handleOnClickToolBar}>
-						<MoreVertIcon />
-					</IconButton>
-				</Tooltip>
-			</div>
-
-			<Button
-				size={'small'}
-				variant='contained'
-				endIcon={<AddIcon />}
-				onClick={() => onOpenModal('create')}
-			>
-				Create
-			</Button>
-		</div>
-	);
-
-	const renderModal = () => (
-		<ModalIdea
-			visible={status.visibleModal}
-			action={status.action}
-			onClose={onCloseModal}
-			onUpdate={onUpdate}
-			onCreate={onCreate}
-		/>
-	);
-
-	const renderContent = () => (
-		<div className='managementidea_table'>
-			<DataGridPro
-				components={{
-					NoRowsOverlay: CustomNoRowsOverlay,
-					ColumnSortedDescendingIcon: () => <ExpandMoreIcon className='icon' />,
-					ColumnSortedAscendingIcon: () => <ExpandLessIcon className='icon' />,
-					Toolbar: tableToolBar && CustomToolbarSubmission,
-				}}
-				rows={data}
-				columns={columns}
-				pagination={true}
-				cell--textCenter
-				pageSize={pagination.pageSize}
-				page={pagination.page}
-				initialState={{ pinnedColumns: { right: ['actions'] } }}
-				onPageSizeChange={(pageSize) =>
-					onChangePagination(pageSize, pagination.page)
-				}
-				onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
-				style={{ minHeight: '600px' }}
-				rowsPerPageOptions={[5, 10, 25, 50]}
-			/>
-		</div>
-	);
-
-	if (!data) return;
 
 	return (
 		<>
-			<div
-				style={{
-					minHeight: '700px',
-					width: '100%',
-					padding: '0 5px',
-					fontFamily: 'Poppins',
+			<ContentHeader
+				title='Idea Management'
+				tooltipContent='Create new idea'
+				onOpenModal={() => onOpenModal(null, 'create')}
+				onClickAction={() => setTableToolBar((pre) => !pre)}
+				classes={{
+					headingClassNames: 'managementidea_heading',
+					titleClassNames: 'managementidea_title',
 				}}
-			>
-				{renderTop()}
-				{renderContent()}
-				{status.visibleModal && renderModal()}
-			</div>
+			/>
+
+			<UimTable
+				rows={data?.rows}
+				columns={columns}
+				totalItems={data?.total}
+				showTableToolBar={tableToolBar}
+				classes={{ tableClassNames: 'managementidea_table' }}
+				pagination={{
+					page: pagination.page,
+					pageSize: pagination.pageSize,
+					onPageChange: (_, page) => setPagination({ ...pagination, page }),
+					onPageSizeChange: (event) =>
+						setPagination({
+							...pagination,
+							pageSize: event?.target?.value,
+							page: 1,
+						}),
+				}}
+			/>
+
+			{status.visibleModal && (
+				<ModalIdea
+					visible={status.visibleModal}
+					action={status.action}
+					onClose={onCloseModal}
+					onCreate={requests.create}
+					onUpdate={requests.update}
+				/>
+			)}
 		</>
 	);
 }
-
-export default IdeaManagement;

@@ -23,7 +23,7 @@ import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from 'common/AppUse';
+import { axiocRequests, sleep } from 'common';
 import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
 import CustomNoRowsOverlay from 'components/Custom/CustomNoRowsOverlay';
 import { UserContext } from 'context/AppContext';
@@ -40,12 +40,13 @@ const toastMessages = {
 };
 
 function SubmissionManagement() {
-	const navigate = useNavigate();
-	const { state, setState } = useContext(UserContext);
 	const [data, setData] = useState([]);
 	const [rowId, setRowId] = useState(null);
-	const [actionUser, setActionUser] = useState(null);
+	const { state, setState } = useContext(UserContext);
+
 	const [tableToolBar, setTableToolBar] = useState(false);
+	const [actionUser, setActionUser] = useState(null);
+	const navigate = useNavigate();
 
 	const [status, setStatus] = useState({
 		visibleModal: false,
@@ -109,14 +110,15 @@ function SubmissionManagement() {
 	];
 
 	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_SUB + '/table/list', {
-			params: {
-				page: pagination.page + 1,
-				page_size: pagination.pageSize,
-			},
-		})
+		await axiocRequests
+			.get(API_PATHS.ADMIN.MANAGE_SUB + '/table/list', {
+				params: {
+					page: pagination.page + 1,
+					page_size: pagination.pageSize,
+				},
+			})
 			.then((res) => {
-				setData(res?.data?.result?.rows ?? []);
+				setData(res?.data?.result?.rows);
 				setRowId(null);
 			})
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
@@ -131,9 +133,9 @@ function SubmissionManagement() {
 	const onDelete = async (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`).then(() =>
-					sleep(700),
-				),
+				axiocRequests
+					.delete(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_SUB_DEL,
@@ -149,9 +151,9 @@ function SubmissionManagement() {
 	const onUpdate = async (value) => {
 		toast
 			.promise(
-				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`, value).then(
-					() => sleep(700),
-				),
+				axiocRequests
+					.put(`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_SUB_EDITED,
@@ -167,9 +169,9 @@ function SubmissionManagement() {
 	const onCreate = async (value) => {
 		toast
 			.promise(
-				AuthRequest.post(API_PATHS.ADMIN.MANAGE_SUB, value).then(() =>
-					sleep(700),
-				),
+				axiocRequests
+					.post(API_PATHS.ADMIN.MANAGE_SUB, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_SUB_ADDED,

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
 import { LocalizationProvider } from '@mui/lab';
@@ -7,7 +8,6 @@ import { Slider, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { AuthRequest } from 'common/AppUse';
 import { Font } from 'devextreme-react/bar-gauge';
 import {
 	ArgumentAxis,
@@ -25,6 +25,7 @@ import {
 import _ from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import { axiocRequests } from 'common';
 
 const energySources = [
 	{ value: 'total_ideas', name: 'total Idea' },
@@ -86,23 +87,20 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 	};
 
 	const onMonthYearIdeaInfoChange = async (value) => {
-		const res = await AuthRequest.get(
-			`dashboard/activities?month=${moment(value).format('MM')}&year=${moment(
-				value,
-			).format('YYYY')}`,
-		);
-		if (res?.data?.succeeded) {
-			let arrDate = _.cloneDeep(res?.data?.result);
-			const newArray = [];
-			_.map(arrDate, (x, index) => {
-				if (index + 1 >= 1 && index + 1 <= 15) {
-					x.date = moment(x.date).format('DD/MM/YYYY');
-					newArray.push(x);
-				}
+		axiocRequests.dash
+			.getActv(moment(value).format('YYYY'), moment(value).format('MM'))
+			.then((res) => {
+				let arrDate = _.cloneDeep(res?.data?.result);
+				const newArray = [];
+				_.map(arrDate, (x, index) => {
+					if (index + 1 >= 1 && index + 1 <= 15) {
+						x.date = moment(x.date).format('DD/MM/YYYY');
+						newArray.push(x);
+					}
+				});
+				setNewFilter({ ...newFilter, display: [1, 15], timeKey: value });
+				setNewData(newArray);
 			});
-			setNewFilter({ ...newFilter, display: [1, 15], timeKey: value });
-			setNewData(newArray);
-		}
 	};
 
 	const renderPickerMonthYearInfoIdea = () => {

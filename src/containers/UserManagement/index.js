@@ -1,51 +1,36 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { IconButton } from '@mui/material';
-import Button from '@mui/material/Button';
-import { ROLES } from 'common/env';
-import UimTable from 'components/UimTable';
-import UimActionButtons from 'components/UimTable/UimActionButtons';
-import UimTableToolBar from 'components/UimTableTootBar';
+import { API_PATHS, axiocRequests, sleep, toastMessages } from 'common';
+
+import ContentHeader from 'components/ContentHeader';
+
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { BiPencil } from 'react-icons/bi';
-import { GoInfo } from 'react-icons/go';
-import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep, toastMessages } from '../../common/AppUse';
-import { API_PATHS, DEV_CONFIGS } from '../../common/env';
-import { dataDemo } from './FakeData';
 import ModalUserManagement from './modal/ModalUserManagement';
 import { Columns } from './model/Column';
+import { UimActionButtons, UimTable } from 'components/Uim';
 
 function UserManagement() {
-	const [rowId, setRowId] = useState(null);
-	const [tableToolBar, setTableToolBar] = useState(false);
-	const [status, setStatus] = useState({ visibleModal: false, action: 'create' });
-
 	const [data, setData] = useState({});
-	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
+	const [rowId, setRowId] = useState(null);
 
-	useEffect(() => {
-		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			setData(dataDemo);
-			setRowId(null);
-			return;
-		}
-		if (data) loadData();
-	}, [pagination]);
+	const [status, setStatus] = useState({ visibleModal: false, action: 'create' });
+	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
+	const [tableToolBar, setTableToolBar] = useState(false);
+
+	useEffect(() => loadData(), [pagination]);
 
 	const loadData = async () =>
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_USER + '/table/list', {
-			params: {
-				page: pagination.page,
-				page_size: pagination.pageSize,
-			},
-		})
+		await axiocRequests
+			.get(API_PATHS.ADMIN.MANAGE_USER + '/table/list', {
+				params: {
+					page: pagination.page,
+					page_size: pagination.pageSize,
+				},
+			})
 			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
 			.then((res) => {
 				setData(res?.data?.result);
@@ -62,30 +47,11 @@ function UserManagement() {
 			disableColumnMenu: true,
 			sortable: false,
 			getActions: (params) =>
-				UimActionButtons([
-					{
-						label: 'Detail',
-						icon: <GoInfo color='#3f66da' style={{ fontSize: '20px' }} />,
-						onClick: () => onOpenModal(params?.id, 'detail'),
-					},
-					{
-						label: 'Update',
-						icon: <BiPencil style={{ fontSize: '20px' }} />,
-						disabled: params?.role === ROLES.ADMIN,
-						onClick: () => onOpenModal(params?.id, 'update'),
-					},
-					{
-						label: 'Delete',
-						icon: (
-							<MdOutlineDeleteOutline
-								color='red'
-								style={{ fontSize: '20px' }}
-							/>
-						),
-						disabled: params?.role === ROLES.ADMIN,
-						onClick: () => apiRequests.delete(params?.id),
-					},
-				]),
+				UimActionButtons(params, {
+					detailAction: () => onOpenModal(params?.id, 'detail'),
+					updateAction: () => onOpenModal(params?.id, 'update'),
+					deleteAction: () => requests.delete(params?.id),
+				}),
 		},
 	];
 
@@ -99,12 +65,12 @@ function UserManagement() {
 		setStatus({ ...status, visibleModal: true, action });
 	};
 
-	const apiRequests = {
+	const requests = {
 		create: (value) =>
 			toast.promise(
-				AuthRequest.post(API_PATHS.ADMIN.MANAGE_USER, value).then(() =>
-					sleep(700),
-				),
+				axiocRequests
+					.post(API_PATHS.ADMIN.MANAGE_USER, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.added('User'),
@@ -117,12 +83,11 @@ function UserManagement() {
 					},
 				},
 			),
-
-		update: (id) =>
+		update: (value) =>
 			toast.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`).then(() =>
-					sleep(700),
-				),
+				axiocRequests
+					.put(`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.edited('User'),
@@ -135,12 +100,11 @@ function UserManagement() {
 					},
 				},
 			),
-
 		delete: (id) =>
 			toast.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`).then(() =>
-					sleep(700),
-				),
+				axiocRequests
+					.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.deleted('User'),
@@ -157,33 +121,23 @@ function UserManagement() {
 
 	return (
 		<>
-			<div className='managementuser_title'>
-				<div className='managementuser_heading'>
-					<h2>User Management</h2>
-					{/* TODO: @Henry, Insert tooltip */}
-					<IconButton onClick={() => setTableToolBar((pre) => !pre)}>
-						<MoreVertIcon />
-					</IconButton>
-				</div>
-
-				<Button
-					variant='contained'
-					endIcon={<AddCircleOutlineIcon />}
-					onClick={() => onOpenModal(null, 'create')}
-				>
-					Create
-				</Button>
-			</div>
+			<ContentHeader
+				title='User Management'
+				tooltipContent='Create new user'
+				onOpenModal={() => onOpenModal(null, 'create')}
+				onClickAction={() => setTableToolBar((pre) => !pre)}
+				classes={{
+					headingClassNames: 'managementuser_heading',
+					titleClassNames: 'managementuser_title',
+				}}
+			/>
 
 			<UimTable
 				rows={data?.rows}
 				columns={columns}
-				tableToolBar={tableToolBar && UimTableToolBar()}
 				totalItems={data?.total}
-				classes={{
-					tableClassNames: 'managementuser_table',
-					paginationClassNames: 'usertable_footer',
-				}}
+				showTableToolBar={tableToolBar}
+				classes={{ tableClassNames: 'managementuser_table' }}
 				pagination={{
 					page: pagination.page,
 					pageSize: pagination.pageSize,
@@ -203,8 +157,8 @@ function UserManagement() {
 					action={status.action}
 					onClose={onCloseModal}
 					rowId={rowId}
-					onCreate={apiRequests.create}
-					onUpdate={apiRequests.update}
+					onCreate={requests.create}
+					onUpdate={requests.update}
 				/>
 			)}
 		</>

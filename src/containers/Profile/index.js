@@ -9,7 +9,7 @@ import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import loginImg from 'assets/images/Contact-CIC-Education-2-1024x858.webp';
-import { AuthRequest } from 'common/AppUse';
+import { axiocRequests } from 'common';
 import { API_PATHS, DEV_CONFIGS } from 'common/env';
 import TabProfile from 'components/TabProfile';
 import { dataDemo } from '../UserManagement/FakeData';
@@ -41,7 +41,8 @@ export default function UpdatePassword() {
 	}, []);
 
 	const loadData = async () => {
-		await AuthRequest.get(`${API_PATHS.SHARED.USER}/${email}`)
+		await axiocRequests
+			.get(`${API_PATHS.SHARED.USER}/${email}`)
 			.then((res) => setUser(res?.data?.result))
 			.catch(() => {
 				toast.error(toastMessages.ERR_SERVER_ERROR);

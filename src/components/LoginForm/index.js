@@ -5,16 +5,15 @@ import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/lab/LoadingButton';
 import { TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { axiocRequests } from 'common';
+import { GAPI_CLIENT_ID, STORAGE_VARS, URL_PATHS, API_PATHS } from 'common/env';
+import { UserContext } from 'context/AppContext';
 import { useFormik } from 'formik';
 import React, { useContext, useState } from 'react';
 import GoogleLogin from 'react-google-login';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import * as yup from 'yup';
-
-import { AnonRequest } from 'common/AppUse';
-import { API_PATHS, AUTH, STORAGE_VARS, URL_PATHS } from 'common/env';
-import { UserContext } from 'context/AppContext';
+import axioc from 'common/AxiosClient';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -80,12 +79,6 @@ const validationSchema = yup.object({
 		.required('Password is required'),
 });
 
-const toastMessages = {
-	ERR_INVALID_LOGIN: 'Email or password is invalid, Please try again !!',
-	ERR_INVALID_GOOGLE: 'Google account is invalid, Please try again !!',
-	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
-};
-
 // ─── MAIN ───────────────────────────────────────────────────────────────────────
 //
 const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
@@ -110,7 +103,8 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 	});
 
 	const onLogin = async (value) => {
-		await AnonRequest.post(API_PATHS.SHARED.AUTH.LOGIN, value)
+		await axioc
+			.post(API_PATHS.SHARED.AUTH.LOGIN, value)
 			.then((res) => {
 				localStorage.setItem(
 					STORAGE_VARS.JWT,
@@ -122,7 +116,6 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 				);
 				setState({ ...state, isLogin: true });
 			})
-			.catch(() => toast.error(toastMessages.ERR_INVALID_LOGIN))
 			.finally(() => {
 				setButtonState({
 					...buttonState,
@@ -134,10 +127,11 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 	};
 
 	const onGoogleLogin = async (googleResponse) => {
-		await AnonRequest.post(API_PATHS.SHARED.AUTH.EX_LOGIN, {
-			provider: 'google',
-			id_token: googleResponse.tokenId,
-		})
+		await axioc
+			.post(API_PATHS.SHARED.AUTH.EX_LOGIN, {
+				provider: 'google',
+				id_token: googleResponse.tokenId,
+			})
 			.then((res) => {
 				localStorage.setItem(
 					STORAGE_VARS.JWT,
@@ -148,9 +142,6 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 					res?.data?.result?.refresh_token,
 				);
 				setState({ ...state, isLogin: true });
-			})
-			.catch(() => {
-				toast.error(toastMessages.ERR_INVALID_GOOGLE);
 			})
 			.finally(() => {
 				setButtonState({
@@ -180,11 +171,12 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 						variant='contained'
 						bgcolor={'#fff'}
 						textcolor={'#444'}
-						hoverbgcolor={'#fff'}>
+						hoverbgcolor={'#fff'}
+					>
 						Sign in with Google
 					</ColorButton>
 				)}
-				clientId={AUTH.GAPI_CLIENT_ID}
+				clientId={GAPI_CLIENT_ID}
 				onSuccess={(response) => onGoogleLogin(response)}
 				cookiePolicy='single_host_origin'
 			/>
@@ -217,13 +209,8 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 					value={formik.values.password}
 					onChange={formik.handleChange}
 					onBlur={formik.handleBlur}
-					error={
-						formik.touched.password &&
-						Boolean(formik.errors.password)
-					}
-					helperText={
-						formik.touched.password && formik.errors.password
-					}
+					error={formik.touched.password && Boolean(formik.errors.password)}
+					helperText={formik.touched.password && formik.errors.password}
 				/>
 
 				<ColorButton
@@ -233,7 +220,8 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 					loading={buttonState?.loading}
 					loadingPosition='end'
 					disabled={buttonState.disable}
-					fullWidth>
+					fullWidth
+				>
 					Sign in
 				</ColorButton>
 			</form>

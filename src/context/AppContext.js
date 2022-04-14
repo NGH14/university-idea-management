@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { AuthRequest } from 'common/AppUse';
+import { axiocRequests } from 'common';
 import { API_PATHS, DEV_CONFIGS, STORAGE_VARS } from 'common/env';
 
 const toastMessages = {
@@ -59,7 +59,8 @@ export const AppContext = (props) => {
 			});
 		}
 
-		await AuthRequest.get(API_PATHS.SHARED.AUTH.INFO)
+		await axiocRequests
+			.get(API_PATHS.SHARED.AUTH.INFO)
 			.then((res) => {
 				setState({
 					...state,
@@ -69,10 +70,11 @@ export const AppContext = (props) => {
 				});
 			})
 			.catch(async () => {
-				await AuthRequest.put(API_PATHS.SHARED.AUTH.TOKEN_ROTATE, {
-					access_token: accessToken,
-					refresh_token: refreshToken,
-				})
+				await axiocRequests
+					.put(API_PATHS.SHARED.AUTH.TOKEN_ROTATE, {
+						access_token: accessToken,
+						refresh_token: refreshToken,
+					})
 					.then((res) => {
 						localStorage.setItem(
 							STORAGE_VARS.JWT,

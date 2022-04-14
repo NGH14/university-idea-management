@@ -3,6 +3,7 @@ import './style.css';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import PersonIcon from '@mui/icons-material/Person';
+import Tippy from '@tippyjs/react';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
@@ -18,7 +19,7 @@ import Menu from '@mui/material/Menu';
 import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
 	BsBookmarksFill,
 	BsChevronContract,
@@ -38,24 +39,18 @@ import UniTextLogo from 'assets/images/logo-500.webp';
 import { ROLES, URL_PATHS } from 'common/env';
 import { UserContext } from 'context/AppContext';
 import { AppBar, ColorButton, Drawer, DrawerHeader } from './SidebarStyled';
+import SidebarItem from './SidebarItem';
+import { getGuid } from 'common';
 
 export default function Sidebar(props) {
 	const { state, setState } = useContext(UserContext);
-	const [anchorElUser, setAnchorElUser] = React.useState(null);
-	const navigate = useNavigate();
-	const [open, setOpen] = React.useState(false);
-	const [selectedPage, setSelectedPage] = React.useState('Homepage');
-	const [managementPage, setManagementPage] = React.useState(true);
-	const [reportPage, setReportPage] = React.useState(true);
-
-	const handleClickManagement = () => {
-		setManagementPage(!managementPage);
-	};
-	const handleClickReport = () => {
-		setReportPage(!reportPage);
-	};
-
+	const [managementPage, setManagementPage] = useState(true);
+	const [selectedPage, setSelectedPage] = useState('Homepage');
+	const [anchorElUser, setAnchorElUser] = useState(null);
+	const [reportPage, setReportPage] = useState(true);
+	const [open, setOpen] = useState(false);
 	const { pathname } = useLocation();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const pageText = setSelected(pathname);
@@ -81,78 +76,82 @@ export default function Sidebar(props) {
 		},
 	];
 
-	const itemsList = [
-		{
-			text: 'Home',
-			icon: <BsHouseFill className='sidebar_icon' />,
-			selectedText: 'Homepage',
+	const navItems = {
+		generals: [
+			{
+				text: 'Home',
+				icon: <BsHouseFill className='sidebar_icon' />,
+				selectedText: 'Homepage',
 
-			onClick: () => {
-				navigate(URL_PATHS.HOME);
+				onClick: () => {
+					navigate(URL_PATHS.HOME);
+				},
 			},
-		},
-	];
+		],
+		reports: [
+			{
+				roles: [ROLES.ADMIN],
+				text: 'Dashboard',
+				selectedText: 'Dashboard',
+				icon: <HiPresentationChartLine className='sidebar_icon' />,
+				onClick: () => {
+					navigate(URL_PATHS.DASHBOARD);
+				},
+			},
+		],
+		managements: [
+			{
+				roles: [ROLES.ADMIN],
+				text: 'User',
+				selectedText: 'User Management',
+				icon: <BsFillPeopleFill className='sidebar_icon' />,
+				onClick: () => {
+					navigate(URL_PATHS.MANAGE_USER);
+				},
+			},
+			{
+				roles: [ROLES.ADMIN],
+				text: 'Department',
+				selectedText: 'Department Management',
+				icon: <FaBuilding className='sidebar_icon' />,
+				onClick: () => {
+					navigate(URL_PATHS.MANAGE_DEP);
+				},
+			},
+			{
+				roles: [ROLES.ADMIN, ROLES.MANAGER],
+				text: 'Tag',
+				selectedText: 'Tag Management',
 
-	const itemsReportList = [
-		{
-			roles: [ROLES.ADMIN],
-			text: 'Dashboard',
-			selectedText: 'Dashboard',
-			icon: <HiPresentationChartLine className='sidebar_icon' />,
-			onClick: () => {
-				navigate(URL_PATHS.DASHBOARD);
+				icon: <BsBookmarksFill className='sidebar_icon' />,
+				onClick: () => {
+					navigate(URL_PATHS.MANAGE_TAG);
+				},
 			},
-		},
-	];
+			{
+				roles: [ROLES.ADMIN, ROLES.MANAGER],
+				text: 'Submission',
+				selectedText: 'Submission Management',
+				icon: <RiDiscussFill className='sidebar_icon' />,
+				onClick: () => {
+					navigate(URL_PATHS.MANAGE_SUB);
+				},
+			},
+			{
+				roles: [ROLES.ADMIN, ROLES.MANAGER],
+				text: 'Idea',
+				selectedText: 'Idea Management',
+				icon: <FaLightbulb className='sidebar_icon' />,
+				onClick: () => {
+					navigate(URL_PATHS.MANAGE_IDEA);
+				},
+			},
+		],
+	};
 
-	const itemsManagementList = [
-		{
-			roles: [ROLES.ADMIN],
-			text: 'User',
-			selectedText: 'User Management',
-			icon: <BsFillPeopleFill className='sidebar_icon' />,
-			onClick: () => {
-				navigate(URL_PATHS.MANAGE_USER);
-			},
-		},
-		{
-			roles: [ROLES.ADMIN],
-			text: 'Department',
-			selectedText: 'Department Management',
-			icon: <FaBuilding className='sidebar_icon' />,
-			onClick: () => {
-				navigate(URL_PATHS.MANAGE_DEP);
-			},
-		},
-		{
-			roles: [ROLES.ADMIN, ROLES.MANAGER],
-			text: 'Tag',
-			selectedText: 'Tag Management',
+	// const itemsReportList = [
 
-			icon: <BsBookmarksFill className='sidebar_icon' />,
-			onClick: () => {
-				navigate(URL_PATHS.MANAGE_TAG);
-			},
-		},
-		{
-			roles: [ROLES.ADMIN, ROLES.MANAGER],
-			text: 'Submission',
-			selectedText: 'Submission Management',
-			icon: <RiDiscussFill className='sidebar_icon' />,
-			onClick: () => {
-				navigate(URL_PATHS.MANAGE_SUB);
-			},
-		},
-		{
-			roles: [ROLES.ADMIN, ROLES.MANAGER],
-			text: 'Idea',
-			selectedText: 'Idea Management',
-			icon: <FaLightbulb className='sidebar_icon' />,
-			onClick: () => {
-				navigate(URL_PATHS.MANAGE_IDEA);
-			},
-		},
-	];
+	// const itemsManagementList = ;
 
 	const setSelected = (path) => {
 		switch (path) {
@@ -177,13 +176,6 @@ export default function Sidebar(props) {
 		}
 	};
 
-	const handleCloseUserMenu = () => {
-		setAnchorElUser(null);
-	};
-	const handleOpenUserMenu = (event) => {
-		setAnchorElUser(event.currentTarget);
-	};
-
 	const onLogout = () => {
 		localStorage.clear();
 		setState({ ...state, isLogin: false, loading: false, dataUser: {} });
@@ -194,10 +186,6 @@ export default function Sidebar(props) {
 		setOpen((pre) => !pre);
 		setManagementPage(true);
 		setReportPage(true);
-	};
-
-	const nagivateHomepage = () => {
-		navigate(URL_PATHS.HOME);
 	};
 
 	return (
@@ -239,7 +227,7 @@ export default function Sidebar(props) {
 							<MenuIcon />
 						</IconButton>
 						<img
-							onClick={() => nagivateHomepage()}
+							onClick={() => navigate(URL_PATHS.HOME)}
 							className='drawer_logo'
 							src={UniTextLogo}
 							alt=''
@@ -254,8 +242,8 @@ export default function Sidebar(props) {
 							}}
 						>
 							<ColorButton
-								onClose={handleCloseUserMenu}
-								onClick={handleOpenUserMenu}
+								onClose={() => setAnchorElUser(null)}
+								onClick={(event) => setAnchorElUser(event.currentTarget)}
 								sx={{ p: 0 }}
 							>
 								<Avatar
@@ -288,9 +276,12 @@ export default function Sidebar(props) {
 						</Box>
 
 						<Menu
+							anchorEl={anchorElUser}
+							onClose={() => setAnchorElUser(null)}
+							onClick={() => setAnchorElUser(null)}
+							open={Boolean(anchorElUser)}
 							sx={{ mt: '50px' }}
 							id='menu-appbar'
-							anchorEl={anchorElUser}
 							anchorOrigin={{
 								vertical: 'top',
 								horizontal: 'right',
@@ -299,26 +290,14 @@ export default function Sidebar(props) {
 								vertical: 'top',
 								horizontal: 'right',
 							}}
-							open={Boolean(anchorElUser)}
-							onClose={handleCloseUserMenu}
-							onClick={handleCloseUserMenu}
 						>
 							{UserMenu.map((item, index) => {
 								const { text, icon, onClick } = item;
 								return (
-									<Tooltip
-										disableFocusListener
-										disableTouchListener
-										title={text}
-										arrow
-										placement='left'
-									>
+									<Tippy content={text} placement='left'>
 										<ListItemButton
-											key={index + Math.random()}
-											sx={{
-												justifyContent: 'center',
-												px: 2.5,
-											}}
+											key={text + index}
+											sx={{ justifyContent: 'center', px: 2.5 }}
 											onClick={onClick}
 										>
 											{icon && icon}
@@ -334,7 +313,7 @@ export default function Sidebar(props) {
 												}}
 											/>
 										</ListItemButton>
-									</Tooltip>
+									</Tippy>
 								);
 							})}
 						</Menu>
@@ -344,70 +323,31 @@ export default function Sidebar(props) {
 			<Drawer variant='permanent' open={open} className='drawer_sidebar'>
 				<DrawerHeader></DrawerHeader>
 				<List className='sidebar_customize'>
-					{itemsList.map((item, index) => {
-						const { selectedText, text, icon, onClick } = item;
-						return (
-							<>
-								<Tooltip
-									disableFocusListener
-									disableTouchListener
-									title={text}
-									arrow
-									placement='right'
-								>
-									<ListItemButton
-										key={index + Math.random()}
-										selected={selectedText === selectedPage}
-										sx={{
-											minHeight: 48,
-											justifyContent: open ? 'initial' : 'center',
-											px: 2.5,
-										}}
-										onClick={() => onClick(index)}
-									>
-										{icon && (
-											<ListItemIcon
-												key={index + Math.random()}
-												sx={{
-													minWidth: 0,
-													mr: open ? 3 : 'auto',
-													justifyContent: 'center',
-												}}
-											>
-												{icon}
-											</ListItemIcon>
-										)}
-										<ListItemText
-											key={index + Math.random()}
-											disableTypography
-											primary={text}
-											sx={{
-												fontFamily: 'Poppins, sans-serif',
-												fontSize: '14px',
-												fontWeight: '700',
-												opacity: open ? 1 : 0,
-												color: '#777',
-											}}
-										/>
-									</ListItemButton>
-								</Tooltip>
-							</>
-						);
-					})}
-					{state?.dataUser.role === ROLES.STAFF ||
-					state?.dataUser.role === ROLES.SUPERVISOR ? (
-						<></>
-					) : (
-						<ListItemButton
-							onClick={handleClickReport}
-							sx={{
-								display: open ? 'flex' : 'none',
-								alignItems: 'center',
-								justifyContent: 'space-between',
-								width: '100%',
-							}}
-						>
-							<>
+					{navItems.generals.map(
+						({ selectedText, text, icon, onClick }, index) => (
+							<SidebarItem
+								selected={selectedText === selectedPage}
+								onClick={onClick}
+								openButton={open}
+								index={index}
+								text={text}
+								icon={icon}
+							/>
+						),
+					)}
+
+					{state?.dataUser.role === ROLES.ADMIN ||
+					state?.dataUser.role === ROLES.MANAGER ? (
+						<>
+							<ListItemButton
+								onClick={() => setReportPage(!reportPage)}
+								sx={{
+									display: open ? 'flex' : 'none',
+									justifyContent: 'space-between',
+									alignItems: 'center',
+									width: '100%',
+								}}
+							>
 								<ListItemText
 									disableTypography
 									sx={{
@@ -434,80 +374,43 @@ export default function Sidebar(props) {
 										<BsChevronExpand />
 									)}
 								</ListItemIcon>
-							</>
-						</ListItemButton>
-					)}
-					<Collapse in={reportPage} timeout='auto' unmountOnExit>
-						{itemsReportList.map((item, index) => {
-							const { selectedText, roles, text, icon, onClick } = item;
-							return (
-								<>
-									{(roles.length === 0 ||
-										roles.includes(state?.dataUser.role)) && (
-										<Tooltip
-											disableFocusListener
-											disableTouchListener
-											title={text}
-											arrow
-											placement='right'
-										>
-											<ListItemButton
-												key={index + Math.random()}
+							</ListItemButton>
+							<Collapse in={reportPage} timeout='auto' unmountOnExit>
+								{navItems.reports.map(
+									(
+										{ selectedText, roles, text, icon, onClick },
+										index,
+									) =>
+										(roles.length === 0 ||
+											roles.includes(state?.dataUser.role)) && (
+											<SidebarItem
 												selected={selectedText === selectedPage}
-												sx={{
-													px: 2.5,
-													minHeight: 48,
-													justifyContent: open
-														? 'initial'
-														: 'center',
-												}}
-												onClick={() => onClick(index)}
-											>
-												{icon && (
-													<ListItemIcon
-														key={index + Math.random()}
-														sx={{
-															minWidth: 0,
-															mr: open ? 3 : '0',
-															justifyContent: 'center',
-														}}
-													>
-														{icon}
-													</ListItemIcon>
-												)}
-												<ListItemText
-													key={index + Math.random()}
-													disableTypography
-													primary={text}
-													sx={{
-														fontFamily: 'Poppins, sans-serif',
-														fontSize: '14px',
-														fontWeight: '700',
-														color: '#777',
-														opacity: open ? 1 : 0,
-													}}
-												/>
-											</ListItemButton>
-										</Tooltip>
-									)}
-								</>
-							);
-						})}
-					</Collapse>
-					{state?.dataUser.role === ROLES.STAFF ||
-					state?.dataUser.role === ROLES.SUPERVISOR ? (
-						<></>
+												onClick={onClick}
+												openButton={open}
+												index={index}
+												text={text}
+												icon={icon}
+											/>
+										),
+								)}
+							</Collapse>
+						</>
 					) : (
-						<ListItemButton
-							onClick={handleClickManagement}
-							sx={{
-								display: open ? 'flex' : 'none',
-								alignItems: 'center',
-								justifyContent: 'space-between',
-								width: '100%',
-							}}
-						>
-							<>
+						<></>
+					)}
+
+					{state?.dataUser.role === ROLES.ADMIN ||
+					state?.dataUser.role === ROLES.MANAGER ? (
+						<>
+							<ListItemButton
+								onClick={() => setManagementPage(!managementPage)}
+								sx={{
+									display: open ? 'flex' : 'none',
+									alignItems: 'center',
+									justifyContent: 'space-between',
+									width: '100%',
+								}}
+							>
 								<ListItemText
 									disableTypography
 									sx={{
@@ -534,66 +437,31 @@ export default function Sidebar(props) {
 										<BsChevronExpand />
 									)}
 								</ListItemIcon>
-							</>
-						</ListItemButton>
-					)}
-					<Collapse in={managementPage} timeout='auto' unmountOnExit>
-						{itemsManagementList.map((item, index) => {
-							const { selectedText, roles, text, icon, onClick } = item;
-							return (
-								<>
-									{(roles.length === 0 ||
-										roles.includes(state?.dataUser.role)) && (
-										<Tooltip
-											disableFocusListener
-											disableTouchListener
-											title={text}
-											arrow
-											placement='right'
-										>
-											<ListItemButton
-												key={index + Math.random()}
+							</ListItemButton>
+
+							<Collapse in={managementPage} timeout='auto' unmountOnExit>
+								{navItems.managements.map(
+									(
+										{ selectedText, roles, text, icon, onClick },
+										index,
+									) =>
+										(roles.length === 0 ||
+											roles.includes(state?.dataUser.role)) && (
+											<SidebarItem
 												selected={selectedText === selectedPage}
-												sx={{
-													px: 2.5,
-													minHeight: 48,
-													justifyContent: open
-														? 'initial'
-														: 'center',
-												}}
-												onClick={() => onClick(index)}
-											>
-												{icon && (
-													<ListItemIcon
-														key={index + Math.random()}
-														sx={{
-															minWidth: 0,
-															mr: open ? 3 : '0',
-															justifyContent: 'center',
-														}}
-													>
-														{icon}
-													</ListItemIcon>
-												)}
-												<ListItemText
-													key={index + Math.random()}
-													disableTypography
-													primary={text}
-													sx={{
-														fontFamily: 'Poppins, sans-serif',
-														fontSize: '14px',
-														fontWeight: '700',
-														color: '#777',
-														opacity: open ? 1 : 0,
-													}}
-												/>
-											</ListItemButton>
-										</Tooltip>
-									)}
-								</>
-							);
-						})}
-					</Collapse>
+												onClick={onClick}
+												openButton={open}
+												index={index}
+												text={text}
+												icon={icon}
+											/>
+										),
+								)}
+							</Collapse>
+						</>
+					) : (
+						<></>
+					)}
 				</List>
 			</Drawer>
 

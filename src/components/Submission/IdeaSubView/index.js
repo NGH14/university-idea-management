@@ -32,7 +32,7 @@ import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from 'common/AppUse';
+import { axiocRequests, sleep } from 'common';
 import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
 import CommentIdea from '../../Idea/CommentIdea';
 import ModalIdea from '../../Idea/ModalIdea';
@@ -201,28 +201,29 @@ function IdeaSubView({ ideaData, subData }) {
 	const loadDataIdea = async () => {
 		setStatus({ ...status, loading: true });
 
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_IDEA + '/table/list', {
-			params: {
-				page: pagination.page + 1,
-				page_size: pagination.pageSize,
-				submission_id: subData.id,
-			},
-		})
+		await axiocRequests
+			.get(API_PATHS.ADMIN.MANAGE_IDEA + '/table/list', {
+				params: {
+					page: pagination.page + 1,
+					page_size: pagination.pageSize,
+					submission_id: subData.id,
+				},
+			})
+			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
 			.then((res) => {
 				setStatus({ ...status, loading: false });
-				setIdealist(res?.data?.result?.rows ?? []);
+				setIdealist(res?.data?.result?.rows);
 				setRowId(null);
-			})
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+			});
 	};
 
 	//#region action button API IDEA
 	const onDelete = (id) => {
 		toast
 			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`).then(() =>
-					sleep(700),
-				),
+				axiocRequests
+					.delete(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_DEL,
@@ -237,10 +238,9 @@ function IdeaSubView({ ideaData, subData }) {
 	const onUpdate = (value) => {
 		toast
 			.promise(
-				AuthRequest.put(
-					`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`,
-					value,
-				).then(() => sleep(700)),
+				axiocRequests
+					.put(`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC_IDEA_EDITED,
@@ -259,9 +259,9 @@ function IdeaSubView({ ideaData, subData }) {
 	const onCreate = (value) => {
 		toast
 			.promise(
-				AuthRequest.post(API_PATHS.ADMIN.MANAGE_IDEA, { ...value }).then(() =>
-					sleep(700),
-				),
+				axiocRequests
+					.post(API_PATHS.ADMIN.MANAGE_IDEA, { ...value })
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT_IDEA,
 					success: toastMessages.SUC_IDEA_ADDED,

@@ -1,66 +1,51 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { IconButton } from '@mui/material';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import {
-	GridToolbarColumnsButton,
-	GridToolbarContainer,
-	GridToolbarDensitySelector,
-	GridToolbarFilterButton,
-} from '@mui/x-data-grid';
-import { DataGridPro, GridActionsCellItem } from '@mui/x-data-grid-pro';
+import { API_PATHS, axiocRequests, sleep, toastMessages } from 'common';
+import ContentHeader from 'components/ContentHeader';
+
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { BiPencil } from 'react-icons/bi';
-import { GoInfo } from 'react-icons/go';
-import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from 'common/AppUse';
-import { API_PATHS, DEV_CONFIGS } from 'common/env';
-import CustomNoRowsOverlay from 'components/Custom/CustomNoRowsOverlay';
-import { dataDemo } from './FakeData';
-import ModalTagManagement from './modal/ModalTagManagement';
 import { Column } from './model/Column';
-
-const toastMessages = {
-	WAIT: 'Please wait...',
-	SUC_TAG_ADDED: 'Create tag successful !!',
-	SUC_TAG_EDITED: 'Update tag successful !!',
-	SUC_TAG_DEL: 'Delete tag successful !!',
-	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
-};
+import ModalTagManagement from './modal/ModalTagManagement';
+import { UimActionButtons, UimTable } from 'components/Uim';
 
 function TagManagement() {
 	const [data, setData] = useState([]);
 	const [rowId, setRowId] = useState(null);
+
+	const [status, setStatus] = useState({ visibleModal: false, action: 'create' });
+	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
 	const [tableToolBar, setTableToolBar] = useState(false);
 
-	const [status, setStatus] = useState({
-		visibleModal: false,
-		action: 'create',
-	});
+	useEffect(() => loadData(), [pagination]);
 
-	const [pagination, setPagination] = useState({
-		pageSize: 5,
-		page: 0,
-	});
+	const loadData = async () => {
+		await axiocRequests
+			.get(API_PATHS.ADMIN.MANAGE_TAG + '/table/list', {
+				params: {
+					page_size: pagination.pageSize,
+					page: pagination.page,
+				},
+			})
+			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
+			.then((res) => {
+				setData(res?.data?.result);
+				setRowId(null);
+			});
+	};
 
-	useEffect(() => {
-		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			setData(dataDemo);
-			setRowId(null);
-			return;
-		}
-		loadData();
-	}, [pagination]);
+	const onCloseModal = () => {
+		rowId && setRowId(null);
+		setStatus({ ...status, visibleModal: false });
+	};
 
-	const handleOnClickToolBar = () => setTableToolBar((pre) => !pre);
+	const onOpenModal = (id, action) => {
+		id && setRowId(id);
+		setStatus({ ...status, visibleModal: true, action });
+	};
 
 	const columns = [
 		...Column,
@@ -71,217 +56,112 @@ function TagManagement() {
 			type: 'actions',
 			disableColumnMenu: true,
 			sortable: false,
-			getActions: (params) => [
-				<GridActionsCellItem
-					icon={<GoInfo color='blue' style={{ fontSize: '20px' }} />}
-					label='Detail'
-					onClick={() => onOpenModal(params.id, 'detail')}
-					showInMenu
-				/>,
-
-				<GridActionsCellItem
-					icon={<BiPencil style={{ fontSize: '20px' }} />}
-					label='Update'
-					onClick={() => onOpenModal(params.id, 'update')}
-					showInMenu
-				/>,
-
-				<GridActionsCellItem
-					icon={
-						<MdOutlineDeleteOutline
-							color='red'
-							style={{ fontSize: '20px' }}
-						/>
-					}
-					label='Delete'
-					onClick={() => onDelete(params.id)}
-					showInMenu
-				/>,
-			],
+			getActions: (params) =>
+				UimActionButtons(params, {
+					detailAction: () => onOpenModal(params?.id, 'detail'),
+					updateAction: () => onOpenModal(params?.id, 'update'),
+					deleteAction: () => requests.delete(params?.id),
+				}),
 		},
 	];
 
-	const loadData = async () => {
-		await AuthRequest.get(API_PATHS.ADMIN.MANAGE_TAG + '/table/list', {
-			params: {
-				page: pagination.page + 1,
-				page_size: pagination.pageSize,
-			},
-		})
-			.then((res) => {
-				setData(res?.data?.result?.rows ?? []);
-				setRowId(null);
-			})
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
-	};
-
-	const onOpenModal = (id, action) => {
-		if (id) {
-			setRowId(id);
-		}
-		setStatus({ ...status, visibleModal: true, action });
-	};
-
-	const onDelete = async (id) => {
-		toast
-			.promise(
-				AuthRequest.delete(`${API_PATHS.ADMIN.MANAGE_TAG}/${id}`).then(() =>
-					sleep(700),
-				),
+	const requests = {
+		create: (value) =>
+			toast.promise(
+				axiocRequests
+					.post(API_PATHS.ADMIN.MANAGE_TAG, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_TAG_DEL,
-					error: toastMessages.ERR_SERVER_ERROR,
+					error: toastMessages.errs.added('Tag'),
+					success: {
+						render() {
+							loadData();
+							setStatus({ ...status, visibleModal: false });
+							return toastMessages.succs.added('Tag');
+						},
+					},
 				},
-			)
-			.then(() => {
-				setStatus({ ...status, visibleModal: false });
-				loadData();
-			});
-	};
-
-	const onUpdate = async (value) => {
-		toast
-			.promise(
-				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_TAG}/${value?.id}`, {
-					name: value?.name,
-				}).then(() => sleep(700)),
+			),
+		update: (value) =>
+			toast.promise(
+				axiocRequests
+					.put(`${API_PATHS.ADMIN.MANAGE_TAG}/${value?.id}`, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_TAG_EDITED,
-					error: toastMessages.ERR_SERVER_ERROR,
+					error: toastMessages.errs.edited('Tag'),
+					success: {
+						render() {
+							loadData();
+							setStatus({ ...status, visibleModal: false });
+							return toastMessages.succs.edited('Tag');
+						},
+					},
 				},
-			)
-			.then(() => {
-				setStatus({ ...status, visibleModal: false });
-				loadData();
-			});
-	};
-
-	const onCreate = async (value) => {
-		toast
-			.promise(
-				AuthRequest.post(API_PATHS.ADMIN.MANAGE_TAG, value).then(() =>
-					sleep(700),
-				),
+			),
+		delete: (id) =>
+			toast.promise(
+				axiocRequests
+					.delete(`${API_PATHS.ADMIN.MANAGE_TAG}/${id}`)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_TAG_ADDED,
-					error: toastMessages.ERR_SERVER_ERROR,
+					error: toastMessages.errs.deleted('Tag'),
+					success: {
+						render() {
+							setStatus({ ...status, visibleModal: false });
+							loadData();
+							return toastMessages.succs.deleted('Tag');
+						},
+					},
 				},
-			)
-			.then(() => {
-				setStatus({ ...status, visibleModal: false });
-				loadData();
-			});
-	};
-
-	const onCloseModal = () => {
-		rowId && setRowId(null);
-
-		setStatus({
-			...status,
-			visibleModal: false,
-			action: 'create',
-		});
-	};
-
-	const CustomToolbarTag = () => {
-		return (
-			<GridToolbarContainer sx={{ fontWeight: 700 }}>
-				<GridToolbarColumnsButton />
-				<GridToolbarFilterButton />
-				<GridToolbarDensitySelector />
-				{/* <GridToolbarExport printOptions={{ disableToolbarButton: true }} /> */}
-			</GridToolbarContainer>
-		);
-	};
-
-	const renderModal = () => {
-		return (
-			<ModalTagManagement
-				visible={status.visibleModal}
-				action={status.action}
-				onClose={onCloseModal}
-				rowId={rowId}
-				onCreate={onCreate}
-				onUpdate={onUpdate}
-			/>
-		);
-	};
-
-	const onChangePagination = (pageSize, page) => {
-		setPagination({ page, pageSize });
-	};
-
-	const renderTop = () => {
-		return (
-			<div className='managementtag_title'>
-				<div className='managementtag_heading'>
-					<h2>Tag Management</h2>
-					<Tooltip title='Table Tool Bar'>
-						<IconButton onClick={handleOnClickToolBar}>
-							<MoreVertIcon />
-						</IconButton>
-					</Tooltip>
-				</div>
-
-				<Button
-					variant='contained'
-					endIcon={<AddCircleOutlineIcon />}
-					onClick={() => onOpenModal(null, 'create')}
-				>
-					Create
-				</Button>
-			</div>
-		);
-	};
-
-	const renderContent = () => {
-		return (
-			<div className='managementtag_table'>
-				<DataGridPro
-					components={{
-						NoRowsOverlay: CustomNoRowsOverlay,
-						ColumnSortedDescendingIcon: () => (
-							<ExpandMoreIcon className='icon' />
-						),
-						ColumnSortedAscendingIcon: () => (
-							<ExpandLessIcon className='icon' />
-						),
-						Toolbar: tableToolBar && CustomToolbarTag,
-					}}
-					rows={data}
-					columns={columns}
-					pagination={true}
-					cell--textCenter
-					pageSize={pagination.pageSize}
-					page={pagination.page}
-					initialState={{ pinnedColumns: { right: ['actions'] } }}
-					onPageSizeChange={(pageSize) =>
-						onChangePagination(pageSize, pagination.page)
-					}
-					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
-					style={{ minHeight: '600px' }}
-					rowsPerPageOptions={[5, 10, 25, 50]}
-				/>
-			</div>
-		);
+			),
 	};
 
 	return (
-		<div
-			style={{
-				minHeight: '700px',
-				width: '100%',
-				padding: '0 5px',
-				fontFamily: 'Poppins',
-			}}
-		>
-			{renderTop()}
-			{renderContent()}
-			{status.visibleModal && renderModal()}
-		</div>
+		<>
+			<ContentHeader
+				title='Tag Management'
+				tooltipContent='Create new tag'
+				onOpenModal={() => onOpenModal(null, 'create')}
+				onClickAction={() => setTableToolBar((pre) => !pre)}
+				classes={{
+					headingClassNames: 'managementtag_heading',
+					titleClassNames: 'managementtag_title',
+				}}
+			/>
+
+			<UimTable
+				rows={data?.rows}
+				columns={columns}
+				totalItems={data?.total}
+				showTableToolBar={tableToolBar}
+				classes={{ tableClassNames: 'managementtag_table' }}
+				pagination={{
+					page: pagination.page,
+					pageSize: pagination.pageSize,
+					onPageChange: (_, page) => setPagination({ ...pagination, page }),
+					onPageSizeChange: (event) =>
+						setPagination({
+							...pagination,
+							pageSize: event?.target?.value,
+							page: 1,
+						}),
+				}}
+			/>
+
+			{status.visibleModal && (
+				<ModalTagManagement
+					visible={status.visibleModal}
+					action={status.action}
+					onClose={onCloseModal}
+					rowId={rowId}
+					onCreate={requests.create}
+					onUpdate={requests.update}
+				/>
+			)}
+		</>
 	);
 }
 export default TagManagement;

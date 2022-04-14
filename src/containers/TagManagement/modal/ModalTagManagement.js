@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { AuthRequest } from 'common/AppUse';
+import { axiocRequests } from 'common';
 import { API_PATHS, DEV_CONFIGS } from 'common/env';
 import CreateTagForm from 'components/Tag/CreateTagForm';
 import DetailTagForm from 'components/Tag/DetailTagForm';
@@ -55,7 +55,8 @@ const ModalTagManagement = (props) => {
 	}, [action]);
 
 	const loadData = async () => {
-		await AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_TAG}/${rowId}`)
+		await axiocRequests
+			.get(`${API_PATHS.ADMIN.MANAGE_TAG}/${rowId}`)
 			.then((res) => setInitialValue(res?.data?.result))
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};

@@ -1,15 +1,18 @@
+import './style.css';
+
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DataGridPro } from '@mui/x-data-grid-pro';
 import CustomNoRowsOverlay from 'components/Custom/CustomNoRowsOverlay';
-import UimPagination from 'components/UimPagination';
 import React from 'react';
+import UimTableToolBar from '../TableTootBar';
+import UimPagination from '../Pagination';
 
-function UimTable({
+export function UimTable({
 	pagination: { page, pageSize, onPageChange, onPageSizeChange },
 	classes: { tableClassNames, paginationClassNames },
+	showTableToolBar,
 	totalItems = 0,
-	tableToolBar,
 	columns,
 	rows,
 }) {
@@ -20,34 +23,31 @@ function UimTable({
 					NoRowsOverlay: CustomNoRowsOverlay,
 					ColumnSortedDescendingIcon: () => <ExpandMoreIcon className='icon' />,
 					ColumnSortedAscendingIcon: () => <ExpandLessIcon className='icon' />,
-					Toolbar: tableToolBar,
+					Toolbar: showTableToolBar && UimTableToolBar,
 				}}
-				rows={rows ?? []}
-				columns={columns}
-				rowCount={pageSize}
-				columnVisibilityModel={{}}
-				pagination={false}
-				cell--textCenter
-				pageSize={pageSize}
-				page={page - 1}
+				initialState={{ pinnedColumns: { right: ['actions'] } }}
 				hideFooterSelectedRowCount={true}
+				style={{ minHeight: '70vh' }}
 				hideFooterPagination={true}
 				hideFooterRowCount={true}
-				initialState={{ pinnedColumns: { right: ['actions'] } }}
-				style={{ minHeight: '70vh' }}
+				rowCount={pageSize}
+				pageSize={pageSize}
+				pagination={false}
+				rows={rows ?? []}
+				columns={columns}
+				cell--textCenter
+				page={page - 1}
 			/>
-			<div className={paginationClassNames}>
+			<div className={paginationClassNames ?? 'table_footer'}>
 				<UimPagination
-					page={page}
-					appeared={rows}
-					total={totalItems}
-					pageSize={pageSize}
-					onChange={onPageChange}
 					onPageSizeChange={onPageSizeChange}
+					onChange={onPageChange}
+					pageSize={pageSize}
+					total={totalItems}
+					appeared={rows}
+					page={page}
 				/>
 			</div>
 		</div>
 	);
 }
-
-export default React.memo(UimTable);

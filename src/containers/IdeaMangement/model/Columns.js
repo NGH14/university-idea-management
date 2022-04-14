@@ -35,7 +35,7 @@ export const Columns = [
 		headerAlign: 'center',
 		minWidth: 200,
 		flex: 1,
-		renderCell: (value) => value?.row?.created_by ?? value?.row?.user?.email,
+		renderCell: (value) => value?.row?.created_by ?? value?.row?.email,
 	},
 	{
 		field: 'tags',

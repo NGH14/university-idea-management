@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from 'common/AppUse';
+import { axiocRequests, sleep } from 'common';
 import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
 import IdeaSubViewStaff from 'components/Idea/IdeaSubViewStaff';
 import DetailSubmissionForm from 'components/Submission/DetailSubmissionForm';
@@ -70,8 +70,8 @@ export default function Submission() {
 	const loadData = async () => {
 		await axios
 			.all([
-				AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`),
-				// AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`, {
+				axiocRequests.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`),
+				// axiocRequests.get(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`, {
 				// 	params: {
 				// 		page: pagination.page + 1,
 				// 		page_size: pagination.pageSize,
@@ -103,9 +103,9 @@ export default function Submission() {
 		setStatus({ ...status, loading: true });
 		toast
 			.promise(
-				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`, value).then(
-					() => sleep(700),
-				),
+				axiocRequests
+					.put(`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC.SUB.EDITED,
@@ -122,10 +122,9 @@ export default function Submission() {
 		setStatus({ ...status, loading: true });
 		toast
 			.promise(
-				AuthRequest.put(
-					`${API_PATHS.ADMIN.MANAGE_IDEA}/${value?.id}`,
-					value,
-				).then(() => sleep(700)),
+				axiocRequests
+					.put(`${API_PATHS.ADMIN.MANAGE_IDEA}/${value?.id}`, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC.SUB.EDITED,

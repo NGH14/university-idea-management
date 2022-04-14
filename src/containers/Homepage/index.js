@@ -1,90 +1,75 @@
 import './style.css';
 
 import { Add } from '@mui/icons-material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import { Box, Button, CircularProgress, Link, Tooltip } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import { styled } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
-import _ from 'lodash';
-import moment from 'moment';
-import * as React from 'react';
-import { useContext, useEffect, useState } from 'react';
-import { BiCommentDetail } from 'react-icons/bi';
-import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { dataDemo } from '../IdeaMangement/FakeData';
-
-import { AuthRequest, sleep } from 'common/AppUse';
+import {
+	Avatar,
+	Box,
+	Button,
+	Card,
+	CardActions,
+	CardContent,
+	CardHeader,
+	CircularProgress,
+	Collapse,
+	IconButton,
+	styled,
+	Typography,
+} from '@mui/material';
+import Tippy from '@tippyjs/react';
+import { axiocRequests, sleep, toastMessages } from 'common';
 import { API_PATHS, URL_PATHS } from 'common/env';
 import FloatButton from 'components/Custom/FloatButton';
 import CommentIdea from 'components/Idea/CommentIdea';
 import ModalIdea from 'components/Idea/ModalIdea';
 import { UserContext } from 'context/AppContext';
-import { DEV_CONFIGS } from 'common/env';
+import moment from 'moment';
+import { useContext, useEffect, useState } from 'react';
+import { BiCommentDetail } from 'react-icons/bi';
+import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import _ from 'lodash';
 
 const ExpandMore = styled((props) => {
 	const { expand, ...other } = props;
 	return <Button {...other} />;
-})(({ theme, expand }) => ({
+})(({ theme }) => ({
 	marginLeft: 'auto',
 	transition: theme.transitions.create('transform', {
 		duration: theme.transitions.duration.shortest,
 	}),
 }));
 
-const toastMessages = {
-	WAIT: 'Please wait...',
-	SUC_IDEA_ADDED: 'Create idea successful !!',
-	SUC_IDEA_EDITED: 'Update idea successful !!',
-	SUC_IDEA_DEL: 'Delete idea successful !!',
-	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
-};
-
 export default function Homepage() {
+	const [data, setData] = useState([]);
+	const { state } = useContext(UserContext);
+
 	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
 	const [postTotal, setPostTotal] = useState(0);
-	const { state } = useContext(UserContext);
-	const [data, setData] = useState([]);
-
 	const [expanded, setExpanded] = useState([]);
 	const [, setAnchorEl] = useState(null);
-	const navigate = useNavigate();
-
 	const [status, setStatus] = useState({
 		visibleModal: false,
 		action: 'update',
 		loading: false,
 	});
 
-	useEffect(() => {
-		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			setData(dataDemo);
-			return;
-		}
-		loadData();
-	}, []);
+	useEffect(() => loadData(), []);
 
-	const loadData = async () =>
-		await AuthRequest.get(API_PATHS.SHARED.IDEA + '/table/list', {
-			params: { ...pagination },
-		})
+	const loadData = () =>
+		axiocRequests
+			.get(API_PATHS.SHARED.IDEA + '/table/list', {
+				params: { ...pagination },
+			})
 			.then((res) => {
 				setData((oldData) => [...oldData, ...res?.data?.result?.rows]);
 				setPostTotal(res?.data?.result?.total);
 			})
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+			.catch(() => toast.error(toastMessages.errs.UNEXPECTED));
 
-	const handleClick = (event) => setAnchorEl(event.currentTarget);
-	const handleClose = () => setAnchorEl(null);
+	// const handleClick = (event) => setAnchorEl(event.currentTarget);
+	// const handleClose = () => setAnchorEl(null);
 
 	const handleExpandClick = (id) => {
 		let newExpanded = [...expanded];
@@ -93,23 +78,17 @@ export default function Homepage() {
 	};
 
 	// TODO: @Henry, return entity after created
-	const apiRequests = {
-		create: async (value) =>
-			await toast.promise(
-				AuthRequest.post(API_PATHS.SHARED.IDEA, value).then(() => sleep(700)),
+	const requests = {
+		create: (value) =>
+			toast.promise(
+				axiocRequests.post(API_PATHS.SHARED.IDEA, value).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.ERR_SERVER_ERROR,
 					success: {
 						render({ data: res }) {
 							return (
-								<Link
-									onClick={() =>
-										navigate(
-											`${URL_PATHS.IDEA}/${res?.data?.result?.id}`,
-										)
-									}
-								>
+								<Link to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
 									{data?.result?.title}
 								</Link>
 							);
@@ -117,12 +96,11 @@ export default function Homepage() {
 					},
 				},
 			),
-
-		delete: async (id) =>
-			await toast.promise(
-				AuthRequest.delete(`${API_PATHS.SHARED.IDEA}/${id}`).then(() =>
-					sleep(700),
-				),
+		delete: (id) =>
+			toast.promise(
+				axiocRequests
+					.delete(`${API_PATHS.SHARED.IDEA}/${id}`)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.ERR_SERVER_ERROR,
@@ -137,12 +115,11 @@ export default function Homepage() {
 					},
 				},
 			),
-
-		update: async (value) =>
-			await toast.promise(
-				AuthRequest.put(`${API_PATHS.SHARED.IDEA}/${value?.id}`, value).then(() =>
-					sleep(700),
-				),
+		update: (value) =>
+			toast.promise(
+				axiocRequests
+					.put(`${API_PATHS.SHARED.IDEA}/${value?.id}`, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.ERR_SERVER_ERROR,
@@ -185,8 +162,8 @@ export default function Homepage() {
 				visible={status.visibleModal}
 				action={status.action}
 				onClose={() => setStatus({ ...status, visibleModal: false })}
-				onUpdate={apiRequests.update}
-				onCreate={apiRequests.create}
+				onUpdate={requests.update}
+				onCreate={requests.create}
 			/>
 		);
 	};
@@ -292,11 +269,9 @@ export default function Homepage() {
 						color: '#888',
 					}}
 				>
-					<Tooltip title={'Detail submission'}>
+					<Tippy content={'Detail submission'}>
 						<Link
-							onClick={() =>
-								navigate(`${URL_PATHS.SUB}/${item.submissionId}`)
-							}
+							to={`${URL_PATHS.SUB}/${item.submissionId}`}
 							style={{
 								textDecoration: 'underline',
 								textDecorationColor: '#1976d2',
@@ -306,13 +281,10 @@ export default function Homepage() {
 						>
 							{item?.submissionName}
 						</Link>
-					</Tooltip>
+					</Tippy>
 					<span style={{ marginInline: 5 }}>with title is</span>
-					<Tooltip title={'Detail submission'}>
+					<Tippy content={'Detail submission'}>
 						<label
-							onClick={() => {
-								navigate(`/idea/${item.id}`);
-							}}
 							style={{
 								textDecoration: 'underline',
 								textDecorationColor: '#1976d2',
@@ -320,9 +292,9 @@ export default function Homepage() {
 								cursor: 'pointer',
 							}}
 						>
-							{item?.title}
+							<Link to={`/idea/${item.id}`}>{item?.title}</Link>
 						</label>
-					</Tooltip>
+					</Tippy>
 				</div>
 			</CardContent>
 		);
@@ -444,7 +416,7 @@ export default function Homepage() {
 			{renderContentIdea()}
 			{renderFooter()}
 
-			<Tooltip arrow placement='left' title='Submit a new idea'>
+			<Tippy placement='left' content='Submit a new idea'>
 				<FloatButton
 					onClick={() =>
 						setStatus({ ...status, visibleModal: true, action: 'create' })
@@ -454,7 +426,7 @@ export default function Homepage() {
 					ariaLabel='submit new idea'
 					icon={<Add />}
 				/>
-			</Tooltip>
+			</Tippy>
 
 			{status.visibleModal && renderModal()}
 		</div>

@@ -2,43 +2,11 @@ import { Divider, Grid } from '@material-ui/core';
 import { Button, InputBase } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Paper from '@mui/material/Paper';
-import { AuthRequest } from 'common/AppUse';
-import { API_PATHS } from 'common/env';
+import { axiocRequests, API_PATHS } from 'common';
 import _ from 'lodash';
 import moment from 'moment';
 import * as React from 'react';
 import { useState } from 'react';
-
-const fakeData = [
-	{
-		ideaId: 1,
-		title: 'sadsa',
-		user: { name: 'Data Fake 01' },
-		content: 'Data fake demo 01',
-		createAt: '2022-03-15T13:45:30',
-	},
-	{
-		ideaId: 1,
-		title: 'sadsa',
-		user: { name: 'Data Fake 02' },
-		content: 'Data fake demo 02',
-		createAt: '2022-03-15T13:45:30',
-	},
-	{
-		ideaId: 2,
-		title: 'sadsa',
-		user: { name: 'Data Fake 01 _ 01' },
-		content: 'Data fake demo 01',
-		createAt: '2022-03-15T13:45:30',
-	},
-	{
-		ideaId: 2,
-		title: 'sadsa',
-		user: { name: 'Data Fake 02 _ 02' },
-		content: 'Data fake demo 02',
-		createAt: '2022-03-15T13:45:30',
-	},
-];
 
 function CommentIdea({ data, ideaId }) {
 	const [dataComment, setDataComment] = useState(data?.comment);
@@ -49,15 +17,15 @@ function CommentIdea({ data, ideaId }) {
 		pageSize: 5,
 	});
 
-	// fix param show more-
+	// NOTE: @Henry, fix param show more
 	const loadData = async () => {
-		//API show more comment
-		await AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_COMMENT}`, {
-			params: {
-				ideaId,
-				page: pagination?.page,
-			},
-		})
+		axiocRequests
+			.get(`${API_PATHS.ADMIN.MANAGE_COMMENT}`, {
+				params: {
+					ideaId,
+					page: pagination?.page,
+				},
+			})
 			.then((res) => {
 				setDataComment([...dataComment, res?.data?.result?.row]);
 			})
@@ -69,12 +37,11 @@ function CommentIdea({ data, ideaId }) {
 		loadData();
 	};
 
-	const loadDataAction = () => {};
-
 	const onCreateComment = async (value) => {
 		// api create Comment
 		const newValue = { ...value, ideaId };
-		await AuthRequest.post(`${API_PATHS.ADMIN.MANAGE_COMMENT}`, newValue)
+		await axiocRequests
+			.post(`${API_PATHS.ADMIN.MANAGE_COMMENT}`, newValue)
 			.then((res) => {
 				setDataComment([{ ...res?.data?.result }, ...dataComment]);
 				setTotalComment(totalComment + 1);

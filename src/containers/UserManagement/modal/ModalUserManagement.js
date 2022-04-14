@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { AuthRequest } from 'common/AppUse';
+import { axiocRequests } from 'common';
 import { API_PATHS, DEV_CONFIGS } from 'common/env';
 import CreateUserForm from 'components/User/CreateUserForm';
 import DetailUserForm from 'components/User/DetailUserForm';
@@ -56,7 +56,8 @@ const ModalUserManagement = (props) => {
 	}, [action]);
 
 	const loadData = async () => {
-		await AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_USER}/${rowId}`)
+		await axiocRequests
+			.get(`${API_PATHS.ADMIN.MANAGE_USER}/${rowId}`)
 			.then((res) => setInitialValue(res?.data?.result))
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
 	};

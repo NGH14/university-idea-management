@@ -10,7 +10,7 @@ import { BiPencil } from 'react-icons/bi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { AuthRequest, sleep } from 'common/AppUse';
+import { axiocRequests, sleep } from 'common';
 import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
 import { dataDemo } from '../../containers/IdeaMangement/FakeData';
 import DetailSubmissionForm from './DetailSubmissionForm';
@@ -69,8 +69,8 @@ export default function DetailView() {
 	const loadData = async () => {
 		await axios
 			.all([
-				AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`),
-				// AuthRequest.get(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`, {
+				axiocRequests.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`),
+				// axiocRequests.get(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`, {
 				// 	params: {
 				// 		page: pagination.page + 1,
 				// 		page_size: pagination.pageSize,
@@ -98,9 +98,9 @@ export default function DetailView() {
 		setStatus({ ...status, loading: true });
 		toast
 			.promise(
-				AuthRequest.put(`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`, value).then(
-					() => sleep(700),
-				),
+				axiocRequests
+					.put(`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					success: toastMessages.SUC.SUB.EDITED,
