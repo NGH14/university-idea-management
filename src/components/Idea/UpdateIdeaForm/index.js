@@ -9,6 +9,8 @@ import { API_PATHS, axioc, getGuid, toReadableFileSize } from 'common';
 import { UimAutoComplete, UimModalForm, UimTextField } from 'components/Uim';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
+import { FaTrash } from 'react-icons/fa';
+
 import Dropzone from 'react-dropzone';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
@@ -29,7 +31,9 @@ const validationSchema = yup.object({
 	tags: yup.array().max(3, 'Only 3 tags per idea').nullable(),
 	attachments: yup.array().nullable(),
 	is_anonymous: yup.bool(),
-	submission_id: yup.string().required('Please specify the submission for this idea'),
+	submission_id: yup
+		.string()
+		.required('Please specify the submission for this idea'),
 });
 
 function UpdateIdeaForm(props) {
@@ -61,9 +65,14 @@ function UpdateIdeaForm(props) {
 			!specifySub
 				? await axioc
 						.get(API_PATHS.ADMIN.MANAGE_SUB + '/list')
-						.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
+						.catch(() =>
+							toast.error(toastMessages.ERR_SERVER_ERROR),
+						)
 						.then((res) => setSubOptions(res?.data?.result))
-				: formik.setFieldValue('submission_id', initialValue?.submission?.id);
+				: formik.setFieldValue(
+						'submission_id',
+						initialValue?.submission?.id,
+				  );
 
 			await axioc
 				.get(API_PATHS.ADMIN.MANAGE_TAG + '/list')
@@ -83,7 +92,8 @@ function UpdateIdeaForm(props) {
 
 			for (const file of acceptedFiles) {
 				if (
-					attachments.reduce((a, b) => a + (b['size'] || 0), 0) + file.size >
+					attachments.reduce((a, b) => a + (b['size'] || 0), 0) +
+						file.size >
 					FILE_SIZE
 				) {
 					toast.error(`${file.name} ${toastMessages.ERR_FILE_BIG}`);
@@ -126,8 +136,7 @@ function UpdateIdeaForm(props) {
 			onClose={() => onClose()}
 			ClassName='editideaform'
 			onSubmit={formik.handleSubmit}
-			showActionButton={true}
-		>
+			showActionButton={true}>
 			<div className='createideaform_group'>
 				<div className='createideaform_content'>
 					{specifySub ? (
@@ -147,7 +156,10 @@ function UpdateIdeaForm(props) {
 							defaultValue={initialValue?.submission}
 							getOptionLabel={(option) => option?.title}
 							onChange={(_, value) => {
-								formik.setFieldValue('submission_id', value.id ?? '');
+								formik.setFieldValue(
+									'submission_id',
+									value.id ?? '',
+								);
 							}}
 							dynamic={{
 								value: formik.values.submission_id,
@@ -198,7 +210,9 @@ function UpdateIdeaForm(props) {
 						label='Tags'
 						propName='tags'
 						options={tagOptions}
-						onChange={(_, value) => formik.setFieldValue('tags', value ?? '')}
+						onChange={(_, value) =>
+							formik.setFieldValue('tags', value ?? '')
+						}
 						defaultValue={initialValue?.tags}
 						onBlur={formik.handleBlur}
 						dynamic={{
@@ -221,18 +235,19 @@ function UpdateIdeaForm(props) {
 								listStyle: 'none',
 								p: 0.5,
 								m: 0,
-							}}
-						>
+							}}>
 							{attachments.map((file, index) => (
 								<ListItem key={index}>
 									<Chip
+										deleteIcon={<FaTrash />}
+										variant='outlined'
+										size='large'
 										clickable
 										icon={<InsertDriveFileIcon />}
 										onDelete={handleDeleteAttachment(file)}
-										style={{ background: '#d2d2d2' }}
-										label={`${file.name} · ${toReadableFileSize(
-											file.size,
-										)}`}
+										label={`${
+											file.name
+										} · ${toReadableFileSize(file.size)}`}
 									/>
 								</ListItem>
 							))}
@@ -247,16 +262,17 @@ function UpdateIdeaForm(props) {
 						onDrop={handleDrop}
 						onDropRejected={() =>
 							toast.error(toastMessages.ERR_FILE_REJECTED)
-						}
-					>
+						}>
 						{({ getRootProps, getInputProps }) => (
 							<div
 								{...getRootProps({
 									className: 'dropzone',
-								})}
-							>
+								})}>
 								<input {...getInputProps()} />
-								<p>Drag &#38; drop files, or click to select files</p>
+								<p>
+									Drag &#38; drop files, or click to select
+									files
+								</p>
 							</div>
 						)}
 					</Dropzone>

@@ -89,7 +89,8 @@ export default function Homepage() {
 					success: {
 						render({ data: res }) {
 							return (
-								<Link to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
+								<Link
+									to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
 									{data?.result?.title}
 								</Link>
 							);
@@ -108,7 +109,9 @@ export default function Homepage() {
 					success: {
 						render({ data: res }) {
 							setStatus({ ...status, visibleModal: false });
-							const indexData = data.findIndex((x) => x.id === value.id);
+							const indexData = data.findIndex(
+								(x) => x.id === value.id,
+							);
 							data[indexData] = res?.data?.result;
 							setData((oldData) => [...oldData, data]);
 							return toastMessages.SUC_IDEA_EDITED;
@@ -118,13 +121,17 @@ export default function Homepage() {
 			),
 		delete: (id) =>
 			toast.promise(
-				axioc.delete(`${API_PATHS.SHARED.IDEA}/${id}`).then(() => sleep(700)),
+				axioc
+					.delete(`${API_PATHS.SHARED.IDEA}/${id}`)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.ERR_SERVER_ERROR,
 					success: {
 						render() {
-							const indexData = data.findIndex((_) => _.id === id);
+							const indexData = data.findIndex(
+								(_) => _.id === id,
+							);
 							data.splice(indexData, 1);
 							setData((oldData) => [...oldData, data]);
 							loadData();
@@ -146,8 +153,7 @@ export default function Homepage() {
 							fontSize: 14,
 							color: '#999',
 							opacity: '0.7',
-						}}
-					>
+						}}>
 						Welcome to the UIM &#10084;&#65039;
 					</i>
 				</div>
@@ -221,19 +227,13 @@ export default function Homepage() {
 	};
 
 	const renderCardHeader = (item) => {
-		const hex = Math.floor(Math.random() * 0xffffff);
-		const color = '#' + hex.toString(16);
 		return (
 			<CardHeader
 				avatar={
-					<Avatar
-						style={{
-							backgroundColor: color,
-							filter: 'grayscale(80%)',
-						}}
-						aria-label='avatar'
-					>
-						{item?.user?.avatar ? stringToSvg(item?.user?.avatar) : 'R'}
+					<Avatar aria-label='avatar'>
+						{item?.user?.avatar
+							? stringToSvg(item?.user?.avatar)
+							: 'R'}
 					</Avatar>
 				}
 				className='idea_header'
@@ -253,9 +253,9 @@ export default function Homepage() {
 			<CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
 				<div>
 					<Typography variant='body2' color='text.secondary'>
-						This impressive paella is a perfect party dish and a fun meal to
-						cook together with your guests. Add 1 cup of frozen peas along
-						with the mussels, if you like.
+						This impressive paella is a perfect party dish and a fun
+						meal to cook together with your guests. Add 1 cup of
+						frozen peas along with the mussels, if you like.
 					</Typography>
 				</div>
 
@@ -266,8 +266,7 @@ export default function Homepage() {
 						padding: '0 5',
 						marginTop: 30,
 						color: '#888',
-					}}
-				>
+					}}>
 					<Tippy content={'Detail submission'}>
 						<Link
 							to={`${URL_PATHS.SUB}/${item.submissionId}`}
@@ -276,8 +275,7 @@ export default function Homepage() {
 								textDecorationColor: '#1976d2',
 								color: '#1976d2',
 								cursor: 'pointer',
-							}}
-						>
+							}}>
 							{item?.submissionName}
 						</Link>
 					</Tippy>
@@ -289,8 +287,7 @@ export default function Homepage() {
 								textDecorationColor: '#1976d2',
 								color: '#1976d2',
 								cursor: 'pointer',
-							}}
-						>
+							}}>
 							<Link to={`/idea/${item.id}`}>{item?.title}</Link>
 						</label>
 					</Tippy>
@@ -309,16 +306,14 @@ export default function Homepage() {
 					alignItems: 'center',
 					width: '100%',
 					fontSize: 12,
-				}}
-			>
+				}}>
 				<Button
 					className='idea_action'
 					fullWidth
 					aria-label='up vote'
 					startIcon={<IoMdArrowRoundUp />}
 					color={'inherit'}
-					size={'large'}
-				>
+					size={'large'}>
 					(0)
 				</Button>
 				<Button
@@ -328,8 +323,7 @@ export default function Homepage() {
 					style={{ marginRight: 20, marginLeft: 20 }}
 					startIcon={<IoMdArrowRoundDown />}
 					color={'inherit'}
-					size={'large'}
-				>
+					size={'large'}>
 					(0)
 				</Button>
 				<ExpandMore
@@ -342,8 +336,7 @@ export default function Homepage() {
 					color={'inherit'}
 					size={'large'}
 					startIcon={<BiCommentDetail />}
-					aria-label='show more'
-				></ExpandMore>
+					aria-label='show more'></ExpandMore>
 			</CardActions>
 		);
 	};
@@ -378,8 +371,7 @@ export default function Homepage() {
 						marginTop: 30,
 						maxWidth: '70rem',
 						marginInline: 'auto',
-					}}
-				>
+					}}>
 					{renderCardHeader(item)}
 					{renderCardContent(item)}
 					{renderListFile(item)}
@@ -401,7 +393,10 @@ export default function Homepage() {
 	const renderFooter = () =>
 		!(_.size(data) === postTotal || _.size(data) > postTotal) ? (
 			<div style={{ marginTop: 15, textAlign: 'center' }}>
-				<Button size='small' variant='outlined' onClick={() => onShowMore()}>
+				<Button
+					size='small'
+					variant='outlined'
+					onClick={() => onShowMore()}>
 					More
 				</Button>
 			</div>
@@ -418,7 +413,11 @@ export default function Homepage() {
 			<Tippy placement='left' content='Submit a new idea'>
 				<FloatButton
 					onClick={() =>
-						setStatus({ ...status, visibleModal: true, action: 'create' })
+						setStatus({
+							...status,
+							visibleModal: true,
+							action: 'create',
+						})
 					}
 					size='medium'
 					color='primary'

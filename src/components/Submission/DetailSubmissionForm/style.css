@@ -11,7 +11,7 @@
 }
 
 .form_grid {
-	min-height: 300px;
+	min-height: 100px;
 	max-width: 100vw;
 	margin: 20px auto 0;
 }

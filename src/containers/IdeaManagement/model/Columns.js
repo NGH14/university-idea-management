@@ -1,6 +1,7 @@
 import moment from 'moment';
 import _ from 'lodash';
 import { Chip, List, ListItem } from '@mui/material';
+import { FaTrash } from 'react-icons/fa';
 
 export const Columns = [
 	{
@@ -12,7 +13,9 @@ export const Columns = [
 		width: 80,
 		align: 'center',
 		headerAlign: 'center',
-		renderCell: (value) => <span>{value.api.getRowIndex(value.id) + 1}</span>,
+		renderCell: (value) => (
+			<span>{value.api.getRowIndex(value.id) + 1}</span>
+		),
 	},
 	{
 		field: 'title',
@@ -51,7 +54,7 @@ export const Columns = [
 		renderCell: (value) =>
 			value?.row?.tags?.map((V, i) => (
 				<div style={{ margin: '0 2px' }}>
-					<Chip label={V} style={{ background: '#d2d2d2' }} />
+					<Chip variant='outlined' size='large' label={V} />
 				</div>
 			)),
 	},

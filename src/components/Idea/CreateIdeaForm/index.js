@@ -5,6 +5,7 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import Chip from '@mui/material/Chip';
 import List from '@mui/material/List';
 import { styled } from '@mui/material/styles';
+import { FaTrash } from 'react-icons/fa';
 import { API_PATHS, axioc, getGuid, toReadableFileSize } from 'common';
 import { UimAutoComplete, UimModalForm, UimTextField } from 'components/Uim';
 import { useFormik } from 'formik';
@@ -29,7 +30,9 @@ const validationSchema = yup.object({
 	tags: yup.array().max(3, 'Only 3 tags per idea').nullable(),
 	attachments: yup.array().nullable(),
 	is_anonymous: yup.bool(),
-	submission_id: yup.string().required('Please specify the submission for this idea'),
+	submission_id: yup
+		.string()
+		.required('Please specify the submission for this idea'),
 });
 
 const initialValues = {
@@ -67,7 +70,9 @@ function CreateIdeaForm(props) {
 			!externalSubData
 				? await axioc
 						.get(API_PATHS.ADMIN.MANAGE_SUB + '/list')
-						.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
+						.catch(() =>
+							toast.error(toastMessages.ERR_SERVER_ERROR),
+						)
 						.then((res) => setSubOptions(res?.data?.result))
 				: formik.setFieldValue('submission_id', externalSubData.id);
 
@@ -89,7 +94,8 @@ function CreateIdeaForm(props) {
 
 			for (const file of acceptedFiles) {
 				if (
-					attachments.reduce((a, b) => a + (b['size'] || 0), 0) + file.size >
+					attachments.reduce((a, b) => a + (b['size'] || 0), 0) +
+						file.size >
 					FILE_SIZE
 				) {
 					toast.error(`${file.name} ${toastMessages.ERR_FILE_BIG}`);
@@ -132,8 +138,7 @@ function CreateIdeaForm(props) {
 			onClose={() => onClose()}
 			ClassName='createideaform'
 			onSubmit={formik.handleSubmit}
-			showActionButton={true}
-		>
+			showActionButton={true}>
 			<div className='createideaform_group'>
 				<div className='createideaform_content'>
 					{externalSubData ? (
@@ -152,7 +157,10 @@ function CreateIdeaForm(props) {
 							options={subOptions}
 							getOptionLabel={(option) => option?.title}
 							onChange={(_, value) => {
-								formik.setFieldValue('submission_id', value.id ?? '');
+								formik.setFieldValue(
+									'submission_id',
+									value.id ?? '',
+								);
 							}}
 							dynamic={{
 								value: formik.values.submission_id,
@@ -203,7 +211,9 @@ function CreateIdeaForm(props) {
 						label='Tags'
 						propName='tags'
 						options={tagOptions}
-						onChange={(_, value) => formik.setFieldValue('tags', value ?? '')}
+						onChange={(_, value) =>
+							formik.setFieldValue('tags', value ?? '')
+						}
 						onBlur={formik.handleBlur}
 						dynamic={{
 							error: formik.errors.tags,
@@ -214,56 +224,63 @@ function CreateIdeaForm(props) {
 				</div>
 			</div>
 
-			{attachments.length === 0 ? null : (
-				<div className='createideaform_group'>
-					<div className='createideaform_content'>
-						<List
-							sx={{
-								display: 'flex',
-								justifyContent: 'center',
-								flexWrap: 'wrap',
-								listStyle: 'none',
-								p: 0.5,
-								m: 0,
-							}}
-						>
-							{attachments.map((file, index) => (
-								<ListItem key={index}>
-									<Chip
-										clickable
-										icon={<InsertDriveFileIcon />}
-										onDelete={handleDeleteAttachment(file)}
-										label={`${file.name} · ${toReadableFileSize(
-											file.size,
-										)}`}
-										style={{ background: '#d2d2d2' }}
-									/>
-								</ListItem>
-							))}
-						</List>
-					</div>
-				</div>
-			)}
-
 			<div className='createideaform_group'>
 				<div className='createideaform_content'>
 					<Dropzone
 						onDrop={handleDrop}
 						onDropRejected={() =>
 							toast.error(toastMessages.ERR_FILE_REJECTED)
-						}
-					>
+						}>
 						{({ getRootProps, getInputProps }) => (
 							<div
 								{...getRootProps({
 									className: 'dropzone',
-								})}
-							>
+								})}>
 								<input {...getInputProps()} />
-								<p>Drag &#38; drop files, or click to select files</p>
+								<p>
+									Drag &#38; drop files, or click to select
+									files
+								</p>
 							</div>
 						)}
 					</Dropzone>
+					{attachments.length === 0 ? null : (
+						<div className='createideaform_group'>
+							<div className='createideaform_content'>
+								<List
+									sx={{
+										display: 'flex',
+										justifyContent: 'center',
+										flexWrap: 'wrap',
+										listStyle: 'none',
+										p: 0.5,
+										m: 0,
+									}}>
+									{attachments.map((file, index) => (
+										<ListItem key={index}>
+											<Chip
+												deleteIcon={
+													<FaTrash className='small_icon' />
+												}
+												clickable
+												variant='outlined'
+												size='large'
+												icon={<InsertDriveFileIcon />}
+												onDelete={handleDeleteAttachment(
+													file,
+												)}
+												label={`${
+													file.name
+												} · ${toReadableFileSize(
+													file.size,
+												)}`}
+											/>
+										</ListItem>
+									))}
+								</List>
+							</div>
+						</div>
+					)}
 				</div>
 			</div>
 		</UimModalForm>

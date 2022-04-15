@@ -15,7 +15,10 @@ function DepartmentManagement() {
 	const [data, setData] = useState();
 	const [rowId, setRowId] = useState(null);
 
-	const [status, setStatus] = useState({ visibleModal: false, action: 'create' });
+	const [status, setStatus] = useState({
+		visibleModal: false,
+		action: 'create',
+	});
 	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
 	const [tableToolBar, setTableToolBar] = useState(false);
 
@@ -66,7 +69,9 @@ function DepartmentManagement() {
 	const requests = {
 		create: (value) =>
 			toast.promise(
-				axioc.post(API_PATHS.ADMIN.MANAGE_DEP, value).then(() => sleep(700)),
+				axioc
+					.post(API_PATHS.ADMIN.MANAGE_DEP, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.added('Department'),
@@ -105,12 +110,12 @@ function DepartmentManagement() {
 					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
-					error: toastMessages.errs.added('Department'),
+					error: toastMessages.errs.deleted('Department'),
 					success: {
 						render() {
 							loadData();
 							setStatus({ ...status, visibleModal: false });
-							return toastMessages.errs.deleted('Department');
+							return toastMessages.succs.deleted('Department');
 						},
 					},
 				},
@@ -139,7 +144,8 @@ function DepartmentManagement() {
 				pagination={{
 					page: pagination.page,
 					pageSize: pagination.pageSize,
-					onPageChange: (_, page) => setPagination({ ...pagination, page }),
+					onPageChange: (_, page) =>
+						setPagination({ ...pagination, page }),
 					onPageSizeChange: (event) =>
 						setPagination({
 							...pagination,

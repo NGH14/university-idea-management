@@ -66,7 +66,10 @@ function IdeaPopularChart({ timeKey, data }) {
 
 	const onMonthYearChange = async (value) => {
 		axioc.dash
-			.getTopIdeas(moment(value).format('MM'), moment(value).format('YYYY'))
+			.getTopIdeas(
+				moment(value).format('MM'),
+				moment(value).format('YYYY'),
+			)
 			.then((res) => {
 				const newArray = [];
 				const arrData = _.cloneDeep(res?.data?.result);
@@ -99,8 +102,7 @@ function IdeaPopularChart({ timeKey, data }) {
 						gap: 10,
 						marginInline: 10,
 						fontFamily: 'Poppins',
-					}}
-				>
+					}}>
 					<DatePicker
 						inputFormat='MM/yyyy'
 						views={['month']}
@@ -110,7 +112,11 @@ function IdeaPopularChart({ timeKey, data }) {
 							onMonthYearChange(value);
 						}}
 						renderInput={(params) => (
-							<TextField variant='standard' {...params} helperText={null} />
+							<TextField
+								variant='standard'
+								{...params}
+								helperText={null}
+							/>
 						)}
 					/>
 				</div>
@@ -133,8 +139,7 @@ function IdeaPopularChart({ timeKey, data }) {
 							paddingRight: 10,
 							marginBottom: 10,
 							maxHeight: '300px',
-						}}
-					>
+						}}>
 						{renderPickerMonthYearIdea()}
 					</div>
 					<PieChart
@@ -143,22 +148,23 @@ function IdeaPopularChart({ timeKey, data }) {
 						palette={'Soft Pastel'}
 						// onClick={this.legendClickHandler}
 						onPointClick={(e) => pointClickHandler(e)}
-						onLegendClick={(e) => legendClickHandler(e)}
-					>
+						onLegendClick={(e) => legendClickHandler(e)}>
 						<Title
 							text={`${_.toUpper(
 								'Top idea have the most comment in',
-							)} ${moment(newFilter).format('MM/YYYY')} `}
-						>
+							)} ${moment(newFilter).format('MM/YYYY')} `}>
 							<Font color='#000' size='20' weight='700' />
 						</Title>
-						<AdaptiveLayout height={150} width={0} keepLabels={false} />
+						<AdaptiveLayout
+							height={150}
+							width={0}
+							keepLabels={false}
+						/>
 
 						<Series
 							argumentField={'title'}
 							valueField={'comment_number'}
-							color={newData[0]?.null ? 'darkGray' : ''}
-						>
+							color={newData[0]?.null ? 'darkGray' : ''}>
 							<Label visible={true}>
 								<Connector visible={true} width={1} />
 							</Label>

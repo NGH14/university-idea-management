@@ -14,8 +14,10 @@ import { Columns } from './model/Column';
 function UserManagement() {
 	const [data, setData] = useState({});
 	const [rowId, setRowId] = useState(null);
-
-	const [status, setStatus] = useState({ visibleModal: false, action: 'create' });
+	const [status, setStatus] = useState({
+		visibleModal: false,
+		action: 'create',
+	});
 	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
 	const [showTableTool, setShowTableTool] = useState(false);
 
@@ -66,7 +68,9 @@ function UserManagement() {
 	const requests = {
 		create: (value) =>
 			toast.promise(
-				axioc.post(API_PATHS.ADMIN.MANAGE_USER, value).then(() => sleep(700)),
+				axioc
+					.post(API_PATHS.ADMIN.MANAGE_USER, value)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.added('User'),
@@ -137,7 +141,8 @@ function UserManagement() {
 				pagination={{
 					page: pagination.page,
 					pageSize: pagination.pageSize,
-					onPageChange: (_, page) => setPagination({ ...pagination, page }),
+					onPageChange: (_, page) =>
+						setPagination({ ...pagination, page }),
 					onPageSizeChange: (event) =>
 						setPagination({
 							...pagination,

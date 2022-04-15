@@ -8,6 +8,8 @@ import {
 	TextField,
 } from '@mui/material';
 
+import { FaTrash } from 'react-icons/fa';
+
 export const UimAutoComplete = {
 	Tag: ({
 		capitalize,
@@ -33,7 +35,9 @@ export const UimAutoComplete = {
 				id={`${propName}_filled_multi`}
 				defaultValue={defaultValue ?? []}
 				options={options?.map((option) => option?.name)}
-				ChipProps={capitalize ? { style: { textTransform: 'capitalize' } } : {}}
+				ChipProps={
+					capitalize ? { style: { textTransform: 'capitalize' } } : {}
+				}
 				ListboxProps={{
 					style: {
 						textTransform: capitalize ? 'capitalize' : 'none',
@@ -42,10 +46,11 @@ export const UimAutoComplete = {
 				renderTags={(value, getTagProps) =>
 					value.map((option, index) => (
 						<Chip
+							deleteIcon={<FaTrash />}
+							variant='outlined'
+							size='large'
 							{...getTagProps({ index })}
 							label={option}
-							size='small'
-							style={{ backgroundColor: '#8b8c9480' }}
 						/>
 					))
 				}
@@ -75,8 +80,7 @@ export const UimAutoComplete = {
 											textTransform: 'lowercase',
 											opacity: 0.6,
 											fontSize: 14,
-										}}
-									>
+										}}>
 										-- {label} --
 									</em>
 								</placeholder>
@@ -156,9 +160,13 @@ export const UimAutoComplete = {
 				onBlur={onBlur}
 				onChange={onChange}
 				error={touched && Boolean(error)}
-				MenuProps={{ PaperProps: { style: { maxHeight: 224, width: 250 } } }}
+				MenuProps={{
+					PaperProps: { style: { maxHeight: 224, width: 250 } },
+				}}
 				style={
-					value != null ? { textTransform: 'capitalize' } : { color: '#959596' }
+					value != null
+						? { textTransform: 'capitalize' }
+						: { color: '#959596' }
 				}
 				renderValue={
 					value !== ''
@@ -170,19 +178,16 @@ export const UimAutoComplete = {
 											textTransform: 'lowercase',
 											opacity: 0.6,
 											fontSize: 14,
-										}}
-									>
+										}}>
 										-- {label} --
 									</em>
 								</placeholder>
 						  )
-				}
-			>
+				}>
 				{options?.map((option) => (
 					<MenuItem
 						style={{ textTransform: 'capitalize' }}
-						value={option?.name}
-					>
+						value={option?.name}>
 						{option?.name}
 					</MenuItem>
 				))}

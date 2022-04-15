@@ -8,6 +8,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import InputLabel from '@mui/material/InputLabel';
+import { UimTextField } from 'components/Uim';
 import { styled } from '@mui/material/styles';
 import { useFormik } from 'formik';
 import React, { useState } from 'react';
@@ -60,16 +61,20 @@ const ColorButton = styled(Button)(() => ({
 const initialValues = {
 	title: '',
 	description: '',
-	initial_date: null,
-	final_date: null,
+	initial_date: '',
+	final_date: '',
 	is_active: true,
 };
 
 const validationSchema = yup.object({
 	title: yup.string().required('Submission title is required'),
 	description: yup.string().nullable(),
-	initial_date: yup.date('Date invalid').nullable().default(undefined),
-	final_date: yup.date('Date invalid').nullable().default(undefined),
+	initial_date: yup
+		.date('Initial date invalid')
+		.required('Initial date is required'),
+	final_date: yup
+		.date('Final date invalid')
+		.required('Final date is required'),
 	is_active: yup.bool().default(true),
 });
 
@@ -102,7 +107,6 @@ function CreateSubmissionForm(props) {
 					<TextField
 						fullWidth
 						{...startProps}
-						required={true}
 						label={null}
 						type='date'
 						id='initial_date'
@@ -138,7 +142,6 @@ function CreateSubmissionForm(props) {
 						fullWidth
 						{...endProps}
 						label={null}
-						required={true}
 						type={'date'}
 						id='final_date'
 						name='final_date'
@@ -179,7 +182,6 @@ function CreateSubmissionForm(props) {
 							id='title'
 							name='title'
 							value={formik.values.title}
-							required={true}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
 							error={
@@ -213,23 +215,18 @@ function CreateSubmissionForm(props) {
 				</div>
 				<div className='form_group'>
 					<div className='form_content'>
-						<InputLabel htmlFor='description'>
-							Description
-						</InputLabel>
-						<TextareaAutosize
-							className='description-field'
-							aria-label='minimum height'
-							id='description'
-							name='description'
-							minRows={10}
-							placeholder='Minimum 3 rows'
+						<UimTextField
+							label='Description'
+							placeholder={'Add some description...'}
+							autoSize={true}
+							minRows={2}
+							propName='description'
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							style={{
-								width: '100%',
-								marginTop: 16,
-								marginBottom: 8,
-								borderRadius: '5px',
+							dynamic={{
+								value: formik.values.description,
+								error: formik.errors.description,
+								touched: formik.touched.description,
 							}}
 						/>
 					</div>
