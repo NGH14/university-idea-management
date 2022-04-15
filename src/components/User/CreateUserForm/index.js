@@ -152,7 +152,9 @@ function CreateUserForm({ onClose, onCreate }) {
 						label='Department'
 						required={true}
 						propName='department'
-						onChange={(_, value) => formik.setFieldValue('department', value)}
+						onChange={(_, value) =>
+							formik.setFieldValue('department', value ?? '')
+						}
 						options={depOptions.map((option) => option.name)}
 						onBlur={formik.handleBlur}
 						dynamic={{

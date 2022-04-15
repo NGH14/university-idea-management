@@ -142,15 +142,18 @@ function EditUserForm(props) {
 						label='Department'
 						required={true}
 						propName='department'
-						onChange={(_, value) => formik.setFieldValue('department', value)}
+						onChange={(_, value) =>
+							formik.setFieldValue('department', value ?? '')
+						}
+						options={depOptions.map((option) => option.name)}
 						onBlur={formik.handleBlur}
-						options={depOptions}
 						dynamic={{
 							value: formik.values.department,
 							error: formik.errors.department,
 							touched: formik.touched.department,
 						}}
 					/>
+					{console.log(formik.values.department)}
 				</div>
 				<div className='form_content'>
 					<UimAutoComplete.DropDown
