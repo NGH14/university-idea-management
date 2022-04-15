@@ -1,11 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import Chip from '@mui/material/Chip';
+import DeleteIcon from '@mui/icons-material/Delete';
+import FolderIcon from '@mui/icons-material/Folder';
+import { ListItem } from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
-import { styled } from '@mui/material/styles';
-import { FaTrash } from 'react-icons/fa';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemText from '@mui/material/ListItemText';
 import { API_PATHS, axioc, getGuid, toReadableFileSize } from 'common';
 import { UimAutoComplete, UimModalForm, UimTextField } from 'components/Uim';
 import { useFormik } from 'formik';
@@ -13,8 +16,6 @@ import React, { useEffect, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
-
-const ListItem = styled('li')(({ theme }) => ({ margin: theme.spacing(0.5) }));
 
 const toastMessages = {
 	ERR_MAX_FILES_NUMBER: 'Maximum files is 4 !!',
@@ -30,9 +31,7 @@ const validationSchema = yup.object({
 	tags: yup.array().max(3, 'Only 3 tags per idea').nullable(),
 	attachments: yup.array().nullable(),
 	is_anonymous: yup.bool(),
-	submission_id: yup
-		.string()
-		.required('Please specify the submission for this idea'),
+	submission_id: yup.string().required('Please specify the submission for this idea'),
 });
 
 const initialValues = {
@@ -70,9 +69,7 @@ function CreateIdeaForm(props) {
 			!externalSubData
 				? await axioc
 						.get(API_PATHS.ADMIN.MANAGE_SUB + '/list')
-						.catch(() =>
-							toast.error(toastMessages.ERR_SERVER_ERROR),
-						)
+						.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
 						.then((res) => setSubOptions(res?.data?.result))
 				: formik.setFieldValue('submission_id', externalSubData.id);
 
@@ -87,15 +84,12 @@ function CreateIdeaForm(props) {
 
 	const handleDrop = (acceptedFiles) => {
 		try {
-			if (attachments?.length === 4) {
-				toast.error(toastMessages.ERR_MAX_FILES_NUMBER);
+			if (acceptedFiles?.length > 2) {
 				return;
 			}
-
-			for (const file of acceptedFiles) {
+			acceptedFiles.forEach((file) => {
 				if (
-					attachments.reduce((a, b) => a + (b['size'] || 0), 0) +
-						file.size >
+					attachments.reduce((a, b) => a + (b['size'] || 0), 0) + file.size >
 					FILE_SIZE
 				) {
 					toast.error(`${file.name} ${toastMessages.ERR_FILE_BIG}`);
@@ -117,7 +111,7 @@ function CreateIdeaForm(props) {
 						},
 					]);
 				};
-			}
+			});
 		} catch (err) {
 			toast.error(toastMessages.ERR_FILE_ADD_FAILED);
 		}
@@ -138,7 +132,8 @@ function CreateIdeaForm(props) {
 			onClose={() => onClose()}
 			ClassName='createideaform'
 			onSubmit={formik.handleSubmit}
-			showActionButton={true}>
+			showActionButton={true}
+		>
 			<div className='createideaform_group'>
 				<div className='createideaform_content'>
 					{externalSubData ? (
@@ -157,10 +152,7 @@ function CreateIdeaForm(props) {
 							options={subOptions}
 							getOptionLabel={(option) => option?.title}
 							onChange={(_, value) => {
-								formik.setFieldValue(
-									'submission_id',
-									value.id ?? '',
-								);
+								formik.setFieldValue('submission_id', value.id ?? '');
 							}}
 							dynamic={{
 								value: formik.values.submission_id,
@@ -211,9 +203,7 @@ function CreateIdeaForm(props) {
 						label='Tags'
 						propName='tags'
 						options={tagOptions}
-						onChange={(_, value) =>
-							formik.setFieldValue('tags', value ?? '')
-						}
+						onChange={(_, value) => formik.setFieldValue('tags', value ?? '')}
 						onBlur={formik.handleBlur}
 						dynamic={{
 							error: formik.errors.tags,
@@ -226,21 +216,25 @@ function CreateIdeaForm(props) {
 
 			<div className='createideaform_group'>
 				<div className='createideaform_content'>
+					<span>
+						{toReadableFileSize(
+							attachments.reduce((n, { size }) => n + size, 0),
+						)}
+					</span>
 					<Dropzone
 						onDrop={handleDrop}
 						onDropRejected={() =>
 							toast.error(toastMessages.ERR_FILE_REJECTED)
-						}>
+						}
+					>
 						{({ getRootProps, getInputProps }) => (
 							<div
 								{...getRootProps({
 									className: 'dropzone',
-								})}>
+								})}
+							>
 								<input {...getInputProps()} />
-								<p>
-									Drag &#38; drop files, or click to select
-									files
-								</p>
+								<p>Drag &#38; drop files, or click to select files</p>
 							</div>
 						)}
 					</Dropzone>
@@ -255,25 +249,30 @@ function CreateIdeaForm(props) {
 										listStyle: 'none',
 										p: 0.5,
 										m: 0,
-									}}>
+									}}
+								>
 									{attachments.map((file, index) => (
-										<ListItem key={index}>
-											<Chip
-												deleteIcon={
-													<FaTrash className='small_icon' />
-												}
-												clickable
-												variant='outlined'
-												size='large'
-												icon={<InsertDriveFileIcon />}
-												onDelete={handleDeleteAttachment(
-													file,
-												)}
-												label={`${
+										<ListItem
+											key={index}
+											secondaryAction={
+												<IconButton
+													edge='end'
+													aria-label='delete'
+													onClick={handleDeleteAttachment(file)}
+												>
+													<DeleteIcon />
+												</IconButton>
+											}
+										>
+											<ListItemAvatar>
+												<Avatar>
+													<FolderIcon />
+												</Avatar>
+											</ListItemAvatar>
+											<ListItemText
+												primary={`${
 													file.name
-												} · ${toReadableFileSize(
-													file.size,
-												)}`}
+												} · ${toReadableFileSize(file.size)}`}
 											/>
 										</ListItem>
 									))}

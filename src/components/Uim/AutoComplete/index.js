@@ -35,9 +35,7 @@ export const UimAutoComplete = {
 				id={`${propName}_filled_multi`}
 				defaultValue={defaultValue ?? []}
 				options={options?.map((option) => option?.name)}
-				ChipProps={
-					capitalize ? { style: { textTransform: 'capitalize' } } : {}
-				}
+				ChipProps={capitalize ? { style: { textTransform: 'capitalize' } } : {}}
 				ListboxProps={{
 					style: {
 						textTransform: capitalize ? 'capitalize' : 'none',
@@ -80,7 +78,8 @@ export const UimAutoComplete = {
 											textTransform: 'lowercase',
 											opacity: 0.6,
 											fontSize: 14,
-										}}>
+										}}
+									>
 										-- {label} --
 									</em>
 								</placeholder>
@@ -102,7 +101,6 @@ export const UimAutoComplete = {
 		required = false,
 		dynamic: { value, error, touched },
 	}) => {
-		console.log(123123, defaultValue);
 		return (
 			<>
 				<InputLabel htmlFor={propName} required={required}>
@@ -164,9 +162,7 @@ export const UimAutoComplete = {
 					PaperProps: { style: { maxHeight: 224, width: 250 } },
 				}}
 				style={
-					value != null
-						? { textTransform: 'capitalize' }
-						: { color: '#959596' }
+					value != null ? { textTransform: 'capitalize' } : { color: '#959596' }
 				}
 				renderValue={
 					value !== ''
@@ -178,16 +174,19 @@ export const UimAutoComplete = {
 											textTransform: 'lowercase',
 											opacity: 0.6,
 											fontSize: 14,
-										}}>
+										}}
+									>
 										-- {label} --
 									</em>
 								</placeholder>
 						  )
-				}>
+				}
+			>
 				{options?.map((option) => (
 					<MenuItem
 						style={{ textTransform: 'capitalize' }}
-						value={option?.name}>
+						value={option?.name}
+					>
 						{option?.name}
 					</MenuItem>
 				))}
