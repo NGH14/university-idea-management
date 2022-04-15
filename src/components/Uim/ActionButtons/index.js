@@ -10,7 +10,6 @@ const elementTemplate = (action, index) => (
 		icon={action.icon}
 		label={action.label}
 		onClick={action.onClick ?? null}
-		disabled={action.disabled ?? false}
 		showInMenu
 	/>
 );
@@ -18,26 +17,26 @@ const elementTemplate = (action, index) => (
 export const UimActionButtons = (param, { detailAction, updateAction, deleteAction }) => {
 	const crudActions = [];
 
-	console.log(param?.role);
-
 	detailAction &&
 		crudActions.push({
 			label: 'Detail',
 			icon: <GoInfo color='#3f66da' style={{ fontSize: '20px' }} />,
 			onClick: detailAction,
 		});
+
 	updateAction &&
+		param?.role !== ROLES.ADMIN &&
 		crudActions.push({
 			label: 'Update',
 			icon: <BiPencil style={{ fontSize: '20px' }} />,
-			disabled: param?.role === ROLES.ADMIN,
 			onClick: updateAction,
 		});
+
 	deleteAction &&
+		param?.role !== ROLES.ADMIN &&
 		crudActions.push({
 			label: 'Delete',
 			icon: <MdOutlineDeleteOutline color='red' style={{ fontSize: '20px' }} />,
-			disabled: param?.role === ROLES.ADMIN,
 			onClick: deleteAction,
 		});
 

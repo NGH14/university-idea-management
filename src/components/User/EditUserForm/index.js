@@ -1,7 +1,7 @@
 import './style.css';
 
 import axios from 'axios';
-import { axiocRequests, toastMessages } from 'common';
+import { axioc, toastMessages } from 'common';
 import { API_PATHS } from 'common/env';
 import {
 	UimAutoComplete,
@@ -38,8 +38,8 @@ function EditUserForm(props) {
 			(async () => {
 				await axios
 					.all([
-						axiocRequests.get(API_PATHS.ADMIN.MANAGE_DEP + '/list'),
-						axiocRequests.get(API_PATHS.SHARED.ROLE + '/list'),
+						axioc.get(API_PATHS.ADMIN.MANAGE_DEP + '/list'),
+						axioc.get(API_PATHS.SHARED.ROLE + '/list'),
 					])
 					.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
 					.then(

@@ -25,7 +25,7 @@ import {
 import _ from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { axiocRequests } from 'common';
+import { axioc } from 'common';
 
 const energySources = [
 	{ value: 'total_ideas', name: 'total Idea' },
@@ -87,7 +87,7 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 	};
 
 	const onMonthYearIdeaInfoChange = async (value) => {
-		axiocRequests.dash
+		axioc.dash
 			.getActv(moment(value).format('YYYY'), moment(value).format('MM'))
 			.then((res) => {
 				let arrDate = _.cloneDeep(res?.data?.result);

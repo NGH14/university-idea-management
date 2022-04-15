@@ -19,7 +19,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { axiocRequests } from 'common';
+import { axioc } from 'common';
 
 const dataNull = {
 	title: 'No data',
@@ -65,7 +65,7 @@ function IdeaPopularChart({ timeKey, data }) {
 	};
 
 	const onMonthYearChange = async (value) => {
-		axiocRequests.dash
+		axioc.dash
 			.getTopIdeas(moment(value).format('MM'), moment(value).format('YYYY'))
 			.then((res) => {
 				const newArray = [];

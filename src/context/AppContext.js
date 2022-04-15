@@ -1,43 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import { axioc, toastMessages } from 'common';
+import { API_PATHS, STORAGE_VARS } from 'common/env';
 import { createContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-
-import { axiocRequests } from 'common';
-import { API_PATHS, DEV_CONFIGS, STORAGE_VARS } from 'common/env';
-
-const toastMessages = {
-	ERR_SESSION_OVER: 'Session timeout !!',
-};
 
 export const UserContext = createContext();
 
 export const AppContext = (props) => {
 	const [state, setState] = useState({
-		isLogin: DEV_CONFIGS.IS_LOGIN,
+		isLogin: false,
 		loading: true,
-		dataUser: DEV_CONFIGS.IS_OFFLINE_DEV
-			? {
-					id: 'MGY3MGYwMzgtYWQzZi00ZTk4LTkzNTktNjU2OGY1ZjRjNDcy',
-					email: 'aptu@mitep.pt',
-					full_name: 'Madge Valdez',
-					department: null,
-					role: 'admin',
-					gender: 'male',
-					phone_number: '0919927066',
-					date_of_birth: null,
-					is_default_password: false,
-			  }
-			: {},
+		dataUser: {},
 	});
 
-	useEffect(() => {
-		DEV_CONFIGS.IS_OFFLINE_DEV
-			? setState({
-					...state,
-					loading: false,
-					isLogin: true,
-			  })
-			: checkAuth();
-	}, [state.isLogin]);
+	useEffect(() => checkAuth(), [state.isLogin]);
 
 	const checkAuth = async () => {
 		let accessToken = localStorage.getItem(STORAGE_VARS.JWT);
@@ -59,18 +35,18 @@ export const AppContext = (props) => {
 			});
 		}
 
-		await axiocRequests
+		await axioc
 			.get(API_PATHS.SHARED.AUTH.INFO)
-			.then((res) => {
+			.then((res) =>
 				setState({
 					...state,
 					loading: false,
 					isLogin: true,
 					dataUser: res?.data?.result,
-				});
-			})
+				}),
+			)
 			.catch(async () => {
-				await axiocRequests
+				await axioc
 					.put(API_PATHS.SHARED.AUTH.TOKEN_ROTATE, {
 						access_token: accessToken,
 						refresh_token: refreshToken,
@@ -102,7 +78,7 @@ export const AppContext = (props) => {
 							isLogin: false,
 						});
 
-						toast.error(toastMessages.ERR_SESSION_OVER);
+						toast.error(toastMessages.errs.ERR_SESSION_OVER);
 					});
 			});
 	};

@@ -1,16 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
-import { API_PATHS, axiocRequests, sleep, toastMessages } from 'common';
+import { API_PATHS, axioc, sleep, toastMessages } from 'common';
 import ContentHeader from 'components/ContentHeader';
-
+import { UimActionButtons, UimTable } from 'components/Uim';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { Column } from './model/Column';
 import ModalTagManagement from './modal/ModalTagManagement';
-import { UimActionButtons, UimTable } from 'components/Uim';
+import { Column } from './model/Column';
 
 function TagManagement() {
 	const [data, setData] = useState([]);
@@ -23,7 +22,7 @@ function TagManagement() {
 	useEffect(() => loadData(), [pagination]);
 
 	const loadData = async () => {
-		await axiocRequests
+		await axioc
 			.get(API_PATHS.ADMIN.MANAGE_TAG + '/table/list', {
 				params: {
 					page_size: pagination.pageSize,
@@ -57,7 +56,7 @@ function TagManagement() {
 			disableColumnMenu: true,
 			sortable: false,
 			getActions: (params) =>
-				UimActionButtons(params, {
+				UimActionButtons(params?.row, {
 					detailAction: () => onOpenModal(params?.id, 'detail'),
 					updateAction: () => onOpenModal(params?.id, 'update'),
 					deleteAction: () => requests.delete(params?.id),
@@ -68,9 +67,7 @@ function TagManagement() {
 	const requests = {
 		create: (value) =>
 			toast.promise(
-				axiocRequests
-					.post(API_PATHS.ADMIN.MANAGE_TAG, value)
-					.then(() => sleep(700)),
+				axioc.post(API_PATHS.ADMIN.MANAGE_TAG, value).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.added('Tag'),
@@ -85,7 +82,7 @@ function TagManagement() {
 			),
 		update: (value) =>
 			toast.promise(
-				axiocRequests
+				axioc
 					.put(`${API_PATHS.ADMIN.MANAGE_TAG}/${value?.id}`, value)
 					.then(() => sleep(700)),
 				{
@@ -102,7 +99,7 @@ function TagManagement() {
 			),
 		delete: (id) =>
 			toast.promise(
-				axiocRequests
+				axioc
 					.delete(`${API_PATHS.ADMIN.MANAGE_TAG}/${id}`)
 					.then(() => sleep(700)),
 				{
@@ -123,7 +120,7 @@ function TagManagement() {
 		<>
 			<ContentHeader
 				title='Tag Management'
-				tooltipContent='Create new tag'
+				tooltipContent='Add tag'
 				onOpenModal={() => onOpenModal(null, 'create')}
 				onClickAction={() => setTableToolBar((pre) => !pre)}
 				classes={{

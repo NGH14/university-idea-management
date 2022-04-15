@@ -33,16 +33,17 @@ export const Column = [
 		flex: 1,
 	},
 	{
-		field: 'modified_at',
+		field: 'modified_date',
 		headerName: 'Modified Date',
 		disableColumnMenu: true,
 		sortable: true,
 		align: 'center',
 		headerAlign: 'center',
-		width: 170,
 		type: 'date',
+		maxWidth: 400,
+		flex: 1,
 		renderCell: (value) =>
-			value?.row?.modified_at
+			value?.row?.modified_date
 				? moment(value?.row?.modified_at).format('DD/MM/YYYY')
 				: '-',
 	},

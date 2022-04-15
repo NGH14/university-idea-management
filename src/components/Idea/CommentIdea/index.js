@@ -2,7 +2,7 @@ import { Divider, Grid } from '@material-ui/core';
 import { Button, InputBase } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Paper from '@mui/material/Paper';
-import { axiocRequests, API_PATHS } from 'common';
+import { axioc, API_PATHS } from 'common';
 import _ from 'lodash';
 import moment from 'moment';
 import * as React from 'react';
@@ -19,7 +19,7 @@ function CommentIdea({ data, ideaId }) {
 
 	// NOTE: @Henry, fix param show more
 	const loadData = async () => {
-		axiocRequests
+		axioc
 			.get(`${API_PATHS.ADMIN.MANAGE_COMMENT}`, {
 				params: {
 					ideaId,
@@ -40,7 +40,7 @@ function CommentIdea({ data, ideaId }) {
 	const onCreateComment = async (value) => {
 		// api create Comment
 		const newValue = { ...value, ideaId };
-		await axiocRequests
+		await axioc
 			.post(`${API_PATHS.ADMIN.MANAGE_COMMENT}`, newValue)
 			.then((res) => {
 				setDataComment([{ ...res?.data?.result }, ...dataComment]);

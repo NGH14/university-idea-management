@@ -1,7 +1,9 @@
-export { axiocRequests } from './AxiocRequests';
+export { axioc } from './AxiosClient';
+export { CrudRequests } from './CrudRequests';
 export { getGuid } from './Guid';
 export { toReadableFileSize } from './FileSizeReading';
 export { sleep } from './Sleep';
+export { DiceBear } from './DiceBear';
 export { toastMessages } from './ToastMessages';
 export {
 	DEV_CONFIGS,

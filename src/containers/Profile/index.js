@@ -1,23 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import React, { useContext, useEffect, useState } from 'react';
+import loginImg from 'assets/images/Contact-CIC-Education-2-1024x858.webp';
+import { axioc, toastMessages } from 'common';
+import { stringToSvg } from 'common/DiceBear';
+import { API_PATHS } from 'common/env';
+import TabProfile from 'components/TabProfile';
+import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
-import loginImg from 'assets/images/Contact-CIC-Education-2-1024x858.webp';
-import { axiocRequests } from 'common';
-import { API_PATHS, DEV_CONFIGS } from 'common/env';
-import TabProfile from 'components/TabProfile';
-import { dataDemo } from '../UserManagement/FakeData';
-
-const toastMessages = {
-	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
-	ERR_USER_NOT_FOUND: 'User not found !!',
-};
 
 export default function UpdatePassword() {
 	const [searchParams] = useSearchParams();
@@ -25,28 +20,13 @@ export default function UpdatePassword() {
 
 	const email = searchParams.get('email');
 
-	useEffect(() => {
-		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			let user = dataDemo.find((_) => _.email === email);
-
-			if (!user) {
-				toast.error(toastMessages.ERR_USER_NOT_FOUND);
-				return;
-			}
-			setUser(user);
-			return;
-		}
-
-		loadData();
-	}, []);
+	useEffect(() => loadData(), []);
 
 	const loadData = async () => {
-		await axiocRequests
+		await axioc
 			.get(`${API_PATHS.SHARED.USER}/${email}`)
-			.then((res) => setUser(res?.data?.result))
-			.catch(() => {
-				toast.error(toastMessages.ERR_SERVER_ERROR);
-			});
+			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
+			.then((res) => setUser(res?.data?.result));
 	};
 
 	return (
@@ -54,11 +34,9 @@ export default function UpdatePassword() {
 			<div className='avatar_wrapper'>
 				<img className='avatar_cover' src={loginImg} alt='avatar_cover' />
 				<Box className='avatar_content' sx={{ display: 'flex', gap: 1.5 }}>
-					<Avatar
-						alt={user.full_name ?? ''}
-						src='/static/images/avatar/2.jpg'
-						className='avatar_img'
-					/>
+					<Avatar alt={user.full_name ?? ''} className='avatar_img'>
+						{stringToSvg(user.avatar)}
+					</Avatar>
 					<Stack>
 						<Typography fontWeight={700} fontSize={30} sx={{ mt: -1 }}>
 							{user.full_name ?? ''}

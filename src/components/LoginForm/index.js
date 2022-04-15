@@ -5,15 +5,14 @@ import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/lab/LoadingButton';
 import { TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { axiocRequests } from 'common';
-import { GAPI_CLIENT_ID, STORAGE_VARS, URL_PATHS, API_PATHS } from 'common/env';
+import { axioc } from 'common';
+import { API_PATHS, GAPI_CLIENT_ID, STORAGE_VARS, URL_PATHS } from 'common/env';
 import { UserContext } from 'context/AppContext';
 import { useFormik } from 'formik';
 import React, { useContext, useState } from 'react';
 import GoogleLogin from 'react-google-login';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import axioc from 'common/AxiosClient';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {

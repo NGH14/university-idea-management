@@ -17,7 +17,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { axiocRequests, sleep } from 'common';
+import { axioc, sleep } from 'common';
 import { API_PATHS, ROLES } from 'common/env';
 import CommentIdea from 'components/Idea/CommentIdea';
 import { UserContext } from 'context/AppContext';
@@ -47,7 +47,7 @@ function IdeaDetailView() {
 	}, []);
 
 	const LoadData = async () => {
-		await axiocRequests
+		await axioc
 			.get(`${API_PATHS.SHARED.IDEA}/${id}`)
 			.then((res) => {
 				if (res?.data?.successed) {
@@ -156,7 +156,7 @@ function IdeaDetailView() {
 	const onUpdate = (value) => {
 		toast
 			.promise(
-				axiocRequests
+				axioc
 					.put(`${API_PATHS.SHARED.IDEA}/${value?.id}`, value)
 					.then(() => sleep(700)),
 				{

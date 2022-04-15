@@ -24,7 +24,7 @@ import Dropzone from 'react-dropzone';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
-import { axiocRequests, getGuid, toReadableFileSize, API_PATHS } from 'common';
+import { axioc, getGuid, toReadableFileSize, API_PATHS } from 'common';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -121,7 +121,7 @@ function UpdateIdeaForm(props) {
 	}, []);
 
 	const loadSubmissions = async () => {
-		await axiocRequests
+		await axioc
 			.get(API_PATHS.ADMIN.MANAGE_SUB + '/list')
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
 			.then((res) => {
@@ -130,7 +130,7 @@ function UpdateIdeaForm(props) {
 	};
 
 	const loadTags = async () => {
-		await axiocRequests
+		await axioc
 			.get(API_PATHS.ADMIN.MANAGE_TAG + '/list')
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
 			.then((res) => {

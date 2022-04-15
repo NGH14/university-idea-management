@@ -1,17 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
-import { API_PATHS, axiocRequests, sleep, toastMessages, URL_PATHS } from 'common';
+import { API_PATHS, axioc, sleep, toastMessages, URL_PATHS } from 'common';
 import ContentHeader from 'components/ContentHeader';
 import ModalIdea from 'components/Idea/ModalIdea';
-
+import { UimActionButtons, UimTable } from 'components/Uim';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import { Columns } from './model/Columns';
-import { UimActionButtons, UimTable } from 'components/Uim';
 
 export default function IdeaManagement() {
 	const navigate = useNavigate();
@@ -29,7 +28,7 @@ export default function IdeaManagement() {
 	useEffect(() => loadData(), [pagination]);
 
 	const loadData = async () => {
-		await axiocRequests
+		await axioc
 			.get(API_PATHS.ADMIN.MANAGE_IDEA + '/table/list', {
 				params: {
 					page: pagination.page,
@@ -60,7 +59,7 @@ export default function IdeaManagement() {
 			disableColumnMenu: true,
 			sortable: false,
 			getActions: (params) =>
-				UimActionButtons(params, {
+				UimActionButtons(params?.row, {
 					detailAction: () => navigate(`${URL_PATHS.IDEA}/${params.id}`),
 					updateAction: () => onOpenModal(params?.id, 'update'),
 					deleteAction: () => requests.delete(params?.id),
@@ -71,9 +70,7 @@ export default function IdeaManagement() {
 	const requests = {
 		create: (value) =>
 			toast.promise(
-				axiocRequests
-					.post(API_PATHS.ADMIN.MANAGE_IDEA, value)
-					.then(() => sleep(700)),
+				axioc.post(API_PATHS.ADMIN.MANAGE_IDEA, value).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.added('Idea'),
@@ -88,7 +85,7 @@ export default function IdeaManagement() {
 			),
 		update: (value) =>
 			toast.promise(
-				axiocRequests
+				axioc
 					.put(`${API_PATHS.ADMIN.MANAGE_IDEA}/${value?.id}`, value)
 					.then(() => sleep(700)),
 				{
@@ -105,7 +102,7 @@ export default function IdeaManagement() {
 			),
 		delete: (id) =>
 			toast.promise(
-				axiocRequests
+				axioc
 					.delete(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`)
 					.then(() => sleep(700)),
 				{
@@ -126,7 +123,7 @@ export default function IdeaManagement() {
 		<>
 			<ContentHeader
 				title='Idea Management'
-				tooltipContent='Create new idea'
+				tooltipContent='Add idea'
 				onOpenModal={() => onOpenModal(null, 'create')}
 				onClickAction={() => setTableToolBar((pre) => !pre)}
 				classes={{

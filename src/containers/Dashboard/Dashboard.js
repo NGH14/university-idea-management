@@ -4,7 +4,7 @@ import Card from '@mui/material/Card';
 import Paper from '@mui/material/Paper';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
-import { axiocRequests } from 'common';
+import { axioc } from 'common';
 import { DEV_CONFIGS } from 'common/env';
 import IdeaInfoChart from 'components/ChartDashboard/IdeaInfoChart';
 import IdeaPopularChart from 'components/ChartDashboard/IdeaPopularChart';
@@ -79,9 +79,9 @@ export default function Dashboard() {
 		const monthInfo = moment(filter.monthYearIdeaInfo).format('MM');
 		axios
 			.all([
-				axiocRequests.get(`dashboard/sum-submissions?year=${year}`),
-				axiocRequests.get(`dashboard/top-ideas?month=${monthIdea}&year=${year}`),
-				axiocRequests.get(`dashboard/activities?month=${monthInfo}&year=${year}`),
+				axioc.get(`dashboard/sum-submissions?year=${year}`),
+				axioc.get(`dashboard/top-ideas?month=${monthIdea}&year=${year}`),
+				axioc.get(`dashboard/activities?month=${monthInfo}&year=${year}`),
 			])
 			.then(
 				axios.spread(function (resSub, resIdeas, resAct) {

@@ -1,17 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
-import { API_PATHS, axiocRequests, sleep, toastMessages } from 'common';
-
+import { API_PATHS, axioc, sleep, toastMessages } from 'common';
 import ContentHeader from 'components/ContentHeader';
-
+import { UimActionButtons, UimTable } from 'components/Uim';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import ModalUserManagement from './modal/ModalUserManagement';
 import { Columns } from './model/Column';
-import { UimActionButtons, UimTable } from 'components/Uim';
 
 function UserManagement() {
 	const [data, setData] = useState({});
@@ -19,12 +17,12 @@ function UserManagement() {
 
 	const [status, setStatus] = useState({ visibleModal: false, action: 'create' });
 	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
-	const [tableToolBar, setTableToolBar] = useState(false);
+	const [showTableTool, setShowTableTool] = useState(false);
 
 	useEffect(() => loadData(), [pagination]);
 
 	const loadData = async () =>
-		await axiocRequests
+		await axioc
 			.get(API_PATHS.ADMIN.MANAGE_USER + '/table/list', {
 				params: {
 					page: pagination.page,
@@ -47,7 +45,7 @@ function UserManagement() {
 			disableColumnMenu: true,
 			sortable: false,
 			getActions: (params) =>
-				UimActionButtons(params, {
+				UimActionButtons(params?.row, {
 					detailAction: () => onOpenModal(params?.id, 'detail'),
 					updateAction: () => onOpenModal(params?.id, 'update'),
 					deleteAction: () => requests.delete(params?.id),
@@ -68,9 +66,7 @@ function UserManagement() {
 	const requests = {
 		create: (value) =>
 			toast.promise(
-				axiocRequests
-					.post(API_PATHS.ADMIN.MANAGE_USER, value)
-					.then(() => sleep(700)),
+				axioc.post(API_PATHS.ADMIN.MANAGE_USER, value).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.added('User'),
@@ -85,7 +81,7 @@ function UserManagement() {
 			),
 		update: (value) =>
 			toast.promise(
-				axiocRequests
+				axioc
 					.put(`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`, value)
 					.then(() => sleep(700)),
 				{
@@ -102,7 +98,7 @@ function UserManagement() {
 			),
 		delete: (id) =>
 			toast.promise(
-				axiocRequests
+				axioc
 					.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`)
 					.then(() => sleep(700)),
 				{
@@ -123,9 +119,9 @@ function UserManagement() {
 		<>
 			<ContentHeader
 				title='User Management'
-				tooltipContent='Create new user'
+				tooltipContent='Add user'
 				onOpenModal={() => onOpenModal(null, 'create')}
-				onClickAction={() => setTableToolBar((pre) => !pre)}
+				onClickAction={() => setShowTableTool((pre) => !pre)}
 				classes={{
 					headingClassNames: 'managementuser_heading',
 					titleClassNames: 'managementuser_title',
@@ -136,7 +132,7 @@ function UserManagement() {
 				rows={data?.rows}
 				columns={columns}
 				totalItems={data?.total}
-				showTableToolBar={tableToolBar}
+				showTableToolBar={showTableTool}
 				classes={{ tableClassNames: 'managementuser_table' }}
 				pagination={{
 					page: pagination.page,

@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
-import { axiocRequests } from 'common';
+import { axioc } from 'common';
 import { API_PATHS, URL_PATHS } from 'common/env';
 
 const CssTextField = styled(TextField)({
@@ -100,7 +100,7 @@ const UpdatePasswordForm = (props) => {
 		initialValues: initialValues,
 		validationSchema: validationSchema,
 		onSubmit: async (values) => {
-			await axiocRequests
+			await axioc
 				.post(API_PATHS.SHARED.AUTH.UPDATE_PWD, values)
 				.catch(() => toast.error('Failed to update password !!'))
 				.finally(() => {

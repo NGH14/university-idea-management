@@ -3,7 +3,6 @@ import './style.css';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import PersonIcon from '@mui/icons-material/Person';
-import Tippy from '@tippyjs/react';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
@@ -13,12 +12,14 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import Tooltip from '@mui/material/Tooltip';
-
 import Menu from '@mui/material/Menu';
 import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import Tippy from '@tippyjs/react';
+import UniTextLogo from 'assets/images/logo-500.webp';
+import { ROLES, URL_PATHS } from 'common/env';
+import { UserContext } from 'context/AppContext';
 import React, { useContext, useEffect, useState } from 'react';
 import {
 	BsBookmarksFill,
@@ -27,20 +28,15 @@ import {
 	BsFillPeopleFill,
 	BsHouseFill,
 } from 'react-icons/bs';
-
-import { HiPresentationChartLine } from 'react-icons/hi';
-
 import { FaBuilding, FaLightbulb } from 'react-icons/fa';
+import { HiPresentationChartLine } from 'react-icons/hi';
 import { RiDiscussFill } from 'react-icons/ri';
 import { useLocation } from 'react-router';
 import { createSearchParams, useNavigate } from 'react-router-dom';
 
-import UniTextLogo from 'assets/images/logo-500.webp';
-import { ROLES, URL_PATHS } from 'common/env';
-import { UserContext } from 'context/AppContext';
-import { AppBar, ColorButton, Drawer, DrawerHeader } from './SidebarStyled';
 import SidebarItem from './SidebarItem';
-import { getGuid } from 'common';
+import { AppBar, ColorButton, Drawer, DrawerHeader } from './SidebarStyled';
+import { stringToSvg } from 'common/DiceBear';
 
 export default function Sidebar(props) {
 	const { state, setState } = useContext(UserContext);
@@ -246,10 +242,9 @@ export default function Sidebar(props) {
 								onClick={(event) => setAnchorElUser(event.currentTarget)}
 								sx={{ p: 0 }}
 							>
-								<Avatar
-									alt={state.dataUser.full_name ?? 'Username'}
-									src='/static/images/avatar/2.jpg'
-								/>
+								<Avatar alt={state.dataUser.full_name ?? 'Username'}>
+									{stringToSvg(state.dataUser.avatar)}
+								</Avatar>
 
 								<Stack className='avatar_text' spacing={0.5}>
 									<Typography

@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { axiocRequests, sleep } from 'common';
+import { axioc, sleep } from 'common';
 import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
 import IdeaSubViewStaff from 'components/Idea/IdeaSubViewStaff';
 import DetailSubmissionForm from 'components/Submission/DetailSubmissionForm';
@@ -70,10 +70,10 @@ export default function Submission() {
 	const loadData = async () => {
 		await axios
 			.all([
-				axiocRequests.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`),
-				// axiocRequests.get(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`, {
+				axioc.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`),
+				// axioc.get(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`, {
 				// 	params: {
-				// 		page: pagination.page + 1,
+				// 		page: pagination.page,
 				// 		page_size: pagination.pageSize,
 				// 	},
 				// }),
@@ -103,7 +103,7 @@ export default function Submission() {
 		setStatus({ ...status, loading: true });
 		toast
 			.promise(
-				axiocRequests
+				axioc
 					.put(`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`, value)
 					.then(() => sleep(700)),
 				{
@@ -122,7 +122,7 @@ export default function Submission() {
 		setStatus({ ...status, loading: true });
 		toast
 			.promise(
-				axiocRequests
+				axioc
 					.put(`${API_PATHS.ADMIN.MANAGE_IDEA}/${value?.id}`, value)
 					.then(() => sleep(700)),
 				{

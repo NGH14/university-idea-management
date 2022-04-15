@@ -17,7 +17,7 @@ import {
 	Typography,
 } from '@mui/material';
 import Tippy from '@tippyjs/react';
-import { axiocRequests, sleep, toastMessages } from 'common';
+import { axioc, sleep, toastMessages } from 'common';
 import { API_PATHS, URL_PATHS } from 'common/env';
 import FloatButton from 'components/Custom/FloatButton';
 import CommentIdea from 'components/Idea/CommentIdea';
@@ -30,6 +30,7 @@ import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
+import { stringToSvg } from 'common/DiceBear';
 
 const ExpandMore = styled((props) => {
 	const { expand, ...other } = props;
@@ -57,8 +58,8 @@ export default function Homepage() {
 
 	useEffect(() => loadData(), []);
 
-	const loadData = () =>
-		axiocRequests
+	const loadData = async () =>
+		await axioc
 			.get(API_PATHS.SHARED.IDEA + '/table/list', {
 				params: { ...pagination },
 			})
@@ -81,7 +82,7 @@ export default function Homepage() {
 	const requests = {
 		create: (value) =>
 			toast.promise(
-				axiocRequests.post(API_PATHS.SHARED.IDEA, value).then(() => sleep(700)),
+				axioc.post(API_PATHS.SHARED.IDEA, value).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.ERR_SERVER_ERROR,
@@ -96,28 +97,9 @@ export default function Homepage() {
 					},
 				},
 			),
-		delete: (id) =>
-			toast.promise(
-				axiocRequests
-					.delete(`${API_PATHS.SHARED.IDEA}/${id}`)
-					.then(() => sleep(700)),
-				{
-					pending: toastMessages.WAIT,
-					error: toastMessages.ERR_SERVER_ERROR,
-					success: {
-						render() {
-							const indexData = data.findIndex((_) => _.id === id);
-							data.splice(indexData, 1);
-							setData((oldData) => [...oldData, data]);
-							loadData();
-							return toastMessages.SUC_IDEA_DEL;
-						},
-					},
-				},
-			),
 		update: (value) =>
 			toast.promise(
-				axiocRequests
+				axioc
 					.put(`${API_PATHS.SHARED.IDEA}/${value?.id}`, value)
 					.then(() => sleep(700)),
 				{
@@ -130,6 +112,23 @@ export default function Homepage() {
 							data[indexData] = res?.data?.result;
 							setData((oldData) => [...oldData, data]);
 							return toastMessages.SUC_IDEA_EDITED;
+						},
+					},
+				},
+			),
+		delete: (id) =>
+			toast.promise(
+				axioc.delete(`${API_PATHS.SHARED.IDEA}/${id}`).then(() => sleep(700)),
+				{
+					pending: toastMessages.WAIT,
+					error: toastMessages.ERR_SERVER_ERROR,
+					success: {
+						render() {
+							const indexData = data.findIndex((_) => _.id === id);
+							data.splice(indexData, 1);
+							setData((oldData) => [...oldData, data]);
+							loadData();
+							return toastMessages.SUC_IDEA_DEL;
 						},
 					},
 				},
@@ -234,7 +233,7 @@ export default function Homepage() {
 						}}
 						aria-label='avatar'
 					>
-						P
+						{item?.user?.avatar ? stringToSvg(item?.user?.avatar) : 'R'}
 					</Avatar>
 				}
 				className='idea_header'

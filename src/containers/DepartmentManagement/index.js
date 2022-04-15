@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
-import { API_PATHS, axiocRequests, sleep, toastMessages } from 'common';
+import { API_PATHS, axioc, sleep, toastMessages } from 'common';
 import ContentHeader from 'components/ContentHeader';
+import { UimActionButtons, UimTable } from 'components/Uim';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import ModalDepartmentManagement from './modal/ModalDepartmentManagement';
 import { Column } from './model/Column';
-import { UimActionButtons, UimTable } from 'components/Uim';
 
 function DepartmentManagement() {
 	const [data, setData] = useState();
@@ -22,10 +22,10 @@ function DepartmentManagement() {
 	useEffect(() => loadData(), [pagination]);
 
 	const loadData = async () => {
-		await axiocRequests
+		await axioc
 			.get(API_PATHS.ADMIN.MANAGE_DEP + '/table/list', {
 				params: {
-					page: pagination.page + 1,
+					page: pagination.page,
 					page_size: pagination.pageSize,
 				},
 			})
@@ -46,7 +46,7 @@ function DepartmentManagement() {
 			disableColumnMenu: true,
 			sortable: false,
 			getActions: (params) =>
-				UimActionButtons(params, {
+				UimActionButtons(params?.row, {
 					updateAction: () => onOpenModal(params?.id, 'update'),
 					deleteAction: () => requests.delete(params?.id),
 				}),
@@ -66,9 +66,7 @@ function DepartmentManagement() {
 	const requests = {
 		create: (value) =>
 			toast.promise(
-				axiocRequests
-					.post(API_PATHS.ADMIN.MANAGE_DEP, value)
-					.then(() => sleep(700)),
+				axioc.post(API_PATHS.ADMIN.MANAGE_DEP, value).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.added('Department'),
@@ -83,7 +81,7 @@ function DepartmentManagement() {
 			),
 		update: (value) =>
 			toast.promise(
-				axiocRequests
+				axioc
 					.put(`${API_PATHS.ADMIN.MANAGE_DEP}/${value?.id}`, {
 						name: value?.name,
 					})
@@ -102,8 +100,8 @@ function DepartmentManagement() {
 			),
 		delete: (id) =>
 			toast.promise(
-				axiocRequests
-					.put(`${API_PATHS.ADMIN.MANAGE_DEP}/${id}`)
+				axioc
+					.delete(`${API_PATHS.ADMIN.MANAGE_DEP}/${id}`)
 					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
@@ -112,7 +110,7 @@ function DepartmentManagement() {
 						render() {
 							loadData();
 							setStatus({ ...status, visibleModal: false });
-							return toastMessages.succs.added('Department');
+							return toastMessages.errs.deleted('Department');
 						},
 					},
 				},
@@ -123,7 +121,7 @@ function DepartmentManagement() {
 		<>
 			<ContentHeader
 				title='Department Management'
-				tooltipContent='Create new department'
+				tooltipContent='Add department'
 				onOpenModal={() => onOpenModal(null, 'create')}
 				onClickAction={() => setTableToolBar((pre) => !pre)}
 				classes={{

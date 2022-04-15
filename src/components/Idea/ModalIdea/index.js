@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { axiocRequests, API_PATHS, toastMessages } from 'common';
+import { axioc, API_PATHS, toastMessages } from 'common';
 
 import CreateIdeaForm from 'components/Idea/CreateIdeaForm';
 import UpdateIdeaForm from '../UpdateIdeaForm';
@@ -41,7 +41,7 @@ const ModalIdea = ({
 
 	useEffect(() => {
 		if (action !== 'create') {
-			axiocRequests
+			axioc
 				.get(`${API_PATHS.ADMIN.MANAGE_IDEA}/${idIdea}`)
 				.then((res) => setInitialValue(res?.data?.result));
 		}

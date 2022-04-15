@@ -1,73 +1,41 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { IconButton } from '@mui/material';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import {
-	GridToolbarColumnsButton,
-	GridToolbarContainer,
-	GridToolbarDensitySelector,
-	GridToolbarExport,
-	GridToolbarFilterButton,
-} from '@mui/x-data-grid';
-import { DataGridPro, GridActionsCellItem } from '@mui/x-data-grid-pro';
+import { axioc, sleep, toastMessages } from 'common';
+import { API_PATHS, URL_PATHS } from 'common/env';
+import ContentHeader from 'components/ContentHeader';
+import { UimActionButtons, UimTable } from 'components/Uim';
 import * as React from 'react';
-import { useContext, useEffect, useState } from 'react';
-import { BiPencil } from 'react-icons/bi';
-import { GoInfo } from 'react-icons/go';
-import { MdOutlineDeleteOutline } from 'react-icons/md';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { axiocRequests, sleep } from 'common';
-import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
-import CustomNoRowsOverlay from 'components/Custom/CustomNoRowsOverlay';
-import { UserContext } from 'context/AppContext';
-import { dataDemo } from './FakeData';
 import ModalSubmissionManagement from './modal/ModalSubmissionManagement';
 import { Column } from './model/Column';
 
-const toastMessages = {
-	WAIT: 'Please wait...',
-	SUC_SUB_ADDED: 'Create submission successful !!',
-	SUC_SUB_EDITED: 'Update submission successful !!',
-	SUC_SUB_DEL: 'Delete submission successful !!',
-	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
-};
-
 function SubmissionManagement() {
-	const [data, setData] = useState([]);
+	const [data, setData] = useState();
 	const [rowId, setRowId] = useState(null);
-	const { state, setState } = useContext(UserContext);
 
-	const [tableToolBar, setTableToolBar] = useState(false);
-	const [actionUser, setActionUser] = useState(null);
+	const [status, setStatus] = useState({ visibleModal: false, action: 'create' });
+	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
+	const [showTableTool, setShowTableTool] = useState(false);
 	const navigate = useNavigate();
 
-	const [status, setStatus] = useState({
-		visibleModal: false,
-		action: 'create',
-	});
+	useEffect(() => loadData(), [pagination]);
 
-	const [pagination, setPagination] = useState({
-		pageSize: 5,
-		page: 0,
-	});
-
-	useEffect(() => {
-		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			setData(dataDemo);
-			setRowId(null);
-			return;
-		}
-
-		loadData();
-	}, [pagination]);
-	const handleOnClickToolBar = () => setTableToolBar((pre) => !pre);
+	const loadData = async () =>
+		await axioc
+			.get(API_PATHS.ADMIN.MANAGE_SUB + '/table/list', {
+				params: {
+					page: pagination.page,
+					page_size: pagination.pageSize,
+				},
+			})
+			.then((res) => {
+				setData(res?.data?.result);
+				setRowId(null);
+			});
 
 	const columns = [
 		...Column,
@@ -78,219 +46,120 @@ function SubmissionManagement() {
 			type: 'actions',
 			disableColumnMenu: true,
 			sortable: false,
-			getActions: (params) => [
-				<GridActionsCellItem
-					icon={<GoInfo color='#3f66da' style={{ fontSize: '20px' }} />}
-					label='Detail'
-					onClick={() => navigate(`${URL_PATHS.MANAGE_SUB}/${params.id}`)}
-					showInMenu
-				/>,
-
-				<GridActionsCellItem
-					icon={<BiPencil style={{ fontSize: '20px' }} />}
-					label='Update'
-					onClick={() => onOpenModal(params.id, 'update')}
-					showInMenu
-				/>,
-
-				<GridActionsCellItem
-					icon={
-						<MdOutlineDeleteOutline
-							color='red'
-							style={{ fontSize: '20px' }}
-						/>
-					}
-					disabled={state?.dataUser?.id === params.id ? true : false}
-					label='Delete'
-					onClick={() => onDelete(params.id)}
-					showInMenu
-				/>,
-			],
+			getActions: (params) =>
+				UimActionButtons(params?.row, {
+					detailAction: () => navigate(`${URL_PATHS.MANAGE_SUB}/${params.id}`),
+					updateAction: () => onOpenModal(params?.id, 'update'),
+					deleteAction: () => requests.delete(params?.id),
+				}),
 		},
 	];
 
-	const loadData = async () => {
-		await axiocRequests
-			.get(API_PATHS.ADMIN.MANAGE_SUB + '/table/list', {
-				params: {
-					page: pagination.page + 1,
-					page_size: pagination.pageSize,
-				},
-			})
-			.then((res) => {
-				setData(res?.data?.result?.rows);
-				setRowId(null);
-			})
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+	const onCloseModal = () => {
+		rowId && setRowId(null);
+		setStatus({ ...status, visibleModal: false });
 	};
+
 	const onOpenModal = (id, action) => {
-		if (id) {
-			setRowId(id);
-		}
+		id && setRowId(id);
 		setStatus({ ...status, visibleModal: true, action });
 	};
 
-	const onDelete = async (id) => {
-		toast
-			.promise(
-				axiocRequests
-					.delete(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`)
-					.then(() => sleep(700)),
+	const requests = {
+		create: (value) =>
+			toast.promise(
+				axioc.post(API_PATHS.ADMIN.MANAGE_SUB, value).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_SUB_DEL,
-					error: toastMessages.ERR_SERVER_ERROR,
+					error: toastMessages.errs.added('User'),
+					success: {
+						render() {
+							loadData();
+							setStatus({ ...status, visibleModal: false });
+							return toastMessages.succs.added('User');
+						},
+					},
 				},
-			)
-			.then(() => {
-				setStatus({ ...status, visibleModal: false });
-				loadData();
-			});
-	};
-
-	const onUpdate = async (value) => {
-		toast
-			.promise(
-				axiocRequests
+			),
+		update: (value) =>
+			toast.promise(
+				axioc
 					.put(`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`, value)
 					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_SUB_EDITED,
-					error: toastMessages.ERR_SERVER_ERROR,
+					error: toastMessages.errs.edited('User'),
+					success: {
+						render() {
+							loadData();
+							setStatus({ ...status, visibleModal: false });
+							return toastMessages.succs.edited('User');
+						},
+					},
 				},
-			)
-			.then(() => {
-				setStatus({ ...status, visibleModal: false });
-				loadData();
-			});
-	};
-
-	const onCreate = async (value) => {
-		toast
-			.promise(
-				axiocRequests
-					.post(API_PATHS.ADMIN.MANAGE_SUB, value)
+			),
+		delete: (id) =>
+			toast.promise(
+				axioc
+					.delete(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`)
 					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_SUB_ADDED,
-					error: toastMessages.ERR_SERVER_ERROR,
+					error: toastMessages.errs.deleted('User'),
+					success: {
+						render() {
+							setStatus({ ...status, visibleModal: false });
+							loadData();
+							return toastMessages.succs.deleted('User');
+						},
+					},
 				},
-			)
-			.then(() => {
-				setStatus({ ...status, visibleModal: false });
-				loadData();
-			});
-	};
-
-	const onCloseModal = () => {
-		if (rowId) {
-			setRowId(null);
-		}
-
-		setStatus({
-			...status,
-			visibleModal: false,
-		});
-	};
-
-	const CustomToolbarSubmission = () => {
-		return (
-			<GridToolbarContainer sx={{ fontWeight: 700 }}>
-				<GridToolbarColumnsButton />
-				<GridToolbarFilterButton />
-				<GridToolbarDensitySelector />
-				<GridToolbarExport printOptions={{ disableToolbarButton: true }} />
-			</GridToolbarContainer>
-		);
-	};
-
-	const renderModal = () => {
-		return (
-			<ModalSubmissionManagement
-				visible={status.visibleModal}
-				action={status.action}
-				onClose={onCloseModal}
-				rowId={rowId}
-				onCreate={onCreate}
-				onUpdate={onUpdate}
-			/>
-		);
-	};
-
-	const onChangePagination = (pageSize, page) => {
-		setPagination({ page, pageSize });
-	};
-
-	const renderTop = () => {
-		return (
-			<div className='managementsubmission_title'>
-				<div className='managementsubmission_heading'>
-					<h2>Submission Management</h2>
-					<Tooltip title='Table Tool Bar'>
-						<IconButton onClick={handleOnClickToolBar}>
-							<MoreVertIcon />
-						</IconButton>
-					</Tooltip>
-				</div>
-
-				<Button
-					variant='contained'
-					endIcon={<AddCircleOutlineIcon />}
-					onClick={() => onOpenModal(null, 'create')}
-				>
-					Create
-				</Button>
-			</div>
-		);
-	};
-
-	const renderContent = () => {
-		return (
-			<div className='managementsubmission_table'>
-				<DataGridPro
-					components={{
-						NoRowsOverlay: CustomNoRowsOverlay,
-						ColumnSortedDescendingIcon: () => (
-							<ExpandMoreIcon className='icon' />
-						),
-						ColumnSortedAscendingIcon: () => (
-							<ExpandLessIcon className='icon' />
-						),
-						Toolbar: tableToolBar && CustomToolbarSubmission,
-					}}
-					rows={data}
-					columns={columns}
-					pagination={true}
-					cell--textCenter
-					pageSize={pagination.pageSize}
-					page={pagination.page}
-					initialState={{ pinnedColumns: { right: ['actions'] } }}
-					onPageSizeChange={(pageSize) =>
-						onChangePagination(pageSize, pagination.page)
-					}
-					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
-					style={{ minHeight: '600px' }}
-					rowsPerPageOptions={[5, 10, 25, 50]}
-				/>
-			</div>
-		);
+			),
 	};
 
 	return (
-		<div
-			style={{
-				minHeight: '700px',
-				width: '100%',
-				padding: '0 5px',
-				fontFamily: 'Poppins',
-			}}
-		>
-			{renderTop()}
-			{renderContent()}
-			{status.visibleModal && renderModal()}
-		</div>
+		<>
+			<ContentHeader
+				title='Submission Management'
+				tooltipContent='Add submission'
+				onOpenModal={() => onOpenModal(null, 'create')}
+				onClickAction={() => setShowTableTool((pre) => !pre)}
+				classes={{
+					headingClassNames: 'managementsubmission_heading',
+					titleClassNames: 'managementsubmission_title',
+				}}
+			/>
+
+			<UimTable
+				rows={data?.rows}
+				columns={columns}
+				totalItems={data?.total}
+				showTableToolBar={showTableTool}
+				classes={{ tableClassNames: 'managementsubmission_table' }}
+				pagination={{
+					page: pagination.page,
+					pageSize: pagination.pageSize,
+					onPageChange: (_, page) => setPagination({ ...pagination, page }),
+					onPageSizeChange: (event) =>
+						setPagination({
+							...pagination,
+							pageSize: event?.target?.value,
+							page: 1,
+						}),
+				}}
+			/>
+
+			{status.visibleModal && (
+				<ModalSubmissionManagement
+					visible={status.visibleModal}
+					action={status.action}
+					onClose={onCloseModal}
+					rowId={rowId}
+					onCreate={requests.create}
+					onUpdate={requests.update}
+				/>
+			)}
+		</>
 	);
 }
 export default SubmissionManagement;

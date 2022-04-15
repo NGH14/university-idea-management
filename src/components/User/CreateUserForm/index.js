@@ -1,8 +1,7 @@
 import './style.css';
 
 import axios from 'axios';
-import { toastMessages } from 'common';
-import axioc from 'common/AxiosClient';
+import { axioc, toastMessages } from 'common';
 import { API_PATHS } from 'common/env';
 import {
 	UimAutoComplete,
@@ -154,14 +153,15 @@ function CreateUserForm({ onClose, onCreate }) {
 						required={true}
 						propName='department'
 						onChange={(_, value) => formik.setFieldValue('department', value)}
+						options={depOptions.map((option) => option.name)}
 						onBlur={formik.handleBlur}
-						options={depOptions}
 						dynamic={{
 							value: formik.values.department,
 							error: formik.errors.department,
 							touched: formik.touched.department,
 						}}
 					/>
+					{console.log(formik.values.department)}
 				</div>
 				<div className='form_content'>
 					<UimAutoComplete.DropDown

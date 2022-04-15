@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -25,7 +26,8 @@ import Dropzone from 'react-dropzone';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
-import { axiocRequests, getGuid, toReadableFileSize, API_PATHS } from 'common';
+import { axioc, getGuid, toReadableFileSize, API_PATHS } from 'common';
+import { UimAutoComplete, UimModalForm, UimTextField } from 'components/Uim';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -124,13 +126,13 @@ function CreateIdeaForm(props) {
 	useEffect(() => {
 		(async () => {
 			!externalSubData
-				? await axiocRequests
+				? await axioc
 						.get(API_PATHS.ADMIN.MANAGE_SUB + '/list')
 						.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
 						.then((res) => setSubOptions(res?.data?.result))
 				: formik.setFieldValue('submission_id', externalSubData.id);
 
-			await axiocRequests
+			await axioc
 				.get(API_PATHS.ADMIN.MANAGE_TAG + '/list')
 				.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
 				.then((res) => setTagOptions(res?.data?.result));
@@ -185,7 +187,52 @@ function CreateIdeaForm(props) {
 	};
 
 	return (
-		<div className='createideaform'>
+		<UimModalForm
+			title='Create Idea'
+			onClose={() => onClose()}
+			ClassName='createideaform'
+			onSubmit={formik.handleSubmit}
+			showActionButton={true}
+		>
+			<div className='createideaform_group'>
+				<div className='createideaform_content'>
+					{externalSubData ? (
+						<UimTextField
+							label='Submission'
+							propName='submission_id'
+							variant='standard'
+							dynamic={{ value: externalSubData.title }}
+							inputProps={{ disabled: true, readOnly: true }}
+						/>
+					) : (
+						<UimAutoComplete.Select
+							label='Submission'
+							required={true}
+							propName='submission_id'
+							onBlur={formik.handleBlur}
+							options={subOptions.map((option) => option.title)}
+							onChange={(_, value) =>
+								formik.setFieldValue('submission_id', value ?? '')
+							}
+							dynamic={{
+								value: formik.values.submission_id,
+								error: formik.errors.submission_id,
+								touched: formik.touched.submission_id,
+							}}
+						/>
+					)}
+				</div>
+			</div>
+			<div className='createideaform_group'>
+				<div className='createideaform_content'></div>
+			</div>
+			<div className='createideaform_group'>
+				<div className='createideaform_content'></div>
+			</div>
+		</UimModalForm>
+	);
+}
+/* <div className='createideaform'>
 			<div className='createideaform_title'>
 				<h2>Create Idea</h2>
 				<IconButton>
@@ -277,80 +324,18 @@ function CreateIdeaForm(props) {
 
 				<div className='createideaform_group'>
 					<div className='createideaform_content'>
-						<InputLabel required={true} htmlFor='tags'>
-							Tags
-						</InputLabel>
-						<Select
-							select
-							fullWidth
-							multiple
-							labelId='tags'
-							id='tags'
-							name='tags'
-							input={<OutlinedInput label='Tag' />}
-							value={formik?.values?.tags}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							MenuProps={{
-								PaperProps: {
-									style: { maxHeight: 224, width: 250 },
-								},
+						<UimAutoComplete.Tag
+							label='Tags'
+							propName='tags'
+							options={tagOptions}
+							dynamic={{
+								error: formik.errors.tags,
+								touched: formik.touched.tags,
+								value: formik?.values?.tags,
 							}}
-							renderValue={(selected) =>
-								formik.values.tags !== null ? (
-									<List
-										sx={{
-											display: 'flex',
-											justifyContent: 'center',
-											flexWrap: 'wrap',
-											listStyle: 'none',
-											p: 0.5,
-											m: 0,
-										}}
-									>
-										{selected.map((value, index) => (
-											<ListItem key={index}>
-												<Chip
-													label={value}
-													style={{
-														background: '#d2d2d2',
-													}}
-												/>
-											</ListItem>
-										))}
-									</List>
-								) : (
-									<placeholder>
-										<em
-											style={{
-												opacity: 0.6,
-												fontSize: 14,
-											}}
-										>
-											-- tags --
-										</em>
-									</placeholder>
-								)
-							}
-							error={formik.touched.tags && Boolean(formik.errors.tags)}
-						>
-							{tagOptions?.map((tag) => (
-								<MenuItem
-									style={{ textTransform: 'capitalize' }}
-									value={tag.name}
-								>
-									<Checkbox
-										checked={
-											formik.values.tags?.indexOf(tag.name) > -1
-										}
-									/>
-									<ListItemText primary={tag.name} />
-								</MenuItem>
-							))}
-						</Select>
-						<FormHelperText error>
-							{formik.touched.tags && formik.errors.tags}
-						</FormHelperText>
+							onChange={(_, value) => formik.setFieldValue('tags', value)}
+							onBlur={formik.handleBlur}
+						/>
 					</div>
 				</div>
 
@@ -416,8 +401,6 @@ function CreateIdeaForm(props) {
 					</ColorButton>
 				</div>
 			</form>
-		</div>
-	);
-}
+		</div> */
 
 export default React.memo(CreateIdeaForm);

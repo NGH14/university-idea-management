@@ -32,7 +32,7 @@ import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { axiocRequests, sleep } from 'common';
+import { axioc, sleep } from 'common';
 import { API_PATHS, ROLES } from 'common/env';
 import { UserContext } from 'context/AppContext';
 import CommentIdea from '../CommentIdea';
@@ -189,10 +189,10 @@ function IdeaSubViewStaff({ ideaData, subData, paginationIdea }) {
 	const loadDataIdea = async () => {
 		setStatus({ ...status, loading: true });
 
-		await axiocRequests
+		await axioc
 			.get(API_PATHS.SHARED.IDEA + '/table/list', {
 				params: {
-					page: pagination.page + 1,
+					page: pagination.page,
 					page_size: pagination.pageSize,
 				},
 			})
@@ -207,7 +207,7 @@ function IdeaSubViewStaff({ ideaData, subData, paginationIdea }) {
 	const onDelete = (id) => {
 		toast
 			.promise(
-				axiocRequests
+				axioc
 					.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`)
 					.then(() => sleep(700)),
 				{
@@ -224,7 +224,7 @@ function IdeaSubViewStaff({ ideaData, subData, paginationIdea }) {
 	const onUpdate = (value) => {
 		toast
 			.promise(
-				axiocRequests
+				axioc
 					.put(`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`, value)
 					.then(() => sleep(700)),
 				{
@@ -246,7 +246,7 @@ function IdeaSubViewStaff({ ideaData, subData, paginationIdea }) {
 		let newValue = { ...value, submission_id: subData?.id };
 		// toast
 		//     .promise(
-		//         axiocRequests.post(API_PATHS.ADMIN.MANAGE_IDEA, newValue).then(() =>
+		//         axioc.post(API_PATHS.ADMIN.MANAGE_IDEA, newValue).then(() =>
 		//             sleep(700),
 		//         ),
 		//         {

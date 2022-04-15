@@ -32,7 +32,7 @@ import { MdOutlineDeleteOutline } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { axiocRequests, sleep } from 'common';
+import { axioc, sleep } from 'common';
 import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
 import CommentIdea from '../../Idea/CommentIdea';
 import ModalIdea from '../../Idea/ModalIdea';
@@ -194,17 +194,16 @@ function IdeaSubView({ ideaData, subData }) {
 	const [ideaId, setIdeaId] = useState(null);
 
 	useEffect(() => {
-		console.log(subData);
 		loadDataIdea();
 	}, [pagination]);
 
 	const loadDataIdea = async () => {
 		setStatus({ ...status, loading: true });
 
-		await axiocRequests
+		await axioc
 			.get(API_PATHS.ADMIN.MANAGE_IDEA + '/table/list', {
 				params: {
-					page: pagination.page + 1,
+					page: pagination.page,
 					page_size: pagination.pageSize,
 					submission_id: subData.id,
 				},
@@ -221,7 +220,7 @@ function IdeaSubView({ ideaData, subData }) {
 	const onDelete = (id) => {
 		toast
 			.promise(
-				axiocRequests
+				axioc
 					.delete(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`)
 					.then(() => sleep(700)),
 				{
@@ -238,7 +237,7 @@ function IdeaSubView({ ideaData, subData }) {
 	const onUpdate = (value) => {
 		toast
 			.promise(
-				axiocRequests
+				axioc
 					.put(`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`, value)
 					.then(() => sleep(700)),
 				{
@@ -259,7 +258,7 @@ function IdeaSubView({ ideaData, subData }) {
 	const onCreate = (value) => {
 		toast
 			.promise(
-				axiocRequests
+				axioc
 					.post(API_PATHS.ADMIN.MANAGE_IDEA, { ...value })
 					.then(() => sleep(700)),
 				{

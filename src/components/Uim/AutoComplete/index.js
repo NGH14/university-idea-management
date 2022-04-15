@@ -33,12 +33,19 @@ export const UimAutoComplete = {
 				onBlur={onBlur}
 				options={options?.map((option) => option?.name)}
 				ChipProps={capitalize ? { style: { textTransform: 'capitalize' } } : {}}
-				ListboxProps={
-					capitalize ? { style: { textTransform: 'capitalize' } } : {}
-				}
+				ListboxProps={{
+					style: {
+						textTransform: capitalize ? 'capitalize' : 'none',
+					},
+				}}
 				renderTags={(value, getTagProps) =>
 					value.map((option, index) => (
-						<Chip {...getTagProps({ index })} label={option} size='small' />
+						<Chip
+							{...getTagProps({ index })}
+							label={option}
+							size='small'
+							style={{ backgroundColor: '#8b8c9499' }}
+						/>
 					))
 				}
 				renderInput={(params) => (
@@ -50,8 +57,11 @@ export const UimAutoComplete = {
 						variant={variant}
 						defaultValue=''
 						error={touched && Boolean(error)}
-						placeholder={`-- ${label.toLowerCase()} --`}
-						helperText={touched && error}
+						placeholder={
+							value == null || value?.length === 0
+								? `-- ${label.toLowerCase()} --`
+								: ''
+						}
 					/>
 				)}
 				renderValue={
@@ -92,26 +102,26 @@ export const UimAutoComplete = {
 				</InputLabel>
 				<Autocomplete
 					fullWidth
+					id={`${propName}_filled_multi`}
 					onChange={onChange}
 					onBlur={onBlur}
-					options={options?.map((option) => option?.name)}
+					options={options}
 					ListboxProps={{ style: { textTransform: 'capitalize' } }}
 					ChipProps={{ style: { textTransform: 'capitalize' } }}
-					id={`${propName}_filled_multi`}
 					renderInput={(params) => (
 						<TextField
 							{...params}
 							id={`${propName}_input_filled_multi`}
 							name={propName}
-							value={value}
+							value={value ?? ''}
 							variant={variant}
 							defaultValue=''
 							error={touched && Boolean(error)}
 							placeholder={`-- ${label.toLowerCase()} --`}
-							helperText={touched && error}
 						/>
 					)}
 				/>
+				<FormHelperText error>{touched && error}</FormHelperText>
 			</>
 		);
 	},

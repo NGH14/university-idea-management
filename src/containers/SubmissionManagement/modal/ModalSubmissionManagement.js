@@ -5,7 +5,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { axiocRequests } from 'common';
+import { axioc } from 'common';
 import { API_PATHS, DEV_CONFIGS } from 'common/env';
 import CreateSubmissionForm from 'components/Submission/CreateSubmissionForm';
 import EditSubmissionForm from 'components/Submission/EditSubmissionForm';
@@ -55,7 +55,7 @@ const ModalSubmissionManagement = (props) => {
 	}, [action]);
 
 	const loadData = async () => {
-		await axiocRequests
+		await axioc
 			.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${rowId}`)
 			.then((res) => setInitialValue(res?.data?.result))
 			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
