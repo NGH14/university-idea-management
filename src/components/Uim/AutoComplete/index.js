@@ -17,6 +17,7 @@ export const UimAutoComplete = {
 		propName,
 		variant,
 		onChange,
+		defaultValue,
 		required = false,
 		dynamic: { value, error, touched },
 	}) => (
@@ -27,10 +28,10 @@ export const UimAutoComplete = {
 			<Autocomplete
 				multiple
 				fullWidth
-				defaultValue={[]}
-				id={`${propName}_filled_multi`}
 				onChange={onChange}
 				onBlur={onBlur}
+				id={`${propName}_filled_multi`}
+				defaultValue={defaultValue ?? []}
 				options={options?.map((option) => option?.name)}
 				ChipProps={capitalize ? { style: { textTransform: 'capitalize' } } : {}}
 				ListboxProps={{
@@ -44,7 +45,7 @@ export const UimAutoComplete = {
 							{...getTagProps({ index })}
 							label={option}
 							size='small'
-							style={{ backgroundColor: '#8b8c9499' }}
+							style={{ backgroundColor: '#8b8c9480' }}
 						/>
 					))
 				}
@@ -92,9 +93,12 @@ export const UimAutoComplete = {
 		propName,
 		variant,
 		onChange,
+		getOptionLabel,
+		defaultValue = null,
 		required = false,
 		dynamic: { value, error, touched },
 	}) => {
+		console.log(123123, defaultValue);
 		return (
 			<>
 				<InputLabel htmlFor={propName} required={required}>
@@ -103,11 +107,13 @@ export const UimAutoComplete = {
 				<Autocomplete
 					fullWidth
 					id={`${propName}_filled_multi`}
-					onChange={onChange}
 					onBlur={onBlur}
-					options={options}
-					ListboxProps={{ style: { textTransform: 'capitalize' } }}
+					onChange={onChange}
 					ChipProps={{ style: { textTransform: 'capitalize' } }}
+					ListboxProps={{ style: { textTransform: 'capitalize' } }}
+					defaultValue={defaultValue}
+					options={options}
+					getOptionLabel={getOptionLabel}
 					renderInput={(params) => (
 						<TextField
 							{...params}
@@ -115,7 +121,6 @@ export const UimAutoComplete = {
 							name={propName}
 							value={value ?? ''}
 							variant={variant}
-							defaultValue=''
 							error={touched && Boolean(error)}
 							placeholder={`-- ${label.toLowerCase()} --`}
 						/>

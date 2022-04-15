@@ -6,7 +6,8 @@ import React from 'react';
 export default function DetailUserForm({ onClose, initialValue: data }) {
 	return (
 		<UimModalForm
-			title='Detail User'
+			entity='idea'
+			action='detail'
 			onClose={() => onClose()}
 			ClassName='detailuserform'
 		>

@@ -78,7 +78,7 @@ export const AppContext = (props) => {
 							isLogin: false,
 						});
 
-						toast.error(toastMessages.errs.ERR_SESSION_OVER);
+						toast.error(toastMessages.errs.SESSION_OVER);
 					});
 			});
 	};

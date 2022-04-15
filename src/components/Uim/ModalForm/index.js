@@ -18,17 +18,20 @@ const ColorButton = styled(Button)(() => ({
 }));
 
 export function UimModalForm({
+	showActionButton = false,
 	ClassName,
 	onSubmit,
 	onClose,
-	title,
-	showActionButton = false,
 	children,
+	action,
+	entity,
 }) {
 	return (
 		<div className={ClassName}>
 			<div className={`${ClassName}_title`}>
-				<h2 style={{ textTransform: 'capitalize' }}>{title}</h2>
+				<h2 style={{ textTransform: 'capitalize' }}>
+					{action} {entity}
+				</h2>
 				<IconButton>
 					<CloseIcon onClick={onClose} />
 				</IconButton>
@@ -48,7 +51,7 @@ export function UimModalForm({
 							variant='contained'
 							style={{ textTransform: 'capitalize' }}
 						>
-							{title}
+							{action}
 						</ColorButton>
 					</div>
 				) : (

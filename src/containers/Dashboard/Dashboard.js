@@ -127,7 +127,6 @@ export default function Dashboard() {
 		textAlign: 'center',
 		color: theme.palette.text.secondary,
 	}));
-	console.log(data);
 	const renderTop = () => {
 		return (
 			<>

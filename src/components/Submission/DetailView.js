@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 
 import { axioc, sleep } from 'common';
 import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
-import { dataDemo } from '../../containers/IdeaMangement/FakeData';
+import { dataDemo } from 'containers/IdeaManagement/FakeData';
 import DetailSubmissionForm from './DetailSubmissionForm';
 import IdeaSubView from './IdeaSubView';
 import ModalSubmissionIdea from './Modal/ModalSubmissionIdea';

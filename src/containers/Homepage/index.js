@@ -85,7 +85,7 @@ export default function Homepage() {
 				axioc.post(API_PATHS.SHARED.IDEA, value).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
-					error: toastMessages.ERR_SERVER_ERROR,
+					error: toastMessages.errs.UNEXPECTED,
 					success: {
 						render({ data: res }) {
 							return (

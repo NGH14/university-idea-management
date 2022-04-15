@@ -64,7 +64,8 @@ function CreateUserForm({ onClose, onCreate }) {
 
 	return (
 		<UimModalForm
-			title='Create User'
+			entity='user'
+			action='create'
 			onClose={() => onClose()}
 			ClassName='createuserform'
 			onSubmit={formik.handleSubmit}
@@ -163,7 +164,6 @@ function CreateUserForm({ onClose, onCreate }) {
 							touched: formik.touched.department,
 						}}
 					/>
-					{console.log(formik.values.department)}
 				</div>
 				<div className='form_content'>
 					<UimAutoComplete.DropDown

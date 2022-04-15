@@ -15,7 +15,7 @@ import { Columns } from './model/Columns';
 export default function IdeaManagement() {
 	const navigate = useNavigate();
 	const [data, setData] = useState();
-	const [rowId, setRowId] = useState(null);
+	const [rowData, setRowData] = useState(null);
 
 	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
 	const [tableToolBar, setTableToolBar] = useState(false);
@@ -39,13 +39,13 @@ export default function IdeaManagement() {
 			.then((res) => setData(res?.data?.result));
 	};
 
-	const onOpenModal = (id, action) => {
-		id && setRowId(id);
+	const onOpenModal = (idea, action) => {
+		idea && setRowData(idea);
 		setStatus({ ...status, visibleModal: true, action });
 	};
 
 	const onCloseModal = () => {
-		rowId && setRowId(null);
+		rowData && setRowData(null);
 		setStatus({ ...status, visibleModal: false, action: 'create' });
 	};
 
@@ -61,7 +61,7 @@ export default function IdeaManagement() {
 			getActions: (params) =>
 				UimActionButtons(params?.row, {
 					detailAction: () => navigate(`${URL_PATHS.IDEA}/${params.id}`),
-					updateAction: () => onOpenModal(params?.id, 'update'),
+					updateAction: () => onOpenModal(params?.row, 'update'),
 					deleteAction: () => requests.delete(params?.id),
 				}),
 		},
@@ -158,6 +158,7 @@ export default function IdeaManagement() {
 					onClose={onCloseModal}
 					onCreate={requests.create}
 					onUpdate={requests.update}
+					exIdeaData={rowData}
 				/>
 			)}
 		</>

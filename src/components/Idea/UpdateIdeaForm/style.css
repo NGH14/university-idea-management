@@ -1,11 +1,11 @@
-.createsubmissionform_title {
+.editideaform_title {
 	font-weight: 500;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }
 
-.createsubmissionform_footer {
+.editideaform_footer {
 	display: flex;
 	justify-content: flex-end;
 	flex-wrap: wrap;
@@ -48,7 +48,7 @@
 		grid-template-columns: 1fr;
 	}
 
-	.createsubmissionform_footer>* {
+	.editideaform_footer>* {
 		width: 100%;
 	}
 }

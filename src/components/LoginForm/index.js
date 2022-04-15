@@ -5,7 +5,7 @@ import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/lab/LoadingButton';
 import { TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { axioc } from 'common';
+import { axioc, toastMessages } from 'common';
 import { API_PATHS, GAPI_CLIENT_ID, STORAGE_VARS, URL_PATHS } from 'common/env';
 import { UserContext } from 'context/AppContext';
 import { useFormik } from 'formik';
@@ -13,6 +13,7 @@ import React, { useContext, useState } from 'react';
 import GoogleLogin from 'react-google-login';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
+import { toast } from 'react-toastify';
 
 const CssTextField = styled(TextField)({
 	'.MuiFormHelperText-root': {
@@ -104,6 +105,7 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 	const onLogin = async (value) => {
 		await axioc
 			.post(API_PATHS.SHARED.AUTH.LOGIN, value)
+			.catch(() => toast.error(toastMessages.errs.INVALID_LOGIN))
 			.then((res) => {
 				localStorage.setItem(
 					STORAGE_VARS.JWT,
@@ -131,6 +133,7 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 				provider: 'google',
 				id_token: googleResponse.tokenId,
 			})
+			.catch(() => toast.error(toastMessages.errs.INVALID_GOOGLE))
 			.then((res) => {
 				localStorage.setItem(
 					STORAGE_VARS.JWT,

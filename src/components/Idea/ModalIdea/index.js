@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Modal } from '@mui/material';
 import Box from '@mui/material/Box';
+import axios from 'axios';
+import { API_PATHS, axioc, toastMessages } from 'common';
+import CreateIdeaForm from 'components/Idea/CreateIdeaForm';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { axioc, API_PATHS, toastMessages } from 'common';
-
-import CreateIdeaForm from 'components/Idea/CreateIdeaForm';
 import UpdateIdeaForm from '../UpdateIdeaForm';
 
 const style = {
@@ -28,24 +28,9 @@ const style = {
 	},
 };
 
-const ModalIdea = ({
-	submission,
-	onCreate,
-	onUpdate,
-	visible,
-	onClose,
-	action,
-	idIdea,
-}) => {
-	const [initialValue, setInitialValue] = useState([]);
-
-	useEffect(() => {
-		if (action !== 'create') {
-			axioc
-				.get(`${API_PATHS.ADMIN.MANAGE_IDEA}/${idIdea}`)
-				.then((res) => setInitialValue(res?.data?.result));
-		}
-	}, [action]);
+const ModalIdea = (props) => {
+	const { onCreate, onUpdate, visible, onClose, action, exIdeaData, specifySub } =
+		props;
 
 	const renderForm = () => {
 		switch (action) {
@@ -54,7 +39,9 @@ const ModalIdea = ({
 					<CreateIdeaForm
 						onClose={() => onClose()}
 						onCreate={onCreate}
-						submission={submission}
+						submission={
+							specifySub === true ? exIdeaData?.submission?.id : null
+						}
 					/>
 				);
 			case 'update':
@@ -62,8 +49,8 @@ const ModalIdea = ({
 					<UpdateIdeaForm
 						onClose={() => onClose()}
 						onUpdate={onUpdate}
-						submission={submission}
-						initialValue={initialValue}
+						initialValue={exIdeaData}
+						specifySub={specifySub ?? false}
 					/>
 				);
 			default:

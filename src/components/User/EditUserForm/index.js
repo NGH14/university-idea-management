@@ -13,6 +13,7 @@ import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
+import { capitalizeSentence } from 'common/StringHelpers';
 
 const validationSchema = yup.object({
 	full_name: yup.string().required('Full Name is required'),
@@ -32,8 +33,6 @@ function EditUserForm(props) {
 		validationSchema: validationSchema,
 		onSubmit: (values) => onUpdate(values),
 	});
-
-	console.log(initialValue);
 
 	useEffect(
 		() =>
@@ -56,11 +55,13 @@ function EditUserForm(props) {
 
 	return (
 		<UimModalForm
-			title='Edit User'
+			entity='idea'
+			action='edit'
 			onClose={() => onClose()}
 			ClassName='edituserform'
 			onSubmit={formik.handleSubmit}
-			showActionButton={true}>
+			showActionButton={true}
+		>
 			<div className='form_group'>
 				<div className='form_content'>
 					<UimTextField
@@ -126,13 +127,9 @@ function EditUserForm(props) {
 						label='Date of Birth'
 						required={true}
 						propName='date_of_birth'
-						onChange={(val) =>
-							formik.setFieldValue('date_of_birth', val)
-						}
+						onChange={(val) => formik.setFieldValue('date_of_birth', val)}
 						onBlur={formik.handleBlur}
-						renderInput={(params) => (
-							<UimTextField fullWidth {...params} />
-						)}
+						renderInput={(params) => <UimTextField fullWidth {...params} />}
 						dynamic={{
 							value: formik.values.date_of_birth,
 							error: formik.errors.date_of_birth,
@@ -147,10 +144,13 @@ function EditUserForm(props) {
 						label='Department'
 						required={true}
 						propName='department'
+						defaultValue={initialValue?.department}
 						onChange={(_, value) =>
 							formik.setFieldValue('department', value ?? '')
 						}
-						options={depOptions.map((option) => option.name)}
+						options={depOptions.map((option) =>
+							capitalizeSentence(option.name),
+						)}
 						onBlur={formik.handleBlur}
 						dynamic={{
 							value: formik.values.department,
@@ -158,7 +158,6 @@ function EditUserForm(props) {
 							touched: formik.touched.department,
 						}}
 					/>
-					{console.log(formik.values.department)}
 				</div>
 				<div className='form_content'>
 					<UimAutoComplete.DropDown

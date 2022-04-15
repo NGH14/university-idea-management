@@ -14,7 +14,7 @@ import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
 import IdeaSubViewStaff from 'components/Idea/IdeaSubViewStaff';
 import DetailSubmissionForm from 'components/Submission/DetailSubmissionForm';
 import ModalSubmissionIdea from 'components/Submission/Modal/ModalSubmissionIdea';
-import { dataDemo } from '../../containers/IdeaMangement/FakeData';
+import { dataDemo } from 'containers/IdeaManagement/FakeData';
 
 const toastMessages = {
 	WAIT: 'Please wait...',

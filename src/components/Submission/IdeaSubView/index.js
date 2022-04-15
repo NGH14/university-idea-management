@@ -1,44 +1,7 @@
 import AddIcon from '@mui/icons-material/Add';
-import AttachFileIcon from '@mui/icons-material/AttachFile';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import {
-	Box,
-	Button,
-	CircularProgress,
-	Menu,
-	MenuItem,
-	MuiPagination,
-	Tooltip,
-} from '@mui/material';
-import Avatar from '@mui/material/Avatar';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
-import Typography from '@mui/material/Typography';
-import _ from 'lodash';
-import moment from 'moment';
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { BiPencil } from 'react-icons/bi';
-import { MdOutlineDeleteOutline } from 'react-icons/md';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-
-import { axioc, sleep } from 'common';
-import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
-import CommentIdea from '../../Idea/CommentIdea';
-import ModalIdea from '../../Idea/ModalIdea';
-import { DataGridPro, GridActionsCellItem } from '@mui/x-data-grid-pro';
-import CustomNoRowsOverlay from '../../Custom/CustomNoRowsOverlay';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Button } from '@mui/material';
 import {
 	GridToolbarColumnsButton,
 	GridToolbarContainer,
@@ -46,10 +9,21 @@ import {
 	GridToolbarExport,
 	GridToolbarFilterButton,
 } from '@mui/x-data-grid';
-import { dataDemo } from '../../../containers/SubmissionManagement/FakeData';
-import { Column } from '../../../containers/SubmissionManagement/model/Column';
+import { DataGridPro, GridActionsCellItem } from '@mui/x-data-grid-pro';
+import { axioc, sleep } from 'common';
+import { API_PATHS, URL_PATHS } from 'common/env';
+import { Columns } from 'containers/IdeaManagement/model/Columns';
+import _ from 'lodash';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { BiPencil } from 'react-icons/bi';
 import { GoInfo } from 'react-icons/go';
-import { Columns } from '../../../containers/IdeaMangement/model/Columns';
+import { MdOutlineDeleteOutline } from 'react-icons/md';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+import CustomNoRowsOverlay from '../../Custom/CustomNoRowsOverlay';
+import ModalIdea from '../../Idea/ModalIdea';
 
 const toastMessages = {
 	WAIT: 'Please wait...',

@@ -1,64 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
-import CloseIcon from '@mui/icons-material/Close';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import {
-	FormHelperText,
-	MenuItem,
-	OutlinedInput,
-	TextareaAutosize,
-	TextField,
-} from '@mui/material';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
 import Chip from '@mui/material/Chip';
-import IconButton from '@mui/material/IconButton';
-import InputLabel from '@mui/material/InputLabel';
 import List from '@mui/material/List';
-import ListItemText from '@mui/material/ListItemText';
-import Select from '@mui/material/Select';
 import { styled } from '@mui/material/styles';
+import { API_PATHS, axioc, getGuid, toReadableFileSize } from 'common';
+import { UimAutoComplete, UimModalForm, UimTextField } from 'components/Uim';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
-import { axioc, getGuid, toReadableFileSize, API_PATHS } from 'common';
-
-const CssTextField = styled(TextField)({
-	'.MuiFormHelperText-root': {
-		fontSize: '14px',
-		fontFamily: 'Poppins',
-	},
-
-	'& .MuiInputBase-root': {
-		color: '#000',
-		fontSize: '16px',
-		fontFamily: 'Poppins',
-	},
-	'& label.Mui-focused': {
-		color: '#000',
-	},
-	'& .MuiInput-underline:after': {
-		borderBottomColor: '#000',
-	},
-	'& .MuiOutlinedInput-root': {
-		'& fieldset': {
-			borderRadius: '5px',
-		},
-		'&:hover fieldset': {
-			border: '1px solid #000000',
-		},
-		'&.Mui-focused fieldset': {
-			border: '1px solid #000000',
-		},
-	},
-});
-
-const ListItem = styled('li')(({ theme }) => ({
-	margin: theme.spacing(0.5),
-}));
+const ListItem = styled('li')(({ theme }) => ({ margin: theme.spacing(0.5) }));
 
 const toastMessages = {
 	ERR_MAX_FILES_NUMBER: 'Maximum files is 4 !!',
@@ -68,43 +23,26 @@ const toastMessages = {
 	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
 };
 
-const ColorButton = styled(Button)(() => ({
-	fontFamily: 'Poppins',
-	fontSize: '13px',
-	fontWeight: 'bold',
-	textTransform: 'none',
-	minWidth: 200,
-	display: 'inline-block',
-	margin: '10px',
-	padding: '10px',
-
-	'&:disabled ': { cursor: 'not-allowed', pointerEvents: 'all !important' },
-}));
-
 const validationSchema = yup.object({
 	title: yup.string().required('Idea title is required'),
 	content: yup.string().required('Please Provide content'),
 	tags: yup.array().max(3, 'Only 3 tags per idea').nullable(),
 	attachments: yup.array().nullable(),
 	is_anonymous: yup.bool(),
-	submission_id: yup
-		.string()
-		.required('Please specify the submission for this idea'),
+	submission_id: yup.string().required('Please specify the submission for this idea'),
 });
 
 function UpdateIdeaForm(props) {
-	const {
-		onClose,
-		onUpdate,
-		submission: externalSubData,
-		initialValues,
-	} = props;
+	const { onClose, onUpdate, specifySub, initialValue } = props;
 	const [attachments, setAttachments] = useState([]);
 	const [subOptions, setSubOptions] = useState([]);
 	const [tagOptions, setTagOptions] = useState([]);
 
 	const formik = useFormik({
-		initialValues: initialValues,
+		initialValues: {
+			...initialValue,
+			submission_id: initialValue?.submission?.id,
+		},
 		validationSchema: validationSchema,
 		onSubmit: (values) => {
 			onUpdate({
@@ -119,31 +57,20 @@ function UpdateIdeaForm(props) {
 	});
 
 	useEffect(() => {
-		if (!externalSubData) {
-			loadSubmissions();
-		} else {
-			formik.setFieldValue('submission_id', externalSubData.id);
-		}
-		loadTags();
+		(async () => {
+			!specifySub
+				? await axioc
+						.get(API_PATHS.ADMIN.MANAGE_SUB + '/list')
+						.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
+						.then((res) => setSubOptions(res?.data?.result))
+				: formik.setFieldValue('submission_id', initialValue?.submission?.id);
+
+			await axioc
+				.get(API_PATHS.ADMIN.MANAGE_TAG + '/list')
+				.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
+				.then((res) => setTagOptions(res?.data?.result));
+		})();
 	}, []);
-
-	const loadSubmissions = async () => {
-		await axioc
-			.get(API_PATHS.ADMIN.MANAGE_SUB + '/list')
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
-			.then((res) => {
-				setSubOptions(res?.data?.result);
-			});
-	};
-
-	const loadTags = async () => {
-		await axioc
-			.get(API_PATHS.ADMIN.MANAGE_TAG + '/list')
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
-			.then((res) => {
-				setTagOptions(res?.data?.result);
-			});
-	};
 
 	const FILE_SIZE = 1e7;
 
@@ -156,8 +83,7 @@ function UpdateIdeaForm(props) {
 
 			for (const file of acceptedFiles) {
 				if (
-					attachments.reduce((a, b) => a + (b['size'] || 0), 0) +
-						file.size >
+					attachments.reduce((a, b) => a + (b['size'] || 0), 0) + file.size >
 					FILE_SIZE
 				) {
 					toast.error(`${file.name} ${toastMessages.ERR_FILE_BIG}`);
@@ -194,280 +120,149 @@ function UpdateIdeaForm(props) {
 	};
 
 	return (
-		<div className='updateideaform'>
-			<div className='updateideaform_title'>
-				<h2>Create Idea</h2>
-				<IconButton>
-					<CloseIcon onClick={() => onClose()} />
-				</IconButton>
+		<UimModalForm
+			entity='idea'
+			action='edit'
+			onClose={() => onClose()}
+			ClassName='editideaform'
+			onSubmit={formik.handleSubmit}
+			showActionButton={true}
+		>
+			<div className='createideaform_group'>
+				<div className='createideaform_content'>
+					{specifySub ? (
+						<UimTextField
+							label='Submission'
+							propName='submission_id'
+							dynamic={{ value: initialValue?.submission?.title }}
+							inputProps={{ disabled: true, readOnly: true }}
+						/>
+					) : (
+						<UimAutoComplete.Select
+							label='Submission'
+							required={true}
+							propName='submission_id'
+							onBlur={formik.handleBlur}
+							options={subOptions}
+							defaultValue={initialValue?.submission}
+							getOptionLabel={(option) => option?.title}
+							onChange={(_, value) => {
+								formik.setFieldValue('submission_id', value.id ?? '');
+							}}
+							dynamic={{
+								value: formik.values.submission_id,
+								error: formik.errors.submission_id,
+								touched: formik.touched.submission_id,
+							}}
+						/>
+					)}
+				</div>
+
+				<div className='createideaform_content'>
+					<UimTextField
+						label='Idea Title'
+						required={true}
+						propName='title'
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						dynamic={{
+							value: formik.values.title,
+							error: formik.errors.title,
+							touched: formik.touched.title,
+						}}
+					/>
+				</div>
 			</div>
-			<br />
-
-			<form
-				className='updateideaform_grid'
-				onSubmit={formik.handleSubmit}>
-				<div className='updateideaform_group'>
-					<div className='updateideaform_content'>
-						<InputLabel htmlFor='titleSub'>
-							Title Submission
-						</InputLabel>
-						{externalSubData ? (
-							<Select
-								disabled={true}
-								fullWidth
-								labelId='submission_id'
-								id='submission_id'
-								name='submission_id'
-								value={formik.values.submission_id}
-								style={{ textTransform: 'capitalize' }}>
-								<MenuItem value={formik.values.submission_id}>
-									{externalSubData.title}
-								</MenuItem>
-							</Select>
-						) : (
-							<>
-								<Select
-									select
-									fullWidth
-									displayEmpty
-									labelId='submission_id'
-									id='submission_id'
-									name='submission_id'
-									defaultValue=''
-									value={formik.values.submission_id}
-									onChange={formik.handleChange}
-									onBlur={formik.handleBlur}
-									style={{ textTransform: 'capitalize' }}
-									renderValue={
-										formik.values.submission_id !== null
-											? undefined
-											: () => (
-													<placeholder>
-														<em
-															style={{
-																textTransform:
-																	'lowercase',
-																opacity: 0.6,
-																fontSize: 14,
-															}}>
-															-- submission --
-														</em>
-													</placeholder>
-											  )
-									}
-									error={
-										formik.touched.submission_id &&
-										Boolean(formik.errors.submission_id)
-									}>
-									{subOptions?.map((sub) => (
-										<MenuItem
-											style={{
-												textTransform: 'capitalize',
-											}}
-											value={sub.id}>
-											{sub.title}
-										</MenuItem>
-									))}
-								</Select>
-								<FormHelperText error>
-									{formik.touched.submission_id &&
-										formik.errors.submission_id}
-								</FormHelperText>
-							</>
-						)}
-					</div>
-					<div className='updateideaform_content'>
-						<InputLabel required={true} htmlFor='title'>
-							Title Idea
-						</InputLabel>
-						<CssTextField
-							fullWidth
-							id='title'
-							name='title'
-							value={formik.values?.title}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							error={
-								formik.touched.title &&
-								Boolean(formik.errors.title)
-							}
-							helperText={
-								formik.touched.title && formik.errors.title
-							}
-						/>
-					</div>
+			<div className='createideaform_group'>
+				<div className='createideaform_content'>
+					<UimTextField
+						label='Content'
+						required={true}
+						autoSize={true}
+						minRows={5}
+						propName='content'
+						onChange={formik.handleChange}
+						onBlur={formik.handleBlur}
+						dynamic={{
+							value: formik.values.content,
+							error: formik.errors.content,
+							touched: formik.touched.content,
+						}}
+					/>
 				</div>
+			</div>
 
-				<div className='updateideaform_group'>
-					<div className='updateideaform_content'>
-						<InputLabel required={true} htmlFor='content'>
-							Content
-						</InputLabel>
-						<TextareaAutosize
-							className='description-field'
-							aria-label='minimum height'
-							id='content'
-							name='content'
-							minRows={8}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							style={{
-								width: '100%',
-								marginTop: 16,
-								marginBottom: 8,
-								borderRadius: '5px',
-							}}
-						/>
-					</div>
+			<div className='createideaform_group'>
+				<div className='createideaform_content'>
+					<UimAutoComplete.Tag
+						label='Tags'
+						propName='tags'
+						options={tagOptions}
+						onChange={(_, value) => formik.setFieldValue('tags', value ?? '')}
+						defaultValue={initialValue?.tags}
+						onBlur={formik.handleBlur}
+						dynamic={{
+							error: formik.errors.tags,
+							touched: formik.touched.tags,
+							value: formik?.values?.tags,
+						}}
+					/>
 				</div>
+			</div>
 
-				<div className='updateideaform_group'>
-					<div className='updateideaform_content'>
-						<InputLabel required={true} htmlFor='tags'>
-							Tags
-						</InputLabel>
-						<Select
-							select
-							fullWidth
-							multiple
-							labelId='tags'
-							id='tags'
-							name='tags'
-							input={<OutlinedInput label='Tag' />}
-							value={formik?.values?.tags}
-							onChange={formik.handleChange}
-							onBlur={formik.handleBlur}
-							MenuProps={{
-								PaperProps: {
-									style: { maxHeight: 224, width: 250 },
-								},
+			{attachments.length === 0 ? null : (
+				<div className='createideaform_group'>
+					<div className='createideaform_content'>
+						<List
+							sx={{
+								display: 'flex',
+								justifyContent: 'center',
+								flexWrap: 'wrap',
+								listStyle: 'none',
+								p: 0.5,
+								m: 0,
 							}}
-							renderValue={(selected) =>
-								formik.values.tags !== null ? (
-									<List
-										sx={{
-											display: 'flex',
-											justifyContent: 'center',
-											flexWrap: 'wrap',
-											listStyle: 'none',
-											p: 0.5,
-											m: 0,
-										}}>
-										{selected.map((value, index) => (
-											<ListItem key={index}>
-												<Chip
-													label={value}
-													style={{
-														background: '#d2d2d2',
-													}}
-												/>
-											</ListItem>
-										))}
-									</List>
-								) : (
-									<placeholder>
-										<em
-											style={{
-												opacity: 0.6,
-												fontSize: 14,
-											}}>
-											-- tags --
-										</em>
-									</placeholder>
-								)
-							}
-							error={
-								formik.touched.tags &&
-								Boolean(formik.errors.tags)
-							}>
-							{tagOptions?.map((tag) => (
-								<MenuItem
-									style={{ textTransform: 'capitalize' }}
-									value={tag.name}>
-									<Checkbox
-										checked={
-											formik.values.tags?.indexOf(
-												tag.name,
-											) > -1
-										}
+						>
+							{attachments.map((file, index) => (
+								<ListItem key={index}>
+									<Chip
+										clickable
+										icon={<InsertDriveFileIcon />}
+										onDelete={handleDeleteAttachment(file)}
+										style={{ background: '#d2d2d2' }}
+										label={`${file.name} · ${toReadableFileSize(
+											file.size,
+										)}`}
 									/>
-									<ListItemText primary={tag.name} />
-								</MenuItem>
+								</ListItem>
 							))}
-						</Select>
-						<FormHelperText error>
-							{formik.touched.tags && formik.errors.tags}
-						</FormHelperText>
+						</List>
 					</div>
 				</div>
+			)}
 
-				{attachments.length === 0 ? null : (
-					<div className='updateideaform_group'>
-						<div className='updateideaform_content'>
-							<List
-								sx={{
-									display: 'flex',
-									justifyContent: 'center',
-									flexWrap: 'wrap',
-									listStyle: 'none',
-									p: 0.5,
-									m: 0,
-								}}>
-								{attachments.map((file, index) => (
-									<ListItem key={index}>
-										<Chip
-											clickable
-											icon={<InsertDriveFileIcon />}
-											onDelete={handleDeleteAttachment(
-												file,
-											)}
-											label={`${
-												file.name
-											} · ${toReadableFileSize(
-												file.size,
-											)}`}
-											style={{ background: '#d2d2d2' }}
-										/>
-									</ListItem>
-								))}
-							</List>
-						</div>
-					</div>
-				)}
-
-				<div className='updateideaform_group'>
-					<div className='updateideaform_content'>
-						<Dropzone
-							onDrop={handleDrop}
-							onDropRejected={() =>
-								toast.error(toastMessages.ERR_FILE_REJECTED)
-							}>
-							{({ getRootProps, getInputProps }) => (
-								<div
-									{...getRootProps({
-										className: 'dropzone',
-									})}>
-									<input {...getInputProps()} />
-									<p>
-										Drag &#38; drop files, or click to
-										select files
-									</p>
-								</div>
-							)}
-						</Dropzone>
-					</div>
+			<div className='createideaform_group'>
+				<div className='createideaform_content'>
+					<Dropzone
+						onDrop={handleDrop}
+						onDropRejected={() =>
+							toast.error(toastMessages.ERR_FILE_REJECTED)
+						}
+					>
+						{({ getRootProps, getInputProps }) => (
+							<div
+								{...getRootProps({
+									className: 'dropzone',
+								})}
+							>
+								<input {...getInputProps()} />
+								<p>Drag &#38; drop files, or click to select files</p>
+							</div>
+						)}
+					</Dropzone>
 				</div>
-
-				<div className='updateideaform_footer'>
-					<ColorButton variant='outlined' onClick={() => onClose()}>
-						Cancel
-					</ColorButton>
-					<ColorButton variant='contained' type='submit'>
-						Update
-					</ColorButton>
-				</div>
-			</form>
-		</div>
+			</div>
+		</UimModalForm>
 	);
 }
 
