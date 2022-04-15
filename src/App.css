@@ -45,38 +45,7 @@ div[style*="position: absolute; pointer-events: none; color: rgba(130, 130, 130,
 
   z-index: 999;
 }
-
-/* .main-content {
-  margin-left: 250px !important;
-  padding: 0 10px;
+.small_icon {
+  font-size: 12px;
+  width: 13px;
 }
-
-@media only screen and (max-width: 1000px) {
-  .sidebar {
-    width: 150px;
-  }
-
-  .main-content {
-    margin-left: 150px !important;
-  }
-}
-
-@media only screen and (max-width: 800px) {
-  .sidebar {
-    width: 88px;
-  }
-
-  .main-content {
-    margin-left: 88px !important;
-  }
-}
-
-@media only screen and (max-width: 500px) {
-  .sidebar {
-    width: 66px;
-  }
-
-  .main-content {
-    margin-left: 66px !important;
-  }
-} */

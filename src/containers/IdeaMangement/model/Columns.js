@@ -54,7 +54,7 @@ export const Columns = [
 		renderCell: (value) =>
 			value?.row?.tags?.map((V, i) => (
 				<div style={{ margin: '0 2px' }}>
-					<Chip label={V} style={{ background: '#d2d2d2' }} />
+					<Chip label={V} variant='outlined' size='large' />
 				</div>
 			)),
 	},
