@@ -33,6 +33,8 @@ function EditUserForm(props) {
 		onSubmit: (values) => onUpdate(values),
 	});
 
+	console.log(initialValue);
+
 	useEffect(
 		() =>
 			(async () => {
@@ -58,8 +60,7 @@ function EditUserForm(props) {
 			onClose={() => onClose()}
 			ClassName='edituserform'
 			onSubmit={formik.handleSubmit}
-			showActionButton={true}
-		>
+			showActionButton={true}>
 			<div className='form_group'>
 				<div className='form_content'>
 					<UimTextField
@@ -125,9 +126,13 @@ function EditUserForm(props) {
 						label='Date of Birth'
 						required={true}
 						propName='date_of_birth'
-						onChange={(val) => formik.setFieldValue('date_of_birth', val)}
+						onChange={(val) =>
+							formik.setFieldValue('date_of_birth', val)
+						}
 						onBlur={formik.handleBlur}
-						renderInput={(params) => <UimTextField fullWidth {...params} />}
+						renderInput={(params) => (
+							<UimTextField fullWidth {...params} />
+						)}
 						dynamic={{
 							value: formik.values.date_of_birth,
 							error: formik.errors.date_of_birth,

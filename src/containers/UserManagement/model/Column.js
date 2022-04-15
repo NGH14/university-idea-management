@@ -4,12 +4,15 @@ export const Columns = [
 		headerName: '#',
 		disableColumnMenu: true,
 		sortable: false,
-		filter: true,
-		type: 'number',
+		filter: false,
+		filterable: false,
 		width: 80,
 		align: 'center',
 		headerAlign: 'center',
-		renderCell: (value) => <span>{value.api.getRowIndex(value.id) + 1}</span>,
+
+		renderCell: (value) => (
+			<span>{value.api.getRowIndex(value.id) + 1}</span>
+		),
 	},
 	{
 		field: 'full_name',
@@ -43,8 +46,16 @@ export const Columns = [
 		width: 'auto',
 		minWidth: 200,
 		flex: 1,
+
 		renderCell: (value) => (
-			<div style={{ textTransform: 'capitalize' }}>{value?.row?.department}</div>
+			<div
+				style={{
+					textTransform: 'capitalize',
+					overflow: 'hidden',
+					textOverflow: 'ellipsis',
+				}}>
+				{value?.row?.department}
+			</div>
 		),
 	},
 	{
@@ -58,7 +69,9 @@ export const Columns = [
 		minWidth: 200,
 		flex: 1,
 		renderCell: (value) => (
-			<div style={{ textTransform: 'capitalize' }}>{value?.row?.role}</div>
+			<div style={{ textTransform: 'capitalize' }}>
+				{value?.row?.role}
+			</div>
 		),
 	},
 ];

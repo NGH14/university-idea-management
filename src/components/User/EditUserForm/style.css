@@ -8,6 +8,8 @@
 .edituserform_footer {
 	display: flex;
 	justify-content: flex-end;
+	flex-wrap: wrap;
+	gap: 10px;
 }
 
 .form_grid {

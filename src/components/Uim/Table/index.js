@@ -19,15 +19,20 @@ export function UimTable({
 	return (
 		<div className={tableClassNames}>
 			<DataGridPro
+				hideFooter
 				components={{
 					NoRowsOverlay: CustomNoRowsOverlay,
-					ColumnSortedDescendingIcon: () => <ExpandMoreIcon className='icon' />,
-					ColumnSortedAscendingIcon: () => <ExpandLessIcon className='icon' />,
+					NoResultsOverlay: CustomNoRowsOverlay,
+					ColumnSortedDescendingIcon: () => (
+						<ExpandMoreIcon className='icon' />
+					),
+					ColumnSortedAscendingIcon: () => (
+						<ExpandLessIcon className='icon' />
+					),
 					Toolbar: showTableToolBar && UimTableToolBar,
 				}}
-				initialState={{ pinnedColumns: { right: ['actions'] } }}
 				hideFooterSelectedRowCount={true}
-				style={{ minHeight: '70vh' }}
+				style={{ minHeight: '68.5vh' }}
 				hideFooterPagination={true}
 				hideFooterRowCount={true}
 				rowCount={pageSize}

@@ -2,6 +2,8 @@ import moment from 'moment';
 
 export const Column = [
 	{
+		filterable: false,
+
 		field: 'no',
 		headerName: '#',
 		disableColumnMenu: true,
@@ -10,7 +12,9 @@ export const Column = [
 		width: 80,
 		align: 'center',
 		headerAlign: 'center',
-		renderCell: (value) => <span>{value.api.getRowIndex(value.id) + 1}</span>,
+		renderCell: (value) => (
+			<span>{value.api.getRowIndex(value.id) + 1}</span>
+		),
 	},
 	{
 		field: 'title',

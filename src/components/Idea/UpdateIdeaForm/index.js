@@ -87,11 +87,18 @@ const validationSchema = yup.object({
 	tags: yup.array().max(3, 'Only 3 tags per idea').nullable(),
 	attachments: yup.array().nullable(),
 	is_anonymous: yup.bool(),
-	submission_id: yup.string().required('Please specify the submission for this idea'),
+	submission_id: yup
+		.string()
+		.required('Please specify the submission for this idea'),
 });
 
 function UpdateIdeaForm(props) {
-	const { onClose, onUpdate, submission: externalSubData, initialValues } = props;
+	const {
+		onClose,
+		onUpdate,
+		submission: externalSubData,
+		initialValues,
+	} = props;
 	const [attachments, setAttachments] = useState([]);
 	const [subOptions, setSubOptions] = useState([]);
 	const [tagOptions, setTagOptions] = useState([]);
@@ -149,7 +156,8 @@ function UpdateIdeaForm(props) {
 
 			for (const file of acceptedFiles) {
 				if (
-					attachments.reduce((a, b) => a + (b['size'] || 0), 0) + file.size >
+					attachments.reduce((a, b) => a + (b['size'] || 0), 0) +
+						file.size >
 					FILE_SIZE
 				) {
 					toast.error(`${file.name} ${toastMessages.ERR_FILE_BIG}`);
@@ -195,10 +203,14 @@ function UpdateIdeaForm(props) {
 			</div>
 			<br />
 
-			<form className='updateideaform_grid' onSubmit={formik.handleSubmit}>
+			<form
+				className='updateideaform_grid'
+				onSubmit={formik.handleSubmit}>
 				<div className='updateideaform_group'>
 					<div className='updateideaform_content'>
-						<InputLabel htmlFor='titleSub'>Title Submission</InputLabel>
+						<InputLabel htmlFor='titleSub'>
+							Title Submission
+						</InputLabel>
 						{externalSubData ? (
 							<Select
 								disabled={true}
@@ -207,8 +219,7 @@ function UpdateIdeaForm(props) {
 								id='submission_id'
 								name='submission_id'
 								value={formik.values.submission_id}
-								style={{ textTransform: 'capitalize' }}
-							>
+								style={{ textTransform: 'capitalize' }}>
 								<MenuItem value={formik.values.submission_id}>
 									{externalSubData.title}
 								</MenuItem>
@@ -238,8 +249,7 @@ function UpdateIdeaForm(props) {
 																	'lowercase',
 																opacity: 0.6,
 																fontSize: 14,
-															}}
-														>
+															}}>
 															-- submission --
 														</em>
 													</placeholder>
@@ -248,15 +258,13 @@ function UpdateIdeaForm(props) {
 									error={
 										formik.touched.submission_id &&
 										Boolean(formik.errors.submission_id)
-									}
-								>
+									}>
 									{subOptions?.map((sub) => (
 										<MenuItem
 											style={{
 												textTransform: 'capitalize',
 											}}
-											value={sub.id}
-										>
+											value={sub.id}>
 											{sub.title}
 										</MenuItem>
 									))}
@@ -279,8 +287,13 @@ function UpdateIdeaForm(props) {
 							value={formik.values?.title}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={formik.touched.title && Boolean(formik.errors.title)}
-							helperText={formik.touched.title && formik.errors.title}
+							error={
+								formik.touched.title &&
+								Boolean(formik.errors.title)
+							}
+							helperText={
+								formik.touched.title && formik.errors.title
+							}
 						/>
 					</div>
 				</div>
@@ -339,8 +352,7 @@ function UpdateIdeaForm(props) {
 											listStyle: 'none',
 											p: 0.5,
 											m: 0,
-										}}
-									>
+										}}>
 										{selected.map((value, index) => (
 											<ListItem key={index}>
 												<Chip
@@ -358,23 +370,25 @@ function UpdateIdeaForm(props) {
 											style={{
 												opacity: 0.6,
 												fontSize: 14,
-											}}
-										>
+											}}>
 											-- tags --
 										</em>
 									</placeholder>
 								)
 							}
-							error={formik.touched.tags && Boolean(formik.errors.tags)}
-						>
+							error={
+								formik.touched.tags &&
+								Boolean(formik.errors.tags)
+							}>
 							{tagOptions?.map((tag) => (
 								<MenuItem
 									style={{ textTransform: 'capitalize' }}
-									value={tag.name}
-								>
+									value={tag.name}>
 									<Checkbox
 										checked={
-											formik.values.tags?.indexOf(tag.name) > -1
+											formik.values.tags?.indexOf(
+												tag.name,
+											) > -1
 										}
 									/>
 									<ListItemText primary={tag.name} />
@@ -398,15 +412,18 @@ function UpdateIdeaForm(props) {
 									listStyle: 'none',
 									p: 0.5,
 									m: 0,
-								}}
-							>
+								}}>
 								{attachments.map((file, index) => (
 									<ListItem key={index}>
 										<Chip
 											clickable
 											icon={<InsertDriveFileIcon />}
-											onDelete={handleDeleteAttachment(file)}
-											label={`${file.name} · ${toReadableFileSize(
+											onDelete={handleDeleteAttachment(
+												file,
+											)}
+											label={`${
+												file.name
+											} · ${toReadableFileSize(
 												file.size,
 											)}`}
 											style={{ background: '#d2d2d2' }}
@@ -424,16 +441,17 @@ function UpdateIdeaForm(props) {
 							onDrop={handleDrop}
 							onDropRejected={() =>
 								toast.error(toastMessages.ERR_FILE_REJECTED)
-							}
-						>
+							}>
 							{({ getRootProps, getInputProps }) => (
 								<div
 									{...getRootProps({
 										className: 'dropzone',
-									})}
-								>
+									})}>
 									<input {...getInputProps()} />
-									<p>Drag &#38; drop files, or click to select files</p>
+									<p>
+										Drag &#38; drop files, or click to
+										select files
+									</p>
 								</div>
 							)}
 						</Dropzone>
