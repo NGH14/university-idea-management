@@ -103,7 +103,7 @@ const UpdatePasswordForm = (props) => {
 			await axioc
 				.post(API_PATHS.SHARED.AUTH.UPDATE_PWD, values)
 				.catch(() => toast.error('Failed to update password !!'))
-				.finally(() => {
+				.then(() => {
 					setButtonState({
 						...buttonState,
 						loading: false,
