@@ -293,13 +293,10 @@ function CreateIdeaForm(props) {
 													<AiOutlineFile />
 												</Avatar>
 											</ListItemAvatar>
-											<ListItemText
-												primary={`${
-													file.name
-												} · ${toReadableFileSize(
-													file.size,
-												)}`}
-											/>
+											<ListItemText>
+												{file.name}{' '}
+												{toReadableFileSize(file.size)}
+											</ListItemText>
 										</ListItem>
 									))}
 								</List>
