@@ -1,22 +1,7 @@
+import { Chip } from '@mui/material';
 import moment from 'moment';
-import _ from 'lodash';
-import { Chip, List, ListItem } from '@mui/material';
-import { FaTrash } from 'react-icons/fa';
 
 export const Columns = [
-	{
-		field: 'no',
-		headerName: '#',
-		disableColumnMenu: true,
-		sortable: false,
-		type: 'number',
-		width: 80,
-		align: 'center',
-		headerAlign: 'center',
-		renderCell: (value) => (
-			<span>{value.api.getRowIndex(value.id) + 1}</span>
-		),
-	},
 	{
 		field: 'title',
 		headerName: 'Title',

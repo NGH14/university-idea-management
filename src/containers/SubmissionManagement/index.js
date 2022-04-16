@@ -38,6 +38,23 @@ function SubmissionManagement() {
 			});
 
 	const columns = [
+		{
+			field: 'no',
+			headerName: '#',
+			disableColumnMenu: true,
+			sortable: false,
+			filter: false,
+			filterable: false,
+			width: 80,
+			align: 'center',
+			headerAlign: 'center',
+			renderCell: (value) => (
+				<span>
+					{(pagination.page - 1) * pagination.pageSize +
+						(value.api.getRowIndex(value.id) + 1)}
+				</span>
+			),
+		},
 		...Column,
 		{
 			field: 'actions',

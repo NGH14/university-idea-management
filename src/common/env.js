@@ -46,7 +46,6 @@ export const API_PATHS = {
 		MANAGE_IDEA: 'idea-management',
 		MANAGE_USER: 'user-management',
 		MANAGE_SUB: 'submission-management',
-		MANAGE_COMMENT: 'comment-management',
 	},
 };
 

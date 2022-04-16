@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
 import { Add } from '@mui/icons-material';
@@ -18,19 +19,19 @@ import {
 } from '@mui/material';
 import Tippy from '@tippyjs/react';
 import { axioc, sleep, toastMessages } from 'common';
+import { stringToSvg } from 'common/DiceBear';
 import { API_PATHS, URL_PATHS } from 'common/env';
 import FloatButton from 'components/Custom/FloatButton';
 import CommentIdea from 'components/Idea/CommentIdea';
 import ModalIdea from 'components/Idea/ModalIdea';
 import { UserContext } from 'context/AppContext';
+import _ from 'lodash';
 import moment from 'moment';
 import { useContext, useEffect, useState } from 'react';
 import { BiCommentDetail } from 'react-icons/bi';
 import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import _ from 'lodash';
-import { stringToSvg } from 'common/DiceBear';
 
 const ExpandMore = styled((props) => {
 	const { expand, ...other } = props;
@@ -47,9 +48,10 @@ export default function Homepage() {
 	const { state } = useContext(UserContext);
 
 	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
+	const [expandComments, setExpandComments] = useState();
 	const [postTotal, setPostTotal] = useState(0);
-	const [expanded, setExpanded] = useState([]);
-	const [, setAnchorEl] = useState(null);
+	const [comments, setComments] = useState([]);
+	const [anchorEl, setAnchorEl] = useState(null);
 	const [status, setStatus] = useState({
 		visibleModal: false,
 		action: 'update',
@@ -63,79 +65,87 @@ export default function Homepage() {
 			.get(API_PATHS.SHARED.IDEA + '/table/list', {
 				params: { ...pagination },
 			})
+			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
 			.then((res) => {
 				setData((oldData) => [...oldData, ...res?.data?.result?.rows]);
 				setPostTotal(res?.data?.result?.total);
-			})
-			.catch(() => toast.error(toastMessages.errs.UNEXPECTED));
+			});
 
 	// const handleClick = (event) => setAnchorEl(event.currentTarget);
 	// const handleClose = () => setAnchorEl(null);
 
 	const handleExpandClick = (id) => {
-		let newExpanded = [...expanded];
+		let newExpanded = [...comments];
 		newExpanded[id] = !newExpanded[id];
-		setExpanded(newExpanded);
+		setComments(newExpanded);
 	};
 
-	// TODO: @Henry, return entity after created
 	const requests = {
 		create: (value) =>
 			toast.promise(
-				axioc.post(API_PATHS.SHARED.IDEA, value).then(() => sleep(700)),
+				axioc
+					.post(API_PATHS.SHARED.IDEA, value)
+					.then(() => sleep(700))
+					.then((res) => {
+						setStatus({ ...status, visibleModal: false });
+						toast.info(
+							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
+								Idea details:{' '}
+								{() => {
+									const title = res?.data?.result?.title;
+									return title?.length > 50
+										? title?.substr(0, 49) + '...'
+										: title;
+								}}
+							</RouterLink>,
+						);
+					}),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.UNEXPECTED,
-					success: {
-						render({ data: res }) {
-							return (
-								<Link
-									to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
-									{data?.result?.title}
-								</Link>
-							);
-						},
-					},
 				},
 			),
 		update: (value) =>
 			toast.promise(
 				axioc
 					.put(`${API_PATHS.SHARED.IDEA}/${value?.id}`, value)
-					.then(() => sleep(700)),
+					.then(() => sleep(700))
+					.then((res) => {
+						setStatus({ ...status, visibleModal: false });
+						const indexData = data.findIndex((x) => x.id === value.id);
+						data[indexData] = res?.data?.result;
+						setData((oldData) => [...oldData, data]);
+
+						toast.info(
+							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
+								Idea details:{' '}
+								{() => {
+									const title = res?.data?.result?.title;
+									return title?.length > 50
+										? title?.substr(0, 49) + '...'
+										: title;
+								}}
+							</RouterLink>,
+						);
+					}),
 				{
 					pending: toastMessages.WAIT,
-					error: toastMessages.ERR_SERVER_ERROR,
-					success: {
-						render({ data: res }) {
-							setStatus({ ...status, visibleModal: false });
-							const indexData = data.findIndex(
-								(x) => x.id === value.id,
-							);
-							data[indexData] = res?.data?.result;
-							setData((oldData) => [...oldData, data]);
-							return toastMessages.SUC_IDEA_EDITED;
-						},
-					},
+					error: toastMessages.errs.UNEXPECTED,
 				},
 			),
 		delete: (id) =>
 			toast.promise(
-				axioc
-					.delete(`${API_PATHS.SHARED.IDEA}/${id}`)
-					.then(() => sleep(700)),
+				axioc.delete(`${API_PATHS.SHARED.IDEA}/${id}`).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
-					error: toastMessages.ERR_SERVER_ERROR,
+					error: toastMessages.errs.UNEXPECTED,
 					success: {
 						render() {
-							const indexData = data.findIndex(
-								(_) => _.id === id,
-							);
+							const indexData = data.findIndex((_) => _.id === id);
 							data.splice(indexData, 1);
 							setData((oldData) => [...oldData, data]);
 							loadData();
-							return toastMessages.SUC_IDEA_DEL;
+							return toastMessages.succs.deleted('idea');
 						},
 					},
 				},
@@ -152,7 +162,8 @@ export default function Homepage() {
 						fontSize: '0.5em',
 						color: '#999',
 						opacity: '0.7',
-					}}>
+					}}
+				>
 					Welcome to the UIM &#10084;&#65039;
 				</i>
 			</div>
@@ -227,19 +238,19 @@ export default function Homepage() {
 	const renderCardHeader = (item) => {
 		return (
 			<CardHeader
+				className='idea_header'
+				action={renderActionIdea(item?.id, item?.create_by)}
+				title={item?.user?.full_name}
 				avatar={
 					<Avatar aria-label='avatar'>
-						{item?.user?.avatar
+						{item?.is_anonymous || item?.user?.avatar
 							? stringToSvg(item?.user?.avatar)
 							: 'R'}
 					</Avatar>
 				}
-				className='idea_header'
-				action={renderActionIdea(item?.id, item?.create_by)}
-				title='People Private'
 				subheader={
-					item?.create_at
-						? moment(item?.create_at).format('LLL')
+					item?.created_date
+						? moment(item?.created_date).format('LLL')
 						: 'September 14, 2016'
 				}
 			/>
@@ -251,9 +262,7 @@ export default function Homepage() {
 			<CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
 				<div>
 					<Typography variant='body2' color='text.secondary'>
-						This impressive paella is a perfect party dish and a fun
-						meal to cook together with your guests. Add 1 cup of
-						frozen peas along with the mussels, if you like.
+						{item?.content}
 					</Typography>
 				</div>
 
@@ -264,18 +273,20 @@ export default function Homepage() {
 						padding: '0 5',
 						marginTop: 30,
 						color: '#888',
-					}}>
+					}}
+				>
 					<Tippy content={'Detail submission'}>
-						<Link
+						<RouterLink
 							to={`${URL_PATHS.SUB}/${item.submissionId}`}
 							style={{
 								textDecoration: 'underline',
 								textDecorationColor: '#1976d2',
 								color: '#1976d2',
 								cursor: 'pointer',
-							}}>
-							{item?.submissionName}
-						</Link>
+							}}
+						>
+							{item?.submission?.title}
+						</RouterLink>
 					</Tippy>
 					<span style={{ marginInline: 5 }}>with title is</span>
 					<Tippy content={'Detail submission'}>
@@ -285,8 +296,9 @@ export default function Homepage() {
 								textDecorationColor: '#1976d2',
 								color: '#1976d2',
 								cursor: 'pointer',
-							}}>
-							<Link to={`/idea/${item.id}`}>{item?.title}</Link>
+							}}
+						>
+							<RouterLink to={`/idea/${item.id}`}>{item?.title}</RouterLink>
 						</label>
 					</Tippy>
 				</div>
@@ -304,14 +316,16 @@ export default function Homepage() {
 					alignItems: 'center',
 					width: '100%',
 					fontSize: 12,
-				}}>
+				}}
+			>
 				<Button
 					className='idea_action'
 					fullWidth
 					aria-label='up vote'
 					startIcon={<IoMdArrowRoundUp />}
 					color={'inherit'}
-					size={'large'}>
+					size={'large'}
+				>
 					(0)
 				</Button>
 				<Button
@@ -321,20 +335,22 @@ export default function Homepage() {
 					style={{ marginRight: 20, marginLeft: 20 }}
 					startIcon={<IoMdArrowRoundDown />}
 					color={'inherit'}
-					size={'large'}>
+					size={'large'}
+				>
 					(0)
 				</Button>
 				<ExpandMore
 					className='idea_action'
 					fullWidth
-					expand={expanded[item.id]}
+					expand={comments[item.id]}
 					onClick={() => handleExpandClick(item.id)}
 					style={{ marginRight: 20, marginLeft: 20 }}
-					aria-expanded={expanded[item.id]}
+					aria-expanded={comments[item.id]}
 					color={'inherit'}
 					size={'large'}
 					startIcon={<BiCommentDetail />}
-					aria-label='show more'></ExpandMore>
+					aria-label='show more'
+				></ExpandMore>
 			</CardActions>
 		);
 	};
@@ -352,7 +368,7 @@ export default function Homepage() {
 		);
 
 	const renderComment = (item) => (
-		<Collapse in={expanded[item.id]} timeout='auto' unmountOnExit>
+		<Collapse in={comments[item.id]} timeout='auto' unmountOnExit>
 			<CommentIdea data={item} ideaId={item?.id} />
 		</Collapse>
 	);
@@ -369,7 +385,8 @@ export default function Homepage() {
 						marginTop: 30,
 						maxWidth: '70rem',
 						marginInline: 'auto',
-					}}>
+					}}
+				>
 					{renderCardHeader(item)}
 					{renderCardContent(item)}
 					{renderListFile(item)}
@@ -391,10 +408,7 @@ export default function Homepage() {
 	const renderFooter = () =>
 		!(_.size(data) === postTotal || _.size(data) > postTotal) ? (
 			<div style={{ marginTop: 15, textAlign: 'center' }}>
-				<Button
-					size='small'
-					variant='outlined'
-					onClick={() => onShowMore()}>
+				<Button size='small' variant='outlined' onClick={() => onShowMore()}>
 					More
 				</Button>
 			</div>
@@ -408,21 +422,20 @@ export default function Homepage() {
 			{renderContentIdea()}
 			{renderFooter()}
 
-			<Tippy placement='left' content='Submit a new idea'>
-				<FloatButton
-					onClick={() =>
-						setStatus({
-							...status,
-							visibleModal: true,
-							action: 'create',
-						})
-					}
-					size='medium'
-					color='primary'
-					ariaLabel='submit new idea'
-					icon={<Add />}
-				/>
-			</Tippy>
+			<FloatButton
+				onClick={() =>
+					setStatus({
+						...status,
+						visibleModal: true,
+						action: 'create',
+					})
+				}
+				tippy={{ placement: 'left' }}
+				size='medium'
+				color='primary'
+				ariaLabel='submit new idea'
+				icon={<Add />}
+			/>
 
 			{status.visibleModal && renderModal()}
 		</div>

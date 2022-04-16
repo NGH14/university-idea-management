@@ -8,14 +8,16 @@ import React from 'react';
 import UimTableToolBar from '../TableTootBar';
 import UimPagination from '../Pagination';
 
-export function UimTable({
-	pagination: { page, pageSize, onPageChange, onPageSizeChange },
-	classes: { tableClassNames, paginationClassNames },
-	showTableToolBar,
-	totalItems = 0,
-	columns,
-	rows,
-}) {
+export function UimTable(props) {
+	const {
+		pagination: { page, pageSize, onPageChange, onPageSizeChange },
+		classes: { tableClassNames, paginationClassNames },
+		showTableToolBar,
+		totalItems,
+		columns,
+		rows,
+	} = props;
+
 	return (
 		<div className={tableClassNames}>
 			<DataGridPro
@@ -23,25 +25,16 @@ export function UimTable({
 				components={{
 					NoRowsOverlay: CustomNoRowsOverlay,
 					NoResultsOverlay: CustomNoRowsOverlay,
-					ColumnSortedDescendingIcon: () => (
-						<ExpandMoreIcon className='icon' />
-					),
-					ColumnSortedAscendingIcon: () => (
-						<ExpandLessIcon className='icon' />
-					),
+					ColumnSortedDescendingIcon: () => <ExpandMoreIcon className='icon' />,
+					ColumnSortedAscendingIcon: () => <ExpandLessIcon className='icon' />,
 					Toolbar: showTableToolBar && UimTableToolBar,
 				}}
-				hideFooterSelectedRowCount={true}
-				style={{ minHeight: '68.5vh' }}
-				hideFooterPagination={true}
-				hideFooterRowCount={true}
-				rowCount={pageSize}
-				pageSize={pageSize}
-				pagination={false}
 				rows={rows ?? []}
 				columns={columns}
-				cell--textCenter
-				page={page - 1}
+				hideFooterRowCount={true}
+				hideFooterPagination={true}
+				hideFooterSelectedRowCount={true}
+				style={{ minHeight: '68.5vh' }}
 			/>
 			<div className={paginationClassNames ?? 'table_footer'}>
 				<UimPagination

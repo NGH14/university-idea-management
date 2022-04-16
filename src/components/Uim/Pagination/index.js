@@ -13,6 +13,7 @@ export default function UimPagination({
 	page,
 }) {
 	const pageNumber = total / pageSize;
+	const pageNumberMod = total % pageSize;
 
 	return appeared ? (
 		<>
@@ -32,7 +33,7 @@ export default function UimPagination({
 				key={Math.random() * 10}
 				siblingCount={0}
 				boundaryCount={1}
-				count={pageNumber !== 1 ? Math.floor(pageNumber) + 1 : 1}
+				count={pageNumberMod !== 0 ? Math.floor(pageNumber) + 1 : pageNumber}
 				page={page}
 				onChange={onChange}
 			/>

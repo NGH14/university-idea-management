@@ -40,6 +40,23 @@ function DepartmentManagement() {
 	};
 
 	const columns = [
+		{
+			field: 'no',
+			headerName: '#',
+			disableColumnMenu: true,
+			sortable: false,
+			filter: false,
+			filterable: false,
+			width: 80,
+			align: 'center',
+			headerAlign: 'center',
+			renderCell: (value) => (
+				<span>
+					{(pagination.page - 1) * pagination.pageSize +
+						(value.api.getRowIndex(value.id) + 1)}
+				</span>
+			),
+		},
 		...Column,
 		{
 			field: 'actions',
@@ -69,9 +86,7 @@ function DepartmentManagement() {
 	const requests = {
 		create: (value) =>
 			toast.promise(
-				axioc
-					.post(API_PATHS.ADMIN.MANAGE_DEP, value)
-					.then(() => sleep(700)),
+				axioc.post(API_PATHS.ADMIN.MANAGE_DEP, value).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.added('Department'),
@@ -144,8 +159,7 @@ function DepartmentManagement() {
 				pagination={{
 					page: pagination.page,
 					pageSize: pagination.pageSize,
-					onPageChange: (_, page) =>
-						setPagination({ ...pagination, page }),
+					onPageChange: (_, page) => setPagination({ ...pagination, page }),
 					onPageSizeChange: (event) =>
 						setPagination({
 							...pagination,

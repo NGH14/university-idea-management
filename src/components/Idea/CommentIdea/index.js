@@ -1,57 +1,54 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Divider, Grid } from '@material-ui/core';
 import { Button, InputBase } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Paper from '@mui/material/Paper';
-import { axioc, API_PATHS } from 'common';
+import { API_PATHS, axioc, toastMessages } from 'common';
+import { stringToSvg } from 'common/DiceBear';
+import { useFormik } from 'formik';
 import _ from 'lodash';
 import moment from 'moment';
-import * as React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
+import * as yup from 'yup';
 
+const initialValues = { content: '' };
+const validationSchema = yup.object({
+	content: yup.string().required('PLease comment something before submit'),
+});
+
+// TODO: @Henry, catach on key ENTER event
 function CommentIdea({ data, ideaId }) {
-	const [dataComment, setDataComment] = useState(data?.comment);
+	const [commentsData, setCommentsData] = useState(data?.comment);
 
-	const [totalComment, setTotalComment] = useState(data?.comment.total || 10);
-	const [pagination, setPagination] = useState({
-		page: 1,
-		pageSize: 5,
+	const formik = useFormik({
+		initialValues: initialValues,
+		validationSchema: validationSchema,
 	});
 
-	// NOTE: @Henry, fix param show more
-	const loadData = async () => {
-		axioc
-			.get(`${API_PATHS.ADMIN.MANAGE_COMMENT}`, {
-				params: {
-					ideaId,
-					page: pagination?.page,
-				},
-			})
-			.then((res) => {
-				setDataComment([...dataComment, res?.data?.result?.row]);
-			})
-			.catch(() => {});
-	};
-	// ref 80 condition display button show more
-	const onShowMoreComment = async () => {
-		setPagination(pagination?.page + 1);
-		loadData();
-	};
-
-	const onCreateComment = async (value) => {
-		// api create Comment
-		const newValue = { ...value, ideaId };
+	useEffect(() => loadData(), []);
+	const handleSubmitComment = async (values) =>
 		await axioc
-			.post(`${API_PATHS.ADMIN.MANAGE_COMMENT}`, newValue)
-			.then((res) => {
-				setDataComment([{ ...res?.data?.result }, ...dataComment]);
-				setTotalComment(totalComment + 1);
+			.post(`${API_PATHS.SHARED.COMMENT}`, {
+				content: values,
+				idea_id: ideaId,
 			})
-			.catch(() => {});
-	};
+			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
+			.then(() => {
+				formik.resetForm();
+				loadData();
+			});
 
-	const renderContent = () => {
-		const comments = _.map(dataComment, (item) => {
-			return (
+	const loadData = async () =>
+		axioc
+			.get(`${API_PATHS.SHARED.COMMENT}/list/${ideaId}`)
+			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
+			.then((res) => setCommentsData(res?.data?.result));
+
+	const renderContent = () => (
+		<div>
+			{_.map(commentsData, (item) => (
 				<Paper
 					style={{
 						padding: 15,
@@ -60,15 +57,19 @@ function CommentIdea({ data, ideaId }) {
 				>
 					<Grid container wrap='nowrap' spacing={2}>
 						<Grid item>
-							<Avatar alt='Remy Sharp' />
+							<Avatar aria-label='avatar'>
+								{item?.is_anonymous || item?.user?.avatar
+									? stringToSvg(item?.user?.avatar)
+									: 'R'}
+							</Avatar>
 						</Grid>
 						<Grid justifyContent='left' item xs zeroMinWidth>
 							<div
 								style={{
-									borderRadius: 15,
-									padding: 10,
 									background: '#F0F2F5',
 									lineHeight: '20px',
+									borderRadius: 15,
+									padding: 10,
 								}}
 							>
 								<p
@@ -82,7 +83,7 @@ function CommentIdea({ data, ideaId }) {
 										lineHeight: '20px',
 									}}
 								>
-									{item?.user?.name}
+									{item?.user?.full_name}
 								</p>
 								<p
 									style={{
@@ -106,36 +107,15 @@ function CommentIdea({ data, ideaId }) {
 									fontFamily: 'Helvetica',
 								}}
 							>
-								Commented {moment(item.createAt, 'YYYYMMDD').fromNow()}
+								{moment(item?.created_date, 'YYYYMMDD').fromNow()}
 							</p>
 						</Grid>
 					</Grid>
 				</Paper>
-			);
-		});
+			))}
+		</div>
+	);
 
-		return (
-			<div>
-				{comments}
-				{_.size(dataComment) === totalComment || totalComment === 0 ? (
-					<div></div>
-				) : (
-					<div
-						style={{
-							textAlign: 'center',
-							marginTop: 15,
-							marginBottom: 15,
-						}}
-						onClick={() => {
-							onShowMoreComment();
-						}}
-					>
-						<Button variant={'outlined  '}>View More</Button>
-					</div>
-				)}
-			</div>
-		);
-	};
 	return (
 		<>
 			<div>
@@ -151,34 +131,27 @@ function CommentIdea({ data, ideaId }) {
 				>
 					<InputBase
 						fullWidth
+						id='content'
+						name='content'
+						onBlur={formik.handleBlur}
+						onChange={formik.handleChange}
+						value={formik.values.content}
 						sx={{ ml: 1, flex: 1 }}
 						placeholder='Write a comment ...'
-						onClick={() => {
-							console.log(123);
-						}}
+						helperText={formik.touched.content && formik.errors.content}
+						error={formik.touched.content && Boolean(formik.errors.content)}
 					/>
 					<Divider sx={{ height: 28, m: 0.5 }} orientation='vertical' />
 					<Button
 						sx={{ p: '10px' }}
 						aria-label='directions'
-						onClick={() => {
-							onCreateComment();
-						}}
+						onClick={() => handleSubmitComment(formik.values.content)}
 					>
 						Post
 					</Button>
 				</Paper>
 			</div>
-			<div
-				style={{
-					paddingRight: 15,
-					paddingLeft: 15,
-					marginTop: 15,
-					fontSize: 14,
-				}}
-			>
-				<strong>Comment ({totalComment || 10})</strong>
-			</div>
+
 			{renderContent()}
 		</>
 	);
