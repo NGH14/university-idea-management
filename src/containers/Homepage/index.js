@@ -350,37 +350,41 @@ export default function Homepage() {
 						{item?.title}
 					</RouterLink>
 				</Tippy>
-				<div
-					style={{
-						display: 'flex',
-						alignItems: 'center',
-						flexWrap: 'wrap',
-					}}>
-					<div className={showMore[index] || 'maxWidth300'}>
+
+				<div className={showMore[index] || 'maxWidth300'}>
+					<div className={showMore[index] || 'multiLineEllipsis'}>
 						<Typography
 							variant='body2'
-							color='text.secondary'
+							color='text.secondary '
 							className={showMore[index] || 'multiLineEllipsis'}>
 							{item?.content}
 						</Typography>
+						{/* <div
+							style={{
+								display: showMore[index] || 'none',
+								width: 300,
+								height: 300,
+								backgroundColor: 'red',
+							}}></div> */}
 					</div>
-					<Button
-						variant='text'
-						onClick={() => onShowMoreContent(index)}
-						disableFocusRipple
-						disableTouchRipple
-						sx={{
-							textTransform: 'capitalize',
-							fontSize: '0.80em',
-							color: '#888',
-							'&:hover': {
-								backgroundColor: '#fff',
-								color: '#333',
-							},
-						}}>
-						{showMore[index] ? 'Show less' : 'Show more'}
-					</Button>
 				</div>
+				<Button
+					variant='text'
+					onClick={() => onShowMoreContent(index)}
+					disableFocusRipple
+					disableTouchRipple
+					sx={{
+						padding: '0 !important',
+						textTransform: 'capitalize',
+						fontSize: '0.80em',
+						color: '#888',
+						'&:hover': {
+							backgroundColor: '#fff',
+							color: '#333',
+						},
+					}}>
+					{showMore[index] ? 'Show less' : 'Show more'}
+				</Button>
 			</CardContent>
 		);
 	};
