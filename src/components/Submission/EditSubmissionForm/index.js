@@ -96,7 +96,7 @@ function EditSubmissionForm(props) {
 						{...startProps}
 						required={true}
 						label={null}
-						type={'date'}
+						type='date'
 						id='initial_date'
 						name='initial_date'
 						onChange={formik.handleChange}
@@ -106,8 +106,7 @@ function EditSubmissionForm(props) {
 							Boolean(formik.errors.initial_date)
 						}
 						helperText={
-							formik.touched.initial_date &&
-							formik.errors.initial_date
+							formik.touched.initial_date && formik.errors.initial_date
 						}
 					/>
 				</div>
@@ -119,7 +118,8 @@ function EditSubmissionForm(props) {
 						height: 56,
 						paddingBottom: 15,
 						paddingTop: 15,
-					}}>
+					}}
+				>
 					to
 				</Box>
 				<div className='form_content' style={{ width: '100%' }}>
@@ -131,19 +131,15 @@ function EditSubmissionForm(props) {
 						{...endProps}
 						label={null}
 						required={true}
-						type={'date'}
+						type='date'
 						id='final_date'
 						name='final_date'
 						onChange={formik.handleChange}
 						onBlur={formik.handleBlur}
 						error={
-							formik.touched.final_date &&
-							Boolean(formik.errors.final_date)
+							formik.touched.final_date && Boolean(formik.errors.final_date)
 						}
-						helperText={
-							formik.touched.final_date &&
-							formik.errors.final_date
-						}
+						helperText={formik.touched.final_date && formik.errors.final_date}
 					/>
 				</div>
 			</React.Fragment>
@@ -173,13 +169,8 @@ function EditSubmissionForm(props) {
 							required={true}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={
-								formik.touched.title &&
-								Boolean(formik.errors.title)
-							}
-							helperText={
-								formik.touched.title && formik.errors.title
-							}
+							error={formik.touched.title && Boolean(formik.errors.title)}
+							helperText={formik.touched.title && formik.errors.title}
 						/>
 					</div>
 				</div>
@@ -191,6 +182,7 @@ function EditSubmissionForm(props) {
 							id='titles'
 							name='titles'
 							calendars={2}
+							inputFormat='dd/MM/yyyy'
 							value={dataDateRangePicker}
 							onChange={(newValue) => {
 								setDataDateRangePicker(newValue);
@@ -204,9 +196,7 @@ function EditSubmissionForm(props) {
 				</div>
 				<div className='form_group'>
 					<div className='form_content'>
-						<InputLabel htmlFor='description'>
-							Description
-						</InputLabel>
+						<InputLabel htmlFor='description'>Description</InputLabel>
 						<TextareaAutosize
 							className='description-field'
 							aria-label='minimum height'
