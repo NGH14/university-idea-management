@@ -102,21 +102,25 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 		},
 	});
 
-	const onLogin = async (value) => {
-		await axioc
-			.post(API_PATHS.SHARED.AUTH.LOGIN, value)
-			.catch(() => toast.error(toastMessages.errs.INVALID_LOGIN))
-			.then((res) => {
-				localStorage.setItem(
-					STORAGE_VARS.JWT,
-					res?.data?.result?.access_token?.token,
-				);
-				localStorage.setItem(
-					STORAGE_VARS.REFRESH,
-					res?.data?.result?.refresh_token,
-				);
-				setState({ ...state, isLogin: true });
-			})
+	const onLogin = (value) =>
+		toast
+			.promise(
+				axioc.post(API_PATHS.SHARED.AUTH.LOGIN, value).then((res) => {
+					localStorage.setItem(
+						STORAGE_VARS.JWT,
+						res?.data?.result?.access_token?.token,
+					);
+					localStorage.setItem(
+						STORAGE_VARS.REFRESH,
+						res?.data?.result?.refresh_token,
+					);
+					setState({ ...state, isLogin: true });
+				}),
+				{
+					pending: toastMessages.WAIT,
+					error: toastMessages.errs.INVALID_LOGIN,
+				},
+			)
 			.finally(() => {
 				setButtonState({
 					...buttonState,
@@ -125,26 +129,31 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 				});
 				navigate(returnUrl);
 			});
-	};
 
 	const onGoogleLogin = async (googleResponse) => {
-		await axioc
-			.post(API_PATHS.SHARED.AUTH.EX_LOGIN, {
-				provider: 'google',
-				id_token: googleResponse.tokenId,
-			})
-			.catch(() => toast.error(toastMessages.errs.INVALID_GOOGLE))
-			.then((res) => {
-				localStorage.setItem(
-					STORAGE_VARS.JWT,
-					res?.data?.result?.access_token?.token,
-				);
-				localStorage.setItem(
-					STORAGE_VARS.REFRESH,
-					res?.data?.result?.refresh_token,
-				);
-				setState({ ...state, isLogin: true });
-			})
+		toast
+			.promise(
+				axioc
+					.post(API_PATHS.SHARED.AUTH.EX_LOGIN, {
+						id_token: googleResponse.tokenId,
+						provider: 'google',
+					})
+					.then((res) => {
+						localStorage.setItem(
+							STORAGE_VARS.JWT,
+							res?.data?.result?.access_token?.token,
+						);
+						localStorage.setItem(
+							STORAGE_VARS.REFRESH,
+							res?.data?.result?.refresh_token,
+						);
+						setState({ ...state, isLogin: true });
+					}),
+				{
+					pending: toastMessages.WAIT,
+					error: toastMessages.errs.INVALID_GOOGLE,
+				},
+			)
 			.finally(() => {
 				setButtonState({
 					...buttonState,
