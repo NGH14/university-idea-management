@@ -50,7 +50,7 @@ export const API_PATHS = {
 };
 
 export const URL_PATHS = {
-	TERM_CONDITION: '/tas',
+	TERM_CONDITION: '/term-condition',
 	NOT_FOUND: '/notfound',
 	DENY_ACCESS: '/unauthorized',
 	ANY: '/',
