@@ -55,13 +55,14 @@ function CommentIdea({ data, ideaId }) {
 					style={{
 						padding: 15,
 						boxShadow: 'none',
-					}}>
+					}}
+				>
 					<Grid container wrap='nowrap' spacing={2}>
 						<Grid item>
 							<Avatar aria-label='avatar'>
 								{item?.is_anonymous || item?.user?.avatar
 									? stringToSvg(item?.user?.avatar)
-									: 'R'}
+									: 'A'}
 							</Avatar>
 						</Grid>
 						<Grid justifyContent='left' item xs zeroMinWidth>
@@ -71,7 +72,8 @@ function CommentIdea({ data, ideaId }) {
 									lineHeight: '20px',
 									borderRadius: 15,
 									padding: 10,
-								}}>
+								}}
+							>
 								<p
 									style={{
 										textAlign: 'left',
@@ -80,7 +82,8 @@ function CommentIdea({ data, ideaId }) {
 										fontFamily: 'Helvetica',
 										color: 'rgba(0, 0, 0, 0.87)',
 										lineHeight: '20px',
-									}}>
+									}}
+								>
 									{item?.user?.full_name}
 								</p>
 								<p
@@ -90,7 +93,8 @@ function CommentIdea({ data, ideaId }) {
 										color: 'rgba(0, 0, 0, 0.6)',
 										fontFamily: 'Helvetica',
 										lineHeight: '20px',
-									}}>
+									}}
+								>
 									{item?.content}
 								</p>
 							</div>
@@ -101,7 +105,8 @@ function CommentIdea({ data, ideaId }) {
 									marginLeft: 10,
 									fontSize: 12,
 									fontFamily: 'Helvetica',
-								}}>
+								}}
+							>
 								{moment(item?.created_date).fromNow()}
 							</p>
 						</Grid>
@@ -122,7 +127,8 @@ function CommentIdea({ data, ideaId }) {
 						alignItems: 'center',
 						width: '100%',
 						border: '0.5px solid rgba(0,0,0,0.1)',
-					}}>
+					}}
+				>
 					<InputBase
 						fullWidth
 						id='content'
@@ -132,24 +138,15 @@ function CommentIdea({ data, ideaId }) {
 						value={formik.values.content}
 						sx={{ ml: 1, flex: 1 }}
 						placeholder='Write a comment ...'
-						helperText={
-							formik.touched.content && formik.errors.content
-						}
-						error={
-							formik.touched.content &&
-							Boolean(formik.errors.content)
-						}
+						helperText={formik.touched.content && formik.errors.content}
+						error={formik.touched.content && Boolean(formik.errors.content)}
 					/>
-					<Divider
-						sx={{ height: 28, m: 0.5 }}
-						orientation='vertical'
-					/>
+					<Divider sx={{ height: 28, m: 0.5 }} orientation='vertical' />
 					<Button
 						sx={{ p: '10px' }}
 						aria-label='directions'
-						onClick={() =>
-							handleSubmitComment(formik.values.content)
-						}>
+						onClick={() => handleSubmitComment(formik.values.content)}
+					>
 						Post
 					</Button>
 				</Paper>

@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
-import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
-import TagIcon from '@mui/icons-material/Tag';
+
 import { Add } from '@mui/icons-material';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import TagIcon from '@mui/icons-material/Tag';
 import {
 	Avatar,
 	Box,
@@ -19,6 +18,8 @@ import {
 	styled,
 	Typography,
 } from '@mui/material';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 import Tippy from '@tippyjs/react';
 import { axioc, sleep, toastMessages } from 'common';
 import { stringToSvg } from 'common/DiceBear';
@@ -34,7 +35,6 @@ import { BiCommentDetail } from 'react-icons/bi';
 import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
 import { Link as RouterLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import Submission from './../Submission/index';
 
 const ExpandMore = styled((props) => {
 	const { expand, ...other } = props;
@@ -85,6 +85,7 @@ export default function Homepage() {
 				setData((oldData) => [...oldData, ...res?.data?.result?.rows]);
 				setPostTotal(res?.data?.result?.total);
 			});
+
 	// const handleClick = (event) => setAnchorEl(event.currentTarget);
 	// const handleClose = () => setAnchorEl(null);
 
@@ -92,6 +93,36 @@ export default function Homepage() {
 		let newExpanded = [...comments];
 		newExpanded[index] = !newExpanded[index];
 		setComments(newExpanded);
+	};
+
+	const handleOnLikeness = async (item, ideaIndex, isLike) => {
+		if (item.requester_is_like == null)
+			await axioc
+				.post(`${API_PATHS.SHARED.LIKE}/${item.id}`, {
+					is_like: isLike,
+				})
+				.then(async (res) => {
+					const arr = [...data];
+					arr[ideaIndex].requester_is_like = isLike;
+					arr[ideaIndex].likes = res?.data?.result?.likes;
+					arr[ideaIndex].dislikes = res?.data?.result?.dislikes;
+					setData(arr);
+				})
+				.catch();
+
+		if (item.requester_is_like !== isLike)
+			await axioc
+				.put(`${API_PATHS.SHARED.LIKE}/${item.id}`, {
+					is_like: isLike,
+				})
+				.then(async (res) => {
+					const arr = [...data];
+					arr[ideaIndex].requester_is_like = isLike;
+					arr[ideaIndex].likes = res?.data?.result?.likes;
+					arr[ideaIndex].dislikes = res?.data?.result?.dislikes;
+					setData(arr);
+				})
+				.catch();
 	};
 
 	const requests = {
@@ -404,20 +435,52 @@ export default function Homepage() {
 					className='idea_action'
 					fullWidth
 					aria-label='up vote'
-					startIcon={<IoMdArrowRoundUp />}
-					color={'inherit'}
-					size={'large'}>
-					(0)
+					onClick={() =>
+						handleOnLikeness(
+							item,
+							index,
+							item.requester_is_like === true ? null : true,
+						)
+					}
+					startIcon={
+						<IoMdArrowRoundUp
+							style={{
+								color:
+									item.requester_is_like === true
+										? '#626ef0'
+										: '',
+							}}
+						/>
+					}
+					color='inherit'
+					size='large'>
+					{`(${item.likes})`}
 				</Button>
 				<Button
 					className='idea_action'
 					fullWidth
 					aria-label='down vote'
+					onClick={() =>
+						handleOnLikeness(
+							item,
+							index,
+							item.requester_is_like === false ? null : false,
+						)
+					}
 					style={{ marginRight: 20, marginLeft: 20 }}
-					startIcon={<IoMdArrowRoundDown />}
+					startIcon={
+						<IoMdArrowRoundDown
+							style={{
+								color:
+									item.requester_is_like === false
+										? '#626ef0'
+										: '',
+							}}
+						/>
+					}
 					color={'inherit'}
 					size={'large'}>
-					(0)
+					{`(${item.dislikes})`}
 				</Button>
 				<ExpandMore
 					className='idea_action'
@@ -454,7 +517,7 @@ export default function Homepage() {
 		</Collapse>
 	);
 
-	const renderContentIdea = () =>
+	const ContentIdea = () =>
 		!status.loading ? (
 			data.map((item, index) => (
 				<Card
@@ -503,7 +566,9 @@ export default function Homepage() {
 	return (
 		<div className='homepage_wrapper'>
 			{renderTop()}
-			{renderContentIdea()}
+
+			<ContentIdea />
+
 			{renderFooter()}
 
 			<FloatButton
