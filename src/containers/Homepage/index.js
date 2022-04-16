@@ -78,6 +78,7 @@ export default function Homepage() {
 
 	const handleExpandClick = (id) => {
 		let newExpanded = [...comments];
+		console.log(newExpanded);
 		newExpanded[id] = !newExpanded[id];
 		setComments(newExpanded);
 	};
@@ -91,7 +92,8 @@ export default function Homepage() {
 					.then((res) => {
 						setStatus({ ...status, visibleModal: false });
 						toast.info(
-							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
+							<RouterLink
+								to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
 								Idea details:{' '}
 								{() => {
 									const title = res?.data?.result?.title;
@@ -114,12 +116,15 @@ export default function Homepage() {
 					.then(() => sleep(700))
 					.then((res) => {
 						setStatus({ ...status, visibleModal: false });
-						const indexData = data.findIndex((x) => x.id === value.id);
+						const indexData = data.findIndex(
+							(x) => x.id === value.id,
+						);
 						data[indexData] = res?.data?.result;
 						setData((oldData) => [...oldData, data]);
 
 						toast.info(
-							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
+							<RouterLink
+								to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
 								Idea details:{' '}
 								{() => {
 									const title = res?.data?.result?.title;
@@ -137,13 +142,17 @@ export default function Homepage() {
 			),
 		delete: (id) =>
 			toast.promise(
-				axioc.delete(`${API_PATHS.SHARED.IDEA}/${id}`).then(() => sleep(700)),
+				axioc
+					.delete(`${API_PATHS.SHARED.IDEA}/${id}`)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.UNEXPECTED,
 					success: {
 						render() {
-							const indexData = data.findIndex((_) => _.id === id);
+							const indexData = data.findIndex(
+								(_) => _.id === id,
+							);
 							data.splice(indexData, 1);
 							setData((oldData) => [...oldData, data]);
 							loadData();
@@ -164,8 +173,7 @@ export default function Homepage() {
 						fontSize: '0.5em',
 						color: '#999',
 						opacity: '0.7',
-					}}
-				>
+					}}>
 					Welcome to the UIM &#10084;&#65039;
 				</i>
 			</div>
@@ -251,7 +259,7 @@ export default function Homepage() {
 			}
 			subheader={
 				item?.created_date
-					? moment(item?.created_date).format('LLL')
+					? moment(item?.created_date).fromNow()
 					: 'September 14, 2016'
 			}
 		/>
@@ -287,8 +295,7 @@ export default function Homepage() {
 						padding: '0 5',
 						marginTop: 30,
 						color: '#888',
-					}}
-				>
+					}}>
 					<Tippy content={'Detail submission'}>
 						<RouterLink
 							to={`${URL_PATHS.SUB}/${item.submissionId}`}
@@ -297,8 +304,7 @@ export default function Homepage() {
 								textDecorationColor: '#1976d2',
 								color: '#1976d2',
 								cursor: 'pointer',
-							}}
-						>
+							}}>
 							{item?.submission?.title}
 						</RouterLink>
 					</Tippy>
@@ -310,9 +316,10 @@ export default function Homepage() {
 								textDecorationColor: '#1976d2',
 								color: '#1976d2',
 								cursor: 'pointer',
-							}}
-						>
-							<RouterLink to={`/idea/${item.id}`}>{item?.title}</RouterLink>
+							}}>
+							<RouterLink to={`/idea/${item.id}`}>
+								{item?.title}
+							</RouterLink>
 						</label>
 					</Tippy>
 				</div>
@@ -330,16 +337,14 @@ export default function Homepage() {
 					alignItems: 'center',
 					width: '100%',
 					fontSize: 12,
-				}}
-			>
+				}}>
 				<Button
 					className='idea_action'
 					fullWidth
 					aria-label='up vote'
 					startIcon={<IoMdArrowRoundUp />}
 					color={'inherit'}
-					size={'large'}
-				>
+					size={'large'}>
 					(0)
 				</Button>
 				<Button
@@ -349,8 +354,7 @@ export default function Homepage() {
 					style={{ marginRight: 20, marginLeft: 20 }}
 					startIcon={<IoMdArrowRoundDown />}
 					color={'inherit'}
-					size={'large'}
-				>
+					size={'large'}>
 					(0)
 				</Button>
 				<ExpandMore
@@ -363,8 +367,7 @@ export default function Homepage() {
 					color={'inherit'}
 					size={'large'}
 					startIcon={<BiCommentDetail />}
-					aria-label='show more'
-				></ExpandMore>
+					aria-label='show more'></ExpandMore>
 			</CardActions>
 		);
 	};
@@ -399,8 +402,7 @@ export default function Homepage() {
 						marginTop: 30,
 						maxWidth: '70rem',
 						marginInline: 'auto',
-					}}
-				>
+					}}>
 					{renderCardHeader(item)}
 					{renderIdeaTags(item)}
 					{renderCardContent(item)}
@@ -423,7 +425,10 @@ export default function Homepage() {
 	const renderFooter = () =>
 		!(_.size(data) === postTotal || _.size(data) > postTotal) ? (
 			<div style={{ marginTop: 15, textAlign: 'center' }}>
-				<Button size='small' variant='outlined' onClick={() => onShowMore()}>
+				<Button
+					size='small'
+					variant='outlined'
+					onClick={() => onShowMore()}>
 					More
 				</Button>
 			</div>

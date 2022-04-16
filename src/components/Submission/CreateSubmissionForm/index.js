@@ -69,14 +69,20 @@ const initialValues = {
 const validationSchema = yup.object({
 	title: yup.string().required('Submission title is required'),
 	description: yup.string().nullable(),
-	initial_date: yup.date('Initial date invalid').nullable().default(undefined),
+	initial_date: yup
+		.date('Initial date invalid')
+		.nullable()
+		.default(undefined),
 	final_date: yup.date('Final date invalid').nullable().default(undefined),
 	is_active: yup.bool().default(true),
 });
 
 function CreateSubmissionForm(props) {
 	const { onClose, onCreate } = props;
-	const [dataDateRangePicker, setDataDateRangePicker] = useState([null, null]);
+	const [dataDateRangePicker, setDataDateRangePicker] = useState([
+		null,
+		null,
+	]);
 
 	const formik = useFormik({
 		initialValues: initialValues,
@@ -112,7 +118,8 @@ function CreateSubmissionForm(props) {
 							Boolean(formik.errors.initial_date)
 						}
 						helperText={
-							formik.touched.initial_date && formik.errors.initial_date
+							formik.touched.initial_date &&
+							formik.errors.initial_date
 						}
 					/>
 				</div>
@@ -124,8 +131,7 @@ function CreateSubmissionForm(props) {
 						height: 56,
 						paddingBottom: 15,
 						paddingTop: 15,
-					}}
-				>
+					}}>
 					to
 				</Box>
 				<div className='form_content' style={{ width: '100%' }}>
@@ -143,9 +149,13 @@ function CreateSubmissionForm(props) {
 						onChange={formik.handleChange}
 						onBlur={formik.handleBlur}
 						error={
-							formik.touched.final_date && Boolean(formik.errors.final_date)
+							formik.touched.final_date &&
+							Boolean(formik.errors.final_date)
 						}
-						helperText={formik.touched.final_date && formik.errors.final_date}
+						helperText={
+							formik.touched.final_date &&
+							formik.errors.final_date
+						}
 					/>
 				</div>
 			</React.Fragment>
@@ -175,8 +185,13 @@ function CreateSubmissionForm(props) {
 							value={formik.values.title}
 							onChange={formik.handleChange}
 							onBlur={formik.handleBlur}
-							error={formik.touched.title && Boolean(formik.errors.title)}
-							helperText={formik.touched.title && formik.errors.title}
+							error={
+								formik.touched.title &&
+								Boolean(formik.errors.title)
+							}
+							helperText={
+								formik.touched.title && formik.errors.title
+							}
 						/>
 					</div>
 				</div>
