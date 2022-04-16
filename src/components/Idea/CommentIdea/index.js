@@ -42,7 +42,9 @@ function CommentIdea({ data, ideaId }) {
 
 	const loadData = async (minItems) =>
 		axioc
-			.get(`${API_PATHS.SHARED.COMMENT}/list/${ideaId}`, { params: { minItems } })
+			.get(`${API_PATHS.SHARED.COMMENT}/list/${ideaId}`, {
+				params: { minItems },
+			})
 			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
 			.then((res) => setCommentsData(res?.data?.result));
 
@@ -72,7 +74,6 @@ function CommentIdea({ data, ideaId }) {
 								}}>
 								<p
 									style={{
-										marginBottom: 10,
 										textAlign: 'left',
 										fontWeight: 'bold',
 										fontSize: 13,

@@ -48,9 +48,8 @@ const ExpandMore = styled((props) => {
 export default function Homepage() {
 	const [data, setData] = useState([]);
 	const { state } = useContext(UserContext);
-
 	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
-	const [expandComments, setExpandComments] = useState();
+
 	const [postTotal, setPostTotal] = useState(0);
 	const [comments, setComments] = useState([]);
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -72,14 +71,18 @@ export default function Homepage() {
 				setData((oldData) => [...oldData, ...res?.data?.result?.rows]);
 				setPostTotal(res?.data?.result?.total);
 			});
-
 	// const handleClick = (event) => setAnchorEl(event.currentTarget);
 	// const handleClose = () => setAnchorEl(null);
 
 	const handleExpandClick = (id) => {
-		let newExpanded = [...comments];
+		const newExpanded = [...comments];
+		if (!newExpanded[id]) {
+			newExpanded[id] = true;
+		} else {
+			newExpanded[id] = null;
+		}
 		console.log(newExpanded);
-		newExpanded[id] = !newExpanded[id];
+
 		setComments(newExpanded);
 	};
 
@@ -258,17 +261,60 @@ export default function Homepage() {
 				</Avatar>
 			}
 			subheader={
-				item?.created_date
-					? moment(item?.created_date).fromNow()
-					: 'September 14, 2016'
-			}
-		/>
+				item?.created_date ? (
+					<>
+						{moment(item?.created_date).fromNow()}&nbsp;
+						<Tippy content={'Detail submission'}>
+							<label
+								style={{
+									textDecoration: 'none',
+									color: 'initial',
+
+									cursor: 'pointer',
+								}}>
+								<RouterLink
+									to={`/idea/${item.id}`}
+									style={{
+										textDecoration: 'none',
+										cursor: 'pointer',
+										color: 'initial',
+									}}>
+									<span
+										style={{
+											textDecoration: 'none',
+											color: 'initial',
+											fontSize: '12px',
+										}}>
+										in&nbsp;{item?.submission?.title}
+									</span>
+								</RouterLink>
+							</label>
+						</Tippy>
+					</>
+				) : (
+					'September 14, 2016'
+				)
+			}></CardHeader>
 	);
 
 	const renderIdeaTags = (item) => (
-		<Stack direction='row' spacing={1}>
+		<Stack
+			direction='row'
+			spacing={1}
+			sx={{
+				margin: '0px 15px',
+				opacity: '0.8',
+				display: 'flex',
+				flexWrap: 'wrap',
+				justifyContent: 'flex-start',
+				gap: 1,
+			}}>
 			{item?.tags?.map((tag, index) => (
 				<Chip
+					sx={{
+						fontSize: '0.8em',
+						color: '#333',
+					}}
 					key={item.title + tag.name + index}
 					icon={<TagIcon />}
 					label={tag}
@@ -283,45 +329,23 @@ export default function Homepage() {
 		return (
 			<CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
 				<div>
+					<Tippy content={'Detail submission'}>
+						<RouterLink
+							to={`${URL_PATHS.IDEA}/${item.id}`}
+							style={{
+								textDecoration: 'none',
+								color: 'rgba(0, 1, 17, 0.8)',
+								fontSize: '1.2rem',
+								lineHeight: '44px',
+								fontWeight: '600',
+								cursor: 'pointer',
+							}}>
+							{item?.title}
+						</RouterLink>
+					</Tippy>
 					<Typography variant='body2' color='text.secondary'>
 						{item?.content}
 					</Typography>
-				</div>
-
-				<div
-					style={{
-						display: 'flex',
-						fontSize: '0.8em',
-						padding: '0 5',
-						marginTop: 30,
-						color: '#888',
-					}}>
-					<Tippy content={'Detail submission'}>
-						<RouterLink
-							to={`${URL_PATHS.SUB}/${item.submissionId}`}
-							style={{
-								textDecoration: 'underline',
-								textDecorationColor: '#1976d2',
-								color: '#1976d2',
-								cursor: 'pointer',
-							}}>
-							{item?.submission?.title}
-						</RouterLink>
-					</Tippy>
-					<span style={{ marginInline: 5 }}>with title is</span>
-					<Tippy content={'Detail submission'}>
-						<label
-							style={{
-								textDecoration: 'underline',
-								textDecorationColor: '#1976d2',
-								color: '#1976d2',
-								cursor: 'pointer',
-							}}>
-							<RouterLink to={`/idea/${item.id}`}>
-								{item?.title}
-							</RouterLink>
-						</label>
-					</Tippy>
 				</div>
 			</CardContent>
 		);
@@ -360,14 +384,16 @@ export default function Homepage() {
 				<ExpandMore
 					className='idea_action'
 					fullWidth
-					expand={comments[item.id]}
+					expand={comments[item.id] || false}
 					onClick={() => handleExpandClick(item.id)}
 					style={{ marginRight: 20, marginLeft: 20 }}
 					aria-expanded={comments[item.id]}
 					color={'inherit'}
 					size={'large'}
 					startIcon={<BiCommentDetail />}
-					aria-label='show more'></ExpandMore>
+					aria-label='show more'>
+					{item.comments_count}
+				</ExpandMore>
 			</CardActions>
 		);
 	};
@@ -385,7 +411,7 @@ export default function Homepage() {
 		);
 
 	const renderComment = (item) => (
-		<Collapse in={comments[item.id]} timeout='auto' unmountOnExit>
+		<Collapse in={comments[item.id || false]} timeout='auto' unmountOnExit>
 			<CommentIdea data={item} ideaId={item?.id} />
 		</Collapse>
 	);
@@ -404,8 +430,8 @@ export default function Homepage() {
 						marginInline: 'auto',
 					}}>
 					{renderCardHeader(item)}
-					{renderIdeaTags(item)}
 					{renderCardContent(item)}
+					{renderIdeaTags(item)}
 					{renderListFile(item)}
 					{renderActionButton(item)}
 					{renderComment(item)}

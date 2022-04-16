@@ -7,9 +7,8 @@ export const Columns = [
 		headerName: 'Title',
 		disableColumnMenu: true,
 		sortable: true,
-		width: '100%',
 		type: 'string',
-		minWidth: 200,
+		minWidth: 100,
 		flex: 1,
 	},
 	{
@@ -38,7 +37,12 @@ export const Columns = [
 		flex: 1,
 		renderCell: (value) =>
 			value?.row?.tags?.map((V, i) => (
-				<div style={{ margin: '0 2px' }}>
+				<div
+					style={{
+						margin: '0 2px',
+						display: 'flex',
+						flexWrap: 'wrap',
+					}}>
 					<Chip variant='outlined' size='large' label={V} />
 				</div>
 			)),
