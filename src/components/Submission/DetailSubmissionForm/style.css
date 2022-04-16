@@ -26,11 +26,16 @@
 	background-color: red;
 }
 
-.form_group {
+.form_group-submis {
 	margin-bottom: 20px;
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	
 	grid-gap: 20px;
+}
+.form_group-submis .MuiInputLabel{
+	border: none;
+	
 }
 
 .MuiFormControl-root:focus-within .MuiFormHelperText-root {
@@ -42,7 +47,7 @@
 		font-size: 12px;
 	}
 
-	.form_group {
+	.form_group-submis {
 		grid-template-columns: 1fr;
 	}
 
