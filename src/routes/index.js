@@ -37,7 +37,9 @@ const LIST_ROUTES_PRIVATE = [
 	{
 		roles: [ROLES.ADMIN],
 		path: URL_PATHS.MANAGE_DEP,
-		component: React.lazy(() => import('../containers/DepartmentManagement')),
+		component: React.lazy(() =>
+			import('../containers/DepartmentManagement'),
+		),
 	},
 	{
 		roles: [ROLES.ADMIN],
@@ -62,7 +64,9 @@ const LIST_ROUTES_PRIVATE = [
 	{
 		roles: [ROLES.ADMIN],
 		path: URL_PATHS.MANAGE_SUB,
-		component: React.lazy(() => import('../containers/SubmissionManagement')),
+		component: React.lazy(() =>
+			import('../containers/SubmissionManagement'),
+		),
 	},
 	{
 		roles: [ROLES.ADMIN],
@@ -77,12 +81,19 @@ const LIST_ROUTES_PRIVATE = [
 	{
 		roles: [ROLES.ADMIN],
 		path: URL_PATHS.DASHBOARD,
-		component: React.lazy(() => import('../containers/Dashboard/Dashboard')),
+		component: React.lazy(() =>
+			import('../containers/Dashboard/Dashboard'),
+		),
 	},
 	{
 		roles: [],
 		path: URL_PATHS.IDEA + '/:id',
 		component: React.lazy(() => import('../containers/IdeaDetailView')),
+	},
+	{
+		roles: [],
+		path: URL_PATHS.TERM_CONDITION,
+		component: React.lazy(() => import('../containers/TermCondition')),
 	},
 ];
 
@@ -127,8 +138,9 @@ export function ListRoute() {
 						<Sidebar>
 							<PrivateRoute roles={route.roles}>
 								<React.Suspense
-									fallback={<LoadingSpinner inputHeight='80vh' />}
-								>
+									fallback={
+										<LoadingSpinner inputHeight='80vh' />
+									}>
 									<route.component />
 								</React.Suspense>
 							</PrivateRoute>

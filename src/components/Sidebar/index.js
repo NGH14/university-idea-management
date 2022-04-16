@@ -27,6 +27,7 @@ import {
 	BsChevronExpand,
 	BsFillPeopleFill,
 	BsHouseFill,
+	BsFillQuestionCircleFill,
 } from 'react-icons/bs';
 import { FaBuilding, FaLightbulb } from 'react-icons/fa';
 import { HiPresentationChartLine } from 'react-icons/hi';
@@ -37,6 +38,8 @@ import { createSearchParams, useNavigate } from 'react-router-dom';
 import SidebarItem from './SidebarItem';
 import { AppBar, ColorButton, Drawer, DrawerHeader } from './SidebarStyled';
 import { stringToSvg } from 'common/DiceBear';
+import { Divider } from '@material-ui/core';
+import { Button } from '@mui/material';
 
 export default function Sidebar(props) {
 	const { state, setState } = useContext(UserContext);
@@ -167,6 +170,7 @@ export default function Sidebar(props) {
 				return 'Idea Management';
 			case URL_PATHS.DASHBOARD:
 				return 'Dashboard';
+
 			default:
 				return '';
 		}
@@ -195,8 +199,7 @@ export default function Sidebar(props) {
 				color='inherit'
 				style={{
 					boxShadow: 'none',
-				}}
-			>
+				}}>
 				<CssBaseline />
 
 				<Toolbar
@@ -204,22 +207,19 @@ export default function Sidebar(props) {
 						justifyContent: 'space-between',
 						alignItems: 'center',
 						borderBottom: '0.1px solid #e2e0e0',
-					}}
-				>
+					}}>
 					<Box
 						sx={{
 							display: 'flex',
 							justifyContent: 'center',
 							alignItems: 'center',
 							gap: '10px',
-						}}
-					>
+						}}>
 						<IconButton
 							color='inherit'
 							aria-label='open drawer'
 							onClick={handleDrawerCick}
-							edge='start'
-						>
+							edge='start'>
 							<MenuIcon />
 						</IconButton>
 						<img
@@ -235,14 +235,17 @@ export default function Sidebar(props) {
 								display: 'flex',
 								justifyContent: 'space-between',
 								gap: 5,
-							}}
-						>
+							}}>
 							<ColorButton
 								onClose={() => setAnchorElUser(null)}
-								onClick={(event) => setAnchorElUser(event.currentTarget)}
-								sx={{ p: 0 }}
-							>
-								<Avatar alt={state.dataUser.full_name ?? 'Username'}>
+								onClick={(event) =>
+									setAnchorElUser(event.currentTarget)
+								}
+								sx={{ p: 0 }}>
+								<Avatar
+									alt={
+										state.dataUser.full_name ?? 'Username'
+									}>
 									{stringToSvg(state.dataUser.avatar)}
 								</Avatar>
 
@@ -250,8 +253,7 @@ export default function Sidebar(props) {
 									<Typography
 										fontWeight={500}
 										fontSize={14}
-										fontFamily='Poppins'
-									>
+										fontFamily='Poppins'>
 										{state.dataUser.full_name ?? 'Username'}
 									</Typography>
 									<Typography
@@ -262,8 +264,7 @@ export default function Sidebar(props) {
 										fontFamily='Nunito'
 										sx={{
 											textAlign: 'left',
-										}}
-									>
+										}}>
 										{state.dataUser.role || 'Role'}
 									</Typography>
 								</Stack>
@@ -284,24 +285,26 @@ export default function Sidebar(props) {
 							transformOrigin={{
 								vertical: 'top',
 								horizontal: 'right',
-							}}
-						>
+							}}>
 							{UserMenu.map((item, index) => {
 								const { text, icon, onClick } = item;
 								return (
 									<Tippy content={text} placement='left'>
 										<ListItemButton
 											key={text + index}
-											sx={{ justifyContent: 'center', px: 2.5 }}
-											onClick={onClick}
-										>
+											sx={{
+												justifyContent: 'center',
+												px: 2.5,
+											}}
+											onClick={onClick}>
 											{icon && icon}
 											<ListItemText
 												key={index}
 												disableTypography
 												primary={text}
 												sx={{
-													fontFamily: 'Nunito, sans-serif',
+													fontFamily:
+														'Nunito, sans-serif',
 													fontSize: '16px',
 													fontWeight: 700,
 													ml: 1.7,
@@ -341,8 +344,7 @@ export default function Sidebar(props) {
 									justifyContent: 'space-between',
 									alignItems: 'center',
 									width: '100%',
-								}}
-							>
+								}}>
 								<ListItemText
 									disableTypography
 									sx={{
@@ -352,8 +354,7 @@ export default function Sidebar(props) {
 										fontFamily: 'Poppins, sans-serif',
 										fontWeight: '700',
 										opacity: open ? 1 : 0,
-									}}
-								>
+									}}>
 									Report
 								</ListItemText>
 								<ListItemIcon
@@ -361,8 +362,7 @@ export default function Sidebar(props) {
 										minWidth: 0,
 										ml: open ? 3 : 'auto',
 										fontWeight: '700',
-									}}
-								>
+									}}>
 									{reportPage ? (
 										<BsChevronContract />
 									) : (
@@ -370,16 +370,30 @@ export default function Sidebar(props) {
 									)}
 								</ListItemIcon>
 							</ListItemButton>
-							<Collapse in={reportPage} timeout='auto' unmountOnExit>
+							<Collapse
+								in={reportPage}
+								timeout='auto'
+								unmountOnExit>
 								{navItems.reports.map(
 									(
-										{ selectedText, roles, text, icon, onClick },
+										{
+											selectedText,
+											roles,
+											text,
+											icon,
+											onClick,
+										},
 										index,
 									) =>
 										(roles.length === 0 ||
-											roles.includes(state?.dataUser.role)) && (
+											roles.includes(
+												state?.dataUser.role,
+											)) && (
 											<SidebarItem
-												selected={selectedText === selectedPage}
+												selected={
+													selectedText ===
+													selectedPage
+												}
 												onClick={onClick}
 												openButton={open}
 												index={index}
@@ -398,14 +412,15 @@ export default function Sidebar(props) {
 					state?.dataUser.role === ROLES.MANAGER ? (
 						<>
 							<ListItemButton
-								onClick={() => setManagementPage(!managementPage)}
+								onClick={() =>
+									setManagementPage(!managementPage)
+								}
 								sx={{
 									display: open ? 'flex' : 'none',
 									alignItems: 'center',
 									justifyContent: 'space-between',
 									width: '100%',
-								}}
-							>
+								}}>
 								<ListItemText
 									disableTypography
 									sx={{
@@ -415,8 +430,7 @@ export default function Sidebar(props) {
 										fontFamily: 'Poppins, sans-serif',
 										fontWeight: '700',
 										opacity: open ? 1 : 0,
-									}}
-								>
+									}}>
 									Manage
 								</ListItemText>
 								<ListItemIcon
@@ -424,8 +438,7 @@ export default function Sidebar(props) {
 										minWidth: 0,
 										ml: open ? 3 : 'auto',
 										fontWeight: '700',
-									}}
-								>
+									}}>
 									{managementPage ? (
 										<BsChevronContract />
 									) : (
@@ -434,16 +447,30 @@ export default function Sidebar(props) {
 								</ListItemIcon>
 							</ListItemButton>
 
-							<Collapse in={managementPage} timeout='auto' unmountOnExit>
+							<Collapse
+								in={managementPage}
+								timeout='auto'
+								unmountOnExit>
 								{navItems.managements.map(
 									(
-										{ selectedText, roles, text, icon, onClick },
+										{
+											selectedText,
+											roles,
+											text,
+											icon,
+											onClick,
+										},
 										index,
 									) =>
 										(roles.length === 0 ||
-											roles.includes(state?.dataUser.role)) && (
+											roles.includes(
+												state?.dataUser.role,
+											)) && (
 											<SidebarItem
-												selected={selectedText === selectedPage}
+												selected={
+													selectedText ===
+													selectedPage
+												}
 												onClick={onClick}
 												openButton={open}
 												index={index}
@@ -457,6 +484,42 @@ export default function Sidebar(props) {
 					) : (
 						<></>
 					)}
+
+					{open && (
+						<div
+							style={{
+								position: 'fixed',
+								bottom: 0,
+								padding: '16px 20px',
+								color: '#999',
+								fontSize: '10px',
+							}}>
+							<Button
+								disableFocusRipple
+								disableTouchRipple
+								variant='text'
+								onClick={() =>
+									navigate(URL_PATHS.TERM_CONDITION)
+								}
+								sx={{
+									textTransform: 'capitalize',
+									fontSize: '10px',
+									color: '#888',
+									'&:hover': {
+										backgroundColor: '#fff',
+										color: '#333',
+									},
+								}}>
+								Terms and Conditions
+							</Button>
+							<p
+								style={{
+									padding: '0 8px',
+								}}>
+								© 2022 Group 26
+							</p>
+						</div>
+					)}
 				</List>
 			</Drawer>
 
@@ -466,8 +529,7 @@ export default function Sidebar(props) {
 					flexGrow: 1,
 					p: 4,
 					fontFamily: 'Poppins',
-				}}
-			>
+				}}>
 				<DrawerHeader />
 				{props.children}
 			</Box>

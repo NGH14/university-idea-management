@@ -32,20 +32,28 @@ export default function UpdatePassword() {
 	return (
 		<div className='profile_wrapper'>
 			<div className='avatar_wrapper'>
-				<img className='avatar_cover' src={loginImg} alt='avatar_cover' />
-				<Box className='avatar_content' sx={{ display: 'flex', gap: 1.5 }}>
+				<img
+					className='avatar_cover'
+					src={loginImg}
+					alt='avatar_cover'
+				/>
+				<Box
+					className='avatar_content'
+					sx={{ display: 'flex', gap: 1.5 }}>
 					<Avatar alt={user.full_name ?? ''} className='avatar_img'>
 						{stringToSvg(user.avatar)}
 					</Avatar>
 					<Stack>
-						<Typography fontWeight={700} fontSize={30} sx={{ mt: -1 }}>
+						<Typography
+							fontWeight={700}
+							fontSize={30}
+							sx={{ mt: -1 }}>
 							{user.full_name ?? ''}
 						</Typography>
 						<Typography
 							style={{ textTransform: 'capitalize' }}
 							variant='body2'
-							color='text.secondary'
-						>
+							color='text.secondary'>
 							{user.role ?? ''}
 						</Typography>
 					</Stack>

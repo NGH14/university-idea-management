@@ -80,8 +80,12 @@ export default function Dashboard() {
 		axios
 			.all([
 				axioc.get(`dashboard/sum-submissions?year=${year}`),
-				axioc.get(`dashboard/top-ideas?month=${monthIdea}&year=${year}`),
-				axioc.get(`dashboard/activities?month=${monthInfo}&year=${year}`),
+				axioc.get(
+					`dashboard/top-ideas?month=${monthIdea}&year=${year}`,
+				),
+				axioc.get(
+					`dashboard/activities?month=${monthInfo}&year=${year}`,
+				),
 			])
 			.then(
 				axios.spread(function (resSub, resIdeas, resAct) {
@@ -108,7 +112,12 @@ export default function Dashboard() {
 	};
 
 	const renderPopularIdea = () => {
-		return <IdeaPopularChart timeKey={filter.monthYearIdea} data={data?.topIdea} />;
+		return (
+			<IdeaPopularChart
+				timeKey={filter.monthYearIdea}
+				data={data?.topIdea}
+			/>
+		);
 	};
 
 	const renderIdeaInfo = () => {
@@ -139,8 +148,7 @@ export default function Dashboard() {
 								fontSize: 14,
 								color: '#999',
 								opacity: '0.7',
-							}}
-						>
+							}}>
 							UIM Card
 						</i>
 					</div>
@@ -162,11 +170,14 @@ export default function Dashboard() {
 										alignItems: 'flex-start',
 										flexDirection: 'column',
 										borderRadius: '15px',
-									}}
-								>
+									}}>
 									{item.icon}
-									<p className='dashboard_textname'>{item.name}</p>
-									<strong className='value'>{item.value}</strong>
+									<p className='dashboard_textname'>
+										{item.name}
+									</p>
+									<strong className='value'>
+										{item.value}
+									</strong>
 								</Card>
 							</div>
 						);
@@ -188,8 +199,7 @@ export default function Dashboard() {
 							color: '#999',
 							opacity: '0.7',
 							marginTop: '30px',
-						}}
-					>
+						}}>
 						UIM Chart
 					</i>
 				</div>
@@ -200,10 +210,11 @@ export default function Dashboard() {
 					display: 'flex',
 					width: '100%',
 					marginTop: 20,
-					justifyContent: 'center',
+					justifyContent: 'space-between',
 					alignContent: 'center',
-				}}
-			>
+					flexWrap: 'wrap-reverse',
+					gap: 15,
+				}}>
 				{renderPopularIdea()}
 				{renderChartSubmissionTotal()}
 			</div>

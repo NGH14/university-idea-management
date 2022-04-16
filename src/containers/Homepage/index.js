@@ -143,20 +143,18 @@ export default function Homepage() {
 	};
 
 	const renderTop = () => (
-		<div style={{ marginInline: 'auto' }}>
-			<div className='homepage_title'>
-				<div className='homepage_heading'>
-					<h2>Hi, {state.dataUser.full_name} </h2>
-					<i
-						style={{
-							fontWeight: 600,
-							fontSize: 14,
-							color: '#999',
-							opacity: '0.7',
-						}}>
-						Welcome to the UIM &#10084;&#65039;
-					</i>
-				</div>
+		<div className='homepage_title'>
+			<div className='homepage_heading'>
+				<h2>Hi, {state.dataUser.full_name} </h2>
+				<i
+					style={{
+						fontWeight: 600,
+						fontSize: '0.5em',
+						color: '#999',
+						opacity: '0.7',
+					}}>
+					Welcome to the UIM &#10084;&#65039;
+				</i>
 			</div>
 		</div>
 	);
@@ -405,7 +403,7 @@ export default function Homepage() {
 		);
 
 	return (
-		<div style={{ marginInline: '100px' }}>
+		<div className='homepage_wrapper'>
 			{renderTop()}
 			{renderContentIdea()}
 			{renderFooter()}

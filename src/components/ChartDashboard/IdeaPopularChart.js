@@ -101,6 +101,7 @@ function IdeaPopularChart({ timeKey, data }) {
 						alignItems: 'center',
 						gap: 10,
 						marginInline: 10,
+						marginBlock: '20px',
 						fontFamily: 'Poppins',
 					}}>
 					<DatePicker
@@ -125,7 +126,13 @@ function IdeaPopularChart({ timeKey, data }) {
 	};
 	return (
 		<>
-			<div style={{ marginRight: 20, width: '100%', height: 300 }}>
+			<div
+				style={{
+					margin: 'auto',
+					maxwidth: '100%',
+					width: '450px',
+					minWidth: '350px',
+				}}>
 				<Paper elevation={0}>
 					<div
 						style={{
@@ -136,7 +143,6 @@ function IdeaPopularChart({ timeKey, data }) {
 							width: '100%',
 							marginInline: 'auto',
 							paddingTop: 10,
-							paddingRight: 10,
 							marginBottom: 10,
 							maxHeight: '300px',
 						}}>
@@ -155,11 +161,6 @@ function IdeaPopularChart({ timeKey, data }) {
 							)} ${moment(newFilter).format('MM/YYYY')} `}>
 							<Font color='#000' size='20' weight='700' />
 						</Title>
-						<AdaptiveLayout
-							height={150}
-							width={0}
-							keepLabels={false}
-						/>
 
 						<Series
 							argumentField={'title'}

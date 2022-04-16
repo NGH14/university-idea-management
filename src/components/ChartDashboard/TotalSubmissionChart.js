@@ -116,9 +116,9 @@ function TotalSubmissionChart({ data, loading, setFilter, filter }) {
 					<div>
 						<Box
 							sx={{
-								width: 250,
+								maxwidth: '100%',
+								width: '200px',
 								textAlign: 'right',
-								margin: 0,
 								display: 'flex',
 								justifyContent: 'center',
 								alignItems: 'center',
@@ -156,54 +156,68 @@ function TotalSubmissionChart({ data, loading, setFilter, filter }) {
 		);
 	};
 	return (
-		<Paper elevation={0}>
-			<div
-				style={{
-					textAlign: 'right',
-					justifyContent: 'right',
-					width: '100%',
-					display: 'flex',
-					padding: 20,
-				}}
-				className='uim_chart'>
-				{renderPickerYear()}
-			</div>
-			<Chart
-				className={'chart'}
-				dataSource={newData}
-				palette={'Soft Pastel'}>
-				<CommonSeriesSettings
-					argumentField={'month'}
-					type={'stackedBar'}
-				/>
-				<Title
-					text={`${_.toUpper('Total submission in year')} ${moment(
-						filter.year,
-					).format('YYYY')}`}>
-					<Font color='#000' size='20' weight='700' />
-				</Title>
+		<div
+			style={{
+				margin: 'auto',
+				maxwidth: '100%',
+				width: '450px',
+				minWidth: '350px',
+			}}>
+			<Paper elevation={0}>
+				<div
+					style={{
+						display: 'flex',
+						textAlign: 'center',
+						justifyContent: 'center ',
+						alignItems: 'center',
+						width: '100%',
+						marginInline: 'auto',
+						paddingTop: 10,
+						marginBottom: 10,
+					}}
+					className='uim_chart'>
+					{renderPickerYear()}
+				</div>
+				<Chart
+					className={'chart'}
+					dataSource={newData}
+					palette={'Soft Pastel'}>
+					<CommonSeriesSettings
+						argumentField={'month'}
+						type={'stackedBar'}
+					/>
+					<Title
+						text={`${_.toUpper(
+							'Total submission in year',
+						)} ${moment(filter.year).format('YYYY')}`}>
+						<Font color='#000' size='20' weight='700' />
+					</Title>
 
-				<Series
-					valueField={'active_submissions'}
-					name={'Disable Active'}
-				/>
-				<Series valueField={'inactive_submissions'} name={'Active'} />
-				<ValueAxis position={'left'}>
-					<Title text={'Total'} />
-				</ValueAxis>
-				<Legend
-					verticalAlignment={'right'}
-					horizontalAlignment={'center'}
-					itemTextPosition={'bottom'}
-				/>
-				<Export enabled={true} backgroundColor={'#fff'} />
-				<Tooltip
-					enabled={true}
-					location={'edge'}
-					customizeTooltip={(e) => customizeTooltip(e)}
-				/>
-			</Chart>
-		</Paper>
+					<Series
+						valueField={'active_submissions'}
+						name={'Disable Active'}
+					/>
+					<Series
+						valueField={'inactive_submissions'}
+						name={'Active'}
+					/>
+					<ValueAxis position={'left'}>
+						<Title text={'Total'} />
+					</ValueAxis>
+					<Legend
+						verticalAlignment={'top'}
+						horizontalAlignment={'center'}
+						itemTextPosition={'right'}
+					/>
+					<Export enabled={true} backgroundColor={'#fff'} />
+					<Tooltip
+						enabled={true}
+						location={'edge'}
+						customizeTooltip={(e) => customizeTooltip(e)}
+					/>
+				</Chart>
+			</Paper>
+		</div>
 	);
 }
 

@@ -149,7 +149,7 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 					<div>
 						<Box
 							sx={{
-								width: 250,
+								maxWidth: 500,
 								textAlign: 'right',
 								display: 'flex',
 								justifyContent: 'center',
@@ -171,7 +171,7 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 								onChange={(value) => {
 									onFilterDisplay(value.target.value);
 								}}
-								sx={{ color: '#4295D1', width: 150 }}
+								sx={{ color: '#4295D1', width: 100 }}
 								valueLabelDisplay='auto'
 								disableSwap
 								min={1}
@@ -233,9 +233,9 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 							<Grid visible={true} />
 						</ArgumentAxis>
 						<Legend
-							verticalAlignment={'right'}
+							verticalAlignment={'top'}
 							horizontalAlignment={'center'}
-							itemTextPosition={'bottom'}
+							itemTextPosition={'right'}
 						/>
 						<Export enabled={true} />
 						<Title text={`${_.toUpper('Information idea')}`}>

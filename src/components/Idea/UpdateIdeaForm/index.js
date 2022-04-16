@@ -239,7 +239,6 @@ function UpdateIdeaForm(props) {
 							{attachments.map((file, index) => (
 								<ListItem key={index}>
 									<Chip
-										deleteIcon={<FaTrash />}
 										variant='outlined'
 										size='large'
 										clickable
