@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
-import { ListItem } from '@mui/material';
+import { Checkbox, FormControlLabel, FormGroup, ListItem } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import { AiOutlineFile } from 'react-icons/ai';
 import { MdOutlineDriveFolderUpload } from 'react-icons/md';
-import { TiDelete } from 'react-icons/ti';
+import { RiDeleteBack2Fill } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
@@ -32,7 +32,10 @@ const validationSchema = yup.object({
 	tags: yup.array().max(3, 'Only 3 tags per idea').nullable(),
 	attachments: yup.array().nullable(),
 	is_anonymous: yup.bool(),
-	submission_id: yup.string().required('Please specify the submission for this idea'),
+	submission_id: yup
+		.string()
+		.required('Please specify the submission for this idea'),
+	agree: yup.bool().required('You need you Agree'),
 });
 
 const initialValues = {
@@ -42,6 +45,7 @@ const initialValues = {
 	attachments: null,
 	is_anonymous: true,
 	submission_id: '',
+	agree: false,
 };
 
 function CreateIdeaForm(props) {
@@ -70,7 +74,9 @@ function CreateIdeaForm(props) {
 			!externalSubData
 				? await axioc
 						.get(API_PATHS.ADMIN.MANAGE_SUB + '/list')
-						.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
+						.catch(() =>
+							toast.error(toastMessages.ERR_SERVER_ERROR),
+						)
 						.then((res) => setSubOptions(res?.data?.result))
 				: formik.setFieldValue('submission_id', externalSubData.id);
 
@@ -91,7 +97,8 @@ function CreateIdeaForm(props) {
 			}
 			acceptedFiles.forEach((file) => {
 				if (
-					attachments.reduce((a, b) => a + (b['size'] || 0), 0) + file.size >
+					attachments.reduce((a, b) => a + (b['size'] || 0), 0) +
+						file.size >
 					FILE_SIZE
 				) {
 					toast.error(`${file.name} ${toastMessages.ERR_FILE_BIG}`);
@@ -139,7 +146,7 @@ function CreateIdeaForm(props) {
 			ClassName='createideaform'
 			onSubmit={formik.handleSubmit}
 			showActionButton={true}
-		>
+			dirty={formik.values.agree}>
 			<div className='createideaform_group'>
 				<div className='createideaform_content'>
 					{externalSubData ? (
@@ -158,7 +165,10 @@ function CreateIdeaForm(props) {
 							options={subOptions}
 							getOptionLabel={(option) => option?.title}
 							onChange={(_, value) => {
-								formik.setFieldValue('submission_id', value.id ?? '');
+								formik.setFieldValue(
+									'submission_id',
+									value.id ?? '',
+								);
 							}}
 							dynamic={{
 								value: formik.values.submission_id,
@@ -209,7 +219,9 @@ function CreateIdeaForm(props) {
 						label='Tags'
 						propName='tags'
 						options={tagOptions}
-						onChange={(_, value) => formik.setFieldValue('tags', value ?? '')}
+						onChange={(_, value) =>
+							formik.setFieldValue('tags', value ?? '')
+						}
 						onBlur={formik.handleBlur}
 						dynamic={{
 							error: formik.errors.tags,
@@ -226,27 +238,35 @@ function CreateIdeaForm(props) {
 						onDrop={handleDrop}
 						onDropRejected={() =>
 							toast.error(toastMessages.ERR_FILE_REJECTED)
-						}
-					>
+						}>
 						{({ getRootProps, getInputProps }) => (
 							<div
 								{...getRootProps({
 									className: 'dropzone',
-								})}
-							>
+								})}>
 								<input {...getInputProps()} />
 								<MdOutlineDriveFolderUpload className='dropzone_icon' />
-								<p>Drag &#38; drop files, or click to select files</p>
+								<p>
+									Drag &#38; drop files, or click to select
+									files
+								</p>
 							</div>
 						)}
 					</Dropzone>
 					<span style={{ padding: '5px', color: '#888' }}>
-						{attachments.length !== 0 && <span> Attach files size: </span>}
+						{attachments.length !== 0 && (
+							<span> Attach files size: </span>
+						)}
 						{attachments.length !== 0 &&
 							toReadableFileSize(
-								attachments.reduce((n, { size }) => n + size, 0),
+								attachments.reduce(
+									(n, { size }) => n + size,
+									0,
+								),
 							)}
-						{attachments.length !== 0 && <span> &nbsp;/&nbsp;10 MB</span>}
+						{attachments.length !== 0 && (
+							<span> &nbsp;/&nbsp;10 MB</span>
+						)}
 					</span>
 					{attachments.length === 0 ? null : (
 						<div className='createideaform_group'>
@@ -259,8 +279,7 @@ function CreateIdeaForm(props) {
 										listStyle: 'none',
 										p: 0.5,
 										m: 0,
-									}}
-								>
+									}}>
 									{attachments.map((file, index) => (
 										<ListItem
 											key={index}
@@ -268,20 +287,39 @@ function CreateIdeaForm(props) {
 												<IconButton
 													edge='end'
 													aria-label='delete'
-													onClick={handleDeleteAttachment(file)}
-												>
-													<TiDelete />
+													onClick={handleDeleteAttachment(
+														file,
+													)}>
+													<RiDeleteBack2Fill id='attach_delete-icon' />
 												</IconButton>
-											}
-										>
+											}>
 											<ListItemAvatar>
 												<Avatar>
 													<AiOutlineFile />
 												</Avatar>
 											</ListItemAvatar>
-											<ListItemText>
-												{file.name}{' '}
-												{toReadableFileSize(file.size)}
+											<ListItemText
+												sx={{
+													display: 'flex',
+													flexDirection: 'column',
+													justifyContent: 'center',
+												}}>
+												<p
+													style={{
+														fontFamily: 'Poppins',
+														fontSize: '1em',
+													}}>
+													{file.name}
+												</p>
+												<p
+													style={{
+														fontSize: '0.8em',
+														color: '#333',
+													}}>
+													{toReadableFileSize(
+														file.size,
+													)}
+												</p>
 											</ListItemText>
 										</ListItem>
 									))}
@@ -289,6 +327,32 @@ function CreateIdeaForm(props) {
 							</div>
 						</div>
 					)}
+				</div>
+			</div>
+			<div className='createideaform_group'>
+				<div className='createideaform_content'>
+					<FormGroup>
+						<FormControlLabel
+							label={
+								<p>
+									By clicking here, I state that I have read
+									and understood the&nbsp;
+									<a
+										target='_blank'
+										rel='noopener noreferrer'
+										href='../term-condition'>
+										the terms and conditions.
+									</a>
+								</p>
+							}
+							required={true}
+							name='agree'
+							onChange={formik.handleChange}
+							onBlur={formik.handleBlur}
+							value={formik.values.agree}
+							control={<Checkbox />}
+						/>
+					</FormGroup>
 				</div>
 			</div>
 		</UimModalForm>

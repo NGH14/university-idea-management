@@ -25,6 +25,7 @@ export function UimModalForm({
 	children,
 	action,
 	entity,
+	dirty = true,
 }) {
 	return (
 		<div className={ClassName}>
@@ -43,14 +44,16 @@ export function UimModalForm({
 
 				{showActionButton ? (
 					<div className={`${ClassName}_footer`}>
-						<ColorButton variant='outlined' onClick={() => onClose()}>
+						<ColorButton
+							variant='outlined'
+							onClick={() => onClose()}>
 							Cancel
 						</ColorButton>
 						<ColorButton
+							disabled={!dirty}
 							type='submit'
 							variant='contained'
-							style={{ textTransform: 'capitalize' }}
-						>
+							style={{ textTransform: 'capitalize' }}>
 							{action}
 						</ColorButton>
 					</div>

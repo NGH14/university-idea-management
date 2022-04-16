@@ -98,7 +98,6 @@ function CommentIdea({ data, ideaId }) {
 								style={{
 									textAlign: 'left',
 									color: 'gray',
-									marginTop: 8,
 									marginLeft: 10,
 									fontSize: 12,
 									fontFamily: 'Helvetica',

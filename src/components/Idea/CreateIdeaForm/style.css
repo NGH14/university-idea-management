@@ -63,6 +63,9 @@
 	display: none;
 }
 
+#attach_delete-icon:hover {
+	color: rgb(225, 73, 73)
+}
 
 @media (max-width: 600px) {
 	* {

@@ -109,7 +109,8 @@ const UpdatePasswordForm = (props) => {
 						loading: false,
 						disable: false,
 					});
-					navigate(URL_PATHS.HOME);
+					toast.success('Update password successful !!');
+					onClose();
 				});
 		},
 	});
@@ -143,7 +144,8 @@ const UpdatePasswordForm = (props) => {
 							Boolean(formik.errors.old_password)
 						}
 						helperText={
-							formik.touched.old_password && formik.errors.old_password
+							formik.touched.old_password &&
+							formik.errors.old_password
 						}
 					/>
 				</div>
@@ -165,7 +167,8 @@ const UpdatePasswordForm = (props) => {
 							Boolean(formik.errors.new_password)
 						}
 						helperText={
-							formik.touched.new_password && formik.errors.new_password
+							formik.touched.new_password &&
+							formik.errors.new_password
 						}
 					/>
 				</div>
@@ -201,8 +204,7 @@ const UpdatePasswordForm = (props) => {
 						variant='contained'
 						type='submit'
 						loading={buttonState?.loading}
-						disabled={buttonState.disable}
-					>
+						disabled={buttonState.disable}>
 						Update password
 					</ColorButton>
 				</div>

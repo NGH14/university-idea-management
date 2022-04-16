@@ -33,7 +33,19 @@
     font-size: 12px;
 }
 
-@media (max-width: 600px) {
+.multiLineEllipsis {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: --webkit-box;
+	--webkit-line-clamp: 1;
+	--webkit-box-orient: vertical;
+}
+.maxWidth300{
+	max-width: 15ch;
+}
+
+@media (max-width: 800px) {
 	* {
 		font-size: 10px;
 	}

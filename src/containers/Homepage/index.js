@@ -34,6 +34,7 @@ import { BiCommentDetail } from 'react-icons/bi';
 import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
 import { Link as RouterLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import Submission from './../Submission/index';
 
 const ExpandMore = styled((props) => {
 	const { expand, ...other } = props;
@@ -49,7 +50,7 @@ export default function Homepage() {
 	const [data, setData] = useState([]);
 	const { state } = useContext(UserContext);
 	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
-
+	const [showMore, setShowMore] = useState(false);
 	const [postTotal, setPostTotal] = useState(0);
 	const [comments, setComments] = useState([]);
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -68,21 +69,23 @@ export default function Homepage() {
 			})
 			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
 			.then((res) => {
+				const newData = [...data, ...res?.data?.result?.rows];
+				let newComment = [];
+				_.map(newData, (x) => {
+					const id = x.id;
+					newComment[id] = false;
+				});
+
 				setData((oldData) => [...oldData, ...res?.data?.result?.rows]);
 				setPostTotal(res?.data?.result?.total);
 			});
 	// const handleClick = (event) => setAnchorEl(event.currentTarget);
 	// const handleClose = () => setAnchorEl(null);
 
-	const handleExpandClick = (id) => {
-		const newExpanded = [...comments];
-		if (!newExpanded[id]) {
-			newExpanded[id] = true;
-		} else {
-			newExpanded[id] = null;
-		}
-		console.log(newExpanded);
+	const handleExpandClick = (index) => {
+		let newExpanded = [...comments];
 
+		newExpanded[index] = !newExpanded[index];
 		setComments(newExpanded);
 	};
 
@@ -269,7 +272,6 @@ export default function Homepage() {
 								style={{
 									textDecoration: 'none',
 									color: 'initial',
-
 									cursor: 'pointer',
 								}}>
 								<RouterLink
@@ -286,6 +288,7 @@ export default function Homepage() {
 											fontSize: '12px',
 										}}>
 										in&nbsp;{item?.submission?.title}
+										&nbsp;submission
 									</span>
 								</RouterLink>
 							</label>
@@ -328,30 +331,51 @@ export default function Homepage() {
 	const renderCardContent = (item) => {
 		return (
 			<CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
-				<div>
-					<Tippy content={'Detail submission'}>
-						<RouterLink
-							to={`${URL_PATHS.IDEA}/${item.id}`}
-							style={{
-								textDecoration: 'none',
-								color: 'rgba(0, 1, 17, 0.8)',
-								fontSize: '1.2rem',
-								lineHeight: '44px',
-								fontWeight: '600',
-								cursor: 'pointer',
-							}}>
-							{item?.title}
-						</RouterLink>
-					</Tippy>
-					<Typography variant='body2' color='text.secondary'>
-						{item?.content}
-					</Typography>
+				<Tippy content={'Detail submission'}>
+					<RouterLink
+						to={`${URL_PATHS.IDEA}/${item.id}`}
+						style={{
+							textDecoration: 'none',
+							color: 'rgba(0, 1, 17, 0.8)',
+							fontSize: '1.2rem',
+							lineHeight: '44px',
+							fontWeight: '600',
+							cursor: 'pointer',
+						}}>
+						{item?.title}
+					</RouterLink>
+				</Tippy>
+				<div style={{ display: 'flex', alignItems: 'center' }}>
+					<div className={showMore || 'maxWidth300'}>
+						<Typography
+							variant='body2'
+							color='text.secondary'
+							className={showMore || 'multiLineEllipsis'}>
+							{item?.content}
+						</Typography>
+					</div>
+					<Button
+						variant='text'
+						onClick={() => setShowMore(!showMore)}
+						disableFocusRipple
+						disableTouchRipple
+						sx={{
+							textTransform: 'capitalize',
+							fontSize: '0.9em',
+							color: '#888',
+							'&:hover': {
+								backgroundColor: '#fff',
+								color: '#333',
+							},
+						}}>
+						{showMore ? 'Show less' : 'Show more'}
+					</Button>
 				</div>
 			</CardContent>
 		);
 	};
 
-	const renderActionButton = (item) => {
+	const renderActionButton = (item, index) => {
 		return (
 			<CardActions
 				style={{
@@ -384,8 +408,8 @@ export default function Homepage() {
 				<ExpandMore
 					className='idea_action'
 					fullWidth
-					expand={comments[item.id] || false}
-					onClick={() => handleExpandClick(item.id)}
+					expand={comments[index]}
+					onClick={() => handleExpandClick(index)}
 					style={{ marginRight: 20, marginLeft: 20 }}
 					aria-expanded={comments[item.id]}
 					color={'inherit'}
@@ -410,33 +434,36 @@ export default function Homepage() {
 			<></>
 		);
 
-	const renderComment = (item) => (
-		<Collapse in={comments[item.id || false]} timeout='auto' unmountOnExit>
+	const renderComment = (item, index) => (
+		<Collapse in={comments[index]} timeout='auto' unmountOnExit>
 			<CommentIdea data={item} ideaId={item?.id} />
 		</Collapse>
 	);
 
 	const renderContentIdea = () =>
 		!status.loading ? (
-			data?.map((item, index) => (
-				<Card
-					key={index}
-					style={{
-						borderRadius: '5px',
-						boxShadow: '1px 2px 4px rgba(0,0,0,0.3)',
-						padding: '5px',
-						marginTop: 30,
-						maxWidth: '70rem',
-						marginInline: 'auto',
-					}}>
-					{renderCardHeader(item)}
-					{renderCardContent(item)}
-					{renderIdeaTags(item)}
-					{renderListFile(item)}
-					{renderActionButton(item)}
-					{renderComment(item)}
-				</Card>
-			))
+			data
+				.slice(0)
+				.reverse()
+				?.map((item, index) => (
+					<Card
+						key={index}
+						style={{
+							borderRadius: '5px',
+							boxShadow: '1px 2px 4px rgba(0,0,0,0.3)',
+							padding: '5px',
+							marginTop: 30,
+							maxWidth: '70rem',
+							marginInline: 'auto',
+						}}>
+						{renderCardHeader(item)}
+						{renderCardContent(item)}
+						{renderIdeaTags(item)}
+						{renderListFile(item)}
+						{renderActionButton(item, index)}
+						{renderComment(item, index)}
+					</Card>
+				))
 		) : (
 			<Box sx={{ display: 'flex' }}>
 				<CircularProgress />
