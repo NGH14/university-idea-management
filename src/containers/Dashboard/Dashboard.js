@@ -204,7 +204,7 @@ export default function Dashboard() {
 					</i>
 				</div>
 			</div>
-			{renderIdeaInfo()}
+			{renderChartSubmissionTotal()}
 			<div
 				style={{
 					display: 'flex',
@@ -216,7 +216,7 @@ export default function Dashboard() {
 					gap: 15,
 				}}>
 				{renderPopularIdea()}
-				{renderChartSubmissionTotal()}
+				{renderIdeaInfo()}
 			</div>
 		</div>
 	);

@@ -13,6 +13,7 @@ import PieChart, {
 	Label,
 	Series,
 	Title,
+	Legend,
 } from 'devextreme-react/pie-chart';
 import { AdaptiveLayout } from 'devextreme-react/polar-chart';
 import _ from 'lodash';
@@ -63,12 +64,12 @@ function IdeaPopularChart({ timeKey, data }) {
 	const toggleVisibility = (item) => {
 		item?.isVisible() ? item?.hide() : item.show();
 	};
-
-	const onMonthYearChange = async (value) => {
-		axioc.dash
-			.getTopIdeas(
-				moment(value).format('MM'),
-				moment(value).format('YYYY'),
+	const onMonthYearChange = async (value) =>
+		await axioc
+			.get(
+				`dashboard/top-ideas?month=${moment(value).format(
+					'MM',
+				)}&year=${moment(value).format('YYYY')}`,
 			)
 			.then((res) => {
 				const newArray = [];
@@ -76,19 +77,21 @@ function IdeaPopularChart({ timeKey, data }) {
 				if (arrData && !_.isEmpty(arrData)) {
 					_.map(arrData, (x) => {
 						const title = x.idea?.title;
+						const comment_number = x.comment_number.toString();
 						const arr = {
 							...x,
 							title,
+							comment_number,
 						};
 						newArray.push(arr);
 					});
 				} else {
 					newArray.push(dataNull);
 				}
+				console.log(newArray);
 				setNewFilter(new Date(value));
 				setNewData(newArray);
 			});
-	};
 
 	const renderPickerMonthYearIdea = () => {
 		return (
@@ -161,12 +164,16 @@ function IdeaPopularChart({ timeKey, data }) {
 							)} ${moment(newFilter).format('MM/YYYY')} `}>
 							<Font color='#000' size='20' weight='700' />
 						</Title>
-
+						<Legend
+							verticalAlignment={'bottom'}
+							horizontalAlignment={'center'}
+							itemTextPosition={'right'}
+						/>
 						<Series
 							argumentField={'title'}
 							valueField={'comment_number'}
 							color={newData[0]?.null ? 'darkGray' : ''}>
-							<Label visible={true}>
+							<Label visible={true} wordWrap={true}>
 								<Connector visible={true} width={1} />
 							</Label>
 						</Series>

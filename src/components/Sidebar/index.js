@@ -495,12 +495,12 @@ export default function Sidebar(props) {
 								fontSize: '10px',
 							}}>
 							<Button
-								disableFocusRipple
-								disableTouchRipple
 								variant='text'
 								onClick={() =>
 									navigate(URL_PATHS.TERM_CONDITION)
 								}
+								disableFocusRipple
+								disableTouchRipple
 								sx={{
 									textTransform: 'capitalize',
 									fontSize: '10px',

@@ -148,9 +148,13 @@ function IdeaSubView({ ideaData, subData }) {
 			sortable: false,
 			getActions: (params) => [
 				<GridActionsCellItem
-					icon={<GoInfo color='#3f66da' style={{ fontSize: '20px' }} />}
+					icon={
+						<GoInfo color='#3f66da' style={{ fontSize: '20px' }} />
+					}
 					label='Detail'
-					onClick={() => navigate(`${URL_PATHS.MANAGE_SUB}/${params.id}`)}
+					onClick={() =>
+						navigate(`${URL_PATHS.MANAGE_SUB}/${params.id}`)
+					}
 					showInMenu
 				/>,
 
@@ -282,13 +286,12 @@ function IdeaSubView({ ideaData, subData }) {
 	};
 	const renderTop = () => {
 		return (
-			<div style={{ width: '100%', textAlign: 'right', marginBottom: 15 }}>
+			<div
+				style={{ width: '100%', textAlign: 'right', marginBottom: 15 }}>
 				<Button
-					size={'small'}
 					variant='contained'
 					endIcon={<AddIcon />}
-					onClick={() => onOpenModal('create')}
-				>
+					onClick={() => onOpenModal('create')}>
 					Create Idea
 				</Button>
 			</div>
@@ -332,7 +335,9 @@ function IdeaSubView({ ideaData, subData }) {
 					onPageSizeChange={(pageSize) =>
 						onChangePagination(pageSize, pagination.page)
 					}
-					onPageChange={(page) => onChangePagination(pagination.pageSize, page)}
+					onPageChange={(page) =>
+						onChangePagination(pagination.pageSize, page)
+					}
 					style={{ minHeight: '600px' }}
 					rowsPerPageOptions={[5, 10, 25, 50]}
 				/>

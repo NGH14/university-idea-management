@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
-import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
-import TagIcon from '@mui/icons-material/Tag';
+
 import { Add } from '@mui/icons-material';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import TagIcon from '@mui/icons-material/Tag';
 import {
 	Avatar,
 	Box,
@@ -19,6 +18,8 @@ import {
 	styled,
 	Typography,
 } from '@mui/material';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 import Tippy from '@tippyjs/react';
 import { axioc, sleep, toastMessages } from 'common';
 import { stringToSvg } from 'common/DiceBear';
@@ -49,7 +50,7 @@ export default function Homepage() {
 	const [data, setData] = useState([]);
 	const { state } = useContext(UserContext);
 	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
-
+	const [showMore, setShowMore] = useState([]);
 	const [postTotal, setPostTotal] = useState(0);
 	const [comments, setComments] = useState([]);
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -61,6 +62,12 @@ export default function Homepage() {
 
 	useEffect(() => loadData(), []);
 
+	const onShowMoreContent = (index) => {
+		const newShowMore = [...showMore];
+		newShowMore[index] = !newShowMore[index];
+		setShowMore(newShowMore);
+	};
+
 	const loadData = async () =>
 		await axioc
 			.get(API_PATHS.SHARED.IDEA + '/table/list', {
@@ -68,6 +75,13 @@ export default function Homepage() {
 			})
 			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
 			.then((res) => {
+				const newData = [...data, ...res?.data?.result?.rows];
+				let newComment = [];
+				_.map(newData, (x) => {
+					const id = x.id;
+					newComment[id] = false;
+				});
+
 				setData((oldData) => [...oldData, ...res?.data?.result?.rows]);
 				setPostTotal(res?.data?.result?.total);
 			});
@@ -75,15 +89,9 @@ export default function Homepage() {
 	// const handleClick = (event) => setAnchorEl(event.currentTarget);
 	// const handleClose = () => setAnchorEl(null);
 
-	const handleExpandClick = (id) => {
-		const newExpanded = [...comments];
-		if (!newExpanded[id]) {
-			newExpanded[id] = true;
-		} else {
-			newExpanded[id] = null;
-		}
-		console.log(newExpanded);
-
+	const handleExpandClick = (index) => {
+		let newExpanded = [...comments];
+		newExpanded[index] = !newExpanded[index];
 		setComments(newExpanded);
 	};
 
@@ -293,7 +301,6 @@ export default function Homepage() {
 								style={{
 									textDecoration: 'none',
 									color: 'initial',
-
 									cursor: 'pointer',
 								}}
 							>
@@ -313,6 +320,7 @@ export default function Homepage() {
 										}}
 									>
 										in&nbsp;{item?.submission?.title}
+										&nbsp;submission
 									</span>
 								</RouterLink>
 							</label>
@@ -354,34 +362,63 @@ export default function Homepage() {
 		</Stack>
 	);
 
-	const renderCardContent = (item) => {
+	const renderCardContent = (item, index) => {
 		return (
 			<CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
-				<div>
-					<Tippy content={'Detail submission'}>
-						<RouterLink
-							to={`${URL_PATHS.IDEA}/${item.id}`}
-							style={{
-								textDecoration: 'none',
-								color: 'rgba(0, 1, 17, 0.8)',
-								fontSize: '1.2rem',
-								lineHeight: '44px',
-								fontWeight: '600',
-								cursor: 'pointer',
-							}}
+				<Tippy content={'Detail submission'}>
+					<RouterLink
+						to={`${URL_PATHS.IDEA}/${item.id}`}
+						style={{
+							textDecoration: 'none',
+							color: 'rgba(0, 1, 17, 0.8)',
+							fontSize: '1.2rem',
+							lineHeight: '44px',
+							fontWeight: '600',
+							cursor: 'pointer',
+						}}
+					>
+						{item?.title}
+					</RouterLink>
+				</Tippy>
+				<div
+					style={{
+						display: 'flex',
+						alignItems: 'center',
+						flexWrap: 'wrap',
+					}}
+				>
+					<div className={showMore[index] || 'maxWidth300'}>
+						<Typography
+							variant='body2'
+							color='text.secondary'
+							className={showMore[index] || 'multiLineEllipsis'}
 						>
-							{item?.title}
-						</RouterLink>
-					</Tippy>
-					<Typography variant='body2' color='text.secondary'>
-						{item?.content}
-					</Typography>
+							{item?.content}
+						</Typography>
+					</div>
+					<Button
+						variant='text'
+						onClick={() => onShowMoreContent(index)}
+						disableFocusRipple
+						disableTouchRipple
+						sx={{
+							textTransform: 'capitalize',
+							fontSize: '0.80em',
+							color: '#888',
+							'&:hover': {
+								backgroundColor: '#fff',
+								color: '#333',
+							},
+						}}
+					>
+						{showMore[index] ? 'Show less' : 'Show more'}
+					</Button>
 				</div>
 			</CardContent>
 		);
 	};
 
-	const renderActionButton = (item, ideaIndex) => {
+	const renderActionButton = (item, index) => {
 		return (
 			<CardActions
 				style={{
@@ -400,7 +437,7 @@ export default function Homepage() {
 					onClick={() =>
 						handleOnLikeness(
 							item,
-							ideaIndex,
+							index,
 							item.requester_is_like === true ? null : true,
 						)
 					}
@@ -423,7 +460,7 @@ export default function Homepage() {
 					onClick={() =>
 						handleOnLikeness(
 							item,
-							ideaIndex,
+							index,
 							item.requester_is_like === false ? null : false,
 						)
 					}
@@ -443,8 +480,8 @@ export default function Homepage() {
 				<ExpandMore
 					className='idea_action'
 					fullWidth
-					expand={comments[item.id] || false}
-					onClick={() => handleExpandClick(item.id)}
+					expand={comments[index]}
+					onClick={() => handleExpandClick(index)}
 					style={{ marginRight: 20, marginLeft: 20 }}
 					aria-expanded={comments[item.id]}
 					color={'inherit'}
@@ -470,15 +507,15 @@ export default function Homepage() {
 			<></>
 		);
 
-	const renderComment = (item) => (
-		<Collapse in={comments[item.id || false]} timeout='auto' unmountOnExit>
+	const renderComment = (item, index) => (
+		<Collapse in={comments[index]} timeout='auto' unmountOnExit>
 			<CommentIdea data={item} ideaId={item?.id} />
 		</Collapse>
 	);
 
 	const ContentIdea = () =>
 		!status.loading ? (
-			data?.map((item, index) => (
+			data.map((item, index) => (
 				<Card
 					key={index}
 					style={{
@@ -491,11 +528,11 @@ export default function Homepage() {
 					}}
 				>
 					{renderCardHeader(item)}
-					{renderCardContent(item)}
+					{renderCardContent(item, index)}
 					{renderIdeaTags(item)}
 					{renderListFile(item)}
 					{renderActionButton(item, index)}
-					{renderComment(item)}
+					{renderComment(item, index)}
 				</Card>
 			))
 		) : (

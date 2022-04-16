@@ -15,47 +15,80 @@ export const fake_subTotal = [
 
 export const fake_topIdeas = [
 	{
-		idea: { id: 'b6ca054d-2f2a-5029-84c8-63756de8c8bd', title: 'Garrett Rivera' },
+		idea: {
+			id: 'b6ca054d-2f2a-5029-84c8-63756de8c8bd',
+			title: 'Garrett Rivera',
+		},
 		comment_number: '329',
 	},
 	{
-		idea: { id: 'c844d578-4265-54f0-bfb8-216c7a901ee4', title: 'Owen Copeland' },
+		idea: {
+			id: 'c844d578-4265-54f0-bfb8-216c7a901ee4',
+			title: 'Owen Copeland',
+		},
 		comment_number: '17',
 	},
 	{
-		idea: { id: 'ad417ea3-cc8e-521c-9ea4-bd9a4eddc403', title: 'Lottie Greer' },
+		idea: {
+			id: 'ad417ea3-cc8e-521c-9ea4-bd9a4eddc403',
+			title: 'Lottie Greer',
+		},
 		comment_number: '304',
 	},
 	{
-		idea: { id: '30aae56d-c274-57dc-97ef-b7e6690cbaeb', title: 'Jeffery Butler' },
+		idea: {
+			id: '30aae56d-c274-57dc-97ef-b7e6690cbaeb',
+			title: 'Jeffery Butler',
+		},
 		comment_number: '464',
 	},
 	{
-		idea: { id: 'c96e2c99-c548-55ab-a037-60c9806b320e', title: 'Amy Collier' },
+		idea: {
+			id: 'c96e2c99-c548-55ab-a037-60c9806b320e',
+			title: 'Amy Collier',
+		},
 		comment_number: '300',
 	},
 	{
-		idea: { id: 'c0dba4db-774a-5bc6-8e4e-bc89202122ea', title: 'Adele Goodwin' },
+		idea: {
+			id: 'c0dba4db-774a-5bc6-8e4e-bc89202122ea',
+			title: 'Adele Goodwin',
+		},
 		comment_number: '157',
 	},
 	{
-		idea: { id: 'c078e2f8-a97e-5b8c-9050-d70a501dff7d', title: 'Hunter Jones' },
+		idea: {
+			id: 'c078e2f8-a97e-5b8c-9050-d70a501dff7d',
+			title: 'Hunter Jones',
+		},
 		comment_number: '219',
 	},
 	{
-		idea: { id: 'd1d686df-7c4b-524e-b2c4-d3a4ec92cb1d', title: 'Peter Welch' },
+		idea: {
+			id: 'd1d686df-7c4b-524e-b2c4-d3a4ec92cb1d',
+			title: 'Peter Welch',
+		},
 		comment_number: '341',
 	},
 	{
-		idea: { id: '3a6c1aa3-2363-588c-9e6c-c89b75d5f111', title: 'Tillie Lyons' },
+		idea: {
+			id: '3a6c1aa3-2363-588c-9e6c-c89b75d5f111',
+			title: 'Tillie Lyons',
+		},
 		comment_number: '432',
 	},
 	{
-		idea: { id: '778671a3-4f40-519c-8727-847623472e42', title: 'Henry Santos' },
+		idea: {
+			id: '778671a3-4f40-519c-8727-847623472e42',
+			title: 'Henry Santos',
+		},
 		comment_number: '55',
 	},
 	{
-		idea: { id: '9e1f99de-e40e-5fcc-bcf1-b1c34aab661f', title: 'Chester Bass' },
+		idea: {
+			id: '9e1f99de-e40e-5fcc-bcf1-b1c34aab661f',
+			title: 'Chester Bass',
+		},
 		comment_number: '251',
 	},
 ];

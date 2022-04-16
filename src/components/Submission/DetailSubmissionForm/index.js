@@ -13,11 +13,16 @@ function DetailSubmissionForm({ initialValue }) {
 	const { state } = useContext(UserContext);
 	return (
 		<form onSubmit={formik.handleSubmit}>
-			<div className='form_group' style={{ marginBottom: 12 }}>
+			<div
+				className='form_group-submis-submis'
+				style={{ marginBottom: 12 }}>
 				<div className='form_content' style={{ display: 'flex' }}>
 					<InputLabel
-						style={{ width: 110, marginBottom: 'auto', marginTop: 'auto' }}
-					>
+						style={{
+							width: 110,
+							marginBottom: 'auto',
+							marginTop: 'auto',
+						}}>
 						Title{' '}
 					</InputLabel>
 					<TextField
@@ -31,18 +36,19 @@ function DetailSubmissionForm({ initialValue }) {
 			</div>
 
 			{
-				<div className='form_group' style={{ marginBottom: 12, display: 'flex' }}>
+				<div
+					className='form_group-submis'
+					style={{ marginBottom: 12, display: 'flex' }}>
 					<div
 						className='form_content'
-						style={{ display: 'flex', width: '100%' }}
-					>
+						style={{ display: 'flex', width: '100%' }}>
 						<InputLabel
+							InputProps={{ disableUnderline: true }}
 							style={{
 								width: 150,
 								marginBottom: 'auto',
 								marginTop: 'auto',
-							}}
-						>
+							}}>
 							Create By
 						</InputLabel>
 						<TextField
@@ -55,16 +61,15 @@ function DetailSubmissionForm({ initialValue }) {
 					</div>
 					<div
 						className='form_content'
-						style={{ display: 'flex', width: '100%' }}
-					>
+						style={{ display: 'flex', width: '100%' }}>
 						<InputLabel
+							InputProps={{ disableUnderline: true }}
 							style={{
 								width: 150,
 								marginBottom: 'auto',
 								marginTop: 'auto',
 								marginLeft: 10,
-							}}
-						>
+							}}>
 							Modified By
 						</InputLabel>
 						<TextField
@@ -78,11 +83,18 @@ function DetailSubmissionForm({ initialValue }) {
 				</div>
 			}
 
-			<div className='form_group' style={{ marginBottom: 12, display: 'flex' }}>
-				<div className='form_content' style={{ display: 'flex', width: '100%' }}>
+			<div
+				className='form_group-submis'
+				style={{ marginBottom: 12, display: 'flex' }}>
+				<div
+					className='form_content'
+					style={{ display: 'flex', width: '100%' }}>
 					<InputLabel
-						style={{ width: 150, marginBottom: 'auto', marginTop: 'auto' }}
-					>
+						style={{
+							width: 150,
+							marginBottom: 'auto',
+							marginTop: 'auto',
+						}}>
 						Initial Deadline
 					</InputLabel>
 					<TextField
@@ -90,18 +102,21 @@ function DetailSubmissionForm({ initialValue }) {
 						style={{ width: '100%', pointerEvents: 'none' }}
 						variant='standard'
 						name={'initial_date'}
-						value={moment(formik.values.initial_date).format('DD/MM/YYYY')}
+						value={moment(formik.values.initial_date).format(
+							'DD/MM/YYYY',
+						)}
 					/>
 				</div>
-				<div className='form_content' style={{ display: 'flex', width: '100%' }}>
+				<div
+					className='form_content'
+					style={{ display: 'flex', width: '100%' }}>
 					<InputLabel
 						style={{
 							width: 150,
 							marginBottom: 'auto',
 							marginTop: 'auto',
 							marginLeft: 10,
-						}}
-					>
+						}}>
 						Final Deadline
 					</InputLabel>
 					<TextField
@@ -109,16 +124,21 @@ function DetailSubmissionForm({ initialValue }) {
 						style={{ width: '100%', pointerEvents: 'none' }}
 						variant='standard'
 						name={'final_date'}
-						value={moment(formik.values.final_date).format('DD/MM/YYYY')}
+						value={moment(formik.values.final_date).format(
+							'DD/MM/YYYY',
+						)}
 					/>
 				</div>
 			</div>
 
-			<div className='form_group' style={{ marginBottom: 12 }}>
+			<div className='form_group-submis' style={{ marginBottom: 12 }}>
 				<div className='form_content' style={{ display: 'flex' }}>
 					<InputLabel
-						style={{ width: 110, marginBottom: 'auto', marginTop: 'auto' }}
-					>
+						style={{
+							width: 110,
+							marginBottom: 'auto',
+							marginTop: 'auto',
+						}}>
 						Description
 					</InputLabel>
 					<TextField

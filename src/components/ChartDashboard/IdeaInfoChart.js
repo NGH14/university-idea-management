@@ -95,8 +95,12 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 	};
 
 	const onMonthYearIdeaInfoChange = async (value) => {
-		axioc.dash
-			.getActv(moment(value).format('YYYY'), moment(value).format('MM'))
+		axioc
+			.get(
+				`dashboard/activities?month=${moment(value).format(
+					'MM',
+				)}&year=${moment(value).format('YYYY')}`,
+			)
 			.then((res) => {
 				let arrDate = _.cloneDeep(res?.data?.result);
 				const newArray = [];
@@ -104,6 +108,7 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 					if (index + 1 >= 1 && index + 1 <= 15) {
 						x.date = moment(x.date).format('DD/MM/YYYY');
 						newArray.push(x);
+						console.log(newArray);
 					}
 				});
 				setNewFilter({
@@ -193,7 +198,14 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 
 	return (
 		<>
-			<div style={{ maxWidth: '100%' }}>
+			<div
+				style={{
+					margin: 'auto',
+					maxwidth: '100%',
+					width: '600px',
+					minWidth: '350px',
+					margin: 'auto',
+				}}>
 				<Paper elevation={0}>
 					<div
 						style={{
