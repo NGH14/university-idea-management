@@ -452,28 +452,25 @@ export default function Homepage() {
 
 	const renderContentIdea = () =>
 		!status.loading ? (
-			data
-				.slice(0)
-				.reverse()
-				?.map((item, index) => (
-					<Card
-						key={index}
-						style={{
-							borderRadius: '5px',
-							boxShadow: '1px 2px 4px rgba(0,0,0,0.3)',
-							padding: '5px',
-							marginTop: 30,
-							maxWidth: '70rem',
-							marginInline: 'auto',
-						}}>
-						{renderCardHeader(item)}
-						{renderCardContent(item, index)}
-						{renderIdeaTags(item)}
-						{renderListFile(item)}
-						{renderActionButton(item, index)}
-						{renderComment(item, index)}
-					</Card>
-				))
+			data.map((item, index) => (
+				<Card
+					key={index}
+					style={{
+						borderRadius: '5px',
+						boxShadow: '1px 2px 4px rgba(0,0,0,0.3)',
+						padding: '5px',
+						marginTop: 30,
+						maxWidth: '70rem',
+						marginInline: 'auto',
+					}}>
+					{renderCardHeader(item)}
+					{renderCardContent(item, index)}
+					{renderIdeaTags(item)}
+					{renderListFile(item)}
+					{renderActionButton(item, index)}
+					{renderComment(item, index)}
+				</Card>
+			))
 		) : (
 			<Box sx={{ display: 'flex' }}>
 				<CircularProgress />
