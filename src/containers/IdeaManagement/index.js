@@ -103,7 +103,14 @@ export default function IdeaManagement() {
 		update: (value) =>
 			toast.promise(
 				axioc
-					.put(`${API_PATHS.ADMIN.MANAGE_IDEA}/${value?.id}`, value)
+					.put(`${API_PATHS.ADMIN.MANAGE_IDEA}/${value?.id}`, {
+						title: value.title,
+						content: value.content,
+						tags: value.tags,
+						attachments: value.attachments,
+						is_anonymous: value.is_anonymous,
+						submission_id: value.submission_id,
+					})
 					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,

@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
-
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+import TagIcon from '@mui/icons-material/Tag';
 import { Add } from '@mui/icons-material';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import {
@@ -235,27 +237,39 @@ export default function Homepage() {
 		); */
 	};
 
-	const renderCardHeader = (item) => {
-		return (
-			<CardHeader
-				className='idea_header'
-				action={renderActionIdea(item?.id, item?.create_by)}
-				title={item?.user?.full_name}
-				avatar={
-					<Avatar aria-label='avatar'>
-						{item?.is_anonymous || item?.user?.avatar
-							? stringToSvg(item?.user?.avatar)
-							: 'R'}
-					</Avatar>
-				}
-				subheader={
-					item?.created_date
-						? moment(item?.created_date).format('LLL')
-						: 'September 14, 2016'
-				}
-			/>
-		);
-	};
+	const renderCardHeader = (item) => (
+		<CardHeader
+			className='idea_header'
+			action={renderActionIdea(item?.id, item?.create_by)}
+			title={item?.user?.full_name}
+			avatar={
+				<Avatar aria-label='avatar'>
+					{item?.is_anonymous || item?.user?.avatar
+						? stringToSvg(item?.user?.avatar)
+						: 'R'}
+				</Avatar>
+			}
+			subheader={
+				item?.created_date
+					? moment(item?.created_date).format('LLL')
+					: 'September 14, 2016'
+			}
+		/>
+	);
+
+	const renderIdeaTags = (item) => (
+		<Stack direction='row' spacing={1}>
+			{item?.tags?.map((tag, index) => (
+				<Chip
+					key={item.title + tag.name + index}
+					icon={<TagIcon />}
+					label={tag}
+					size='small'
+					variant='outlined'
+				/>
+			))}
+		</Stack>
+	);
 
 	const renderCardContent = (item) => {
 		return (
@@ -388,6 +402,7 @@ export default function Homepage() {
 					}}
 				>
 					{renderCardHeader(item)}
+					{renderIdeaTags(item)}
 					{renderCardContent(item)}
 					{renderListFile(item)}
 					{renderActionButton(item)}
