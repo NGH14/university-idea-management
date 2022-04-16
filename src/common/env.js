@@ -34,6 +34,7 @@ export const API_PATHS = {
 		USER: 'user',
 		SUB: 'submission',
 		COMMENT: 'comment',
+		LIKE: 'idea/like',
 	},
 	ADMIN: {
 		DASHBOAD: {

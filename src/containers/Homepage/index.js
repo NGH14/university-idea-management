@@ -71,6 +71,7 @@ export default function Homepage() {
 				setData((oldData) => [...oldData, ...res?.data?.result?.rows]);
 				setPostTotal(res?.data?.result?.total);
 			});
+
 	// const handleClick = (event) => setAnchorEl(event.currentTarget);
 	// const handleClose = () => setAnchorEl(null);
 
@@ -86,6 +87,36 @@ export default function Homepage() {
 		setComments(newExpanded);
 	};
 
+	const handleOnLikeness = async (item, ideaIndex, isLike) => {
+		if (item.requester_is_like == null)
+			await axioc
+				.post(`${API_PATHS.SHARED.LIKE}/${item.id}`, {
+					is_like: isLike,
+				})
+				.then(async (res) => {
+					const arr = [...data];
+					arr[ideaIndex].requester_is_like = isLike;
+					arr[ideaIndex].likes = res?.data?.result?.likes;
+					arr[ideaIndex].dislikes = res?.data?.result?.dislikes;
+					setData(arr);
+				})
+				.catch();
+
+		if (item.requester_is_like !== isLike)
+			await axioc
+				.put(`${API_PATHS.SHARED.LIKE}/${item.id}`, {
+					is_like: isLike,
+				})
+				.then(async (res) => {
+					const arr = [...data];
+					arr[ideaIndex].requester_is_like = isLike;
+					arr[ideaIndex].likes = res?.data?.result?.likes;
+					arr[ideaIndex].dislikes = res?.data?.result?.dislikes;
+					setData(arr);
+				})
+				.catch();
+	};
+
 	const requests = {
 		create: (value) =>
 			toast.promise(
@@ -95,8 +126,7 @@ export default function Homepage() {
 					.then((res) => {
 						setStatus({ ...status, visibleModal: false });
 						toast.info(
-							<RouterLink
-								to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
+							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
 								Idea details:{' '}
 								{() => {
 									const title = res?.data?.result?.title;
@@ -119,15 +149,12 @@ export default function Homepage() {
 					.then(() => sleep(700))
 					.then((res) => {
 						setStatus({ ...status, visibleModal: false });
-						const indexData = data.findIndex(
-							(x) => x.id === value.id,
-						);
+						const indexData = data.findIndex((x) => x.id === value.id);
 						data[indexData] = res?.data?.result;
 						setData((oldData) => [...oldData, data]);
 
 						toast.info(
-							<RouterLink
-								to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
+							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
 								Idea details:{' '}
 								{() => {
 									const title = res?.data?.result?.title;
@@ -145,17 +172,13 @@ export default function Homepage() {
 			),
 		delete: (id) =>
 			toast.promise(
-				axioc
-					.delete(`${API_PATHS.SHARED.IDEA}/${id}`)
-					.then(() => sleep(700)),
+				axioc.delete(`${API_PATHS.SHARED.IDEA}/${id}`).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.UNEXPECTED,
 					success: {
 						render() {
-							const indexData = data.findIndex(
-								(_) => _.id === id,
-							);
+							const indexData = data.findIndex((_) => _.id === id);
 							data.splice(indexData, 1);
 							setData((oldData) => [...oldData, data]);
 							loadData();
@@ -176,7 +199,8 @@ export default function Homepage() {
 						fontSize: '0.5em',
 						color: '#999',
 						opacity: '0.7',
-					}}>
+					}}
+				>
 					Welcome to the UIM &#10084;&#65039;
 				</i>
 			</div>
@@ -271,20 +295,23 @@ export default function Homepage() {
 									color: 'initial',
 
 									cursor: 'pointer',
-								}}>
+								}}
+							>
 								<RouterLink
 									to={`/idea/${item.id}`}
 									style={{
 										textDecoration: 'none',
 										cursor: 'pointer',
 										color: 'initial',
-									}}>
+									}}
+								>
 									<span
 										style={{
 											textDecoration: 'none',
 											color: 'initial',
 											fontSize: '12px',
-										}}>
+										}}
+									>
 										in&nbsp;{item?.submission?.title}
 									</span>
 								</RouterLink>
@@ -294,7 +321,8 @@ export default function Homepage() {
 				) : (
 					'September 14, 2016'
 				)
-			}></CardHeader>
+			}
+		></CardHeader>
 	);
 
 	const renderIdeaTags = (item) => (
@@ -308,7 +336,8 @@ export default function Homepage() {
 				flexWrap: 'wrap',
 				justifyContent: 'flex-start',
 				gap: 1,
-			}}>
+			}}
+		>
 			{item?.tags?.map((tag, index) => (
 				<Chip
 					sx={{
@@ -339,7 +368,8 @@ export default function Homepage() {
 								lineHeight: '44px',
 								fontWeight: '600',
 								cursor: 'pointer',
-							}}>
+							}}
+						>
 							{item?.title}
 						</RouterLink>
 					</Tippy>
@@ -351,7 +381,7 @@ export default function Homepage() {
 		);
 	};
 
-	const renderActionButton = (item) => {
+	const renderActionButton = (item, ideaIndex) => {
 		return (
 			<CardActions
 				style={{
@@ -361,25 +391,54 @@ export default function Homepage() {
 					alignItems: 'center',
 					width: '100%',
 					fontSize: 12,
-				}}>
+				}}
+			>
 				<Button
 					className='idea_action'
 					fullWidth
 					aria-label='up vote'
-					startIcon={<IoMdArrowRoundUp />}
-					color={'inherit'}
-					size={'large'}>
-					(0)
+					onClick={() =>
+						handleOnLikeness(
+							item,
+							ideaIndex,
+							item.requester_is_like === true ? null : true,
+						)
+					}
+					startIcon={
+						<IoMdArrowRoundUp
+							style={{
+								color: item.requester_is_like === true ? '#626ef0' : '',
+							}}
+						/>
+					}
+					color='inherit'
+					size='large'
+				>
+					{`(${item.likes})`}
 				</Button>
 				<Button
 					className='idea_action'
 					fullWidth
 					aria-label='down vote'
+					onClick={() =>
+						handleOnLikeness(
+							item,
+							ideaIndex,
+							item.requester_is_like === false ? null : false,
+						)
+					}
 					style={{ marginRight: 20, marginLeft: 20 }}
-					startIcon={<IoMdArrowRoundDown />}
+					startIcon={
+						<IoMdArrowRoundDown
+							style={{
+								color: item.requester_is_like === false ? '#626ef0' : '',
+							}}
+						/>
+					}
 					color={'inherit'}
-					size={'large'}>
-					(0)
+					size={'large'}
+				>
+					{`(${item.dislikes})`}
 				</Button>
 				<ExpandMore
 					className='idea_action'
@@ -391,7 +450,8 @@ export default function Homepage() {
 					color={'inherit'}
 					size={'large'}
 					startIcon={<BiCommentDetail />}
-					aria-label='show more'>
+					aria-label='show more'
+				>
 					{item.comments_count}
 				</ExpandMore>
 			</CardActions>
@@ -416,7 +476,7 @@ export default function Homepage() {
 		</Collapse>
 	);
 
-	const renderContentIdea = () =>
+	const ContentIdea = () =>
 		!status.loading ? (
 			data?.map((item, index) => (
 				<Card
@@ -428,12 +488,13 @@ export default function Homepage() {
 						marginTop: 30,
 						maxWidth: '70rem',
 						marginInline: 'auto',
-					}}>
+					}}
+				>
 					{renderCardHeader(item)}
 					{renderCardContent(item)}
 					{renderIdeaTags(item)}
 					{renderListFile(item)}
-					{renderActionButton(item)}
+					{renderActionButton(item, index)}
 					{renderComment(item)}
 				</Card>
 			))
@@ -451,10 +512,7 @@ export default function Homepage() {
 	const renderFooter = () =>
 		!(_.size(data) === postTotal || _.size(data) > postTotal) ? (
 			<div style={{ marginTop: 15, textAlign: 'center' }}>
-				<Button
-					size='small'
-					variant='outlined'
-					onClick={() => onShowMore()}>
+				<Button size='small' variant='outlined' onClick={() => onShowMore()}>
 					More
 				</Button>
 			</div>
@@ -465,7 +523,9 @@ export default function Homepage() {
 	return (
 		<div className='homepage_wrapper'>
 			{renderTop()}
-			{renderContentIdea()}
+
+			<ContentIdea />
+
 			{renderFooter()}
 
 			<FloatButton
