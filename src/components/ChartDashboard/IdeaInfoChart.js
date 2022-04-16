@@ -193,7 +193,14 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 
 	return (
 		<>
-			<div style={{ maxWidth: '100%' }}>
+			<div
+				style={{
+					margin: 'auto',
+					maxwidth: '100%',
+					width: '600px',
+					minWidth: '350px',
+					margin: 'auto',
+				}}>
 				<Paper elevation={0}>
 					<div
 						style={{

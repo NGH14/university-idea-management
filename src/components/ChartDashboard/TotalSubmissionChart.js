@@ -30,7 +30,7 @@ const customizeTooltip = (arg) => {
 	};
 };
 
-function TotalSubmissionChart({ data, loading, setFilter, filter }) {
+function TotalSubmissionChart({ data, setFilter, filter }) {
 	const [newData, setNewData] = useState([]);
 	const [filterDisplay, setFilterDisplay] = useState([1, 6]);
 
@@ -158,10 +158,7 @@ function TotalSubmissionChart({ data, loading, setFilter, filter }) {
 	return (
 		<div
 			style={{
-				margin: 'auto',
-				maxwidth: '100%',
-				width: '450px',
-				minWidth: '350px',
+				width: '100%',
 			}}>
 			<Paper elevation={0}>
 				<div

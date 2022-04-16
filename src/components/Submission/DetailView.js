@@ -74,7 +74,11 @@ export default function DetailView() {
 						sub: resSub?.data?.result,
 						ideas: resIdeas?.data?.result,
 					});
-					setStatus({ ...status, loading: false, visibleModal: false });
+					setStatus({
+						...status,
+						loading: false,
+						visibleModal: false,
+					});
 				}),
 			);
 	};
@@ -115,14 +119,13 @@ export default function DetailView() {
 
 	const renderTop = () => {
 		return (
-			<div style={{ textAlign: 'right' }}>
+			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<Button
 					size={'small'}
-					variant='contained'
-					style={{ backgroundColor: '#9e9e9e', marginRight: 15 }}
-					endIcon={<ArrowBackIcon />}
-					onClick={() => navigate(URL_PATHS.MANAGE_SUB)}
-				>
+					variant='text'
+					style={{ marginRight: 15 }}
+					startIcon={<ArrowBackIcon />}
+					onClick={() => navigate(URL_PATHS.MANAGE_SUB)}>
 					Back
 				</Button>
 				<Button
@@ -130,8 +133,7 @@ export default function DetailView() {
 					variant='contained'
 					style={{ backgroundColor: '#4caf50', marginRight: 15 }}
 					endIcon={<BiPencil />}
-					onClick={() => onOpenModal('update')}
-				>
+					onClick={() => onOpenModal('update')}>
 					Edit Submission
 				</Button>
 			</div>
@@ -146,9 +148,9 @@ export default function DetailView() {
 					borderRadius: 8,
 					border: '2px solid gray',
 					textTransform: 'capitalize',
-				}}
-			>
-				<legend style={{ fontWeight: 'bold', padding: 8, fontSize: 22 }}>
+				}}>
+				<legend
+					style={{ fontWeight: 'bold', padding: 8, fontSize: 22 }}>
 					submission details
 				</legend>
 				<DetailSubmissionForm initialValue={data?.sub} />
@@ -166,16 +168,14 @@ export default function DetailView() {
 					borderRight: 'none',
 					borderLeft: 'none',
 					borderBottom: 'none',
-				}}
-			>
+				}}>
 				<legend
 					style={{
 						fontWeight: 'bold',
 						padding: 8,
 						fontSize: 22,
 						display: 'flex',
-					}}
-				>
+					}}>
 					List Ideas
 				</legend>
 				<IdeaSubView ideaData={data.ideas} subData={data?.sub} />

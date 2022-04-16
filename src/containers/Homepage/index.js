@@ -50,7 +50,7 @@ export default function Homepage() {
 	const [data, setData] = useState([]);
 	const { state } = useContext(UserContext);
 	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
-	const [showMore, setShowMore] = useState(false);
+	const [showMore, setShowMore] = useState([]);
 	const [postTotal, setPostTotal] = useState(0);
 	const [comments, setComments] = useState([]);
 	const [anchorEl, setAnchorEl] = useState(null);
@@ -61,6 +61,12 @@ export default function Homepage() {
 	});
 
 	useEffect(() => loadData(), []);
+
+	const onShowMoreContent = (index) => {
+		const newShowMore = [...showMore];
+		newShowMore[index] = !newShowMore[index];
+		setShowMore(newShowMore);
+	};
 
 	const loadData = async () =>
 		await axioc
@@ -84,7 +90,6 @@ export default function Homepage() {
 
 	const handleExpandClick = (index) => {
 		let newExpanded = [...comments];
-
 		newExpanded[index] = !newExpanded[index];
 		setComments(newExpanded);
 	};
@@ -328,7 +333,7 @@ export default function Homepage() {
 		</Stack>
 	);
 
-	const renderCardContent = (item) => {
+	const renderCardContent = (item, index) => {
 		return (
 			<CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
 				<Tippy content={'Detail submission'}>
@@ -345,30 +350,35 @@ export default function Homepage() {
 						{item?.title}
 					</RouterLink>
 				</Tippy>
-				<div style={{ display: 'flex', alignItems: 'center' }}>
-					<div className={showMore || 'maxWidth300'}>
+				<div
+					style={{
+						display: 'flex',
+						alignItems: 'center',
+						flexWrap: 'wrap',
+					}}>
+					<div className={showMore[index] || 'maxWidth300'}>
 						<Typography
 							variant='body2'
 							color='text.secondary'
-							className={showMore || 'multiLineEllipsis'}>
+							className={showMore[index] || 'multiLineEllipsis'}>
 							{item?.content}
 						</Typography>
 					</div>
 					<Button
 						variant='text'
-						onClick={() => setShowMore(!showMore)}
+						onClick={() => onShowMoreContent(index)}
 						disableFocusRipple
 						disableTouchRipple
 						sx={{
 							textTransform: 'capitalize',
-							fontSize: '0.9em',
+							fontSize: '0.80em',
 							color: '#888',
 							'&:hover': {
 								backgroundColor: '#fff',
 								color: '#333',
 							},
 						}}>
-						{showMore ? 'Show less' : 'Show more'}
+						{showMore[index] ? 'Show less' : 'Show more'}
 					</Button>
 				</div>
 			</CardContent>
@@ -457,7 +467,7 @@ export default function Homepage() {
 							marginInline: 'auto',
 						}}>
 						{renderCardHeader(item)}
-						{renderCardContent(item)}
+						{renderCardContent(item, index)}
 						{renderIdeaTags(item)}
 						{renderListFile(item)}
 						{renderActionButton(item, index)}
