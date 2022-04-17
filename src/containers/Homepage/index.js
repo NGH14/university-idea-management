@@ -402,7 +402,7 @@ export default function Homepage(props) {
 					color='inherit'
 					size='large'
 				>
-					{`(${item.likes})`}
+					{`${item.likes}`}
 				</Button>
 				<Button
 					className='idea_action'
@@ -426,7 +426,7 @@ export default function Homepage(props) {
 					color={'inherit'}
 					size={'large'}
 				>
-					{`(${item.dislikes})`}
+					{`${item.dislikes}`}
 				</Button>
 				<ExpandMore
 					className='idea_action'
