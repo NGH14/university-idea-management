@@ -18,8 +18,8 @@ const validationSchema = yup.object({
 	content: yup.string().required('PLease comment something before submit'),
 });
 
-function CommentIdea({ data, ideaId }) {
-	const [commentsData, setCommentsData] = useState(data?.comment);
+function CommentIdea({ data }) {
+	const [commentsData, setCommentsData] = useState();
 
 	const formik = useFormik({
 		initialValues: initialValues,
@@ -28,21 +28,26 @@ function CommentIdea({ data, ideaId }) {
 
 	useEffect(() => loadData(), []);
 
-	const loadData = async (minItems) =>
-		axioc
-			.get(`${API_PATHS.SHARED.COMMENT}/list/${ideaId}`, {
+	const loadData = async (minItems) => {
+		console.log(123123123, data);
+		await axioc
+			.get(`${API_PATHS.SHARED.COMMENT}/list/${data.id}`, {
 				params: { minItems },
 			})
 			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
 			.then((res) => setCommentsData(res?.data?.result));
+	};
 
 	const handleSubmitComment = async (values) =>
 		await axioc
 			.post(`${API_PATHS.SHARED.COMMENT}`, {
 				content: values,
-				idea_id: ideaId,
+				idea_id: data.id,
 			})
-			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
+			.catch(() => {
+				toast.error(toastMessages.errs.UNEXPECTED);
+				return;
+			})
 			.then(() => {
 				formik.resetForm();
 				loadData();
@@ -84,7 +89,7 @@ function CommentIdea({ data, ideaId }) {
 										lineHeight: '20px',
 									}}
 								>
-									{item?.user?.full_name}
+									{item?.user?.full_name ?? '[anonymous]'}
 								</p>
 								<p
 									style={{

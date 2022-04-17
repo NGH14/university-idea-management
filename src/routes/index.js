@@ -35,24 +35,22 @@ const LIST_ROUTES_PRIVATE = [
 		component: React.lazy(() => import('../containers/Homepage')),
 	},
 	{
-		roles: [ROLES.ADMIN],
+		roles: [ROLES.ADMIN, ROLES.MANAGER],
 		path: URL_PATHS.MANAGE_DEP,
-		component: React.lazy(() =>
-			import('../containers/DepartmentManagement'),
-		),
+		component: React.lazy(() => import('../containers/DepartmentManagement')),
 	},
 	{
-		roles: [ROLES.ADMIN],
+		roles: [ROLES.ADMIN, ROLES.MANAGER],
 		path: URL_PATHS.MANAGE_USER,
 		component: React.lazy(() => import('../containers/UserManagement')),
 	},
 	{
-		roles: [ROLES.ADMIN],
+		roles: [ROLES.ADMIN, ROLES.MANAGER],
 		path: URL_PATHS.MANAGE_TAG,
 		component: React.lazy(() => import('../containers/TagManagement')),
 	},
 	{
-		roles: [],
+		roles: [ROLES.ADMIN, ROLES.MANAGER],
 		path: URL_PATHS.MANAGE_SUB + '/:id',
 		component: React.lazy(() => import('components/Submission/DetailView')),
 	},
@@ -62,28 +60,24 @@ const LIST_ROUTES_PRIVATE = [
 		component: React.lazy(() => import('../containers/Profile')),
 	},
 	{
-		roles: [ROLES.ADMIN],
+		roles: [ROLES.ADMIN, ROLES.MANAGER],
 		path: URL_PATHS.MANAGE_SUB,
-		component: React.lazy(() =>
-			import('../containers/SubmissionManagement'),
-		),
+		component: React.lazy(() => import('../containers/SubmissionManagement')),
 	},
 	{
-		roles: [ROLES.ADMIN],
+		roles: [],
 		path: URL_PATHS.SUB + '/:id',
 		component: React.lazy(() => import('../containers/Submission')),
 	},
 	{
-		roles: [ROLES.ADMIN],
+		roles: [ROLES.ADMIN, ROLES.MANAGER],
 		path: URL_PATHS.MANAGE_IDEA,
 		component: React.lazy(() => import('../containers/IdeaManagement')),
 	},
 	{
-		roles: [ROLES.ADMIN],
+		roles: [ROLES.ADMIN, ROLES.MANAGER],
 		path: URL_PATHS.DASHBOARD,
-		component: React.lazy(() =>
-			import('../containers/Dashboard/Dashboard'),
-		),
+		component: React.lazy(() => import('../containers/Dashboard/Dashboard')),
 	},
 	{
 		roles: [],
@@ -138,9 +132,8 @@ export function ListRoute() {
 						<Sidebar>
 							<PrivateRoute roles={route.roles}>
 								<React.Suspense
-									fallback={
-										<LoadingSpinner inputHeight='80vh' />
-									}>
+									fallback={<LoadingSpinner inputHeight='80vh' />}
+								>
 									<route.component />
 								</React.Suspense>
 							</PrivateRoute>

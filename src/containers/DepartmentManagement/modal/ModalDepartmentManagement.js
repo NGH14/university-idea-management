@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { axioc } from 'common';
-import { API_PATHS, DEV_CONFIGS } from 'common/env';
+import { API_PATHS } from 'common/env';
 import CreateDepartmentForm from 'components/Department/CreateDepartmentForm';
 import EditDepartmentForm from 'components/Department/EditDepartmentForm';
 import { dataDemo } from '../FakeData';
@@ -38,16 +38,6 @@ const ModalDepartmentManagement = (props) => {
 	const [initialValue, setInitialValue] = useState([]);
 
 	useEffect(() => {
-		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			let deps = dataDemo.find((_) => _.id === rowId);
-			if (!deps) {
-				toast.error(toastMessages.ERR_DEP_NOT_FOUND);
-				return;
-			}
-			setInitialValue(deps);
-			return;
-		}
-
 		if (action !== 'create') {
 			loadData();
 		}

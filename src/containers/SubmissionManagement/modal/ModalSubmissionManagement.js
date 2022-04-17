@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { axioc } from 'common';
-import { API_PATHS, DEV_CONFIGS } from 'common/env';
+import { API_PATHS } from 'common/env';
 import CreateSubmissionForm from 'components/Submission/CreateSubmissionForm';
 import EditSubmissionForm from 'components/Submission/EditSubmissionForm';
 import { dataDemo } from '../FakeData';
@@ -39,16 +39,6 @@ const ModalSubmissionManagement = (props) => {
 	const [initialValue, setInitialValue] = useState([]);
 
 	useEffect(() => {
-		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			let user = dataDemo.find((_) => _.id === rowId);
-			if (!user) {
-				toast.error(toastMessages.ERR_SUB_NOT_FOUND);
-				return;
-			}
-			setInitialValue(user);
-			return;
-		}
-
 		if (action !== 'create' && action !== 'createIdea') {
 			loadData();
 		}
@@ -65,10 +55,7 @@ const ModalSubmissionManagement = (props) => {
 		switch (action) {
 			case 'create':
 				return (
-					<CreateSubmissionForm
-						onClose={() => onClose()}
-						onCreate={onCreate}
-					/>
+					<CreateSubmissionForm onClose={() => onClose()} onCreate={onCreate} />
 				);
 			case 'update':
 				return (
@@ -92,7 +79,8 @@ const ModalSubmissionManagement = (props) => {
 			open={visible}
 			onClose={() => onClose()}
 			aria-labelledby='modal-modal-title'
-			aria-describedby='modal-modal-description'>
+			aria-describedby='modal-modal-description'
+		>
 			<Box sx={style}>{renderForm()}</Box>
 		</Modal>
 	);

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { axioc } from 'common';
-import { API_PATHS, DEV_CONFIGS } from 'common/env';
+import { API_PATHS } from 'common/env';
 import CreateTagForm from 'components/Tag/CreateTagForm';
 import DetailTagForm from 'components/Tag/DetailTagForm';
 import EditTagForm from 'components/Tag/EditTagForm';
@@ -39,16 +39,6 @@ const ModalTagManagement = (props) => {
 	const [initialValue, setInitialValue] = useState([]);
 
 	useEffect(() => {
-		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			let deps = dataDemo.find((_) => _.id === rowId);
-			if (!deps) {
-				toast.error(toastMessages.ERR_TAG_NOT_FOUND);
-				return;
-			}
-			setInitialValue(deps);
-			return;
-		}
-
 		if (action !== 'create') {
 			loadData();
 		}

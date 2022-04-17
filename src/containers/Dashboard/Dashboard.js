@@ -24,7 +24,7 @@ export default function Dashboard() {
 		topIdea: [],
 		infoData: [],
 	});
-	const [display, setDisplay] = useState({
+	const [display] = useState({
 		sub: [1, 6],
 		ideaInfo: [1, 15],
 	});
@@ -64,27 +64,27 @@ export default function Dashboard() {
 	const dataCardItems = [
 		{
 			name: 'Total Up Vote',
-			value: data?.totalAll?.likes,
+			value: data?.totalAll?.total_likes ?? 0,
 			icon: <CgArrowUpR className='dataCardItems' />,
 		},
 		{
 			name: 'Total Down Vote',
-			value: data?.totalAll?.dislikes,
+			value: data?.totalAll?.total_dislikes ?? 0,
 			icon: <CgArrowDownR className='dataCardItems' />,
 		},
 		{
 			name: 'Total Submissions',
-			value: data?.totalAll?.total_submissions,
+			value: data?.totalAll?.total_submissions ?? 0,
 			icon: <BsFileRichtext className='dataCardItems' />,
 		},
 		{
 			name: 'Total Ideas',
-			value: data?.totalAll?.total_ideas,
+			value: data?.totalAll?.total_ideas ?? 0,
 			icon: <TiLightbulb className='dataCardItems' />,
 		},
 		{
 			name: 'Total Comments',
-			value: data?.totalAll?.total_comments,
+			value: data?.totalAll?.total_comments ?? 0,
 			icon: <AiOutlineComment className='dataCardItems' />,
 		},
 	];

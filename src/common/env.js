@@ -1,21 +1,3 @@
-export const DEV_CONFIGS = {
-	IS_LOGIN: false,
-	IS_OFFLINE_DEV: false,
-	FAKE_ROLES: [
-		{ name: 'admin' },
-		{ name: 'manager' },
-		{ name: 'staff' },
-		{ name: 'supervisor' },
-	],
-	FAKE_DEPS: [
-		{ name: 'it' },
-		{ name: 'qa' },
-		{ name: 'co' },
-		{ name: 'yh' },
-		{ name: 'ye' },
-	],
-};
-
 export const GAPI_CLIENT_ID = process.env.REACT_APP_GAPI_CLIENT_ID;
 
 export const API_PATHS = {
@@ -68,7 +50,6 @@ export const URL_PATHS = {
 	PROFILE: '/profile',
 	SUB: '/submission',
 	IDEA: '/idea',
-	DEMO: '/demo',
 };
 
 export const STORAGE_VARS = {
@@ -78,7 +59,7 @@ export const STORAGE_VARS = {
 
 export const ROLES = {
 	ADMIN: 'admin',
-	MANAGER: 'manager',
-	SUPERVISOR: 'supervisor',
 	STAFF: 'staff',
+	MANAGER: 'manager',
+	COORDINATOR: 'coordinator',
 };

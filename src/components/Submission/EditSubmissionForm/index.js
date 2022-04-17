@@ -177,6 +177,7 @@ function EditSubmissionForm(props) {
 				<div className='form_group'>
 					<LocalizationProvider dateAdapter={AdapterDateFns}>
 						<DateRangePicker
+							disablePast
 							startText='Initial Deadline '
 							endText='Final Deadline'
 							id='titles'

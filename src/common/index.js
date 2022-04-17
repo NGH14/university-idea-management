@@ -5,11 +5,4 @@ export { toReadableFileSize } from './FileSizeReading';
 export { sleep } from './Sleep';
 export { DiceBear } from './DiceBear';
 export { toastMessages } from './ToastMessages';
-export {
-	DEV_CONFIGS,
-	GAPI_CLIENT_ID,
-	API_PATHS,
-	URL_PATHS,
-	STORAGE_VARS,
-	ROLES,
-} from './env';
+export { GAPI_CLIENT_ID, API_PATHS, URL_PATHS, STORAGE_VARS, ROLES } from './env';

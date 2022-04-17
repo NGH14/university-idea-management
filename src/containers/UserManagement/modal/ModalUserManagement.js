@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { axioc } from 'common';
-import { API_PATHS, DEV_CONFIGS } from 'common/env';
+import { API_PATHS } from 'common/env';
 import CreateUserForm from 'components/User/CreateUserForm';
 import DetailUserForm from 'components/User/DetailUserForm';
 import EditUserForm from 'components/User/EditUserForm';
@@ -40,16 +40,6 @@ const ModalUserManagement = (props) => {
 	const [initialValue, setInitialValue] = useState([]);
 
 	useEffect(() => {
-		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			let user = dataDemo.find((_) => _.id === rowId);
-			if (!user) {
-				toast.error(toastMessages.ERR_USER_NOT_FOUND);
-				return;
-			}
-			setInitialValue(user);
-			return;
-		}
-
 		if (action !== 'create') {
 			loadData();
 		}

@@ -1,9 +1,10 @@
 import '../../containers/UserManagement/style.css';
 
+import { UserContext } from 'context/AppContext';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Button from '@mui/material/Button';
 import { axioc, sleep } from 'common';
-import { API_PATHS, URL_PATHS } from 'common/env';
+import { API_PATHS, ROLES } from 'common/env';
 import DetailSubmissionForm from 'components/Submission/DetailSubmissionForm';
 import ModalSubmissionIdea from 'components/Submission/Modal/ModalSubmissionIdea';
 import _ from 'lodash';
@@ -36,6 +37,7 @@ const toastMessages = {
 
 export default function Submission() {
 	const { id } = useParams();
+	const { state } = React.useContext(UserContext);
 	const navigate = useNavigate();
 	const [data, setData] = useState();
 
@@ -48,7 +50,7 @@ export default function Submission() {
 	useEffect(() => loadData(), []);
 
 	const loadData = async () => {
-		await axioc.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`).then((res) => {
+		await axioc.get(`${API_PATHS.SHARED.SUB}/${id}`).then((res) => {
 			setStatus({ ...status, loading: false, visibleModal: false });
 			setData(res?.data?.result);
 		});
@@ -126,13 +128,18 @@ export default function Submission() {
 					>
 						submission details
 					</legend>
-					<Button
-						variant='contained'
-						endIcon={<BiPencil />}
-						onClick={() => onOpenModal('update')}
-					>
-						Edit
-					</Button>
+					{state?.dataUser?.role === ROLES.ADMIN ||
+					state?.dataUser?.role === ROLES.MANAGER ? (
+						<Button
+							variant='contained'
+							endIcon={<BiPencil />}
+							onClick={() => onOpenModal('update')}
+						>
+							Edit
+						</Button>
+					) : (
+						<></>
+					)}
 				</div>
 
 				<DetailSubmissionForm initialValue={data} />

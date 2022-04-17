@@ -239,19 +239,23 @@ export default function Homepage(props) {
 	const renderCardHeader = (item) => (
 		<CardHeader
 			className='idea_header'
-			title={item?.user?.full_name}
+			title={
+				item?.user?.full_name && !item?.is_anonymous
+					? item?.user?.full_name
+					: '[anonymous]'
+			}
 			avatar={
 				<Avatar aria-label='avatar'>
-					{item?.is_anonymous || item?.user?.avatar
+					{item?.user?.avatar && !item?.is_anonymous
 						? stringToSvg(item?.user?.avatar)
-						: 'R'}
+						: 'A'}
 				</Avatar>
 			}
 			subheader={
 				item?.created_date ? (
 					<>
 						{moment(item?.created_date).fromNow()}&nbsp;
-						<Tippy content={'Detail submission'}>
+						<Tippy content='Detail submission'>
 							<label
 								style={{
 									textDecoration: 'none',
@@ -293,7 +297,7 @@ export default function Homepage(props) {
 			direction='row'
 			spacing={1}
 			sx={{
-				margin: '0px 15px',
+				margin: '10px 15px',
 				opacity: '0.8',
 				display: 'flex',
 				flexWrap: 'wrap',
@@ -446,21 +450,9 @@ export default function Homepage(props) {
 		);
 	};
 
-	const renderListFile = (item) =>
-		item?.file && !item?.file?.length === 0 ? (
-			<Card style={{ marginLeft: 15, marginRight: 15 }}>
-				<IconButton>
-					<AttachFileIcon />
-				</IconButton>
-				<a href={`${item?.file?.name}`}>{item?.file?.name}</a>
-			</Card>
-		) : (
-			<></>
-		);
-
 	const renderComment = (item, index) => (
 		<Collapse in={comments[index]} timeout='auto' unmountOnExit>
-			<CommentIdea data={item} ideaId={item?.id} />
+			<CommentIdea data={item} />
 		</Collapse>
 	);
 
@@ -480,8 +472,21 @@ export default function Homepage(props) {
 				>
 					{renderCardHeader(item)}
 					{renderCardContent(item, index)}
+
+					{item?.attachments && item?.attachments?.length !== 0 ? (
+						item?.attachments?.map((file) => (
+							<Card sx={{ fontSize: '0.75em' }} elevation={0}>
+								<IconButton>
+									<AttachFileIcon />
+								</IconButton>
+								<a href={`${file?.url}`}>{file?.name}</a>
+							</Card>
+						))
+					) : (
+						<></>
+					)}
+
 					{renderIdeaTags(item)}
-					{renderListFile(item)}
 					{renderActionButton(item, index)}
 					{renderComment(item, index)}
 				</Card>

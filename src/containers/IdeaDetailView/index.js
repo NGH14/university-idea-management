@@ -48,8 +48,9 @@ export default function IdeaDetailView() {
 	const navigate = useNavigate();
 	const [data, setData] = useState();
 	const [comments, setComments] = useState([]);
-	const [anchorEl, setAnchorEl] = useState(null);
 	const { id } = useParams();
+
+	const [reload, setReload] = useState(false);
 
 	const [status, setStatus] = useState({
 		visibleModal: false,
@@ -59,6 +60,7 @@ export default function IdeaDetailView() {
 
 	useEffect(() => {
 		loadData();
+		view();
 	}, []);
 
 	const view = async () => {
@@ -74,7 +76,7 @@ export default function IdeaDetailView() {
 			.get(`${API_PATHS.SHARED.IDEA}/${id}`)
 			.then((res) => {
 				setStatus({ ...data, loading: false });
-				setData(res?.data?.result ?? {});
+				setData(res?.data?.result);
 			})
 			.catch(() => {
 				setStatus({ ...data, loading: false });
@@ -94,6 +96,7 @@ export default function IdeaDetailView() {
 					newData.likes = res?.data?.result?.likes;
 					newData.dislikes = res?.data?.result?.dislikes;
 					setData(newData);
+					setReload(!reload);
 				})
 				.catch(() => {});
 
@@ -108,6 +111,7 @@ export default function IdeaDetailView() {
 					newData.likes = res?.data?.result?.likes;
 					newData.dislikes = res?.data?.result?.dislikes;
 					setData(newData);
+					setReload(!reload);
 				})
 				.catch(() => {});
 	};
@@ -173,12 +177,16 @@ export default function IdeaDetailView() {
 	const renderCardHeader = () => (
 		<CardHeader
 			className='idea_header'
-			title={data?.user?.full_name}
+			title={
+				data?.user?.full_name && !data?.is_anonymous
+					? data?.user?.full_name
+					: '[anonymous]'
+			}
 			avatar={
 				<Avatar aria-label='avatar'>
-					{data?.is_anonymous || data?.user?.avatar
+					{data?.user?.avatar && !data?.is_anonymous
 						? stringToSvg(data?.user?.avatar)
-						: 'R'}
+						: 'A'}
 				</Avatar>
 			}
 			subheader={
@@ -227,7 +235,7 @@ export default function IdeaDetailView() {
 			direction='row'
 			spacing={1}
 			sx={{
-				margin: '0px 15px',
+				margin: '10px 15px',
 				opacity: '0.8',
 				display: 'flex',
 				flexWrap: 'wrap',
@@ -270,22 +278,14 @@ export default function IdeaDetailView() {
 					</RouterLink>
 				</Tippy>
 
-				<div className='maxWidth300'>
-					<div className='multiLineEllipsis'>
-						<Typography
-							variant='body2'
-							color='text.secondary '
-							className='multiLineEllipsis'
-						>
-							{data?.content}
-						</Typography>
-					</div>
-				</div>
+				<Typography variant='body2' color='text.secondary'>
+					{data?.content}
+				</Typography>
 			</CardContent>
 		);
 	};
 
-	const renderActionButton = () => {
+	const ActionButton = () => {
 		return (
 			<CardActions
 				style={{
@@ -352,18 +352,6 @@ export default function IdeaDetailView() {
 		);
 	};
 
-	const renderListFile = () =>
-		data?.file && !data?.file?.length === 0 ? (
-			<Card style={{ marginLeft: 15, marginRight: 15 }}>
-				<IconButton>
-					<AttachFileIcon />
-				</IconButton>
-				<a href={`${data?.file?.name}`}>{data?.file?.name}</a>
-			</Card>
-		) : (
-			<></>
-		);
-
 	const ContentIdea = () =>
 		!status.loading ? (
 			<Card
@@ -378,11 +366,24 @@ export default function IdeaDetailView() {
 			>
 				{renderCardHeader()}
 				{renderCardContent()}
-				{renderIdeaTags()}
-				{renderListFile()}
-				{renderActionButton()}
 
-				{console.log(data)}
+				{data?.attachments && data?.attachments?.length !== 0 ? (
+					data?.attachments?.map((file) => (
+						<Card sx={{ fontSize: '0.75em' }} elevation={0}>
+							<IconButton>
+								<AttachFileIcon />
+							</IconButton>
+							<a href={`${file?.url}`}>{file?.name}</a>
+						</Card>
+					))
+				) : (
+					<></>
+				)}
+
+				{renderIdeaTags()}
+
+				<ActionButton />
+
 				<Collapse in={comments} timeout='auto' unmountOnExit>
 					<CommentIdea data={data} ideaId={data?.id} />
 				</Collapse>
