@@ -1,41 +1,56 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Add } from '@mui/icons-material';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import EditIcon from '@mui/icons-material/Edit';
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import { Button, Tooltip } from '@mui/material';
-import Avatar from '@mui/material/Avatar';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
+import TagIcon from '@mui/icons-material/Tag';
+import {
+	Avatar,
+	Box,
+	Button,
+	Card,
+	CardActions,
+	CardContent,
+	CardHeader,
+	CircularProgress,
+	Collapse,
+	IconButton,
+	styled,
+	Typography,
+} from '@mui/material';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+import Tippy from '@tippyjs/react';
+import { axioc, sleep, toastMessages } from 'common';
+import { stringToSvg } from 'common/DiceBear';
+import { API_PATHS, URL_PATHS } from 'common/env';
+import FloatButton from 'components/Custom/FloatButton';
+import CommentIdea from 'components/Idea/CommentIdea';
+import ModalIdea from 'components/Idea/ModalIdea';
 import _ from 'lodash';
 import moment from 'moment';
-import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { BiCommentDetail } from 'react-icons/bi';
+import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { axioc, sleep } from 'common';
-import { API_PATHS, ROLES } from 'common/env';
-import CommentIdea from 'components/Idea/CommentIdea';
-import { UserContext } from 'context/AppContext';
-import ModalIdeaDetailView from './ModalIdeaDetailView';
+const ExpandMore = styled((props) => {
+	const { expand, ...other } = props;
+	return <Button {...other} />;
+})(({ theme }) => ({
+	marginLeft: 'auto',
+	transition: theme.transitions.create('transform', {
+		duration: theme.transitions.duration.shortest,
+	}),
+}));
 
-const toastMessages = {
-	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
-	ERR_USER_NOT_FOUND: 'User not found !!',
-	WAIT: 'Please wait...',
-	SUC_IDEA_ADDED: 'Create idea successful !!',
-	SUC_IDEA_EDITED: 'Update idea successful !!',
-	SUC_IDEA_DEL: 'Delete idea successful !!',
-};
-function IdeaDetailView() {
+export default function IdeaDetailView() {
 	const navigate = useNavigate();
-	const { id } = useParams();
 	const [data, setData] = useState();
-	const { state } = useContext(UserContext);
+	const [comments, setComments] = useState([]);
+	const [anchorEl, setAnchorEl] = useState(null);
+	const { id } = useParams();
+
 	const [status, setStatus] = useState({
 		visibleModal: false,
 		action: 'update',
@@ -43,221 +58,378 @@ function IdeaDetailView() {
 	});
 
 	useEffect(() => {
-		LoadData();
+		loadData();
 	}, []);
 
-	const LoadData = async () => {
+	const view = async () => {
+		if (data)
+			return await axioc
+				.post(`${API_PATHS.SHARED.VIEW}/${data?.id}`)
+				.catch(() => {});
+	};
+
+	const loadData = async () => {
+		setStatus({ ...data, loading: true });
 		await axioc
 			.get(`${API_PATHS.SHARED.IDEA}/${id}`)
 			.then((res) => {
-				if (res?.data?.successed) {
-					setData(res?.data?.result ?? {});
-				}
+				setStatus({ ...data, loading: false });
+				setData(res?.data?.result ?? {});
 			})
-			.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR));
+			.catch(() => {
+				setStatus({ ...data, loading: false });
+				toast.error(toastMessages.errs.UNEXPECTED);
+			});
 	};
+
+	const handleOnLikeness = async (isLike) => {
+		if (data?.requester_is_like == null)
+			await axioc
+				.post(`${API_PATHS.SHARED.LIKE}/${data?.id}`, {
+					is_like: isLike,
+				})
+				.then((res) => {
+					const newData = data;
+					newData.requester_is_like = isLike;
+					newData.likes = res?.data?.result?.likes;
+					newData.dislikes = res?.data?.result?.dislikes;
+					setData(newData);
+				})
+				.catch(() => {});
+
+		if (data?.requester_is_like !== isLike)
+			await axioc
+				.put(`${API_PATHS.SHARED.LIKE}/${data?.id}`, {
+					is_like: isLike,
+				})
+				.then(async (res) => {
+					const newData = data;
+					newData.requester_is_like = isLike;
+					newData.likes = res?.data?.result?.likes;
+					newData.dislikes = res?.data?.result?.dislikes;
+					setData(newData);
+				})
+				.catch(() => {});
+	};
+
+	const requests = {
+		update: (value) =>
+			toast.promise(
+				axioc
+					.put(`${API_PATHS.SHARED.IDEA}/${value?.id}`, value)
+					.then(() => sleep(700))
+					.then((res) => {
+						setStatus({ ...status, visibleModal: false });
+						const indexData = data?.findIndex((x) => x?.id === value?.id);
+						data[indexData] = res?.data?.result;
+						setData((oldData) => [...oldData, data]);
+
+						toast.info(
+							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
+								Idea details:{' '}
+								{() => {
+									const title = res?.data?.result?.title;
+									return title?.length > 50
+										? title?.substr(0, 49) + '...'
+										: title;
+								}}
+							</RouterLink>,
+						);
+					}),
+				{
+					pending: toastMessages.WAIT,
+					error: toastMessages.errs.UNEXPECTED,
+				},
+			),
+		delete: (id) =>
+			toast.promise(
+				axioc.delete(`${API_PATHS.SHARED.IDEA}/${id}`).then(() => sleep(700)),
+				{
+					pending: toastMessages.WAIT,
+					error: toastMessages.errs.UNEXPECTED,
+					success: {
+						render() {
+							const indexData = data?.findIndex((_) => _?.id === id);
+							data?.splice(indexData, 1);
+							setData((oldData) => [...oldData, data]);
+							loadData();
+							return toastMessages.succs.deleted('idea');
+						},
+					},
+				},
+			),
+	};
+
+	const renderModal = () => (
+		<ModalIdea
+			visible={status.visibleModal}
+			action={status.action}
+			onClose={() => setStatus({ ...status, visibleModal: false })}
+			onUpdate={requests.update}
+			onCreate={requests.create}
+		/>
+	);
+
+	const renderCardHeader = () => (
+		<CardHeader
+			className='idea_header'
+			title={data?.user?.full_name}
+			avatar={
+				<Avatar aria-label='avatar'>
+					{data?.is_anonymous || data?.user?.avatar
+						? stringToSvg(data?.user?.avatar)
+						: 'R'}
+				</Avatar>
+			}
+			subheader={
+				data?.created_date ? (
+					<>
+						{moment(data?.created_date).fromNow()}&nbsp;
+						<Tippy content={'Detail submission'}>
+							<label
+								style={{
+									textDecoration: 'none',
+									color: 'initial',
+									cursor: 'pointer',
+								}}
+							>
+								<RouterLink
+									to={`/idea/${data?.id}`}
+									style={{
+										textDecoration: 'none',
+										cursor: 'pointer',
+										color: 'initial',
+									}}
+								>
+									<span
+										style={{
+											textDecoration: 'none',
+											color: 'initial',
+											fontSize: '12px',
+										}}
+									>
+										in&nbsp;{data?.submission?.title}
+										&nbsp;submission
+									</span>
+								</RouterLink>
+							</label>
+						</Tippy>
+					</>
+				) : (
+					'September 14, 2016'
+				)
+			}
+		></CardHeader>
+	);
+
+	const renderIdeaTags = () => (
+		<Stack
+			direction='row'
+			spacing={1}
+			sx={{
+				margin: '0px 15px',
+				opacity: '0.8',
+				display: 'flex',
+				flexWrap: 'wrap',
+				justifyContent: 'flex-start',
+				gap: 1,
+			}}
+		>
+			{data?.tags?.map((tag, index) => (
+				<Chip
+					sx={{
+						fontSize: '0.8em',
+						color: '#333',
+					}}
+					key={data?.title + tag.name + index}
+					icon={<TagIcon />}
+					label={tag}
+					size='small'
+					variant='outlined'
+				/>
+			))}
+		</Stack>
+	);
 
 	const renderCardContent = () => {
 		return (
-			<CardContent>
-				<div style={{ display: 'flex' }}>
-					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Submission: </h3>
-					<Tooltip title={'Detail submission'}>
-						<label
-							onClick={() => {
-								navigate(
-									`/submission/${
-										data.submissionId ||
-										'NDM3YzBiMzktMDBlNy00ZDk3LTgzMTctOTE3NzIwYzJkMzlh'
-									}`,
-								);
-							}}
-							style={{
-								textDecoration: 'underline',
-								textDecorationColor: '#1976d2',
-								color: '#1976d2',
-								cursor: 'pointer',
-							}}
+			<CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
+				<Tippy content={'Detail idea'}>
+					<RouterLink
+						to={`${URL_PATHS.IDEA}/${data?.id}`}
+						style={{
+							textDecoration: 'none',
+							color: 'rgba(0, 1, 17, 0.8)',
+							fontSize: '1.2rem',
+							lineHeight: '44px',
+							fontWeight: '600',
+							cursor: 'pointer',
+						}}
+					>
+						{data?.title}
+					</RouterLink>
+				</Tippy>
+
+				<div className='maxWidth300'>
+					<div className='multiLineEllipsis'>
+						<Typography
+							variant='body2'
+							color='text.secondary '
+							className='multiLineEllipsis'
 						>
-							{/*{data?.submissionName}*/}Submission name
-						</label>
-					</Tooltip>
-				</div>
-				<br></br>
-				<div style={{ display: 'flex' }}>
-					<h3 style={{ marginRight: 10, fontWeight: 'bold' }}>Title: </h3>
-					<label>{/*{data?.title}*/} Title Idea</label>
-				</div>
-				<br></br>
-				<div>
-					<h3 style={{ fontWeight: 'bold' }}>Content</h3>
-					<Typography variant='body2' color='text.secondary'>
-						{/*{data?.content}*/}
-						This impressive paella is a perfect party dish and a fun meal to
-						cook together with your guests. Add 1 cup of frozen peas along
-						with the mussels, if you like.
-					</Typography>
+							{data?.content}
+						</Typography>
+					</div>
 				</div>
 			</CardContent>
 		);
 	};
-	const renderCardHeader = (data) => {
+
+	const renderActionButton = () => {
 		return (
-			<CardHeader
-				avatar={
-					<Avatar sx={{ bgcolor: 'gray' }} aria-label='recipe'>
-						P
-					</Avatar>
-				}
-				// action={renderActionIdea(data?.id, data?.createBy)}
-				title='People Private'
-				subheader={
-					data?.createTime
-						? moment(data?.createTime).format('LLL')
-						: 'September 14, 2016'
-				}
-			/>
-		);
-	};
-	const renderTop = () => {
-		if (
-			data?.create_by !== state?.dataUser?.email &&
-			state?.dataUser?.role !== ROLES.ADMIN &&
-			state?.dataUser?.role !== ROLES.MANAGER
-		) {
-			return null;
-		}
-		return (
-			<div
+			<CardActions
 				style={{
+					margin: '5px 5px 2px',
 					display: 'flex',
+					justifyContent: 'space-between',
+					alignItems: 'center',
 					width: '100%',
-					justifyContent: 'right',
-					marginBottom: 10,
+					fontSize: 12,
 				}}
 			>
 				<Button
-					startIcon={<EditIcon />}
-					variant={'contained'}
-					size={'small'}
-					onClick={() => onOpenModal()}
+					className='idea_action'
+					fullWidth
+					aria-label='up vote'
+					onClick={() =>
+						handleOnLikeness(data?.requester_is_like === true ? null : true)
+					}
+					startIcon={
+						<IoMdArrowRoundUp
+							style={{
+								color: data?.requester_is_like === true ? '#626ef0' : '',
+							}}
+						/>
+					}
+					color='inherit'
+					size='large'
 				>
-					Update idea
-				</Button>
-				{/*{ data?.create_by !== state.dataUser.email && <Button startIcon={<DeleteIcon />} variant={"contained"} style={{marginLeft: 10, background:"darkred"}} size={"small"}>*/}
-				{/*    Delete idea*/}
-				{/*</Button>}*/}
-			</div>
-		);
-	};
-	const renderComment = () => {
-		return <CommentIdea data={data} ideaId={data?.id} />;
-	};
-	const onUpdate = (value) => {
-		toast
-			.promise(
-				axioc
-					.put(`${API_PATHS.SHARED.IDEA}/${value?.id}`, value)
-					.then(() => sleep(700)),
-				{
-					pending: toastMessages.WAIT,
-					success: toastMessages.SUC_IDEA_EDITED,
-					error: toastMessages.ERR_SERVER_ERROR,
-				},
-			)
-			.then((res) => {
-				if (value?.exitFile && value?.file && !_.isEmpty(value?.file)) {
-					// delete file API
-				}
-				setStatus({ ...status, visibleModal: false });
-				toast.success(toastMessages.SUC_IDEA_DEL);
-				LoadData();
-			});
-	};
-	const onCloseModal = () => {
-		setStatus({ ...status, visibleModal: false });
-	};
-	const onOpenModal = () => {
-		setStatus({ ...status, visibleModal: true });
-	};
-	const renderModal = () => {
-		return (
-			<ModalIdeaDetailView
-				visible={status.visibleModal}
-				initialValue={data}
-				onClose={onCloseModal}
-				onUpdate={onUpdate}
-			/>
-		);
-	};
-	const renderActionButton = (item) => {
-		return (
-			<CardActions disableSpacing style={{ paddingRight: 15, paddingLeft: 15 }}>
-				<Button
-					aria-label='add to favorites'
-					startIcon={<ThumbUpIcon />}
-					color={'inherit'}
-					variant='contained'
-					size={'small'}
-				>
-					Like (0)
+					{`${data?.likes}`}
 				</Button>
 				<Button
-					aria-label='add to favorites'
+					className='idea_action'
+					fullWidth
+					aria-label='down vote'
+					onClick={() =>
+						handleOnLikeness(data?.requester_is_like === false ? null : false)
+					}
 					style={{ marginRight: 20, marginLeft: 20 }}
-					startIcon={<ThumbDownIcon />}
+					startIcon={
+						<IoMdArrowRoundDown
+							style={{
+								color: data?.requester_is_like === false ? '#626ef0' : '',
+							}}
+						/>
+					}
 					color={'inherit'}
-					variant='contained'
-					size={'small'}
+					size={'large'}
 				>
-					Dislike (0)
+					{`${data?.dislikes}`}
 				</Button>
-				{/*<ExpandMore*/}
-				{/*    expand={expanded[item.id]}*/}
-				{/*    onClick={() => handleExpandClick(item.id)}*/}
-				{/*    aria-expanded={expanded[item.id]}*/}
-				{/*    aria-label="show more"*/}
-				{/*>*/}
-				{/*    <Tooltip title={"Show comment"}>*/}
-				{/*        <ExpandMoreIcon />*/}
-				{/*    </Tooltip>*/}
-				{/*</ExpandMore>*/}
+				<ExpandMore
+					disabled
+					className='idea_action'
+					fullWidth
+					style={{ marginRight: 20, marginLeft: 20 }}
+					color={'inherit'}
+					size={'large'}
+					startIcon={<BiCommentDetail />}
+					aria-label='show more'
+				>
+					{data?.comments_count}
+				</ExpandMore>
 			</CardActions>
 		);
 	};
-	const renderListFile = () => {
-		if (data?.file || !_.isEmpty(data?.file)) {
-			return (
-				<Card style={{ marginLeft: 15, marginRight: 15 }}>
-					<IconButton>
-						<AttachFileIcon />
-					</IconButton>
-					<a href={`${data?.file?.name}`}>{data?.file?.name}</a>
-				</Card>
-			);
-		} else {
-			return <div></div>;
-		}
-	};
 
-	return (
-		<>
-			{renderTop()}
+	const renderListFile = () =>
+		data?.file && !data?.file?.length === 0 ? (
+			<Card style={{ marginLeft: 15, marginRight: 15 }}>
+				<IconButton>
+					<AttachFileIcon />
+				</IconButton>
+				<a href={`${data?.file?.name}`}>{data?.file?.name}</a>
+			</Card>
+		) : (
+			<></>
+		);
+
+	const ContentIdea = () =>
+		!status.loading ? (
 			<Card
-				style={
-					_.size(data) === 1
-						? { border: '1px solid #90a4ae' }
-						: { border: '1px solid #90a4ae', marginTop: 30 }
-				}
+				style={{
+					borderRadius: '5px',
+					boxShadow: '1px 2px 4px rgba(0,0,0,0.3)',
+					padding: '5px',
+					marginTop: 30,
+					maxWidth: '70rem',
+					marginInline: 'auto',
+				}}
 			>
 				{renderCardHeader()}
 				{renderCardContent()}
+				{renderIdeaTags()}
 				{renderListFile()}
 				{renderActionButton()}
-				{renderComment()}
+
+				{console.log(data)}
+				<Collapse in={comments} timeout='auto' unmountOnExit>
+					<CommentIdea data={data} ideaId={data?.id} />
+				</Collapse>
 			</Card>
+		) : (
+			<Box sx={{ display: 'flex' }}>
+				<CircularProgress />
+			</Box>
+		);
+
+	if (status.loading || !data)
+		return (
+			<Box sx={{ display: 'flex' }}>
+				<CircularProgress />
+			</Box>
+		);
+
+	return (
+		<div className='homepage_wrapper'>
+			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+				<Button
+					variant='text'
+					style={{ marginRight: 15 }}
+					startIcon={<ArrowBackIcon />}
+					onClick={() => navigate(-1)}
+				>
+					Back
+				</Button>
+			</div>
+
+			<ContentIdea />
+			<FloatButton
+				onClick={() =>
+					setStatus({
+						...status,
+						visibleModal: true,
+						action: 'create',
+					})
+				}
+				tippy={{ placement: 'left' }}
+				size='medium'
+				color='primary'
+				ariaLabel='submit new idea'
+				icon={<Add />}
+			/>
+
 			{status.visibleModal && renderModal()}
-		</>
+		</div>
 	);
 }
-export default IdeaDetailView;

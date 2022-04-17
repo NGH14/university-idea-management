@@ -53,7 +53,6 @@ export default function Homepage() {
 	const [showMore, setShowMore] = useState([]);
 	const [postTotal, setPostTotal] = useState(0);
 	const [comments, setComments] = useState([]);
-	const [anchorEl, setAnchorEl] = useState(null);
 	const [status, setStatus] = useState({
 		visibleModal: false,
 		action: 'update',
@@ -62,7 +61,10 @@ export default function Homepage() {
 
 	useEffect(() => loadData(), []);
 
-	const onShowMoreContent = (index) => {
+	const onShowMoreContent = async (item, index) => {
+		!showMore[index] &&
+			(await axioc.post(`${API_PATHS.SHARED.VIEW}/${item.id}`).catch(() => {}));
+
 		const newShowMore = [...showMore];
 		newShowMore[index] = !newShowMore[index];
 		setShowMore(newShowMore);
@@ -85,9 +87,6 @@ export default function Homepage() {
 				setData((oldData) => [...oldData, ...res?.data?.result?.rows]);
 				setPostTotal(res?.data?.result?.total);
 			});
-
-	// const handleClick = (event) => setAnchorEl(event.currentTarget);
-	// const handleClose = () => setAnchorEl(null);
 
 	const handleExpandClick = (index) => {
 		let newExpanded = [...comments];
@@ -134,8 +133,7 @@ export default function Homepage() {
 					.then((res) => {
 						setStatus({ ...status, visibleModal: false });
 						toast.info(
-							<RouterLink
-								to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
+							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
 								Idea details:{' '}
 								{() => {
 									const title = res?.data?.result?.title;
@@ -158,15 +156,12 @@ export default function Homepage() {
 					.then(() => sleep(700))
 					.then((res) => {
 						setStatus({ ...status, visibleModal: false });
-						const indexData = data.findIndex(
-							(x) => x.id === value.id,
-						);
+						const indexData = data.findIndex((x) => x.id === value.id);
 						data[indexData] = res?.data?.result;
 						setData((oldData) => [...oldData, data]);
 
 						toast.info(
-							<RouterLink
-								to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
+							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
 								Idea details:{' '}
 								{() => {
 									const title = res?.data?.result?.title;
@@ -184,21 +179,17 @@ export default function Homepage() {
 			),
 		delete: (id) =>
 			toast.promise(
-				axioc
-					.delete(`${API_PATHS.SHARED.IDEA}/${id}`)
-					.then(() => sleep(700)),
+				axioc.delete(`${API_PATHS.SHARED.IDEA}/${id}`).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.UNEXPECTED,
 					success: {
 						render() {
-							const indexData = data.findIndex(
-								(_) => _.id === id,
-							);
+							const indexData = data.findIndex((_) => _.id === id);
 							data.splice(indexData, 1);
 							setData((oldData) => [...oldData, data]);
 							loadData();
-							return toastMessages.succs.deleted('idea');
+							return toastMessages.succs.deleted('Idea');
 						},
 					},
 				},
@@ -215,7 +206,8 @@ export default function Homepage() {
 						fontSize: '0.5em',
 						color: '#999',
 						opacity: '0.7',
-					}}>
+					}}
+				>
 					Welcome to the UIM &#10084;&#65039;
 				</i>
 			</div>
@@ -234,63 +226,9 @@ export default function Homepage() {
 		);
 	};
 
-	const renderActionIdea = (id, createBy) => {
-		// NOTE: What is this
-		/* if (
-			createBy !== state.dataUser.id &&
-			state.dataUser.role !== ROLES.ADMIN &&
-			state.dataUser.role !== ROLES.MANAGER
-		) {
-			return null;
-		}
-		return (
-			<div>
-				<IconButton
-					style={{ fontSize: 10 }}
-					aria-label='more'
-					id='long-button'
-					aria-controls={open ? 'long-menu' : undefined}
-					aria-expanded={open ? 'true' : undefined}
-					aria-haspopup='true'
-					onClick={handleClick}>
-					<MoreVertIcon />
-				</IconButton>
-				<Menu
-					id='long-menu'
-					MenuListProps={{
-						'aria-labelledby': 'long-button',
-					}}
-					anchorEl={anchorEl}
-					open={open}
-					onClose={handleClose}
-					PaperProps={{
-						style: {
-							maxHeight: ITEM_HEIGHT * 4.5,
-							width: '20ch',
-						},
-					}}>
-					{actionButtonIdea.map((option, index) => (
-						<ListItemButton
-							key={option}
-							selected={option === 'Pyxis'}
-							onClick={() => {
-								handleClose();
-								index === 0
-									? onOpenModal('update', id)
-									: onDelete(id);
-							}}>
-							{option}
-						</ListItemButton>
-					))}
-				</Menu>
-			</div>
-		); */
-	};
-
 	const renderCardHeader = (item) => (
 		<CardHeader
 			className='idea_header'
-			action={renderActionIdea(item?.id, item?.create_by)}
 			title={item?.user?.full_name}
 			avatar={
 				<Avatar aria-label='avatar'>
@@ -309,20 +247,23 @@ export default function Homepage() {
 									textDecoration: 'none',
 									color: 'initial',
 									cursor: 'pointer',
-								}}>
+								}}
+							>
 								<RouterLink
-									to={`/idea/${item.id}`}
+									to={`${URL_PATHS.SUB}/${item?.submission?.id}`}
 									style={{
 										textDecoration: 'none',
 										cursor: 'pointer',
 										color: 'initial',
-									}}>
+									}}
+								>
 									<span
 										style={{
 											textDecoration: 'none',
 											color: 'initial',
 											fontSize: '12px',
-										}}>
+										}}
+									>
 										in&nbsp;{item?.submission?.title}
 										&nbsp;submission
 									</span>
@@ -333,7 +274,8 @@ export default function Homepage() {
 				) : (
 					'September 14, 2016'
 				)
-			}></CardHeader>
+			}
+		></CardHeader>
 	);
 
 	const renderIdeaTags = (item) => (
@@ -347,18 +289,19 @@ export default function Homepage() {
 				flexWrap: 'wrap',
 				justifyContent: 'flex-start',
 				gap: 1,
-			}}>
+			}}
+		>
 			{item?.tags?.map((tag, index) => (
 				<Chip
-					sx={{
-						fontSize: '0.8em',
-						color: '#333',
-					}}
 					key={item.title + tag.name + index}
 					icon={<TagIcon />}
 					label={tag}
 					size='small'
 					variant='outlined'
+					sx={{
+						fontSize: '0.8em',
+						color: '#333',
+					}}
 				/>
 			))}
 		</Stack>
@@ -367,7 +310,7 @@ export default function Homepage() {
 	const renderCardContent = (item, index) => {
 		return (
 			<CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
-				<Tippy content={'Detail submission'}>
+				<Tippy content={'Detail idea'}>
 					<RouterLink
 						to={`${URL_PATHS.IDEA}/${item.id}`}
 						style={{
@@ -377,7 +320,8 @@ export default function Homepage() {
 							lineHeight: '44px',
 							fontWeight: '600',
 							cursor: 'pointer',
-						}}>
+						}}
+					>
 						{item?.title}
 					</RouterLink>
 				</Tippy>
@@ -387,21 +331,15 @@ export default function Homepage() {
 						<Typography
 							variant='body2'
 							color='text.secondary '
-							className={showMore[index] || 'multiLineEllipsis'}>
+							className={showMore[index] || 'multiLineEllipsis'}
+						>
 							{item?.content}
 						</Typography>
-						{/* <div
-							style={{
-								display: showMore[index] || 'none',
-								width: 300,
-								height: 300,
-								backgroundColor: 'red',
-							}}></div> */}
 					</div>
 				</div>
 				<Button
 					variant='text'
-					onClick={() => onShowMoreContent(index)}
+					onClick={() => onShowMoreContent(item, index)}
 					disableFocusRipple
 					disableTouchRipple
 					sx={{
@@ -413,7 +351,8 @@ export default function Homepage() {
 							backgroundColor: '#fff',
 							color: '#333',
 						},
-					}}>
+					}}
+				>
 					{showMore[index] ? 'Show less' : 'Show more'}
 				</Button>
 			</CardContent>
@@ -430,7 +369,8 @@ export default function Homepage() {
 					alignItems: 'center',
 					width: '100%',
 					fontSize: 12,
-				}}>
+				}}
+			>
 				<Button
 					className='idea_action'
 					fullWidth
@@ -445,15 +385,13 @@ export default function Homepage() {
 					startIcon={
 						<IoMdArrowRoundUp
 							style={{
-								color:
-									item.requester_is_like === true
-										? '#626ef0'
-										: '',
+								color: item.requester_is_like === true ? '#626ef0' : '',
 							}}
 						/>
 					}
 					color='inherit'
-					size='large'>
+					size='large'
+				>
 					{`(${item.likes})`}
 				</Button>
 				<Button
@@ -471,15 +409,13 @@ export default function Homepage() {
 					startIcon={
 						<IoMdArrowRoundDown
 							style={{
-								color:
-									item.requester_is_like === false
-										? '#626ef0'
-										: '',
+								color: item.requester_is_like === false ? '#626ef0' : '',
 							}}
 						/>
 					}
 					color={'inherit'}
-					size={'large'}>
+					size={'large'}
+				>
 					{`(${item.dislikes})`}
 				</Button>
 				<ExpandMore
@@ -492,7 +428,8 @@ export default function Homepage() {
 					color={'inherit'}
 					size={'large'}
 					startIcon={<BiCommentDetail />}
-					aria-label='show more'>
+					aria-label='show more'
+				>
 					{item.comments_count}
 				</ExpandMore>
 			</CardActions>
@@ -529,7 +466,8 @@ export default function Homepage() {
 						marginTop: 30,
 						maxWidth: '70rem',
 						marginInline: 'auto',
-					}}>
+					}}
+				>
 					{renderCardHeader(item)}
 					{renderCardContent(item, index)}
 					{renderIdeaTags(item)}
@@ -552,10 +490,7 @@ export default function Homepage() {
 	const renderFooter = () =>
 		!(_.size(data) === postTotal || _.size(data) > postTotal) ? (
 			<div style={{ marginTop: 15, textAlign: 'center' }}>
-				<Button
-					size='small'
-					variant='outlined'
-					onClick={() => onShowMore()}>
+				<Button size='small' variant='outlined' onClick={() => onShowMore()}>
 					More
 				</Button>
 			</div>

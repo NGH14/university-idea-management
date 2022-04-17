@@ -18,7 +18,6 @@ const validationSchema = yup.object({
 	content: yup.string().required('PLease comment something before submit'),
 });
 
-// TODO: @Henry, catach on key ENTER event
 function CommentIdea({ data, ideaId }) {
 	const [commentsData, setCommentsData] = useState(data?.comment);
 
@@ -28,6 +27,15 @@ function CommentIdea({ data, ideaId }) {
 	});
 
 	useEffect(() => loadData(), []);
+
+	const loadData = async (minItems) =>
+		axioc
+			.get(`${API_PATHS.SHARED.COMMENT}/list/${ideaId}`, {
+				params: { minItems },
+			})
+			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
+			.then((res) => setCommentsData(res?.data?.result));
+
 	const handleSubmitComment = async (values) =>
 		await axioc
 			.post(`${API_PATHS.SHARED.COMMENT}`, {
@@ -39,14 +47,6 @@ function CommentIdea({ data, ideaId }) {
 				formik.resetForm();
 				loadData();
 			});
-
-	const loadData = async (minItems) =>
-		axioc
-			.get(`${API_PATHS.SHARED.COMMENT}/list/${ideaId}`, {
-				params: { minItems },
-			})
-			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
-			.then((res) => setCommentsData(res?.data?.result));
 
 	const renderContent = () => (
 		<div>
