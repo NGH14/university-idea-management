@@ -1,8 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import '../../containers/UserManagement/style.css';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Button from '@mui/material/Button';
-import axios from 'axios';
+import { axioc, sleep } from 'common';
+import { API_PATHS, URL_PATHS } from 'common/env';
 import _ from 'lodash';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
@@ -10,9 +12,6 @@ import { BiPencil } from 'react-icons/bi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { axioc, sleep } from 'common';
-import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
-import { dataDemo } from 'containers/IdeaManagement/FakeData';
 import DetailSubmissionForm from './DetailSubmissionForm';
 import IdeaSubView from './IdeaSubView';
 import ModalSubmissionIdea from './Modal/ModalSubmissionIdea';
@@ -40,12 +39,7 @@ const toastMessages = {
 export default function DetailView() {
 	const { id } = useParams();
 	const navigate = useNavigate();
-	const [data, setData] = useState({ sub: {}, ideas: [] });
-
-	const [pagination, setPagination] = useState({
-		pageSize: 5,
-		page: 1,
-	});
+	const [data, setData] = useState();
 
 	const [status, setStatus] = useState({
 		visibleModal: false,
@@ -56,31 +50,10 @@ export default function DetailView() {
 	useEffect(() => loadData(), []);
 
 	const loadData = async () => {
-		await axios
-			.all([
-				axioc.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`),
-				/* axioc.get(API_PATHS.ADMIN.MANAGE_IDEA + '/table/list/', {
-					params: {
-						submission_id: id,
-						page: pagination.page,
-						page_size: pagination.pageSize,
-					},
-				}), */
-			])
-			.then(
-				axios.spread(function (resSub, resIdeas) {
-					setData({
-						...data,
-						sub: resSub?.data?.result,
-						ideas: resIdeas?.data?.result,
-					});
-					setStatus({
-						...status,
-						loading: false,
-						visibleModal: false,
-					});
-				}),
-			);
+		await axioc.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`).then((res) => {
+			setStatus({ ...status, loading: false, visibleModal: false });
+			setData(res?.data?.result);
+		});
 	};
 
 	const onCloseModal = () => setStatus({ ...status, visibleModal: false });
@@ -111,7 +84,7 @@ export default function DetailView() {
 				visible={status.visibleModal}
 				action={status.action}
 				onClose={onCloseModal}
-				initialValue={data?.sub}
+				initialValue={data}
 				onUpdate={onUpdateSubmission}
 			/>
 		);
@@ -124,7 +97,8 @@ export default function DetailView() {
 					variant='text'
 					style={{ marginRight: 15 }}
 					startIcon={<ArrowBackIcon />}
-					onClick={() => navigate(URL_PATHS.MANAGE_SUB)}>
+					onClick={() => navigate(URL_PATHS.MANAGE_SUB)}
+				>
 					Back
 				</Button>
 			</div>
@@ -137,29 +111,33 @@ export default function DetailView() {
 				style={{
 					borderRadius: 8,
 					textTransform: 'capitalize',
-				}}>
+				}}
+			>
 				<div
 					style={{
 						display: 'flex',
 						justifyContent: 'space-between',
 						marginBlock: '15px',
-					}}>
+					}}
+				>
 					<legend
 						style={{
 							fontWeight: 'bold',
 							fontSize: 22,
-						}}>
+						}}
+					>
 						submission details
 					</legend>
 					<Button
 						variant='contained'
 						endIcon={<BiPencil />}
-						onClick={() => onOpenModal('update')}>
+						onClick={() => onOpenModal('update')}
+					>
 						Edit
 					</Button>
 				</div>
 
-				<DetailSubmissionForm initialValue={data?.sub} />
+				<DetailSubmissionForm initialValue={data} />
 			</fieldset>
 		);
 	};
@@ -174,22 +152,24 @@ export default function DetailView() {
 					borderRight: 'none',
 					borderLeft: 'none',
 					borderBottom: 'none',
-				}}>
+				}}
+			>
 				<legend
 					style={{
 						fontWeight: 'bold',
 						padding: 8,
 						fontSize: 22,
 						display: 'flex',
-					}}>
+					}}
+				>
 					List Ideas
 				</legend>
-				<IdeaSubView ideaData={data.ideas} subData={data?.sub} />
+				<IdeaSubView submission={data} />
 			</fieldset>
 		);
 	};
 
-	if (_.isEmpty(data.sub) || status.loading) return null;
+	if (_.isEmpty(data) || status.loading) return null;
 
 	return (
 		<div>

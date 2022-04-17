@@ -9,3 +9,31 @@
 .edit-input-file>.MuiDropzoneArea-root {
 	min-height: 150px;
 }
+
+.managementidea_table {
+	width: 100%;
+	min-height: 400px;
+}
+
+.managementidea_title {
+	margin-bottom: 20px;
+	display: flex;
+	justify-content: space-between !important;
+	flex-wrap: wrap-reverse;
+	align-items: center;
+	gap: 20px;
+	font-size: 1em;
+	line-height: 1.8;
+	letter-spacing: 0.01071em;
+	width: 100%;
+	border-radius: 4px;
+}
+
+.managementidea_heading {
+	font-weight: 600;
+	font-size: 30px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 3px;
+}

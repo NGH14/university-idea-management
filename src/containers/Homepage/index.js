@@ -46,13 +46,20 @@ const ExpandMore = styled((props) => {
 	}),
 }));
 
-export default function Homepage() {
+export default function Homepage(props) {
+	const {
+		submissionId: specificSubId,
+		withHeader = true,
+		postsFullwidth = false,
+	} = props;
+
 	const [data, setData] = useState([]);
 	const { state } = useContext(UserContext);
+	const [comments, setComments] = useState([]);
+	const [postTotal, setPostTotal] = useState(0);
+
 	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
 	const [showMore, setShowMore] = useState([]);
-	const [postTotal, setPostTotal] = useState(0);
-	const [comments, setComments] = useState([]);
 	const [status, setStatus] = useState({
 		visibleModal: false,
 		action: 'update',
@@ -73,7 +80,10 @@ export default function Homepage() {
 	const loadData = async () =>
 		await axioc
 			.get(API_PATHS.SHARED.IDEA + '/table/list', {
-				params: { ...pagination },
+				params: {
+					...pagination,
+					submission_id: specificSubId,
+				},
 			})
 			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
 			.then((res) => {
@@ -464,7 +474,7 @@ export default function Homepage() {
 						boxShadow: '1px 2px 4px rgba(0,0,0,0.3)',
 						padding: '5px',
 						marginTop: 30,
-						maxWidth: '70rem',
+						maxWidth: postsFullwidth ? undefined : '70rem',
 						marginInline: 'auto',
 					}}
 				>
@@ -500,7 +510,7 @@ export default function Homepage() {
 
 	return (
 		<div className='homepage_wrapper'>
-			{renderTop()}
+			{withHeader ? renderTop() : <></>}
 
 			<ContentIdea />
 

@@ -14,10 +14,8 @@ import { Columns } from './model/Column';
 function UserManagement() {
 	const [data, setData] = useState({});
 	const [rowId, setRowId] = useState(null);
-	const [status, setStatus] = useState({
-		visibleModal: false,
-		action: 'create',
-	});
+	const [status, setStatus] = useState({ visibleModal: false, action: 'create' });
+
 	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
 	const [showTableTool, setShowTableTool] = useState(false);
 

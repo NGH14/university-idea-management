@@ -2,19 +2,17 @@ import '../../containers/UserManagement/style.css';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Button from '@mui/material/Button';
-import axios from 'axios';
+import { axioc, sleep } from 'common';
+import { API_PATHS, URL_PATHS } from 'common/env';
+import DetailSubmissionForm from 'components/Submission/DetailSubmissionForm';
+import ModalSubmissionIdea from 'components/Submission/Modal/ModalSubmissionIdea';
 import _ from 'lodash';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { BiPencil } from 'react-icons/bi';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
-import { axioc, sleep } from 'common';
-import { API_PATHS, DEV_CONFIGS, URL_PATHS } from 'common/env';
-import IdeaSubViewStaff from 'components/Idea/IdeaSubViewStaff';
-import DetailSubmissionForm from 'components/Submission/DetailSubmissionForm';
-import ModalSubmissionIdea from 'components/Submission/Modal/ModalSubmissionIdea';
-import { dataDemo } from 'containers/IdeaManagement/FakeData';
+import Homepage from 'containers/Homepage';
 
 const toastMessages = {
 	WAIT: 'Please wait...',
@@ -38,15 +36,8 @@ const toastMessages = {
 
 export default function Submission() {
 	const { id } = useParams();
-
 	const navigate = useNavigate();
-	const [data, setData] = useState({ sub: {}, ideas: [] });
-
-	const [paginationIdea, setPaginationIdea] = useState({
-		pageSize: 5,
-		page: 0,
-		total: 0,
-	});
+	const [data, setData] = useState();
 
 	const [status, setStatus] = useState({
 		visibleModal: false,
@@ -54,44 +45,13 @@ export default function Submission() {
 		loading: false,
 	});
 
-	useEffect(() => {
-		if (DEV_CONFIGS.IS_OFFLINE_DEV) {
-			let ideas = dataDemo.find((_) => _.submission_id === id);
-			if (!ideas) {
-				toast.error(toastMessages.ERR.IDEAS_NOT_FOUND);
-				setStatus({ ...status, loading: false });
-				navigate(-1);
-			}
-			return;
-		}
-		loadData();
-	}, []);
+	useEffect(() => loadData(), []);
 
 	const loadData = async () => {
-		await axios
-			.all([
-				axioc.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`),
-				// axioc.get(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`, {
-				// 	params: {
-				// 		page: pagination.page,
-				// 		page_size: pagination.pageSize,
-				// 	},
-				// }),
-			])
-			.then(
-				axios.spread(function (resSub, resIdeas) {
-					setData({
-						...data,
-						sub: resSub?.data?.result,
-						ideas: resIdeas?.data?.result,
-					});
-					setPaginationIdea({
-						...paginationIdea,
-						total: resSub?.data?.result?.total,
-					});
-					setStatus({ ...status, loading: false, visibleModal: false });
-				}),
-			);
+		await axioc.get(`${API_PATHS.ADMIN.MANAGE_SUB}/${id}`).then((res) => {
+			setStatus({ ...status, loading: false, visibleModal: false });
+			setData(res?.data?.result);
+		});
 	};
 
 	const onCloseModal = () => setStatus({ ...status, visibleModal: false });
@@ -99,42 +59,21 @@ export default function Submission() {
 		setStatus({ visibleModal: true, action: action });
 	};
 
-	const onUpdateSubmission = async (value) => {
-		setStatus({ ...status, loading: true });
-		toast
-			.promise(
-				axioc
-					.put(`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`, value)
-					.then(() => sleep(700)),
-				{
-					pending: toastMessages.WAIT,
-					success: toastMessages.SUC.SUB.EDITED,
-					error: toastMessages.ERR.SERVER_ERROR,
-				},
-			)
-			.then(() => {
-				setStatus({ ...status, visibleModal: false });
-				loadData();
-			});
-	};
-
-	const onUpdateIdea = async (value) => {
-		setStatus({ ...status, loading: true });
-		toast
-			.promise(
-				axioc
-					.put(`${API_PATHS.ADMIN.MANAGE_IDEA}/${value?.id}`, value)
-					.then(() => sleep(700)),
-				{
-					pending: toastMessages.WAIT,
-					success: toastMessages.SUC.SUB.EDITED,
-					error: toastMessages.ERR.SERVER_ERROR,
-				},
-			)
-			.then(() => {
-				setStatus({ ...status, visibleModal: false });
-				loadData();
-			});
+	const onUpdateSubmission = (value) => {
+		toast.promise(
+			axioc
+				.put(`${API_PATHS.ADMIN.MANAGE_SUB}/${value?.id}`, value)
+				.then(() => sleep(700))
+				.then(async () => {
+					setStatus({ ...status, visibleModal: false });
+					loadData();
+				}),
+			{
+				pending: toastMessages.WAIT,
+				success: toastMessages.SUC.SUB.EDITED,
+				error: toastMessages.ERR.SERVER_ERROR,
+			},
+		);
 	};
 
 	const renderModal = () => {
@@ -143,7 +82,7 @@ export default function Submission() {
 				visible={status.visibleModal}
 				action={status.action}
 				onClose={onCloseModal}
-				initialValue={data?.sub}
+				initialValue={data}
 				onUpdate={onUpdateSubmission}
 			/>
 		);
@@ -151,13 +90,12 @@ export default function Submission() {
 
 	const renderTop = () => {
 		return (
-			<div style={{ textAlign: 'right' }}>
+			<div style={{ display: 'flex', justifyContent: 'space-between' }}>
 				<Button
-					size={'small'}
-					variant='contained'
-					style={{ backgroundColor: '#9e9e9e', marginRight: 15 }}
-					endIcon={<ArrowBackIcon />}
-					onClick={() => navigate(`${URL_PATHS.HOME}`)}
+					variant='text'
+					style={{ marginRight: 15 }}
+					startIcon={<ArrowBackIcon />}
+					onClick={() => navigate(-1)}
 				>
 					Back
 				</Button>
@@ -165,20 +103,39 @@ export default function Submission() {
 		);
 	};
 
-	const renderSubmissionDetails = () => {
+	const RenderSubmissionDetails = () => {
 		return (
 			<fieldset
 				style={{
-					padding: 12,
 					borderRadius: 8,
-					border: '2px solid gray',
 					textTransform: 'capitalize',
 				}}
 			>
-				<legend style={{ fontWeight: 'bold', padding: 8, fontSize: 22 }}>
-					submission details
-				</legend>
-				<DetailSubmissionForm initialValue={data?.sub} />
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						marginBlock: '15px',
+					}}
+				>
+					<legend
+						style={{
+							fontWeight: 'bold',
+							fontSize: 22,
+						}}
+					>
+						submission details
+					</legend>
+					<Button
+						variant='contained'
+						endIcon={<BiPencil />}
+						onClick={() => onOpenModal('update')}
+					>
+						Edit
+					</Button>
+				</div>
+
+				<DetailSubmissionForm initialValue={data} />
 			</fieldset>
 		);
 	};
@@ -205,22 +162,17 @@ export default function Submission() {
 				>
 					List Ideas
 				</legend>
-				<IdeaSubViewStaff
-					paginationIdea={paginationIdea}
-					setPaginationIdea={setPaginationIdea}
-					ideaData={data.ideas}
-					subData={data?.sub}
-				/>
+				<Homepage postsFullwidth submissionId={data?.id} withHeader={false} />
 			</fieldset>
 		);
 	};
 
-	if (_.isEmpty(data.sub) || status.loading) return null;
+	if (_.isEmpty(data) || status.loading) return null;
 
 	return (
 		<div>
 			{renderTop()}
-			{renderSubmissionDetails()}
+			<RenderSubmissionDetails />
 			{renderIdeaView()}
 			{status.visibleModal && renderModal()}
 		</div>

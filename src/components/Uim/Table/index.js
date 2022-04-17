@@ -16,6 +16,8 @@ export function UimTable(props) {
 		totalItems,
 		columns,
 		rows,
+		height,
+		autoHeight = false,
 	} = props;
 
 	return (
@@ -32,9 +34,10 @@ export function UimTable(props) {
 				rows={rows ?? []}
 				columns={columns}
 				hideFooterRowCount={true}
+				autoHeight={autoHeight}
 				hideFooterPagination={true}
 				hideFooterSelectedRowCount={true}
-				style={{ minHeight: '68.5vh' }}
+				style={!autoHeight ? { minHeight: height ?? '68.5vh' } : {}}
 			/>
 			<div className={paginationClassNames ?? 'table_footer'}>
 				<UimPagination
