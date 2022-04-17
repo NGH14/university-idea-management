@@ -63,7 +63,9 @@ export default function Homepage() {
 
 	const onShowMoreContent = async (item, index) => {
 		!showMore[index] &&
-			(await axioc.post(`${API_PATHS.SHARED.VIEW}/${item.id}`).catch(() => {}));
+			(await axioc
+				.post(`${API_PATHS.SHARED.VIEW}/${item.id}`)
+				.catch(() => {}));
 
 		const newShowMore = [...showMore];
 		newShowMore[index] = !newShowMore[index];
@@ -133,8 +135,14 @@ export default function Homepage() {
 					.then((res) => {
 						setStatus({ ...status, visibleModal: false });
 						toast.info(
-							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
-								Idea details:{' '}
+							<RouterLink
+								to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}
+								style={{
+									textTransform: 'none',
+									textUnderlineOffset: 'none',
+									color: '#fff',
+								}}>
+								New Idea:{' '}
 								{() => {
 									const title = res?.data?.result?.title;
 									return title?.length > 50
@@ -156,12 +164,15 @@ export default function Homepage() {
 					.then(() => sleep(700))
 					.then((res) => {
 						setStatus({ ...status, visibleModal: false });
-						const indexData = data.findIndex((x) => x.id === value.id);
+						const indexData = data.findIndex(
+							(x) => x.id === value.id,
+						);
 						data[indexData] = res?.data?.result;
 						setData((oldData) => [...oldData, data]);
 
 						toast.info(
-							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
+							<RouterLink
+								to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
 								Idea details:{' '}
 								{() => {
 									const title = res?.data?.result?.title;
@@ -179,13 +190,17 @@ export default function Homepage() {
 			),
 		delete: (id) =>
 			toast.promise(
-				axioc.delete(`${API_PATHS.SHARED.IDEA}/${id}`).then(() => sleep(700)),
+				axioc
+					.delete(`${API_PATHS.SHARED.IDEA}/${id}`)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.UNEXPECTED,
 					success: {
 						render() {
-							const indexData = data.findIndex((_) => _.id === id);
+							const indexData = data.findIndex(
+								(_) => _.id === id,
+							);
 							data.splice(indexData, 1);
 							setData((oldData) => [...oldData, data]);
 							loadData();
@@ -206,8 +221,7 @@ export default function Homepage() {
 						fontSize: '0.5em',
 						color: '#999',
 						opacity: '0.7',
-					}}
-				>
+					}}>
 					Welcome to the UIM &#10084;&#65039;
 				</i>
 			</div>
@@ -247,23 +261,20 @@ export default function Homepage() {
 									textDecoration: 'none',
 									color: 'initial',
 									cursor: 'pointer',
-								}}
-							>
+								}}>
 								<RouterLink
 									to={`${URL_PATHS.SUB}/${item?.submission?.id}`}
 									style={{
 										textDecoration: 'none',
 										cursor: 'pointer',
 										color: 'initial',
-									}}
-								>
+									}}>
 									<span
 										style={{
 											textDecoration: 'none',
 											color: 'initial',
 											fontSize: '12px',
-										}}
-									>
+										}}>
 										in&nbsp;{item?.submission?.title}
 										&nbsp;submission
 									</span>
@@ -274,8 +285,7 @@ export default function Homepage() {
 				) : (
 					'September 14, 2016'
 				)
-			}
-		></CardHeader>
+			}></CardHeader>
 	);
 
 	const renderIdeaTags = (item) => (
@@ -289,8 +299,7 @@ export default function Homepage() {
 				flexWrap: 'wrap',
 				justifyContent: 'flex-start',
 				gap: 1,
-			}}
-		>
+			}}>
 			{item?.tags?.map((tag, index) => (
 				<Chip
 					key={item.title + tag.name + index}
@@ -320,8 +329,7 @@ export default function Homepage() {
 							lineHeight: '44px',
 							fontWeight: '600',
 							cursor: 'pointer',
-						}}
-					>
+						}}>
 						{item?.title}
 					</RouterLink>
 				</Tippy>
@@ -331,8 +339,7 @@ export default function Homepage() {
 						<Typography
 							variant='body2'
 							color='text.secondary '
-							className={showMore[index] || 'multiLineEllipsis'}
-						>
+							className={showMore[index] || 'multiLineEllipsis'}>
 							{item?.content}
 						</Typography>
 					</div>
@@ -351,8 +358,7 @@ export default function Homepage() {
 							backgroundColor: '#fff',
 							color: '#333',
 						},
-					}}
-				>
+					}}>
 					{showMore[index] ? 'Show less' : 'Show more'}
 				</Button>
 			</CardContent>
@@ -369,8 +375,7 @@ export default function Homepage() {
 					alignItems: 'center',
 					width: '100%',
 					fontSize: 12,
-				}}
-			>
+				}}>
 				<Button
 					className='idea_action'
 					fullWidth
@@ -385,13 +390,15 @@ export default function Homepage() {
 					startIcon={
 						<IoMdArrowRoundUp
 							style={{
-								color: item.requester_is_like === true ? '#626ef0' : '',
+								color:
+									item.requester_is_like === true
+										? '#626ef0'
+										: '',
 							}}
 						/>
 					}
 					color='inherit'
-					size='large'
-				>
+					size='large'>
 					{`(${item.likes})`}
 				</Button>
 				<Button
@@ -409,13 +416,15 @@ export default function Homepage() {
 					startIcon={
 						<IoMdArrowRoundDown
 							style={{
-								color: item.requester_is_like === false ? '#626ef0' : '',
+								color:
+									item.requester_is_like === false
+										? '#626ef0'
+										: '',
 							}}
 						/>
 					}
 					color={'inherit'}
-					size={'large'}
-				>
+					size={'large'}>
 					{`(${item.dislikes})`}
 				</Button>
 				<ExpandMore
@@ -428,8 +437,7 @@ export default function Homepage() {
 					color={'inherit'}
 					size={'large'}
 					startIcon={<BiCommentDetail />}
-					aria-label='show more'
-				>
+					aria-label='show more'>
 					{item.comments_count}
 				</ExpandMore>
 			</CardActions>
@@ -466,8 +474,7 @@ export default function Homepage() {
 						marginTop: 30,
 						maxWidth: '70rem',
 						marginInline: 'auto',
-					}}
-				>
+					}}>
 					{renderCardHeader(item)}
 					{renderCardContent(item, index)}
 					{renderIdeaTags(item)}
@@ -490,7 +497,10 @@ export default function Homepage() {
 	const renderFooter = () =>
 		!(_.size(data) === postTotal || _.size(data) > postTotal) ? (
 			<div style={{ marginTop: 15, textAlign: 'center' }}>
-				<Button size='small' variant='outlined' onClick={() => onShowMore()}>
+				<Button
+					size='small'
+					variant='outlined'
+					onClick={() => onShowMore()}>
 					More
 				</Button>
 			</div>
