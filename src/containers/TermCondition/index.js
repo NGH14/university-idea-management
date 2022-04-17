@@ -3,7 +3,7 @@ import './style.css';
 
 function TermCondition() {
 	return (
-		<div style={{ marginInline: '50px' }}>
+		<div style={{ marginInline: '50px', textAlign: 'justify' }}>
 			<div className='tac_title'>
 				<div className='tac_title-heading'>
 					<h2>Terms &amp; Conditions </h2>
