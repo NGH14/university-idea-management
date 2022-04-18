@@ -1,0 +1,56 @@
+.profile_wrapper {
+	font-family: "Poppins", sans-serif;
+}
+
+.updatepassword-wrapper {
+	margin: 0;
+	display: flex;
+	justify-content: space-between;
+	overflow-y: hidden;
+	position: relative;
+}
+
+.avatar_img {
+	max-height: 150px;
+	width: 120px;
+	height: 120px;
+	margin-top: -35px;
+	border-radius: 200px;
+	border: 5px solid #fff;
+	object-fit: cover;
+	font-size: 60px;
+}
+
+.avatar_cover {
+	background-color: black;
+	height: 200px;
+	width: 100%;
+	object-fit: cover;
+}
+
+.avatar_wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	background: #fff;
+	gap: 20px;
+	margin-bottom: 20px;
+}
+
+@media only screen and (max-width: 600px) {
+	.avatar_wrapper {
+		align-items: center;
+		justify-content: center;
+	}
+
+	.avatar_content {
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+	}
+
+	.avatar_img {
+		margin-top: -100px;
+	}
+}

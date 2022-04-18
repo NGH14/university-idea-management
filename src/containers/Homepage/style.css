@@ -1,0 +1,67 @@
+
+.homepage_heading {
+	font-weight: 600;
+	font-size: 30px;
+	display: flex;
+	flex-direction: column;
+	gap: 0px;
+	margin-inline: auto;
+	text-align: center;
+}
+.homepage_title {
+	margin-bottom: 20px;
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap-reverse;
+	align-items: center;
+	gap: 20px;
+	font-size: 1.5rem;
+	line-height: 1.8;
+	letter-spacing: 0.01071em;
+	width: 100%;
+	border-radius: 4px;
+}
+.homepage_wrapper{
+	margin-inline: 100px;
+}
+
+.idea_action .MuiButton-root {
+    font-family: "Poppins", sans-serif;
+}
+
+.idea_header .MuiCardHeader-subheader{
+    font-size: 12px;
+}
+
+.multiLineEllipsis {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: --webkit-box;
+	--webkit-line-clamp: 1;
+	--webkit-box-orient: vertical;
+}
+.maxWidth300{
+	max-width: 15ch;
+}
+
+@media (max-width: 800px) {
+	* {
+		font-size: 10px;
+	}
+
+.homepage_heading {
+	text-align: center;
+	font-size: 1rem;
+	width: fit-content;
+	
+
+}
+.homepage_title {
+	align-items: flex-start;
+	justify-content: flex-start;
+}
+.homepage_wrapper {
+	margin-inline: 0;
+}
+}

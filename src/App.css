@@ -1,0 +1,51 @@
+html {
+  font-family: "Poppins", sans-serif;
+  scroll-behavior: smooth;
+}
+
+textarea {
+  padding: 12px;
+  resize: none;
+  min-height: fit-content;
+}
+
+*::-webkit-scrollbar-track {
+  border-radius: 5px;
+  background-color: #F5F5F5;
+}
+
+::selection {
+  background: rgba(0, 1, 17, 0.8);
+  color: white
+}
+
+*::-webkit-scrollbar {
+  max-width: 7px;
+  max-height: 5px;
+  background-color: #F5F5F5;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #999;
+}
+
+
+
+div[style*="position: absolute; pointer-events: none; color: rgba(130, 130, 130, 0.62); z-index: 100000; width: 100%; text-align: center; bottom: 50%; right: 0px; letter-spacing: 5px; font-size: 24px;"] {
+  display: none !important;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 250px;
+
+  z-index: 999;
+}
+.small_icon {
+  font-size: 12px;
+  width: 13px;
+}

@@ -1,0 +1,103 @@
+.updatepwdform_title {
+	font-weight: 500;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.updatepwdform_element .MuiFormControl-root:focus-within .MuiFormHelperText-root {
+	display: none;
+}
+
+.updatepwdform_element {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	margin: 30px auto;
+}
+
+.updatepwdform .MuiInputLabel-root {
+	overflow: visible;
+	max-width: 350px;
+	width: 350px;
+
+}
+
+.updatepwdform_footer {
+	display: flex;
+	justify-content: flex-end;
+	flex-wrap: wrap;
+	gap: 5px;
+	margin-top: 10px;
+}
+
+.updatepwdform-updatepwdby {
+	font-style: normal;
+	font-weight: normal;
+	font-size: 14px;
+	line-height: 24px;
+	position: relative;
+	color: #999;
+	width: 100%;
+	text-align: center;
+}
+
+.updatepwdform-updatepwdby::after {
+	content: "";
+	width: 100%;
+	height: 2px;
+	left: 0;
+	top: 50%;
+	background-color: rgba(153, 153, 153, 0.452);
+	position: absolute;
+
+	z-index: 0;
+}
+
+.updatepwdform-updatepwdby .textwithline {
+	width: 100%;
+	padding-inline: 10px;
+
+	position: relative;
+	background-color: white;
+	z-index: 2;
+}
+
+.updatepwdform-heading {
+	font-style: normal;
+	font-weight: 600;
+	font-size: 48px;
+	line-height: 72px;
+}
+
+@media (max-width: 600px) {
+	.updatepwdform_element {
+		gap: 2px;
+		flex-wrap: wrap;
+	}
+}
+
+@media only screen and (max-width: 400px) {
+	html {
+		font-size: 16px;
+	}
+
+	.updatepwdform-heading {
+		font-size: 30px;
+	}
+
+	.updatepwdform-textcontent {
+		font-size: 20px;
+	}
+}
+
+@media (max-width: 600px) {
+	.updatepwdform_footer>* {
+		width: 100%;
+	}
+
+	.updatepwdform_footer {
+		gap: 2px;
+		margin-top: 5px;
+	}
+}

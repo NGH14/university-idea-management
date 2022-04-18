@@ -8,8 +8,8 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo-500.jpg",
-      "type": "image/jpg",
+      "src": "logo-500.webp",
+      "type": "webp",
       "sizes": "500x500"
     }
   ],
