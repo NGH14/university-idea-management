@@ -1,18 +1,22 @@
-import "./reset.css";
-import "./App.css";
-import { useContext } from "react";
-import { BrowserRouter, Routes } from "react-router-dom";
-import { AppContext } from "./context/AppContext";
-import {ListRoute} from "./routes";
+import './App.css';
+import './reset.css';
+import 'react-toastify/dist/ReactToastify.css';
+import 'tippy.js/dist/tippy.css';
+
+import ToastifyProvider from 'components/ToastProvider';
+import { AppContext } from 'context/AppContext';
+import { BrowserRouter } from 'react-router-dom';
+import { ListRoute } from 'routes';
 
 function App() {
-  return (
-    <AppContext>
-      <BrowserRouter>
-        <ListRoute />
-      </BrowserRouter>
-    </AppContext>
-  );
+	return (
+		<AppContext>
+			<BrowserRouter>
+				<ToastifyProvider />
+				<ListRoute />
+			</BrowserRouter>
+		</AppContext>
+	);
 }
 
 export default App;

@@ -1,324 +1,181 @@
-import "./style.css";
+/* eslint-disable react-hooks/exhaustive-deps */
+import './style.css';
 
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { IconButton } from "@mui/material";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import {
-  GridToolbarColumnsButton,
-  GridToolbarContainer,
-  GridToolbarDensitySelector,
-  GridToolbarExport,
-  GridToolbarFilterButton,
-} from "@mui/x-data-grid";
-import { DataGridPro, GridActionsCellItem } from "@mui/x-data-grid-pro";
-import * as React from "react";
-import { useContext, useEffect, useState } from "react";
+import { API_PATHS, axioc, sleep, toastMessages } from 'common';
+import ContentHeader from 'components/ContentHeader';
+import { UimActionButtons, UimTable } from 'components/Uim';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
-import { AuthRequest } from "../../common/AppUse";
-import { Notification } from "../../common/Notification";
-import CustomNoRowsOverlay from "../../components/Custom/CustomNoRowsOverlay";
-import { UserContext } from "../../context/AppContext";
-import ModalUserManagement from "./modal/ModalUserManagement";
-import { Column } from "./model/Column";
-
-function SortedDescendingIcon() {
-  return <ExpandMoreIcon className="icon" />;
-}
-function SortedAscendingIcon() {
-  return <ExpandLessIcon className="icon" />;
-}
+import ModalUserManagement from './modal/ModalUserManagement';
+import { Columns } from './model/Column';
 
 function UserManagement() {
-  const { state, setState } = useContext(UserContext);
-  const [data, setData] = useState([]);
-  const [rowId, setRowId] = useState(null);
-  const [status, setStatus] = useState({
-    visibleNotification: false,
-    titleNotification: "",
-    typeNotification: "error", //error or success
-    visibleModal: false,
-    action: "create", // create, update, detail
-  });
-  const [pagination, setPagination] = useState({
-    pageSize: 10,
-    page: 0,
-  });
+	const [data, setData] = useState({});
+	const [rowId, setRowId] = useState(null);
+	const [status, setStatus] = useState({ visibleModal: false, action: 'create' });
 
-  const [actionUser, setActionUser] = useState(null);
-  const [tableToolBar, setTableToolBar] = useState(false);
+	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
+	const [showTableTool, setShowTableTool] = useState(false);
 
-  useEffect(() => {
-    loadData();
-  }, [pagination]);
+	useEffect(() => loadData(), [pagination]);
 
-  const openUserAction = Boolean(actionUser);
-  const handleOnClickToolBar = () => {
-    setTableToolBar((pre) => !pre);
-  };
+	const loadData = async () =>
+		await axioc
+			.get(API_PATHS.ADMIN.MANAGE_USER + '/table/list', {
+				params: {
+					page: pagination.page,
+					page_size: pagination.pageSize,
+				},
+			})
+			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
+			.then((res) => {
+				setData(res?.data?.result);
+				setRowId(null);
+			});
 
-  const handleClick = (event) => {
-    setActionUser(event.currentTarget);
-  };
+	const columns = [
+		{
+			field: 'no',
+			headerName: '#',
+			disableColumnMenu: true,
+			sortable: false,
+			filter: false,
+			filterable: false,
+			width: 80,
+			align: 'center',
+			headerAlign: 'center',
+			renderCell: (value) => (
+				<span>
+					{(pagination.page - 1) * pagination.pageSize +
+						(value.api.getRowIndex(value.id) + 1)}
+				</span>
+			),
+		},
+		...Columns,
+		{
+			field: 'actions',
+			headerName: 'Action',
+			width: 75,
+			type: 'actions',
+			disableColumnMenu: true,
+			sortable: false,
+			getActions: (params) =>
+				UimActionButtons(params?.row, {
+					detailAction: () => onOpenModal(params?.id, 'detail'),
+					updateAction: () => onOpenModal(params?.id, 'update'),
+					deleteAction: () => requests.delete(params?.id),
+				}),
+		},
+	];
 
-  const handleClose = () => {
-    setActionUser(null);
-  };
+	const onCloseModal = () => {
+		rowId && setRowId(null);
+		setStatus({ ...status, visibleModal: false });
+	};
 
-  const columns = [
-    ...Column,
-    {
-      field: "actions",
-      headerName: "Action",
-      width: 75,
-      type: "actions",
-      disableColumnMenu: true,
-      sortable: false,
-      getActions: (params) => [
-        <GridActionsCellItem
-          icon={<InfoOutlinedIcon color={"info"} />}
-          label="Detail"
-          onClick={() => onOpenModal(params.id, "detail")}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<EditIcon color={"secondary"} />}
-          label="Update"
-          onClick={() => onOpenModal(params.id, "update")}
-          showInMenu
-        />,
-        <GridActionsCellItem
-          icon={<DeleteIcon />}
-          disabled={state?.dataUser?.id === params.id ? true : false}
-          label="Delete"
-          onClick={() => onDelete(params.id)}
-          showInMenu
-        />,
-      ],
-    },
-  ];
+	const onOpenModal = (id, action) => {
+		id && setRowId(id);
+		setStatus({ ...status, visibleModal: true, action });
+	};
 
-  const loadData = async () => {
-    try {
-      const res = await AuthRequest.get(
-        `user-management/users?papesize=${pagination.pageSize}?page=${
-          pagination.page + 1
-        }`,
-      );
-      if (res?.data?.succeeded) {
-        setData(res?.data?.result?.rows);
-        setRowId(null);
-      }
-    } catch {
-      setStatus({
-        ...status,
-        visibleNotification: true,
-        titleNotification: "Something went wrong, Please Try Again ",
-        typeNotification: "error",
-      });
-    }
-  };
+	const requests = {
+		create: (value) =>
+			toast.promise(
+				axioc.post(API_PATHS.ADMIN.MANAGE_USER, value).then(() => sleep(700)),
+				{
+					pending: toastMessages.WAIT,
+					error: toastMessages.errs.added('User'),
+					success: {
+						render() {
+							loadData();
+							setStatus({ ...status, visibleModal: false });
+							return toastMessages.succs.added('User');
+						},
+					},
+				},
+			),
+		update: (value) =>
+			toast.promise(
+				axioc
+					.put(`${API_PATHS.ADMIN.MANAGE_USER}/${value?.id}`, value)
+					.then(() => sleep(700)),
+				{
+					pending: toastMessages.WAIT,
+					error: toastMessages.errs.edited('User'),
+					success: {
+						render() {
+							loadData();
+							setStatus({ ...status, visibleModal: false });
+							return toastMessages.succs.edited('User');
+						},
+					},
+				},
+			),
+		delete: (id) =>
+			toast.promise(
+				axioc
+					.delete(`${API_PATHS.ADMIN.MANAGE_USER}/${id}`)
+					.then(() => sleep(700)),
+				{
+					pending: toastMessages.WAIT,
+					error: toastMessages.errs.deleted('User'),
+					success: {
+						render() {
+							setStatus({ ...status, visibleModal: false });
+							loadData();
+							return toastMessages.succs.deleted('User');
+						},
+					},
+				},
+			),
+	};
 
-  const onOpenModal = (id, action) => {
-    if (id) {
-      setRowId(id);
-    }
-    setStatus({ ...status, visibleModal: true, action });
-  };
+	return (
+		<>
+			<ContentHeader
+				title='User Management'
+				tooltipContent='Add user'
+				onOpenModal={() => onOpenModal(null, 'create')}
+				onClickAction={() => setShowTableTool((pre) => !pre)}
+				classes={{
+					headingClassNames: 'managementuser_heading',
+					titleClassNames: 'managementuser_title',
+				}}
+			/>
 
-  const onDelete = async (id) => {
-    handleClose();
-    try {
-      const res = await AuthRequest.delete(`user-management/user/${id}`);
-      if (res?.data?.succeeded) {
-        setStatus({
-          ...status,
-          visibleNotification: true,
-          titleNotification: "Delete user success",
-          typeNotification: "success",
-        });
-        loadData();
-      }
-    } catch {
-      setStatus({
-        ...status,
-        visibleNotification: true,
-        titleNotification: "Delete user error",
-        typeNotification: "error",
-      });
-    }
-  };
-  const onUpdate = async (value) => {
-    handleClose();
-    try {
-      const res = await AuthRequest.put(
-        `user-management/user/${value?.id}`,
-        value,
-      );
-      if (res?.data?.succeeded) {
-        setStatus({
-          ...status,
-          visibleNotification: true,
-          titleNotification: "Delete user success",
-          typeNotification: "success",
-          visibleModal: false,
-        });
-        loadData();
-      }
-    } catch {
-      setStatus({
-        ...status,
-        visibleNotification: true,
-        titleNotification: "Delete user error",
-        typeNotification: "error",
-      });
-    }
-  };
-  const onCreate = async (value) => {
-    try {
-      const res = await AuthRequest.post(`user-management`, value);
-      if (res?.data?.succeeded) {
-        setStatus({
-          ...status,
-          visibleNotification: true,
-          titleNotification: "Create User Success",
-          typeNotification: "success",
-          visibleModal: false,
-        });
-        loadData();
-      }
-    } catch {
-      setStatus({
-        ...status,
-        visibleModal: false,
-        visibleNotification: true,
-        titleNotification: "Delete user error",
-        typeNotification: "error",
-      });
-    }
-  };
+			<UimTable
+				rows={data?.rows}
+				columns={columns}
+				totalItems={data?.total}
+				showTableToolBar={showTableTool}
+				classes={{ tableClassNames: 'managementuser_table' }}
+				pagination={{
+					page: pagination.page,
+					pageSize: pagination.pageSize,
+					onPageChange: (_, page) => setPagination({ ...pagination, page }),
+					onPageSizeChange: (event) =>
+						setPagination({
+							...pagination,
+							pageSize: event?.target?.value,
+							page: 1,
+						}),
+				}}
+			/>
 
-  const onCloseNotification = () => {
-    setStatus({ ...status, visibleNotification: false });
-  };
-  const onCloseModal = () => {
-    if (rowId) {
-      setRowId(null);
-    }
-    setStatus({
-      ...status,
-      visibleModal: false,
-    });
-  };
-
-  const CustomToolbar = () => {
-    return (
-      <GridToolbarContainer
-        sx={{ fontWeight: 700, display: "flex", justifyContent: "ceter" }}
-      >
-        <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
-        <GridToolbarDensitySelector />
-        <GridToolbarExport printOptions={{ disableToolbarButton: true }} />
-      </GridToolbarContainer>
-    );
-  };
-  const renderModal = () => {
-    return (
-      <ModalUserManagement
-        visible={status.visibleModal}
-        action={status.action}
-        onClose={onCloseModal}
-        rowId={rowId}
-        onCreate={onCreate}
-        onUpdate={onUpdate}
-      />
-    );
-  };
-  const onChangePagination = (pageSize, page) => {
-    setPagination({ page, pageSize });
-  };
-  const renderTop = () => {
-    return (
-      <div className="managementuser_title">
-        <div className="managementuser_heading">
-          <h2>Management User</h2>
-          <Tooltip title="Table Tool Bar">
-            <IconButton onClick={handleOnClickToolBar}>
-              <MoreVertIcon />
-            </IconButton>
-          </Tooltip>
-        </div>
-
-        <Button
-          variant="contained"
-          endIcon={<AddCircleOutlineIcon />}
-          onClick={() => onOpenModal(null, "create")}
-        >
-          Add user
-        </Button>
-      </div>
-    );
-  };
-
-  const renderContent = () => {
-    return (
-      <div className="managementuser_table">
-        <DataGridPro
-          components={{
-            NoRowsOverlay: CustomNoRowsOverlay,
-            ColumnSortedDescendingIcon: SortedDescendingIcon,
-            ColumnSortedAscendingIcon: SortedAscendingIcon,
-            Toolbar: tableToolBar && CustomToolbar,
-          }}
-          rows={
-            data
-            // dataDemo
-          }
-          columns={columns}
-          pagination={true}
-          cell--textCenter
-          pageSize={pagination.pageSize}
-          page={pagination.page}
-          initialState={{ pinnedColumns: { right: ["actions"] } }}
-          onPageSizeChange={(pageSize) => {
-            onChangePagination(pageSize, pagination.page);
-          }}
-          onPageChange={(page) => {
-            onChangePagination(pagination.pageSize, page);
-          }}
-          style={{ minHeight: "600px" }}
-          rowsPerPageOptions={[10, 25, 50, 100]}
-        />
-      </div>
-    );
-  };
-
-  return (
-    <div
-      style={{
-        minHeight: "700px",
-        width: "100%",
-        padding: "0 5px",
-        fontFamily: "Poppins",
-      }}
-    >
-      {renderTop()}
-      {renderContent()}
-      <Notification
-        visible={status.visibleNotification}
-        message={status.titleNotification}
-        type={status.typeNotification}
-        onClose={onCloseNotification}
-      />
-      {status.visibleModal && renderModal()}
-    </div>
-  );
+			{status.visibleModal && (
+				<ModalUserManagement
+					visible={status.visibleModal}
+					action={status.action}
+					onClose={onCloseModal}
+					rowId={rowId}
+					onCreate={requests.create}
+					onUpdate={requests.update}
+				/>
+			)}
+		</>
+	);
 }
+
 export default UserManagement;
