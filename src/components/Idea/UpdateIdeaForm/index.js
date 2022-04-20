@@ -1,12 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
+import './style.css';
+
+import { Checkbox, FormControlLabel, FormGroup, ListItem } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import ListItemText from '@mui/material/ListItemText';
-import { styled } from '@mui/material/styles';
 import { API_PATHS, axioc, getGuid, toReadableFileSize } from 'common';
 import { UimAutoComplete, UimModalForm, UimTextField } from 'components/Uim';
 import { useFormik } from 'formik';
@@ -18,7 +20,9 @@ import { RiDeleteBack2Fill } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
-const ListItem = styled('li')(({ theme }) => ({ margin: theme.spacing(0.5) }));
+import { styled } from '@mui/material/styles';
+
+// const ListItem = styled('li')(({ theme }) => ({ margin: theme.spacing(0.5) }));
 
 const toastMessages = {
 	ERR_MAX_FILES_NUMBER: 'Maximum files is 4 !!',
@@ -34,7 +38,9 @@ const validationSchema = yup.object({
 	tags: yup.array().max(3, 'Only 3 tags per idea').nullable(),
 	attachments: yup.array().nullable(),
 	is_anonymous: yup.bool(),
-	submission_id: yup.string().required('Please specify the submission for this idea'),
+	submission_id: yup
+		.string()
+		.required('Please specify the submission for this idea'),
 });
 
 function UpdateIdeaForm(props) {
@@ -66,9 +72,14 @@ function UpdateIdeaForm(props) {
 			!specifySub
 				? await axioc
 						.get(API_PATHS.ADMIN.MANAGE_SUB + '/list')
-						.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
+						.catch(() =>
+							toast.error(toastMessages.ERR_SERVER_ERROR),
+						)
 						.then((res) => setSubOptions(res?.data?.result))
-				: formik.setFieldValue('submission_id', initialValue?.submission?.id);
+				: formik.setFieldValue(
+						'submission_id',
+						initialValue?.submission?.id,
+				  );
 
 			await axioc
 				.get(API_PATHS.ADMIN.MANAGE_TAG + '/list')
@@ -81,16 +92,15 @@ function UpdateIdeaForm(props) {
 
 	const handleDrop = (acceptedFiles) => {
 		try {
-			if (
-				acceptedFiles?.length > 3 ||
-				attachments?.length + acceptedFiles?.length > 3
-			) {
-				toast.error('Too many files, limit at 3');
+			if (attachments?.length === 4) {
+				toast.error(toastMessages.ERR_MAX_FILES_NUMBER);
 				return;
 			}
-			acceptedFiles.forEach((file) => {
+
+			for (const file of acceptedFiles) {
 				if (
-					attachments?.reduce((a, b) => a + (b['size'] || 0), 0) + file.size >
+					attachments.reduce((a, b) => a + (b['size'] || 0), 0) +
+						file.size >
 					FILE_SIZE
 				) {
 					toast.error(`${file.name} ${toastMessages.ERR_FILE_BIG}`);
@@ -112,7 +122,7 @@ function UpdateIdeaForm(props) {
 						},
 					]);
 				};
-			});
+			}
 		} catch (err) {
 			toast.error(toastMessages.ERR_FILE_ADD_FAILED);
 		}
@@ -133,8 +143,7 @@ function UpdateIdeaForm(props) {
 			onClose={() => onClose()}
 			ClassName='createideaform'
 			onSubmit={formik.handleSubmit}
-			showActionButton={true}
-		>
+			showActionButton={true}>
 			<div className='createideaform_group'>
 				<div className='createideaform_content'>
 					{specifySub ? (
@@ -154,7 +163,10 @@ function UpdateIdeaForm(props) {
 							defaultValue={initialValue?.submission}
 							getOptionLabel={(option) => option?.title}
 							onChange={(_, value) => {
-								formik.setFieldValue('submission_id', value.id ?? '');
+								formik.setFieldValue(
+									'submission_id',
+									value.id ?? '',
+								);
 							}}
 							dynamic={{
 								value: formik.values.submission_id,
@@ -201,49 +213,48 @@ function UpdateIdeaForm(props) {
 
 			<div className='createideaform_group'>
 				<div className='createideaform_content'>
-					<UimAutoComplete.Tag
-						label='Tags'
-						propName='tags'
-						options={tagOptions}
-						onChange={(_, value) => formik.setFieldValue('tags', value ?? '')}
-						defaultValue={initialValue?.tags}
-						onBlur={formik.handleBlur}
-						dynamic={{
-							error: formik.errors.tags,
-							touched: formik.touched.tags,
-							value: formik?.values?.tags,
-						}}
-					/>
-				</div>
-			</div>
-
-			<div className='createideaform_group'>
-				<div className='createideaform_content'>
 					<Dropzone
 						onDrop={handleDrop}
 						onDropRejected={() =>
 							toast.error(toastMessages.ERR_FILE_REJECTED)
-						}
-					>
+						}>
 						{({ getRootProps, getInputProps }) => (
 							<div
 								{...getRootProps({
 									className: 'dropzone',
-								})}
-							>
+								})}>
 								<input {...getInputProps()} />
 								<MdOutlineDriveFolderUpload className='dropzone_icon' />
-								<p>Drag &#38; drop files, or click to select files</p>
+								<p>
+									Drag &#38; drop files, or click to select
+									files
+								</p>
+								<span
+									style={{
+										padding: '5px',
+										color: '#888',
+										fontSize: '0.75em',
+									}}>
+									*This will overwrite the current
+									attachments*
+								</span>
 							</div>
 						)}
 					</Dropzone>
 					<span style={{ padding: '5px', color: '#888' }}>
-						{attachments?.length !== 0 && <span> Attach files size: </span>}
+						{attachments?.length !== 0 && (
+							<span> Attach files size: </span>
+						)}
 						{attachments?.length !== 0 &&
 							toReadableFileSize(
-								attachments?.reduce((n, { size }) => n + size, 0),
+								attachments?.reduce(
+									(n, { size }) => n + size,
+									0,
+								),
 							)}
-						{attachments?.length !== 0 && <span> &nbsp;/&nbsp;10 MB</span>}
+						{attachments?.length !== 0 && (
+							<span> &nbsp;/&nbsp;10 MB</span>
+						)}
 					</span>
 					{attachments?.length === 0 ? null : (
 						<div className='createideaform_group'>
@@ -256,8 +267,7 @@ function UpdateIdeaForm(props) {
 										listStyle: 'none',
 										p: 0.5,
 										m: 0,
-									}}
-								>
+									}}>
 									{attachments?.map((file, index) => (
 										<ListItem
 											key={index}
@@ -265,12 +275,12 @@ function UpdateIdeaForm(props) {
 												<IconButton
 													edge='end'
 													aria-label='delete'
-													onClick={handleDeleteAttachment(file)}
-												>
+													onClick={handleDeleteAttachment(
+														file,
+													)}>
 													<RiDeleteBack2Fill id='attach_delete-icon' />
 												</IconButton>
-											}
-										>
+											}>
 											<ListItemAvatar>
 												<Avatar>
 													<AiOutlineFile />
@@ -281,23 +291,22 @@ function UpdateIdeaForm(props) {
 													display: 'flex',
 													flexDirection: 'column',
 													justifyContent: 'center',
-												}}
-											>
+												}}>
 												<p
 													style={{
 														fontFamily: 'Poppins',
 														fontSize: '1em',
-													}}
-												>
+													}}>
 													{file.name}
 												</p>
 												<p
 													style={{
 														fontSize: '0.8em',
 														color: '#333',
-													}}
-												>
-													{toReadableFileSize(file.size)}
+													}}>
+													{toReadableFileSize(
+														file.size,
+													)}
 												</p>
 											</ListItemText>
 										</ListItem>
