@@ -87,8 +87,11 @@ function CreateIdeaForm(props) {
 
 	const handleDrop = (acceptedFiles) => {
 		try {
-			if (acceptedFiles?.length > 5) {
-				toast.error('Too many files, limit at 5');
+			if (
+				acceptedFiles?.length > 3 ||
+				attachments?.length + acceptedFiles?.length > 3
+			) {
+				toast.error('Too many files, limit at 3');
 				return;
 			}
 			acceptedFiles.forEach((file) => {
@@ -97,10 +100,6 @@ function CreateIdeaForm(props) {
 					FILE_SIZE
 				) {
 					toast.error(`${file.name} ${toastMessages.ERR_FILE_BIG}`);
-					return;
-				}
-				if (attachments?.length > 5) {
-					toast.error('Too manasdasdasdy files, limit at 5');
 					return;
 				}
 

@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from 'moment';
 
 export const Column = [
 	{
@@ -46,7 +46,7 @@ export const Column = [
 		type: 'date',
 		renderCell: (value) =>
 			value?.row?.created_date
-				? moment(value?.row?.created_date).format('DD/MM/YYYY')
+				? moment(value?.row?.created_date).format('DD/MM/YYYY hh:mm tt')
 				: '-',
 	},
 ];

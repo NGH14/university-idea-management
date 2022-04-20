@@ -85,7 +85,8 @@ export default function IdeaManagement() {
 	];
 
 	const requests = {
-		create: (value) =>
+		create: (value) => {
+			setStatus({ ...status, visibleModal: false });
 			toast.promise(
 				axioc.post(API_PATHS.ADMIN.MANAGE_IDEA, value).then(() => sleep(700)),
 				{
@@ -94,13 +95,14 @@ export default function IdeaManagement() {
 					success: {
 						render() {
 							loadData();
-							setStatus({ ...status, visibleModal: false });
 							return toastMessages.succs.added('Idea');
 						},
 					},
 				},
-			),
-		update: (value) =>
+			);
+		},
+		update: (value) => {
+			setStatus({ ...status, visibleModal: false });
 			toast.promise(
 				axioc
 					.put(`${API_PATHS.ADMIN.MANAGE_IDEA}/${value?.id}`, {
@@ -118,13 +120,14 @@ export default function IdeaManagement() {
 					success: {
 						render() {
 							loadData();
-							setStatus({ ...status, visibleModal: false });
 							return toastMessages.succs.edited('Idea');
 						},
 					},
 				},
-			),
-		delete: (id) =>
+			);
+		},
+		delete: (id) => {
+			setStatus({ ...status, visibleModal: false });
 			toast.promise(
 				axioc
 					.delete(`${API_PATHS.ADMIN.MANAGE_IDEA}/${id}`)
@@ -134,13 +137,13 @@ export default function IdeaManagement() {
 					error: toastMessages.errs.deleted('Idea'),
 					success: {
 						render() {
-							setStatus({ ...status, visibleModal: false });
 							loadData();
 							return toastMessages.succs.deleted('Idea');
 						},
 					},
 				},
-			),
+			);
+		},
 	};
 
 	return (

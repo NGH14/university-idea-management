@@ -1,34 +1,59 @@
-.editideaform_title {
+.createideaform_title {
 	font-weight: 500;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }
 
-.editideaform_footer {
+.dropzone {
+	text-align: center;
+	padding: 20px;
+	border: 3px dashed #bbbabaa2;
+	border-radius: 5px;
+	background-color: #fafafa;
+	color: #bdbdbd;
+	height: 8rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 180px;
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+
+	gap: 5px
+}
+
+.dropzone_icon {
+	font-size: 60px;
+}
+
+.createideaform_footer {
 	display: flex;
 	justify-content: flex-end;
 	flex-wrap: wrap;
 	gap: 10px;
 }
 
-.form_grid {
+.createideaform_grid {
 	min-height: 100px;
 	max-width: 100vw;
 	margin: 20px auto 0;
 }
 
-.form_grid label {
+.createideaform_grid label {
 	font-weight: 500;
 	font-family: "Poppins";
 	font-size: 0.8em !important;
+
 }
 
-.form_grid option {
+.createideaform_grid option {
 	background-color: red;
 }
 
-.form_group {
+.createideaform_group {
 	margin-bottom: 20px;
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
@@ -39,16 +64,20 @@
 	display: none;
 }
 
+#attach_delete-icon:hover {
+	color: rgb(225, 73, 73)
+}
+
 @media (max-width: 600px) {
 	* {
 		font-size: 12px;
 	}
 
-	.form_group {
+	.createideaform_group {
 		grid-template-columns: 1fr;
 	}
 
-	.editideaform_footer>* {
+	.createideaform_footer>* {
 		width: 100%;
 	}
 }

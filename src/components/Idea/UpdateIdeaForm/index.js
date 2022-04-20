@@ -1,15 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import './style.css';
 
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
-import Chip from '@mui/material/Chip';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemText from '@mui/material/ListItemText';
 import { styled } from '@mui/material/styles';
 import { API_PATHS, axioc, getGuid, toReadableFileSize } from 'common';
 import { UimAutoComplete, UimModalForm, UimTextField } from 'components/Uim';
 import { useFormik } from 'formik';
 import React, { useEffect, useState } from 'react';
 import Dropzone from 'react-dropzone';
+import { AiOutlineFile } from 'react-icons/ai';
+import { MdOutlineDriveFolderUpload } from 'react-icons/md';
+import { RiDeleteBack2Fill } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
@@ -76,14 +81,16 @@ function UpdateIdeaForm(props) {
 
 	const handleDrop = (acceptedFiles) => {
 		try {
-			if (attachments?.length === 4) {
-				toast.error(toastMessages.ERR_MAX_FILES_NUMBER);
+			if (
+				acceptedFiles?.length > 3 ||
+				attachments?.length + acceptedFiles?.length > 3
+			) {
+				toast.error('Too many files, limit at 3');
 				return;
 			}
-
-			for (const file of acceptedFiles) {
+			acceptedFiles.forEach((file) => {
 				if (
-					attachments.reduce((a, b) => a + (b['size'] || 0), 0) + file.size >
+					attachments?.reduce((a, b) => a + (b['size'] || 0), 0) + file.size >
 					FILE_SIZE
 				) {
 					toast.error(`${file.name} ${toastMessages.ERR_FILE_BIG}`);
@@ -105,7 +112,7 @@ function UpdateIdeaForm(props) {
 						},
 					]);
 				};
-			}
+			});
 		} catch (err) {
 			toast.error(toastMessages.ERR_FILE_ADD_FAILED);
 		}
@@ -124,7 +131,7 @@ function UpdateIdeaForm(props) {
 			entity='idea'
 			action='edit'
 			onClose={() => onClose()}
-			ClassName='editideaform'
+			ClassName='createideaform'
 			onSubmit={formik.handleSubmit}
 			showActionButton={true}
 		>
@@ -210,38 +217,6 @@ function UpdateIdeaForm(props) {
 				</div>
 			</div>
 
-			{attachments.length === 0 ? null : (
-				<div className='createideaform_group'>
-					<div className='createideaform_content'>
-						<List
-							sx={{
-								display: 'flex',
-								justifyContent: 'center',
-								flexWrap: 'wrap',
-								listStyle: 'none',
-								p: 0.5,
-								m: 0,
-							}}
-						>
-							{attachments.map((file, index) => (
-								<ListItem key={index}>
-									<Chip
-										variant='outlined'
-										size='large'
-										clickable
-										icon={<InsertDriveFileIcon />}
-										onDelete={handleDeleteAttachment(file)}
-										label={`${file.name} · ${toReadableFileSize(
-											file.size,
-										)}`}
-									/>
-								</ListItem>
-							))}
-						</List>
-					</div>
-				</div>
-			)}
-
 			<div className='createideaform_group'>
 				<div className='createideaform_content'>
 					<Dropzone
@@ -257,10 +232,80 @@ function UpdateIdeaForm(props) {
 								})}
 							>
 								<input {...getInputProps()} />
+								<MdOutlineDriveFolderUpload className='dropzone_icon' />
 								<p>Drag &#38; drop files, or click to select files</p>
 							</div>
 						)}
 					</Dropzone>
+					<span style={{ padding: '5px', color: '#888' }}>
+						{attachments?.length !== 0 && <span> Attach files size: </span>}
+						{attachments?.length !== 0 &&
+							toReadableFileSize(
+								attachments?.reduce((n, { size }) => n + size, 0),
+							)}
+						{attachments?.length !== 0 && <span> &nbsp;/&nbsp;10 MB</span>}
+					</span>
+					{attachments?.length === 0 ? null : (
+						<div className='createideaform_group'>
+							<div className='createideaform_content'>
+								<List
+									sx={{
+										display: 'flex',
+										justifyContent: 'center',
+										flexWrap: 'wrap',
+										listStyle: 'none',
+										p: 0.5,
+										m: 0,
+									}}
+								>
+									{attachments?.map((file, index) => (
+										<ListItem
+											key={index}
+											secondaryAction={
+												<IconButton
+													edge='end'
+													aria-label='delete'
+													onClick={handleDeleteAttachment(file)}
+												>
+													<RiDeleteBack2Fill id='attach_delete-icon' />
+												</IconButton>
+											}
+										>
+											<ListItemAvatar>
+												<Avatar>
+													<AiOutlineFile />
+												</Avatar>
+											</ListItemAvatar>
+											<ListItemText
+												sx={{
+													display: 'flex',
+													flexDirection: 'column',
+													justifyContent: 'center',
+												}}
+											>
+												<p
+													style={{
+														fontFamily: 'Poppins',
+														fontSize: '1em',
+													}}
+												>
+													{file.name}
+												</p>
+												<p
+													style={{
+														fontSize: '0.8em',
+														color: '#333',
+													}}
+												>
+													{toReadableFileSize(file.size)}
+												</p>
+											</ListItemText>
+										</ListItem>
+									))}
+								</List>
+							</div>
+						</div>
+					)}
 				</div>
 			</div>
 		</UimModalForm>

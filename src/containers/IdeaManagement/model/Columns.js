@@ -8,21 +8,8 @@ export const Columns = [
 		disableColumnMenu: true,
 		sortable: true,
 		type: 'string',
-		minWidth: 100,
+		minWidth: 180,
 		flex: 1,
-	},
-	{
-		field: 'created_by',
-		headerName: 'Author',
-		disableColumnMenu: true,
-		sortable: true,
-		width: '100%',
-		type: 'string',
-		align: 'center',
-		headerAlign: 'center',
-		minWidth: 200,
-		flex: 1,
-		renderCell: (value) => value?.row?.created_by ?? value?.row?.email,
 	},
 	{
 		field: 'tags',
@@ -33,7 +20,7 @@ export const Columns = [
 		headerAlign: 'center',
 		type: 'string',
 		width: '100%',
-		minWidth: 200,
+		minWidth: 320,
 		flex: 1,
 		renderCell: (value) =>
 			value?.row?.tags?.map((V, i) => (
@@ -42,10 +29,35 @@ export const Columns = [
 						margin: '0 2px',
 						display: 'flex',
 						flexWrap: 'wrap',
-					}}>
+					}}
+				>
 					<Chip variant='outlined' size='large' label={V} />
 				</div>
 			)),
+	},
+	{
+		field: 'views',
+		headerName: 'Views',
+		disableColumnMenu: true,
+		sortable: true,
+		type: 'number',
+		align: 'center',
+		headerAlign: 'center',
+		minWidth: 150,
+	},
+	{
+		field: 'created_by',
+		headerName: 'Author',
+		disableColumnMenu: true,
+		sortable: true,
+		width: '100%',
+		type: 'string',
+		align: 'center',
+		headerAlign: 'center',
+		minWidth: 170,
+		maxWidth: 200,
+		flex: 1,
+		renderCell: (value) => value?.row?.created_by ?? value?.row?.email,
 	},
 	{
 		field: 'created_date',
