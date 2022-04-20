@@ -33,6 +33,8 @@ import moment from 'moment';
 import { useContext, useEffect, useState } from 'react';
 import { BiCommentDetail } from 'react-icons/bi';
 import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
+import { GrFormView } from 'react-icons/gr';
+
 import { Link as RouterLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -60,6 +62,7 @@ export default function Homepage(props) {
 
 	const [pagination, setPagination] = useState({ pageSize: 5, page: 1 });
 	const [showMore, setShowMore] = useState([]);
+
 	const [status, setStatus] = useState({
 		visibleModal: false,
 		action: 'update',
@@ -70,7 +73,9 @@ export default function Homepage(props) {
 
 	const onShowMoreContent = async (item, index) => {
 		!showMore[index] &&
-			(await axioc.post(`${API_PATHS.SHARED.VIEW}/${item.id}`).catch(() => {}));
+			(await axioc
+				.post(`${API_PATHS.SHARED.VIEW}/${item.id}`)
+				.catch(() => {}));
 
 		const newShowMore = [...showMore];
 		newShowMore[index] = !newShowMore[index];
@@ -153,8 +158,7 @@ export default function Homepage(props) {
 							style={{
 								textTransform: 'none',
 								textUnderlineOffset: 'none',
-							}}
-						>
+							}}>
 							Created successful, click here to see details !!
 						</RouterLink>,
 					);
@@ -166,12 +170,15 @@ export default function Homepage(props) {
 					.then(() => sleep(700))
 					.then((res) => {
 						setStatus({ ...status, visibleModal: false });
-						const indexData = data.findIndex((x) => x.id === value.id);
+						const indexData = data.findIndex(
+							(x) => x.id === value.id,
+						);
 						data[indexData] = res?.data?.result;
 						setData((oldData) => [...oldData, data]);
 
 						toast.info(
-							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
+							<RouterLink
+								to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
 								Idea details:{' '}
 								{() => {
 									const title = res?.data?.result?.title;
@@ -189,13 +196,17 @@ export default function Homepage(props) {
 			),
 		delete: (id) =>
 			toast.promise(
-				axioc.delete(`${API_PATHS.SHARED.IDEA}/${id}`).then(() => sleep(700)),
+				axioc
+					.delete(`${API_PATHS.SHARED.IDEA}/${id}`)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.UNEXPECTED,
 					success: {
 						render() {
-							const indexData = data.findIndex((_) => _.id === id);
+							const indexData = data.findIndex(
+								(_) => _.id === id,
+							);
 							data.splice(indexData, 1);
 							setData((oldData) => [...oldData, data]);
 							loadData();
@@ -216,8 +227,7 @@ export default function Homepage(props) {
 						fontSize: '0.5em',
 						color: '#999',
 						opacity: '0.7',
-					}}
-				>
+					}}>
 					Welcome to the UIM &#10084;&#65039;
 				</i>
 			</div>
@@ -261,23 +271,20 @@ export default function Homepage(props) {
 									textDecoration: 'none',
 									color: 'initial',
 									cursor: 'pointer',
-								}}
-							>
+								}}>
 								<RouterLink
 									to={`${URL_PATHS.SUB}/${item?.submission?.id}`}
 									style={{
 										textDecoration: 'none',
 										cursor: 'pointer',
 										color: 'initial',
-									}}
-								>
+									}}>
 									<span
 										style={{
 											textDecoration: 'none',
 											color: 'initial',
 											fontSize: '12px',
-										}}
-									>
+										}}>
 										in&nbsp;{item?.submission?.title}
 										&nbsp;submission
 									</span>
@@ -288,37 +295,52 @@ export default function Homepage(props) {
 				) : (
 					'September 14, 2016'
 				)
-			}
-		></CardHeader>
+			}></CardHeader>
 	);
 
 	const renderIdeaTags = (item) => (
-		<Stack
-			direction='row'
-			spacing={1}
-			sx={{
-				margin: '10px 15px',
-				opacity: '0.8',
-				display: 'flex',
-				flexWrap: 'wrap',
-				justifyContent: 'flex-start',
-				gap: 1,
-			}}
-		>
-			{item?.tags?.map((tag, index) => (
-				<Chip
-					key={item.title + tag.name + index}
-					icon={<TagIcon />}
-					label={tag}
-					size='small'
-					variant='outlined'
-					sx={{
-						fontSize: '0.8em',
-						color: '#333',
-					}}
-				/>
-			))}
-		</Stack>
+		<>
+			<Stack
+				direction='row'
+				spacing={1}
+				sx={{
+					margin: '10px 15px',
+					opacity: '0.8',
+					display: 'flex',
+					flexWrap: 'wrap',
+					justifyContent: 'flex-start',
+					gap: 1,
+				}}>
+				{item?.tags?.map((tag, index) => (
+					<Chip
+						key={item.title + tag.name + index}
+						icon={<TagIcon />}
+						label={tag}
+						size='small'
+						variant='outlined'
+						sx={{
+							fontSize: '0.8em',
+							color: '#333',
+						}}
+					/>
+				))}
+			</Stack>
+		</>
+	);
+
+	const renderAttachImg = (item, index) => (
+		<div className='gridimg-collection_attach'>
+			<img
+				// src={`https://drive.google.com//uc?export=view&id=${id}`}
+				alt='google'
+				className='idea-attachment_img'
+			/>
+		</div>
+	);
+	const renderViewIdea = (item, index) => (
+		<div className='view-idea'>
+			<GrFormView /> <span className='view-idea_count'>150</span>
+		</div>
 	);
 
 	const renderCardContent = (item, index) => {
@@ -334,8 +356,7 @@ export default function Homepage(props) {
 							lineHeight: '44px',
 							fontWeight: '600',
 							cursor: 'pointer',
-						}}
-					>
+						}}>
 						{item?.title}
 					</RouterLink>
 				</Tippy>
@@ -345,8 +366,7 @@ export default function Homepage(props) {
 						<Typography
 							variant='body2'
 							color='text.secondary '
-							className={showMore[index] || 'multiLineEllipsis'}
-						>
+							className={showMore[index] || 'multiLineEllipsis'}>
 							{item?.content}
 						</Typography>
 					</div>
@@ -365,8 +385,7 @@ export default function Homepage(props) {
 							backgroundColor: '#fff',
 							color: '#333',
 						},
-					}}
-				>
+					}}>
 					{showMore[index] ? 'Show less' : 'Show more'}
 				</Button>
 			</CardContent>
@@ -383,8 +402,7 @@ export default function Homepage(props) {
 					alignItems: 'center',
 					width: '100%',
 					fontSize: 12,
-				}}
-			>
+				}}>
 				<Button
 					className='idea_action'
 					fullWidth
@@ -399,13 +417,15 @@ export default function Homepage(props) {
 					startIcon={
 						<IoMdArrowRoundUp
 							style={{
-								color: item.requester_is_like === true ? '#626ef0' : '',
+								color:
+									item.requester_is_like === true
+										? '#626ef0'
+										: '',
 							}}
 						/>
 					}
 					color='inherit'
-					size='large'
-				>
+					size='large'>
 					{`${item.likes}`}
 				</Button>
 				<Button
@@ -423,13 +443,15 @@ export default function Homepage(props) {
 					startIcon={
 						<IoMdArrowRoundDown
 							style={{
-								color: item.requester_is_like === false ? '#626ef0' : '',
+								color:
+									item.requester_is_like === false
+										? '#626ef0'
+										: '',
 							}}
 						/>
 					}
 					color={'inherit'}
-					size={'large'}
-				>
+					size={'large'}>
 					{`${item.dislikes}`}
 				</Button>
 				<ExpandMore
@@ -442,8 +464,7 @@ export default function Homepage(props) {
 					color={'inherit'}
 					size={'large'}
 					startIcon={<BiCommentDetail />}
-					aria-label='show more'
-				>
+					aria-label='show more'>
 					{item.comments_count}
 				</ExpandMore>
 			</CardActions>
@@ -468,11 +489,9 @@ export default function Homepage(props) {
 						marginTop: 30,
 						maxWidth: postsFullwidth ? undefined : '70rem',
 						marginInline: 'auto',
-					}}
-				>
+					}}>
 					{renderCardHeader(item)}
 					{renderCardContent(item, index)}
-
 					{item?.attachments && item?.attachments?.length !== 0 ? (
 						item?.attachments?.map((file) => (
 							<Card sx={{ fontSize: '0.75em' }} elevation={0}>
@@ -485,8 +504,10 @@ export default function Homepage(props) {
 					) : (
 						<></>
 					)}
-
 					{renderIdeaTags(item)}
+					{renderAttachImg(item, index)}
+					{renderViewIdea(item, index)}
+
 					{renderActionButton(item, index)}
 					{renderComment(item, index)}
 				</Card>
@@ -505,7 +526,10 @@ export default function Homepage(props) {
 	const renderFooter = () =>
 		!(_.size(data) === postTotal || _.size(data) > postTotal) ? (
 			<div style={{ marginTop: 15, textAlign: 'center' }}>
-				<Button size='small' variant='outlined' onClick={() => onShowMore()}>
+				<Button
+					size='small'
+					variant='outlined'
+					onClick={() => onShowMore()}>
 					More
 				</Button>
 			</div>
