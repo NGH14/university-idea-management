@@ -21,13 +21,13 @@ import {
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Tippy from '@tippyjs/react';
-import imgPlaceholder from 'assets/images/placeholder.jpg';
 import { axioc, sleep, toastMessages } from 'common';
 import { stringToSvg } from 'common/DiceBear';
 import { API_PATHS, URL_PATHS } from 'common/env';
 import FloatButton from 'components/Custom/FloatButton';
 import CommentIdea from 'components/Idea/CommentIdea';
 import ModalIdea from 'components/Idea/ModalIdea';
+import { UimImage } from 'components/Uim';
 import { UserContext } from 'context/AppContext';
 import _ from 'lodash';
 import moment from 'moment';
@@ -49,11 +49,7 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function Homepage(props) {
-	const {
-		submissionId: specificSubId,
-		withHeader = true,
-		postsFullwidth = false,
-	} = props;
+	const { submission: specificSub, withHeader = true, postsFullwidth = false } = props;
 
 	const [data, setData] = useState([]);
 	const { state } = useContext(UserContext);
@@ -73,7 +69,7 @@ export default function Homepage(props) {
 
 	const onShowMoreContent = async (item, index) => {
 		!showMore[index] &&
-			(await axioc.post(`${API_PATHS.SHARED.VIEW}/${item.id}`).catch(() => {}));
+			(await axioc.post(`${API_PATHS.SHARED.VIEW}/${item?.id}`).catch(() => {}));
 
 		const newShowMore = [...showMore];
 		newShowMore[index] = !newShowMore[index];
@@ -85,7 +81,7 @@ export default function Homepage(props) {
 			.get(API_PATHS.SHARED.IDEA + '/table/list', {
 				params: {
 					...pagination,
-					submission_id: specificSubId,
+					submission_id: specificSub?.id,
 				},
 			})
 			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
@@ -111,7 +107,7 @@ export default function Homepage(props) {
 	const handleOnLikeness = async (item, ideaIndex, isLike) => {
 		if (item.requester_is_like == null)
 			await axioc
-				.post(`${API_PATHS.SHARED.LIKE}/${item.id}`, {
+				.post(`${API_PATHS.SHARED.LIKE}/${item?.id}`, {
 					is_like: isLike,
 				})
 				.then(async (res) => {
@@ -125,7 +121,7 @@ export default function Homepage(props) {
 
 		if (item.requester_is_like !== isLike)
 			await axioc
-				.put(`${API_PATHS.SHARED.LIKE}/${item.id}`, {
+				.put(`${API_PATHS.SHARED.LIKE}/${item?.id}`, {
 					is_like: isLike,
 				})
 				.then(async (res) => {
@@ -340,20 +336,17 @@ export default function Homepage(props) {
 
 					if (!exs.includes(fileEx[fileEx?.length - 1])) return <></>;
 					return (
-						<img
+						<UimImage
 							alt={_.name}
-							src={`https://drive.google.com//uc?export=view&id=${_.file_id}`}
 							className='idea-attachment_img'
-							onError={({ currentTarget }) => {
-								currentTarget.onerror = null;
-								currentTarget.src = imgPlaceholder;
-							}}
+							src={`https://drive.google.com//uc?export=view&id=${_.file_id}`}
 						/>
 					);
 				})}
 			</div>
 		);
 	};
+
 	const renderViewIdea = (item) => (
 		<div className='view-idea'>
 			<GrFormView /> <span className='view-idea_count'>{item?.views}</span>
@@ -365,7 +358,7 @@ export default function Homepage(props) {
 			<CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
 				<Tippy content={'Detail idea'}>
 					<RouterLink
-						to={`${URL_PATHS.IDEA}/${item.id}`}
+						to={`${URL_PATHS.IDEA}/${item?.id}`}
 						style={{
 							textDecoration: 'none',
 							color: 'rgba(0, 1, 17, 0.8)',
@@ -478,7 +471,7 @@ export default function Homepage(props) {
 					expand={comments[index]}
 					onClick={() => handleExpandClick(index)}
 					style={{ marginRight: 20, marginLeft: 20 }}
-					aria-expanded={comments[item.id]}
+					aria-expanded={comments[item?.id]}
 					color={'inherit'}
 					size={'large'}
 					startIcon={<BiCommentDetail />}
@@ -562,6 +555,17 @@ export default function Homepage(props) {
 			{renderFooter()}
 
 			<FloatButton
+				icon={<Add />}
+				size='medium'
+				color='primary'
+				tippy={{
+					placement: 'left',
+					content:
+						specificSub?.is_fully_close != null
+							? "Submission's close"
+							: 'Submit new idea',
+				}}
+				disabled={specificSub?.is_fully_close != null}
 				onClick={() =>
 					setStatus({
 						...status,
@@ -569,11 +573,6 @@ export default function Homepage(props) {
 						action: 'create',
 					})
 				}
-				tippy={{ placement: 'left' }}
-				size='medium'
-				color='primary'
-				ariaLabel='submit new idea'
-				icon={<Add />}
 			/>
 
 			{status.visibleModal && renderModal()}

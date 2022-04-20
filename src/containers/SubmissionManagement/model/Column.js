@@ -1,3 +1,8 @@
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import Tippy from '@tippyjs/react';
+
 import moment from 'moment';
 
 export const Column = [
@@ -9,6 +14,7 @@ export const Column = [
 		width: '100%',
 		type: 'string',
 		minWidth: 200,
+		maxWidth: 600,
 		flex: 1,
 	},
 	{
@@ -19,9 +25,10 @@ export const Column = [
 		headerAlign: 'center',
 		sortable: true,
 		type: 'string',
-		width: 300,
-		minWidth: 300,
-		maxWidth: 500,
+		width: '100%',
+		minWidth: 200,
+		maxWidth: 300,
+		flex: 1,
 	},
 	{
 		field: 'initial_date',
@@ -30,14 +37,12 @@ export const Column = [
 		sortable: true,
 		align: 'center',
 		headerAlign: 'center',
-		width: 170,
+		type: 'date',
+		width: '100%',
 		minWidth: 130,
 		maxWidth: 200,
-		type: 'date',
-		renderCell: (value) =>
-			value?.row?.initial_date
-				? moment(value?.row?.initial_date).format('DD/MM/YYYY')
-				: '-',
+		flex: 1,
+		renderCell: (value) => moment(value?.row?.initial_date).format('DD/MM/YYYY'),
 	},
 	{
 		field: 'final_date',
@@ -47,24 +52,44 @@ export const Column = [
 		align: 'center',
 		headerAlign: 'center',
 		type: 'date',
-		width: 170,
+		width: '100%',
 		minWidth: 130,
 		maxWidth: 200,
-		renderCell: (value) =>
-			value?.row?.final_date
-				? moment(value?.row?.final_date).format('DD/MM/YYYY')
-				: '-',
+		flex: 1,
+		renderCell: (value) => moment(value?.row?.final_date).format('DD/MM/YYYY'),
 	},
 	{
-		field: 'is_active',
+		field: 'is_fully_close',
 		headerName: 'Status',
 		disableColumnMenu: true,
 		align: 'center',
 		headerAlign: 'center',
 		sortable: false,
-		type: 'boolean',
-		width: 80,
-		minWidth: 70,
-		maxWidth: 200,
+		minWidth: 80,
+		renderCell: (value) =>
+			value?.row?.is_fully_close == null ? (
+				<Tippy content='active' placement='left'>
+					<CheckIcon />
+				</Tippy>
+			) : !!value?.row?.is_fully_close ? (
+				<Tippy content='final closed' placement='left'>
+					<CloseIcon />
+				</Tippy>
+			) : (
+				<Tippy content='inital closed' placement='left'>
+					<MoreHorizIcon />
+				</Tippy>
+			),
+	},
+	{
+		field: 'created_date',
+		headerName: 'Create At',
+		disableColumnMenu: true,
+		sortable: true,
+		align: 'center',
+		headerAlign: 'center',
+		minWidth: 170,
+		type: 'date',
+		renderCell: (value) => moment(value?.row?.created_date).format('DD/MM/YYYY'),
 	},
 ];

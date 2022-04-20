@@ -75,21 +75,13 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 	};
 
 	const renderText = () => {
-		let textFrom = `${newFilter.display[0]}/${moment(timeKey).format(
-			'MM/YYYY',
-		)}`;
-		let textTo = `${newFilter.display[1]}/${moment(timeKey).format(
-			'MM/YYYY',
-		)}`;
+		let textFrom = `${newFilter.display[0]}/${moment(timeKey).format('MM/YYYY')}`;
+		let textTo = `${newFilter.display[1]}/${moment(timeKey).format('MM/YYYY')}`;
 		if (newFilter.display[0] < 10) {
-			textFrom = `0${newFilter.display[0]}/${moment(timeKey).format(
-				'MM/YYYY',
-			)}`;
+			textFrom = `0${newFilter.display[0]}/${moment(timeKey).format('MM/YYYY')}`;
 		}
 		if (newFilter.display[1] < 10) {
-			textTo = `0${newFilter.display[1]}/${moment(timeKey).format(
-				'MM/YYYY',
-			)}`;
+			textTo = `0${newFilter.display[1]}/${moment(timeKey).format('MM/YYYY')}`;
 		}
 		return `${textFrom} to ${textTo}`;
 	};
@@ -97,9 +89,9 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 	const onMonthYearIdeaInfoChange = async (value) => {
 		axioc
 			.get(
-				`dashboard/activities?month=${moment(value).format(
-					'MM',
-				)}&year=${moment(value).format('YYYY')}`,
+				`dashboard/activities?month=${moment(value).format('MM')}&year=${moment(
+					value,
+				).format('YYYY')}`,
 			)
 			.then((res) => {
 				let arrDate = _.cloneDeep(res?.data?.result);
@@ -108,7 +100,6 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 					if (index + 1 >= 1 && index + 1 <= 15) {
 						x.date = moment(x.date).format('DD/MM/YYYY');
 						newArray.push(x);
-						console.log(newArray);
 					}
 				});
 				setNewFilter({
@@ -131,7 +122,8 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 						alignItems: 'center',
 						gap: 10,
 						fontFamily: 'Poppins',
-					}}>
+					}}
+				>
 					<div style={{ marginRight: 20, padding: 0, width: 150 }}>
 						<DatePicker
 							inputFormat='MM/yyyy'
@@ -161,14 +153,15 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 								alignItems: 'center',
 								gap: 3,
 								marginBlock: '20px',
-							}}>
+							}}
+						>
 							<Typography
 								id='input-slider'
 								gutterBottom
 								textAlign={'left'}
-								style={{ margin: 0 }}>
-								Day: {newFilter.display[0]} -
-								{newFilter.display[1]}
+								style={{ margin: 0 }}
+							>
+								Day: {newFilter.display[0]} -{newFilter.display[1]}
 							</Typography>
 							<Slider
 								aria-label='Small steps'
@@ -182,9 +175,7 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 								min={1}
 								max={new Date(
 									newFilter.timeKey.getFullYear(),
-									_.toNumber(
-										moment(newFilter.timeKey).format('MM'),
-									),
+									_.toNumber(moment(newFilter.timeKey).format('MM')),
 									0,
 								).getDate()}
 								step={1}
@@ -205,7 +196,8 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 					width: '600px',
 					minWidth: '350px',
 					margin: 'auto',
-				}}>
+				}}
+			>
 				<Paper elevation={0}>
 					<div
 						style={{
@@ -217,13 +209,15 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 							paddingTop: 10,
 							paddingRight: 10,
 							marginBottom: 6,
-						}}>
+						}}
+					>
 						{renderPickerMonthYearInfoIdea()}
 					</div>
 					<Chart
 						className={'chart'}
 						palette={'Soft Pastel'}
-						dataSource={newData}>
+						dataSource={newData}
+					>
 						<CommonSeriesSettings
 							argumentField={'date'}
 							type={'stackedBar'}
@@ -241,7 +235,8 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 						<Margin bottom={20} />
 						<ArgumentAxis
 							valueMarginsEnabled={false}
-							discreteAxisDivisionMode={'crossLabels'}>
+							discreteAxisDivisionMode={'crossLabels'}
+						>
 							<Grid visible={true} />
 						</ArgumentAxis>
 						<Legend

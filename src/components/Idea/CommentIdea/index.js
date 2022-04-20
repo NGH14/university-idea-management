@@ -29,7 +29,6 @@ function CommentIdea({ data }) {
 	useEffect(() => loadData(), []);
 
 	const loadData = async (minItems) => {
-		console.log(123123123, data);
 		await axioc
 			.get(`${API_PATHS.SHARED.COMMENT}/list/${data.id}`, {
 				params: { minItems },

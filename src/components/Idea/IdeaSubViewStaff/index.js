@@ -520,8 +520,6 @@ function IdeaSubViewStaff({ ideaData, subData, paginationIdea }) {
 					onChange={(value) =>
 						onChangePage(_.toNumber(_.get(value.target, 'innerText')))
 					}
-					// rowsPerPage={(value)=>console.log(value, 1)}
-					// onRowsPerPageChange={(value)=>console.log(value, 2)}
 				/>
 			</div>
 		);

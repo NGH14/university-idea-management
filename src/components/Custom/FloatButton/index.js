@@ -3,12 +3,13 @@ import Tippy from '@tippyjs/react';
 import React from 'react';
 
 export default function FloatButton({
+	tippy: { placement = 'top', content },
 	onClick: handleClick,
-	ariaLabel,
+	ariaLabel = content,
+	disabled = false,
 	icon,
 	color,
 	size,
-	tippy: { placement = 'top', content = ariaLabel },
 }) {
 	return (
 		<Zoom in={true}>
@@ -18,7 +19,12 @@ export default function FloatButton({
 					role='presentation'
 					sx={{ position: 'fixed', bottom: 30, right: 30 }}
 				>
-					<Fab color={color} size={size} aria-label={ariaLabel}>
+					<Fab
+						size={size}
+						color={color}
+						disabled={disabled}
+						aria-label={ariaLabel}
+					>
 						{icon}
 					</Fab>
 				</Box>

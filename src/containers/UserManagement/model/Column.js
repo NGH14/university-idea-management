@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const Columns = [
 	{
 		field: 'full_name',
@@ -57,5 +59,16 @@ export const Columns = [
 		renderCell: (value) => (
 			<div style={{ textTransform: 'capitalize' }}>{value?.row?.role}</div>
 		),
+	},
+	{
+		field: 'created_date',
+		headerName: 'Create At',
+		disableColumnMenu: true,
+		sortable: true,
+		align: 'center',
+		headerAlign: 'center',
+		minWidth: 170,
+		type: 'date',
+		renderCell: (value) => moment(value?.row?.created_date).format('DD/MM/YYYY'),
 	},
 ];

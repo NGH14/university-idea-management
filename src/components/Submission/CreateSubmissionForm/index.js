@@ -193,9 +193,11 @@ function CreateSubmissionForm(props) {
 							onBlur={formik.handleBlur}
 							value={dataDateRangePicker}
 							onChange={(newValue) => setDataDateRangePicker(newValue)}
-							renderInput={(startProps, endProps) =>
-								renderFormDate(startProps, endProps)
-							}
+							renderInput={(startProps, endProps) => (
+								<React.Fragment>
+									{renderFormDate(startProps, endProps)}
+								</React.Fragment>
+							)}
 						/>
 					</LocalizationProvider>
 				</div>

@@ -1,5 +1,7 @@
 import '../../containers/UserManagement/style.css';
 
+import moment from 'moment';
+
 import { UserContext } from 'context/AppContext';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Button from '@mui/material/Button';
@@ -126,7 +128,16 @@ export default function Submission() {
 							fontSize: 22,
 						}}
 					>
-						submission details
+						submission details{' '}
+						<span>
+							{data?.is_fully_close !== true
+								? data?.is_fully_close === false
+									? `[pass initial deadline (${moment(
+											data?.initial_date,
+									  ).format('DD/MM/YYYY')})]`
+									: '[fully closed]'
+								: ''}
+						</span>
 					</legend>
 					{state?.dataUser?.role === ROLES.ADMIN ||
 					state?.dataUser?.role === ROLES.MANAGER ? (
@@ -169,7 +180,7 @@ export default function Submission() {
 				>
 					List Ideas
 				</legend>
-				<Homepage postsFullwidth submissionId={data?.id} withHeader={false} />
+				<Homepage postsFullwidth submission={data} withHeader={false} />
 			</fieldset>
 		);
 	};

@@ -67,9 +67,9 @@ function IdeaPopularChart({ timeKey, data }) {
 	const onMonthYearChange = async (value) =>
 		await axioc
 			.get(
-				`dashboard/top-ideas?month=${moment(value).format(
-					'MM',
-				)}&year=${moment(value).format('YYYY')}`,
+				`dashboard/top-ideas?month=${moment(value).format('MM')}&year=${moment(
+					value,
+				).format('YYYY')}`,
 			)
 			.then((res) => {
 				const newArray = [];
@@ -88,7 +88,6 @@ function IdeaPopularChart({ timeKey, data }) {
 				} else {
 					newArray.push(dataNull);
 				}
-				console.log(newArray);
 				setNewFilter(new Date(value));
 				setNewData(newArray);
 			});
@@ -106,7 +105,8 @@ function IdeaPopularChart({ timeKey, data }) {
 						marginInline: 10,
 						marginBlock: '20px',
 						fontFamily: 'Poppins',
-					}}>
+					}}
+				>
 					<DatePicker
 						inputFormat='MM/yyyy'
 						views={['month']}
@@ -116,11 +116,7 @@ function IdeaPopularChart({ timeKey, data }) {
 							onMonthYearChange(value);
 						}}
 						renderInput={(params) => (
-							<TextField
-								variant='standard'
-								{...params}
-								helperText={null}
-							/>
+							<TextField variant='standard' {...params} helperText={null} />
 						)}
 					/>
 				</div>
@@ -135,7 +131,8 @@ function IdeaPopularChart({ timeKey, data }) {
 					maxwidth: '100%',
 					width: '450px',
 					minWidth: '350px',
-				}}>
+				}}
+			>
 				<Paper elevation={0}>
 					<div
 						style={{
@@ -148,7 +145,8 @@ function IdeaPopularChart({ timeKey, data }) {
 							paddingTop: 10,
 							marginBottom: 10,
 							maxHeight: '300px',
-						}}>
+						}}
+					>
 						{renderPickerMonthYearIdea()}
 					</div>
 					<PieChart
@@ -157,11 +155,13 @@ function IdeaPopularChart({ timeKey, data }) {
 						palette={'Soft Pastel'}
 						// onClick={this.legendClickHandler}
 						onPointClick={(e) => pointClickHandler(e)}
-						onLegendClick={(e) => legendClickHandler(e)}>
+						onLegendClick={(e) => legendClickHandler(e)}
+					>
 						<Title
 							text={`${_.toUpper(
 								'Top idea have the most comment in',
-							)} ${moment(newFilter).format('MM/YYYY')} `}>
+							)} ${moment(newFilter).format('MM/YYYY')} `}
+						>
 							<Font color='#000' size='20' weight='700' />
 						</Title>
 						<Legend
@@ -172,7 +172,8 @@ function IdeaPopularChart({ timeKey, data }) {
 						<Series
 							argumentField={'title'}
 							valueField={'comment_number'}
-							color={newData[0]?.null ? 'darkGray' : ''}>
+							color={newData[0]?.null ? 'darkGray' : ''}
+						>
 							<Label visible={true} wordWrap={true}>
 								<Connector visible={true} width={1} />
 							</Label>

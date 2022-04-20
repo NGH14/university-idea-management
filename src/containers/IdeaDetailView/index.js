@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Add } from '@mui/icons-material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import TagIcon from '@mui/icons-material/Tag';
 import {
@@ -20,16 +20,17 @@ import {
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Tippy from '@tippyjs/react';
+import imgPlaceholder from 'assets/images/placeholder.jpg';
 import { axioc, sleep, toastMessages } from 'common';
 import { stringToSvg } from 'common/DiceBear';
 import { API_PATHS, URL_PATHS } from 'common/env';
 import FloatButton from 'components/Custom/FloatButton';
 import CommentIdea from 'components/Idea/CommentIdea';
 import ModalIdea from 'components/Idea/ModalIdea';
-import _ from 'lodash';
 import moment from 'moment';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BiCommentDetail } from 'react-icons/bi';
+import { GrFormView } from 'react-icons/gr';
 import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -352,6 +353,43 @@ export default function IdeaDetailView() {
 		);
 	};
 
+	const renderAttachImg = () => {
+		return (
+			<div
+				className='gridimg-collection_attach'
+				style={{
+					gridTemplateColumns: `repeat(${
+						data?.attachments?.length >= 3 ? 2 : 1
+					}, 1fr)`,
+				}}
+			>
+				{data?.attachments?.map((_) => {
+					const fileEx = _.name.split('.');
+					const exs = ['jpg', 'png', 'gif'];
+
+					if (!exs.includes(fileEx[fileEx?.length - 1])) return <></>;
+					return (
+						<img
+							alt={_.name}
+							src={`https://drive.google.com//uc?export=view&id=${_.file_id}`}
+							className='idea-attachment_img'
+							onError={({ currentTarget }) => {
+								currentTarget.onerror = null;
+								currentTarget.src = imgPlaceholder;
+							}}
+						/>
+					);
+				})}
+			</div>
+		);
+	};
+
+	const renderViewIdea = () => (
+		<div className='view-idea'>
+			<GrFormView /> <span className='view-idea_count'>{data?.views}</span>
+		</div>
+	);
+
 	const ContentIdea = () =>
 		!status.loading ? (
 			<Card
@@ -381,6 +419,8 @@ export default function IdeaDetailView() {
 				)}
 
 				{renderIdeaTags()}
+				{renderAttachImg()}
+				{renderViewIdea()}
 
 				<ActionButton />
 
@@ -415,6 +455,7 @@ export default function IdeaDetailView() {
 			</div>
 
 			<ContentIdea />
+
 			<FloatButton
 				onClick={() =>
 					setStatus({

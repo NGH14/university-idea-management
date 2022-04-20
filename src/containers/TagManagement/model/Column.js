@@ -36,4 +36,15 @@ export const Column = [
 				? moment(value?.row?.modified_at).format('DD/MM/YYYY')
 				: '-',
 	},
+	{
+		field: 'created_date',
+		headerName: 'Create At',
+		disableColumnMenu: true,
+		sortable: true,
+		align: 'center',
+		headerAlign: 'center',
+		minWidth: 170,
+		type: 'date',
+		renderCell: (value) => moment(value?.row?.created_date).format('DD/MM/YYYY'),
+	},
 ];

@@ -45,8 +45,6 @@ export const Column = [
 		minWidth: 170,
 		type: 'date',
 		renderCell: (value) =>
-			value?.row?.created_date
-				? moment(value?.row?.created_date).format('DD/MM/YYYY hh:mm tt')
-				: '-',
+			moment(value?.row?.created_date).format('DD/MM/YYYY hh:mm tt'),
 	},
 ];

@@ -68,9 +68,6 @@ export const Columns = [
 		headerAlign: 'center',
 		minWidth: 170,
 		type: 'date',
-		renderCell: (value) =>
-			value?.row?.created_date
-				? moment(value?.row?.created_date).format('DD/MM/YYYY')
-				: '-',
+		renderCell: (value) => moment(value?.row?.created_date).format('DD/MM/YYYY'),
 	},
 ];
