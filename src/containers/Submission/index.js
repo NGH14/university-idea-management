@@ -99,8 +99,7 @@ export default function Submission() {
 					variant='text'
 					style={{ marginRight: 15 }}
 					startIcon={<ArrowBackIcon />}
-					onClick={() => navigate(-1)}
-				>
+					onClick={() => navigate(-1)}>
 					Back
 				</Button>
 			</div>
@@ -113,24 +112,21 @@ export default function Submission() {
 				style={{
 					borderRadius: 8,
 					textTransform: 'capitalize',
-				}}
-			>
+				}}>
 				<div
 					style={{
 						display: 'flex',
 						justifyContent: 'space-between',
 						marginBlock: '15px',
-					}}
-				>
+					}}>
 					<legend
 						style={{
 							fontWeight: 'bold',
 							fontSize: 22,
-						}}
-					>
+						}}>
 						submission details{' '}
 						<span>
-							{data?.is_fully_close !== true
+							{data?.is_fully_close !== null
 								? data?.is_fully_close === false
 									? `[pass initial deadline (${moment(
 											data?.initial_date,
@@ -144,8 +140,7 @@ export default function Submission() {
 						<Button
 							variant='contained'
 							endIcon={<BiPencil />}
-							onClick={() => onOpenModal('update')}
-						>
+							onClick={() => onOpenModal('update')}>
 							Edit
 						</Button>
 					) : (
@@ -168,16 +163,14 @@ export default function Submission() {
 					borderRight: 'none',
 					borderLeft: 'none',
 					borderBottom: 'none',
-				}}
-			>
+				}}>
 				<legend
 					style={{
 						fontWeight: 'bold',
 						padding: 8,
 						fontSize: 22,
 						display: 'flex',
-					}}
-				>
+					}}>
 					List Ideas
 				</legend>
 				<Homepage postsFullwidth submission={data} withHeader={false} />

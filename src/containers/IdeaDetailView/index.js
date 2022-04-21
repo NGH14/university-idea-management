@@ -113,12 +113,15 @@ export default function IdeaDetailView() {
 					.then(() => sleep(700))
 					.then((res) => {
 						setStatus({ ...status, visibleModal: false });
-						const indexData = data?.findIndex((x) => x?.id === value?.id);
+						const indexData = data?.findIndex(
+							(x) => x?.id === value?.id,
+						);
 						data[indexData] = res?.data?.result;
 						setData((oldData) => [...oldData, data]);
 
 						toast.info(
-							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
+							<RouterLink
+								to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
 								Idea details:' '
 								{() => {
 									const title = res?.data?.result?.title;
@@ -136,13 +139,17 @@ export default function IdeaDetailView() {
 			),
 		delete: (id) =>
 			toast.promise(
-				axioc.delete(`${API_PATHS.SHARED.IDEA}/${id}`).then(() => sleep(700)),
+				axioc
+					.delete(`${API_PATHS.SHARED.IDEA}/${id}`)
+					.then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.UNEXPECTED,
 					success: {
 						render() {
-							const indexData = data?.findIndex((_) => _?.id === id);
+							const indexData = data?.findIndex(
+								(_) => _?.id === id,
+							);
 							data?.splice(indexData, 1);
 							setData((oldData) => [...oldData, data]);
 							loadData();
@@ -188,23 +195,20 @@ export default function IdeaDetailView() {
 									textDecoration: 'none',
 									color: 'initial',
 									cursor: 'pointer',
-								}}
-							>
+								}}>
 								<RouterLink
 									to={`${URL_PATHS.SUB}/${data?.submission?.id}`}
 									style={{
 										textDecoration: 'none',
 										cursor: 'pointer',
 										color: 'initial',
-									}}
-								>
+									}}>
 									<span
 										style={{
 											textDecoration: 'none',
 											color: 'rgba(0, 0, 0, 0.6)',
 											fontSize: '12px',
-										}}
-									>
+										}}>
 										in&nbsp;{data?.submission?.title}
 										&nbsp;submission
 									</span>
@@ -215,8 +219,7 @@ export default function IdeaDetailView() {
 				) : (
 					'September 14, 2016'
 				)
-			}
-		></CardHeader>
+			}></CardHeader>
 	);
 
 	const renderIdeaTags = () => (
@@ -230,8 +233,7 @@ export default function IdeaDetailView() {
 				flexWrap: 'wrap',
 				justifyContent: 'flex-start',
 				gap: 1,
-			}}
-		>
+			}}>
 			{data?.tags?.map((tag, index) => (
 				<Chip
 					sx={{
@@ -258,16 +260,14 @@ export default function IdeaDetailView() {
 						fontSize: '1.2rem',
 						lineHeight: '44px',
 						fontWeight: '600',
-					}}
-				>
+					}}>
 					{data?.title}
 				</span>
 
 				<Typography
 					variant='body2'
 					color='text.secondary '
-					style={{ whiteSpace: 'pre-line' }}
-				>
+					style={{ whiteSpace: 'pre-line' }}>
 					{data?.content}
 				</Typography>
 			</CardContent>
@@ -284,25 +284,28 @@ export default function IdeaDetailView() {
 					alignItems: 'center',
 					width: '100%',
 					fontSize: 12,
-				}}
-			>
+				}}>
 				<Button
 					className='idea_action'
 					fullWidth
 					aria-label='up vote'
 					onClick={() =>
-						handleOnLikeness(data?.requester_is_like === true ? null : true)
+						handleOnLikeness(
+							data?.requester_is_like === true ? null : true,
+						)
 					}
 					startIcon={
 						<IoMdArrowRoundUp
 							style={{
-								color: data?.requester_is_like === true ? '#626ef0' : '',
+								color:
+									data?.requester_is_like === true
+										? '#626ef0'
+										: '',
 							}}
 						/>
 					}
 					color='inherit'
-					size='large'
-				>
+					size='large'>
 					{`${data?.likes}`}
 				</Button>
 				<Button
@@ -313,16 +316,20 @@ export default function IdeaDetailView() {
 					aria-label='down vote'
 					style={{ marginRight: 20, marginLeft: 20 }}
 					onClick={() =>
-						handleOnLikeness(data?.requester_is_like === false ? null : false)
+						handleOnLikeness(
+							data?.requester_is_like === false ? null : false,
+						)
 					}
 					startIcon={
 						<IoMdArrowRoundDown
 							style={{
-								color: data?.requester_is_like === false ? '#626ef0' : '',
+								color:
+									data?.requester_is_like === false
+										? '#626ef0'
+										: '',
 							}}
 						/>
-					}
-				>
+					}>
 					{`${data?.dislikes}`}
 				</Button>
 			</CardActions>
@@ -337,8 +344,7 @@ export default function IdeaDetailView() {
 					gridTemplateColumns: `repeat(${
 						data?.attachments?.length >= 3 ? 2 : 1
 					}, 1fr)`,
-				}}
-			>
+				}}>
 				{data?.attachments?.map((_) => {
 					const fileEx = _.name.split('.');
 					const exs = ['jpg', 'png', 'gif'];
@@ -358,7 +364,9 @@ export default function IdeaDetailView() {
 
 	const renderViewIdea = () => (
 		<div className='view-idea'>
-			<GrFormView /> <span className='view-idea_count'>{data?.views}</span>
+			<span className='view-idea_count'>
+				{data?.views} {data?.views > 1 ? 'views' : 'view'}
+			</span>
 		</div>
 	);
 
@@ -372,8 +380,7 @@ export default function IdeaDetailView() {
 					marginTop: 30,
 					maxWidth: '70rem',
 					marginInline: 'auto',
-				}}
-			>
+				}}>
 				{renderCardHeader()}
 				{renderCardContent()}
 
@@ -420,8 +427,7 @@ export default function IdeaDetailView() {
 					variant='text'
 					style={{ marginRight: 15 }}
 					startIcon={<ArrowBackIcon />}
-					onClick={() => navigate(-1)}
-				>
+					onClick={() => navigate(-1)}>
 					Back
 				</Button>
 			</div>

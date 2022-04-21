@@ -70,8 +70,7 @@ function CommentIdea({ idea }) {
 					style={{
 						padding: 5,
 						boxShadow: 'none',
-					}}
-				>
+					}}>
 					<Grid container wrap='nowrap' spacing={1}>
 						<Grid item>
 							<Avatar aria-label='avatar'>
@@ -87,31 +86,34 @@ function CommentIdea({ idea }) {
 									lineHeight: '20px',
 									borderRadius: 15,
 									padding: 10,
-								}}
-							>
-								<p
+								}}>
+								<div
 									style={{
-										textAlign: 'left',
-										fontWeight: 'bold',
-										fontSize: 13,
-										fontFamily: 'Helvetica',
-										color: 'rgba(0, 0, 0, 0.87)',
+										display: 'flex',
+										justifyItems: 'center',
 										lineHeight: '20px',
-									}}
-								>
-									{item?.user?.full_name ?? '[anonymous]'}
-									<span
+									}}>
+									<p
+										style={{
+											textAlign: 'left',
+											fontWeight: 'bold',
+											fontSize: 13,
+											fontFamily: 'Helvetica',
+											color: 'rgba(0, 0, 0, 0.87)',
+										}}>
+										{item?.user?.full_name ?? '[anonymous]'}
+									</p>
+									<p
 										style={{
 											fontFamily: 'Helvetica',
 											textAlign: 'left',
 											marginLeft: 10,
 											color: 'rgba(0,0,0,.4)',
 											fontSize: 10,
-										}}
-									>
+										}}>
 										{moment(item?.created_date).fromNow()}
-									</span>
-								</p>
+									</p>
+								</div>
 								<p
 									style={{
 										textAlign: 'left',
@@ -119,8 +121,7 @@ function CommentIdea({ idea }) {
 										color: 'rgba(0, 0, 0, 0.6)',
 										fontFamily: 'Helvetica',
 										lineHeight: '20px',
-									}}
-								>
+									}}>
 									{item?.content}
 								</p>
 							</div>
@@ -130,16 +131,31 @@ function CommentIdea({ idea }) {
 			))}
 
 			{commentsTotal > 3 ? (
-				<Typography
-					onClick={handleOnClickShowMore}
-					sx={{
-						cursor: 'pointer',
-						'&:hover': { textDecoration: 'underline' },
-					}}
-				>
-					{showMore ? 'View less' : 'View more'} {commentsList?.length} of{' '}
-					{commentsTotal}
-				</Typography>
+				<div
+					style={{
+						display: 'flex',
+						justifyContent: 'space-between',
+						padding: '10px',
+					}}>
+					<Typography
+						onClick={handleOnClickShowMore}
+						sx={{
+							cursor: 'pointer',
+							fontWeight: '600',
+							fontSize: '0.8em',
+							opacity: '0.5',
+							'&:hover': { textDecoration: 'underline' },
+						}}>
+						{showMore ? 'View less' : 'View more'}
+					</Typography>
+					<Typography
+						sx={{
+							fontSize: '0.9em',
+							opacity: '0.7',
+						}}>
+						{commentsList?.length} of {commentsTotal}
+					</Typography>
+				</div>
 			) : (
 				<></>
 			)}
@@ -167,8 +183,8 @@ function CommentIdea({ idea }) {
 						display: 'flex',
 						alignItems: 'center',
 						border: '0.5px solid rgba(0,0,0,0.1)',
-					}}
-				>
+						marginBottom: '10px',
+					}}>
 					<InputBase
 						fullWidth
 						id='content'
@@ -178,20 +194,29 @@ function CommentIdea({ idea }) {
 						onBlur={formik.handleBlur}
 						onChange={formik.handleChange}
 						placeholder='Write a comment ...'
-						helperText={formik.touched.content && formik.errors.content}
-						error={formik.touched.content && Boolean(formik.errors.content)}
+						helperText={
+							formik.touched.content && formik.errors.content
+						}
+						error={
+							formik.touched.content &&
+							Boolean(formik.errors.content)
+						}
 					/>
-					<Divider sx={{ height: 28, m: 0.5 }} orientation='vertical' />
+					<Divider
+						sx={{ height: 28, m: 0.5 }}
+						orientation='vertical'
+					/>
 					<IconButton
 						type='submit'
 						sx={{
 							p: '10px',
 							color: '#9ba6e0',
-							'&:hover': { backgroundColor: 'rgb(240, 242, 245)' },
+							'&:hover': {
+								backgroundColor: 'rgb(240, 242, 245)',
+							},
 						}}
 						aria-label='post new comment'
-						component='button'
-					>
+						component='button'>
 						<SendIcon />
 					</IconButton>
 				</Paper>

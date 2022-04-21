@@ -32,7 +32,9 @@ const validationSchema = yup.object({
 	tags: yup.array().max(3, 'Only 3 tags per idea').nullable(),
 	attachments: yup.array().nullable(),
 	is_anonymous: yup.bool(),
-	submission_id: yup.string().required('Please specify the submission for this idea'),
+	submission_id: yup
+		.string()
+		.required('Please specify the submission for this idea'),
 	agree: yup.bool().required('You need you Agree'),
 });
 
@@ -72,7 +74,9 @@ function CreateIdeaForm(props) {
 			!externalSubData
 				? await axioc
 						.get(API_PATHS.SHARED.SUB + '/list')
-						.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
+						.catch(() =>
+							toast.error(toastMessages.ERR_SERVER_ERROR),
+						)
 						.then((res) => setSubOptions(res?.data?.result))
 				: formik?.setFieldValue('submission_id', externalSubData?.id);
 
@@ -81,6 +85,7 @@ function CreateIdeaForm(props) {
 				.catch(() => toast.error(toastMessages.ERR_SERVER_ERROR))
 				.then((res) => setTagOptions(res?.data?.result));
 		})();
+		attachments.forEach((file) => URL.revokeObjectURL(file.preview));
 	}, []);
 
 	const FILE_SIZE = 1e7;
@@ -96,7 +101,8 @@ function CreateIdeaForm(props) {
 			}
 			acceptedFiles.forEach((file) => {
 				if (
-					attachments?.reduce((a, b) => a + (b['size'] || 0), 0) + file.size >
+					attachments?.reduce((a, b) => a + (b['size'] || 0), 0) +
+						file.size >
 					FILE_SIZE
 				) {
 					toast.error(`${file.name} ${toastMessages.ERR_FILE_BIG}`);
@@ -115,6 +121,7 @@ function CreateIdeaForm(props) {
 							name: file.name,
 							description: file.name,
 							mime: file.type,
+							preview: URL.createObjectURL(file),
 						},
 					]);
 				};
@@ -140,8 +147,7 @@ function CreateIdeaForm(props) {
 			ClassName='createideaform'
 			onSubmit={formik?.handleSubmit}
 			showActionButton={true}
-			dirty={formik?.values.agree}
-		>
+			dirty={formik?.values.agree}>
 			<div className='createideaform_group'>
 				<div className='createideaform_content'>
 					{externalSubData ? (
@@ -160,7 +166,10 @@ function CreateIdeaForm(props) {
 							options={subOptions ?? []}
 							getOptionLabel={(option) => option?.title}
 							onChange={(_, value) => {
-								formik?.setFieldValue('submission_id', value.id ?? '');
+								formik?.setFieldValue(
+									'submission_id',
+									value.id ?? '',
+								);
 							}}
 							dynamic={{
 								value: formik?.values.submission_id,
@@ -230,27 +239,35 @@ function CreateIdeaForm(props) {
 						onDrop={handleDrop}
 						onDropRejected={() =>
 							toast.error(toastMessages.ERR_FILE_REJECTED)
-						}
-					>
+						}>
 						{({ getRootProps, getInputProps }) => (
 							<div
 								{...getRootProps({
 									className: 'dropzone',
-								})}
-							>
+								})}>
 								<input {...getInputProps()} />
 								<MdOutlineDriveFolderUpload className='dropzone_icon' />
-								<p>Drag &#38; drop files, or click to select files</p>
+								<p>
+									Drag &#38; drop files, or click to select
+									files
+								</p>
 							</div>
 						)}
 					</Dropzone>
 					<span style={{ padding: '5px', color: '#888' }}>
-						{attachments?.length !== 0 && <span> Attach files size: </span>}
+						{attachments?.length !== 0 && (
+							<span> Attach files size: </span>
+						)}
 						{attachments?.length !== 0 &&
 							toReadableFileSize(
-								attachments?.reduce((n, { size }) => n + size, 0),
+								attachments?.reduce(
+									(n, { size }) => n + size,
+									0,
+								),
 							)}
-						{attachments?.length !== 0 && <span> &nbsp;/&nbsp;10 MB</span>}
+						{attachments?.length !== 0 && (
+							<span> &nbsp;/&nbsp;10 MB</span>
+						)}
 					</span>
 					{attachments?.length === 0 ? null : (
 						<div className='createideaform_group'>
@@ -263,8 +280,7 @@ function CreateIdeaForm(props) {
 										listStyle: 'none',
 										p: 0.5,
 										m: 0,
-									}}
-								>
+									}}>
 									{attachments?.map((file, index) => (
 										<ListItem
 											key={index}
@@ -272,14 +288,14 @@ function CreateIdeaForm(props) {
 												<IconButton
 													edge='end'
 													aria-label='delete'
-													onClick={handleDeleteAttachment(file)}
-												>
+													onClick={handleDeleteAttachment(
+														file,
+													)}>
 													<RiDeleteBack2Fill id='attach_delete-icon' />
 												</IconButton>
-											}
-										>
+											}>
 											<ListItemAvatar>
-												<Avatar>
+												<Avatar src={file.preview}>
 													<AiOutlineFile />
 												</Avatar>
 											</ListItemAvatar>
@@ -288,23 +304,22 @@ function CreateIdeaForm(props) {
 													display: 'flex',
 													flexDirection: 'column',
 													justifyContent: 'center',
-												}}
-											>
+												}}>
 												<p
 													style={{
 														fontFamily: 'Poppins',
 														fontSize: '1em',
-													}}
-												>
+													}}>
 													{file.name}
 												</p>
 												<p
 													style={{
 														fontSize: '0.8em',
 														color: '#333',
-													}}
-												>
-													{toReadableFileSize(file.size)}
+													}}>
+													{toReadableFileSize(
+														file.size,
+													)}
 												</p>
 											</ListItemText>
 										</ListItem>
@@ -339,13 +354,12 @@ function CreateIdeaForm(props) {
 						<FormControlLabel
 							label={
 								<p>
-									By clicking here, I state that I have read and
-									understood the&nbsp;
+									By clicking here, I state that I have read
+									and understood the&nbsp;
 									<a
 										target='_blank'
 										rel='noopener noreferrer'
-										href='../term-condition'
-									>
+										href='../term-condition'>
 										the Term &amp; Conditions.
 									</a>
 								</p>
