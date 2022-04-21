@@ -145,7 +145,6 @@ function IdeaSubView({ submission: exSubData }) {
 	return (
 		<>
 			<UimTable
-				autoHeight
 				rows={data?.rows}
 				columns={columns}
 				totalItems={data?.total}

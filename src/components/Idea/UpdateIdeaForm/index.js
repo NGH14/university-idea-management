@@ -3,7 +3,14 @@ import './style.css';
 
 import './style.css';
 
-import { Checkbox, FormControlLabel, FormGroup, ListItem } from '@mui/material';
+import {
+	Box,
+	Checkbox,
+	FormControlLabel,
+	FormGroup,
+	ListItem,
+	Modal,
+} from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
@@ -21,6 +28,24 @@ import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
 import { styled } from '@mui/material/styles';
+
+const style = {
+	position: 'relative',
+	top: '50%',
+	left: '50%',
+	transform: 'translate(-50%, -50%)',
+	width: '1000px',
+	bgcolor: 'background.paper',
+	boxShadow: 24,
+	p: 4,
+	borderRadius: '5px',
+	overflow: 'auto',
+	maxHeight: '100%',
+
+	' @media (max-width: 950px)': {
+		width: '100%',
+	},
+};
 
 // const ListItem = styled('li')(({ theme }) => ({ margin: theme.spacing(0.5) }));
 
@@ -42,7 +67,7 @@ const validationSchema = yup.object({
 });
 
 function UpdateIdeaForm(props) {
-	const { onClose, onUpdate, specifySub, initialValue } = props;
+	const { onClose, onUpdate, visible, specifySub, initialValue } = props;
 	const [attachments, setAttachments] = useState([]);
 	const [subOptions, setSubOptions] = useState([]);
 	const [tagOptions, setTagOptions] = useState([]);
@@ -85,12 +110,14 @@ function UpdateIdeaForm(props) {
 
 	const handleDrop = (acceptedFiles) => {
 		try {
-			if (attachments?.length === 4) {
-				toast.error(toastMessages.ERR_MAX_FILES_NUMBER);
+			if (
+				acceptedFiles?.length > 3 ||
+				attachments?.length + acceptedFiles?.length > 3
+			) {
+				toast.error('Too many files, limit at 3');
 				return;
 			}
-
-			for (const file of acceptedFiles) {
+			acceptedFiles.forEach((file) => {
 				if (
 					attachments.reduce((a, b) => a + (b['size'] || 0), 0) + file.size >
 					FILE_SIZE
@@ -105,22 +132,29 @@ function UpdateIdeaForm(props) {
 					setAttachments((oldArr) => [
 						...oldArr,
 						{
-							guid: `${getGuid()}_${file.name}`,
+							mime: file.type,
 							size: file.size,
-							data: reader.result.split(',')[1],
 							name: file.name,
 							description: file.name,
-							mime: file.type,
+							data: reader.result.split(',')[1],
+							guid: `${getGuid()}_${file.name}`,
+							preview: URL.createObjectURL(file),
 						},
 					]);
 				};
-			}
+			});
 		} catch (err) {
 			toast.error(toastMessages.ERR_FILE_ADD_FAILED);
 		}
 	};
 
 	const handleDeleteAttachment = (attachmentToDelete) => () => {
+		attachments.forEach((_) => {
+			if (_.preview === attachmentToDelete.preview) {
+				URL.revokeObjectURL(_.preview);
+				return;
+			}
+		});
 		setAttachments((attachments) =>
 			attachments.filter(
 				(attachment) => attachment.guid !== attachmentToDelete.guid,
@@ -128,180 +162,219 @@ function UpdateIdeaForm(props) {
 		);
 	};
 
+	const handleClose = () => {
+		attachments.forEach((file) => URL.revokeObjectURL(file.preview));
+		onClose();
+	};
+
 	return (
-		<UimModalForm
-			entity='idea'
-			action='edit'
-			onClose={() => onClose()}
-			ClassName='createideaform'
-			onSubmit={formik.handleSubmit}
-			showActionButton={true}
+		<Modal
+			open={visible}
+			onClose={handleClose}
+			aria-labelledby='modal-modal-title'
+			aria-describedby='modal-modal-description'
 		>
-			<div className='createideaform_group'>
-				<div className='createideaform_content'>
-					{specifySub ? (
-						<UimTextField
-							label='Submission'
-							propName='submission_id'
-							dynamic={{ value: initialValue?.submission?.title }}
-							inputProps={{ disabled: true, readOnly: true }}
-						/>
-					) : (
-						<UimAutoComplete.Select
-							label='Submission'
-							required={true}
-							propName='submission_id'
-							onBlur={formik.handleBlur}
-							options={subOptions}
-							defaultValue={initialValue?.submission}
-							getOptionLabel={(option) => option?.title}
-							onChange={(_, value) => {
-								formik.setFieldValue('submission_id', value.id ?? '');
-							}}
-							dynamic={{
-								value: formik.values.submission_id,
-								error: formik.errors.submission_id,
-								touched: formik.touched.submission_id,
-							}}
-						/>
-					)}
-				</div>
-
-				<div className='createideaform_content'>
-					<UimTextField
-						label='Idea Title'
-						required={true}
-						propName='title'
-						onChange={formik.handleChange}
-						onBlur={formik.handleBlur}
-						dynamic={{
-							value: formik.values.title,
-							error: formik.errors.title,
-							touched: formik.touched.title,
-						}}
-					/>
-				</div>
-			</div>
-			<div className='createideaform_group'>
-				<div className='createideaform_content'>
-					<UimTextField
-						label='Content'
-						required={true}
-						autoSize={true}
-						minRows={5}
-						propName='content'
-						onChange={formik.handleChange}
-						onBlur={formik.handleBlur}
-						dynamic={{
-							value: formik.values.content,
-							error: formik.errors.content,
-							touched: formik.touched.content,
-						}}
-					/>
-				</div>
-			</div>
-
-			<div className='createideaform_group'>
-				<div className='createideaform_content'>
-					<Dropzone
-						onDrop={handleDrop}
-						onDropRejected={() =>
-							toast.error(toastMessages.ERR_FILE_REJECTED)
-						}
-					>
-						{({ getRootProps, getInputProps }) => (
-							<div
-								{...getRootProps({
-									className: 'dropzone',
-								})}
-							>
-								<input {...getInputProps()} />
-								<MdOutlineDriveFolderUpload className='dropzone_icon' />
-								<p>Drag &#38; drop files, or click to select files</p>
-								<span
-									style={{
-										padding: '5px',
-										color: '#888',
-										fontSize: '0.75em',
+			<Box sx={style}>
+				<UimModalForm
+					entity='idea'
+					action='edit'
+					onClose={() => onClose()}
+					ClassName='createideaform'
+					onSubmit={formik.handleSubmit}
+					showActionButton={true}
+				>
+					<div className='createideaform_group'>
+						<div className='createideaform_content'>
+							{specifySub ? (
+								<UimTextField
+									label='Submission'
+									propName='submission_id'
+									dynamic={{ value: initialValue?.submission?.title }}
+									inputProps={{ disabled: true, readOnly: true }}
+								/>
+							) : (
+								<UimAutoComplete.Select
+									label='Submission'
+									required={true}
+									propName='submission_id'
+									onBlur={formik.handleBlur}
+									options={subOptions}
+									defaultValue={initialValue?.submission}
+									getOptionLabel={(option) => option?.title}
+									onChange={(_, value) => {
+										formik.setFieldValue(
+											'submission_id',
+											value.id ?? '',
+										);
 									}}
-								>
-									*This will overwrite the current attachments*
-								</span>
-							</div>
-						)}
-					</Dropzone>
-					<span style={{ padding: '5px', color: '#888' }}>
-						{attachments?.length !== 0 && <span> Attach files size: </span>}
-						{attachments?.length !== 0 &&
-							toReadableFileSize(
-								attachments?.reduce((n, { size }) => n + size, 0),
+									dynamic={{
+										value: formik.values.submission_id,
+										error: formik.errors.submission_id,
+										touched: formik.touched.submission_id,
+									}}
+								/>
 							)}
-						{attachments?.length !== 0 && <span> &nbsp;/&nbsp;10 MB</span>}
-					</span>
-					{attachments?.length === 0 ? null : (
-						<div className='createideaform_group'>
-							<div className='createideaform_content'>
-								<List
-									sx={{
-										display: 'flex',
-										justifyContent: 'center',
-										flexWrap: 'wrap',
-										listStyle: 'none',
-										p: 0.5,
-										m: 0,
-									}}
-								>
-									{attachments?.map((file, index) => (
-										<ListItem
-											key={index}
-											secondaryAction={
-												<IconButton
-													edge='end'
-													aria-label='delete'
-													onClick={handleDeleteAttachment(file)}
-												>
-													<RiDeleteBack2Fill id='attach_delete-icon' />
-												</IconButton>
-											}
-										>
-											<ListItemAvatar>
-												<Avatar>
-													<AiOutlineFile />
-												</Avatar>
-											</ListItemAvatar>
-											<ListItemText
-												sx={{
-													display: 'flex',
-													flexDirection: 'column',
-													justifyContent: 'center',
-												}}
-											>
-												<p
-													style={{
-														fontFamily: 'Poppins',
-														fontSize: '1em',
-													}}
-												>
-													{file.name}
-												</p>
-												<p
-													style={{
-														fontSize: '0.8em',
-														color: '#333',
-													}}
-												>
-													{toReadableFileSize(file.size)}
-												</p>
-											</ListItemText>
-										</ListItem>
-									))}
-								</List>
-							</div>
 						</div>
-					)}
-				</div>
-			</div>
-		</UimModalForm>
+
+						<div className='createideaform_content'>
+							<UimTextField
+								label='Idea Title'
+								required={true}
+								propName='title'
+								onChange={formik.handleChange}
+								onBlur={formik.handleBlur}
+								dynamic={{
+									value: formik.values.title,
+									error: formik.errors.title,
+									touched: formik.touched.title,
+								}}
+							/>
+						</div>
+					</div>
+					<div className='createideaform_group'>
+						<div className='createideaform_content'>
+							<UimTextField
+								label='Content'
+								required={true}
+								autoSize={true}
+								minRows={5}
+								propName='content'
+								onChange={formik.handleChange}
+								onBlur={formik.handleBlur}
+								dynamic={{
+									value: formik.values.content,
+									error: formik.errors.content,
+									touched: formik.touched.content,
+								}}
+							/>
+						</div>
+					</div>
+
+					<div className='createideaform_group'>
+						<div className='createideaform_content'>
+							<UimAutoComplete.Tag
+								label='Tags'
+								propName='tags'
+								options={tagOptions}
+								onChange={(_, value) =>
+									formik.setFieldValue('tags', value ?? '')
+								}
+								defaultValue={initialValue?.tags}
+								onBlur={formik.handleBlur}
+								dynamic={{
+									error: formik.errors.tags,
+									touched: formik.touched.tags,
+									value: formik?.values?.tags,
+								}}
+							/>
+						</div>
+					</div>
+
+					<div className='createideaform_group'>
+						<div className='createideaform_content'>
+							<Dropzone
+								onDrop={handleDrop}
+								onDropRejected={() =>
+									toast.error(toastMessages.ERR_FILE_REJECTED)
+								}
+							>
+								{({ getRootProps, getInputProps }) => (
+									<div
+										{...getRootProps({
+											className: 'dropzone',
+										})}
+									>
+										<input {...getInputProps()} />
+										<MdOutlineDriveFolderUpload className='dropzone_icon' />
+										<p>
+											Drag &#38; drop files, or click to select
+											files
+										</p>
+									</div>
+								)}
+							</Dropzone>
+							<span style={{ padding: '5px', color: '#888' }}>
+								{attachments?.length !== 0 && (
+									<span> Attach files size: </span>
+								)}
+								{attachments?.length !== 0 &&
+									toReadableFileSize(
+										attachments?.reduce((n, { size }) => n + size, 0),
+									)}
+								{attachments?.length !== 0 && (
+									<span> &nbsp;/&nbsp;10 MB</span>
+								)}
+							</span>
+							{attachments?.length === 0 ? null : (
+								<div className='createideaform_group'>
+									<div className='createideaform_content'>
+										<List
+											sx={{
+												display: 'flex',
+												justifyContent: 'center',
+												flexWrap: 'wrap',
+												listStyle: 'none',
+												p: 0.5,
+												m: 0,
+											}}
+										>
+											{attachments?.map((file, index) => (
+												<ListItem
+													key={index}
+													secondaryAction={
+														<IconButton
+															edge='end'
+															aria-label='delete'
+															onClick={handleDeleteAttachment(
+																file,
+															)}
+														>
+															<RiDeleteBack2Fill id='attach_delete-icon' />
+														</IconButton>
+													}
+												>
+													<ListItemAvatar>
+														<Avatar src={file.preview}>
+															<AiOutlineFile />
+														</Avatar>
+													</ListItemAvatar>
+													<ListItemText
+														sx={{
+															display: 'flex',
+															flexDirection: 'column',
+															justifyContent: 'center',
+														}}
+													>
+														<p
+															style={{
+																fontFamily: 'Poppins',
+																fontSize: '1em',
+															}}
+														>
+															{file.name}
+														</p>
+														<p
+															style={{
+																fontSize: '0.8em',
+																color: '#333',
+															}}
+														>
+															{toReadableFileSize(
+																file.size,
+															)}
+														</p>
+													</ListItemText>
+												</ListItem>
+											))}
+										</List>
+									</div>
+								</div>
+							)}
+						</div>
+					</div>
+				</UimModalForm>
+			</Box>
+		</Modal>
 	);
 }
 

@@ -9,7 +9,6 @@ import { axioc } from 'common';
 import { API_PATHS } from 'common/env';
 import CreateSubmissionForm from 'components/Submission/CreateSubmissionForm';
 import EditSubmissionForm from 'components/Submission/EditSubmissionForm';
-import { dataDemo } from '../FakeData';
 
 const style = {
 	position: 'relative',

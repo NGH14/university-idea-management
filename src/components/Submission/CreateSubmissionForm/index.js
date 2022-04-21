@@ -69,8 +69,8 @@ const initialValues = {
 const validationSchema = yup.object({
 	title: yup.string().required('Submission title is required'),
 	description: yup.string().nullable(),
-	initial_date: yup.date('Initial date invalid').nullable().default(undefined),
-	final_date: yup.date('Final date invalid').nullable().default(undefined),
+	initial_date: yup.string().nullable().default(undefined),
+	final_date: yup.string().nullable().default(undefined),
 	is_active: yup.bool().default(true),
 });
 

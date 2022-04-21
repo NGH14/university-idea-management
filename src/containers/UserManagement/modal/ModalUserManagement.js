@@ -10,7 +10,6 @@ import { API_PATHS } from 'common/env';
 import CreateUserForm from 'components/User/CreateUserForm';
 import DetailUserForm from 'components/User/DetailUserForm';
 import EditUserForm from 'components/User/EditUserForm';
-import { dataDemo } from '../FakeData';
 
 const style = {
 	position: 'relative',

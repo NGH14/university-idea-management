@@ -25,8 +25,9 @@ function TagManagement() {
 		await axioc
 			.get(API_PATHS.ADMIN.MANAGE_TAG + '/table/list', {
 				params: {
-					page_size: pagination.pageSize,
+					sorts: 'Name',
 					page: pagination.page,
+					page_size: pagination.pageSize,
 				},
 			})
 			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))

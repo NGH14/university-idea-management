@@ -33,7 +33,7 @@ export const Column = [
 		flex: 1,
 		renderCell: (value) =>
 			value?.row?.modified_date
-				? moment(value?.row?.modified_at).format('DD/MM/YYYY')
+				? moment(value?.row?.modified_date).format('DD/MM/YYYY')
 				: '-',
 	},
 	{
@@ -45,6 +45,7 @@ export const Column = [
 		headerAlign: 'center',
 		minWidth: 170,
 		type: 'date',
-		renderCell: (value) => moment(value?.row?.created_date).format('DD/MM/YYYY'),
+		renderCell: (value) =>
+			moment(value?.row?.created_date).format('DD/MM/YYYY hh:mm A'),
 	},
 ];

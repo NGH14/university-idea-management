@@ -127,9 +127,9 @@ export default function DetailView() {
 							fontSize: 22,
 						}}
 					>
-						submission details
+						submission details{' '}
 						<span>
-							{data?.is_fully_close !== true
+							{data?.is_fully_close !== null
 								? data?.is_fully_close === false
 									? `[pass initial deadline (${moment(
 											data?.initial_date,

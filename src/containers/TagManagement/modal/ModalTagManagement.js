@@ -10,7 +10,6 @@ import { API_PATHS } from 'common/env';
 import CreateTagForm from 'components/Tag/CreateTagForm';
 import DetailTagForm from 'components/Tag/DetailTagForm';
 import EditTagForm from 'components/Tag/EditTagForm';
-import { dataDemo } from '../FakeData';
 
 const style = {
 	position: 'relative',

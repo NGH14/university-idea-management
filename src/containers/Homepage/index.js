@@ -33,7 +33,6 @@ import _ from 'lodash';
 import moment from 'moment';
 import { useContext, useEffect, useState } from 'react';
 import { BiCommentDetail } from 'react-icons/bi';
-import { GrFormView } from 'react-icons/gr';
 import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
 import { Link as RouterLink } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -49,11 +48,7 @@ const ExpandMore = styled((props) => {
 }));
 
 export default function Homepage(props) {
-	const {
-		submission: specificSub,
-		withHeader = true,
-		postsFullwidth = false,
-	} = props;
+	const { submission: specificSub, withHeader = true, postsFullwidth = false } = props;
 
 	const [data, setData] = useState([]);
 	const { state } = useContext(UserContext);
@@ -73,9 +68,7 @@ export default function Homepage(props) {
 
 	const onShowMoreContent = async (item, index) => {
 		!showMore[index] &&
-			(await axioc
-				.post(`${API_PATHS.SHARED.VIEW}/${item?.id}`)
-				.catch(() => {}));
+			(await axioc.post(`${API_PATHS.SHARED.VIEW}/${item?.id}`).catch(() => {}));
 
 		const newShowMore = [...showMore];
 		newShowMore[index] = !newShowMore[index];
@@ -156,7 +149,8 @@ export default function Homepage(props) {
 							style={{
 								textTransform: 'none',
 								textUnderlineOffset: 'none',
-							}}>
+							}}
+						>
 							Created successful, click here to see details !!
 						</RouterLink>,
 					);
@@ -168,15 +162,12 @@ export default function Homepage(props) {
 					.then(() => sleep(700))
 					.then((res) => {
 						setStatus({ ...status, visibleModal: false });
-						const indexData = data.findIndex(
-							(x) => x.id === value.id,
-						);
+						const indexData = data.findIndex((x) => x.id === value.id);
 						data[indexData] = res?.data?.result;
 						setData((oldData) => [...oldData, data]);
 
 						toast.info(
-							<RouterLink
-								to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
+							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
 								Idea details:{' '}
 								{() => {
 									const title = res?.data?.result?.title;
@@ -194,17 +185,13 @@ export default function Homepage(props) {
 			),
 		delete: (id) =>
 			toast.promise(
-				axioc
-					.delete(`${API_PATHS.SHARED.IDEA}/${id}`)
-					.then(() => sleep(700)),
+				axioc.delete(`${API_PATHS.SHARED.IDEA}/${id}`).then(() => sleep(700)),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.UNEXPECTED,
 					success: {
 						render() {
-							const indexData = data.findIndex(
-								(_) => _.id === id,
-							);
+							const indexData = data.findIndex((_) => _.id === id);
 							data.splice(indexData, 1);
 							setData((oldData) => [...oldData, data]);
 							loadData();
@@ -225,7 +212,8 @@ export default function Homepage(props) {
 						fontSize: '0.5em',
 						color: '#999',
 						opacity: '0.7',
-					}}>
+					}}
+				>
 					Welcome to the UIM &#10084;&#65039;
 				</i>
 			</div>
@@ -269,22 +257,24 @@ export default function Homepage(props) {
 									textDecoration: 'none',
 									color: 'initial',
 									cursor: 'pointer',
-								}}>
+								}}
+							>
 								<RouterLink
 									to={`${URL_PATHS.SUB}/${item?.submission?.id}`}
 									style={{
 										textDecoration: 'none',
 										cursor: 'pointer',
 										color: 'initial',
-									}}>
+									}}
+								>
 									<span
 										style={{
 											textDecoration: 'none',
 											color: 'rgba(0, 0, 0, 0.6)',
 											fontSize: '12px',
-										}}>
+										}}
+									>
 										in&nbsp;{item?.submission?.title}
-										&nbsp;submission
 									</span>
 								</RouterLink>
 							</label>
@@ -293,7 +283,8 @@ export default function Homepage(props) {
 				) : (
 					'September 14, 2016'
 				)
-			}></CardHeader>
+			}
+		></CardHeader>
 	);
 
 	const renderIdeaTags = (item) => (
@@ -308,7 +299,8 @@ export default function Homepage(props) {
 					flexWrap: 'wrap',
 					justifyContent: 'flex-start',
 					gap: 1,
-				}}>
+				}}
+			>
 				{item?.tags?.map((tag, index) => (
 					<Chip
 						key={item.title + tag.name + index}
@@ -334,7 +326,8 @@ export default function Homepage(props) {
 					gridTemplateColumns: `repeat(${
 						item?.attachments?.length >= 3 ? 2 : 1
 					}, 1fr)`,
-				}}>
+				}}
+			>
 				{item?.attachments?.map((_) => {
 					const fileEx = _.name.split('.');
 					const exs = ['jpg', 'png', 'gif'];
@@ -373,7 +366,8 @@ export default function Homepage(props) {
 							lineHeight: '44px',
 							fontWeight: '600',
 							cursor: 'pointer',
-						}}>
+						}}
+					>
 						{item?.title}
 					</RouterLink>
 				</Tippy>
@@ -386,7 +380,8 @@ export default function Homepage(props) {
 							className={showMore[index] || 'multiLineEllipsis'}
 							style={{
 								whiteSpace: showMore[index] && 'pre-line',
-							}}>
+							}}
+						>
 							{item?.content}
 						</Typography>
 					</div>
@@ -405,7 +400,8 @@ export default function Homepage(props) {
 							backgroundColor: '#fff',
 							color: '#333',
 						},
-					}}>
+					}}
+				>
 					{showMore[index] ? 'Show less' : 'Show more'}
 				</Button>
 			</CardContent>
@@ -422,7 +418,8 @@ export default function Homepage(props) {
 					alignItems: 'center',
 					width: '100%',
 					fontSize: 12,
-				}}>
+				}}
+			>
 				<Button
 					className='idea_action'
 					fullWidth
@@ -437,15 +434,13 @@ export default function Homepage(props) {
 					startIcon={
 						<IoMdArrowRoundUp
 							style={{
-								color:
-									item.requester_is_like === true
-										? '#626ef0'
-										: '',
+								color: item.requester_is_like === true ? '#626ef0' : '',
 							}}
 						/>
 					}
 					color='inherit'
-					size='large'>
+					size='large'
+				>
 					{`${item.likes}`}
 				</Button>
 				<Button
@@ -463,15 +458,13 @@ export default function Homepage(props) {
 					startIcon={
 						<IoMdArrowRoundDown
 							style={{
-								color:
-									item.requester_is_like === false
-										? '#626ef0'
-										: '',
+								color: item.requester_is_like === false ? '#626ef0' : '',
 							}}
 						/>
 					}
 					color={'inherit'}
-					size={'large'}>
+					size={'large'}
+				>
 					{`${item.dislikes}`}
 				</Button>
 				<ExpandMore
@@ -484,7 +477,8 @@ export default function Homepage(props) {
 					color={'inherit'}
 					size={'large'}
 					startIcon={<BiCommentDetail />}
-					aria-label='show more'></ExpandMore>
+					aria-label='show more'
+				></ExpandMore>
 			</CardActions>
 		);
 	};
@@ -507,7 +501,8 @@ export default function Homepage(props) {
 						marginTop: 30,
 						maxWidth: postsFullwidth ? undefined : '70rem',
 						marginInline: 'auto',
-					}}>
+					}}
+				>
 					{renderCardHeader(item)}
 					{renderCardContent(item, index)}
 					{item?.attachments && item?.attachments?.length !== 0 ? (
@@ -543,10 +538,7 @@ export default function Homepage(props) {
 	const renderFooter = () =>
 		!(_.size(data) === postTotal || _.size(data) > postTotal) ? (
 			<div style={{ marginTop: 15, textAlign: 'center' }}>
-				<Button
-					size='small'
-					variant='outlined'
-					onClick={() => onShowMore()}>
+				<Button size='small' variant='outlined' onClick={() => onShowMore()}>
 					More
 				</Button>
 			</div>

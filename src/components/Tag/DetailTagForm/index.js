@@ -125,14 +125,16 @@ function DetailTagForm(props) {
 
 				<div className='detailtagform_group'>
 					<div className='detailtagform_content'>
-						<InputLabel required htmlFor='created_at'>
+						<InputLabel required htmlFor='created_date'>
 							Created Date
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							id='created_at'
-							name='created_at'
-							value={moment(formik.values.created_at).format('DD/MM/YYYY')}
+							id='created_date'
+							name='created_date'
+							value={moment(formik.values.created_date).format(
+								'DD/MM/YYYY',
+							)}
 							variant='standard'
 							inputProps={{
 								readOnly: true,
@@ -140,14 +142,16 @@ function DetailTagForm(props) {
 						/>
 					</div>
 					<div className='detailtagform_content'>
-						<InputLabel required htmlFor='modified_at'>
+						<InputLabel required htmlFor='modified_date'>
 							Modified Date
 						</InputLabel>
 						<CssTextField
 							fullWidth
-							id='modified_at'
-							name='modified_at'
-							value={moment(formik.values.modified_at).format('DD/MM/YYYY')}
+							id='modified_date'
+							name='modified_date'
+							value={moment(formik.values.modified_date).format(
+								'DD/MM/YYYY',
+							)}
 							variant='standard'
 							inputProps={{
 								readOnly: true,

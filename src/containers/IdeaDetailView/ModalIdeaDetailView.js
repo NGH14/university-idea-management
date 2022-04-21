@@ -21,10 +21,6 @@ const style = {
 		width: '100%',
 	},
 };
-const toastMessages = {
-	ERR_SERVER_ERROR: 'Something went wrong, please try again !!',
-	ERR_USER_NOT_FOUND: 'User not found !!',
-};
 
 const ModalIdeaDetailView = (props) => {
 	const { visible, onClose, onUpdate, initialValue } = props;

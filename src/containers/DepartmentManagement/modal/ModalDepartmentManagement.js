@@ -9,7 +9,6 @@ import { axioc } from 'common';
 import { API_PATHS } from 'common/env';
 import CreateDepartmentForm from 'components/Department/CreateDepartmentForm';
 import EditDepartmentForm from 'components/Department/EditDepartmentForm';
-import { dataDemo } from '../FakeData';
 
 const style = {
 	position: 'relative',
