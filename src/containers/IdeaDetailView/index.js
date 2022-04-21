@@ -1,4 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import './style.css';
+
 import { Add } from '@mui/icons-material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
@@ -14,41 +16,29 @@ import {
 	CircularProgress,
 	Collapse,
 	IconButton,
-	styled,
 	Typography,
 } from '@mui/material';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Tippy from '@tippyjs/react';
-import imgPlaceholder from 'assets/images/placeholder.jpg';
 import { axioc, sleep, toastMessages } from 'common';
 import { stringToSvg } from 'common/DiceBear';
 import { API_PATHS, URL_PATHS } from 'common/env';
 import FloatButton from 'components/Custom/FloatButton';
 import CommentIdea from 'components/Idea/CommentIdea';
 import ModalIdea from 'components/Idea/ModalIdea';
+import { UimImage } from 'components/Uim';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { BiCommentDetail } from 'react-icons/bi';
 import { GrFormView } from 'react-icons/gr';
 import { IoMdArrowRoundDown, IoMdArrowRoundUp } from 'react-icons/io';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const ExpandMore = styled((props) => {
-	const { expand, ...other } = props;
-	return <Button {...other} />;
-})(({ theme }) => ({
-	marginLeft: 'auto',
-	transition: theme.transitions.create('transform', {
-		duration: theme.transitions.duration.shortest,
-	}),
-}));
-
 export default function IdeaDetailView() {
 	const navigate = useNavigate();
 	const [data, setData] = useState();
-	const [comments, setComments] = useState([]);
+	const [comments] = useState([]);
 	const { id } = useParams();
 
 	const [reload, setReload] = useState(false);
@@ -60,15 +50,13 @@ export default function IdeaDetailView() {
 	});
 
 	useEffect(() => {
-		loadData();
 		view();
+		loadData();
 	}, []);
 
 	const view = async () => {
-		if (data)
-			return await axioc
-				.post(`${API_PATHS.SHARED.VIEW}/${data?.id}`)
-				.catch(() => {});
+		console.log('hello');
+		await axioc.post(`${API_PATHS.SHARED.VIEW}/${id}`).catch(() => {});
 	};
 
 	const loadData = async () => {
@@ -131,7 +119,7 @@ export default function IdeaDetailView() {
 
 						toast.info(
 							<RouterLink to={`${URL_PATHS.IDEA}/${res?.data?.result?.id}`}>
-								Idea details:{' '}
+								Idea details:' '
 								{() => {
 									const title = res?.data?.result?.title;
 									return title?.length > 50
@@ -194,7 +182,7 @@ export default function IdeaDetailView() {
 				data?.created_date ? (
 					<>
 						{moment(data?.created_date).fromNow()}&nbsp;
-						<Tippy content={'Detail submission'}>
+						<Tippy content='Detail submission'>
 							<label
 								style={{
 									textDecoration: 'none',
@@ -203,7 +191,7 @@ export default function IdeaDetailView() {
 								}}
 							>
 								<RouterLink
-									to={`/idea/${data?.id}`}
+									to={`${URL_PATHS.SUB}/${data?.submission?.id}`}
 									style={{
 										textDecoration: 'none',
 										cursor: 'pointer',
@@ -213,7 +201,7 @@ export default function IdeaDetailView() {
 									<span
 										style={{
 											textDecoration: 'none',
-											color: 'initial',
+											color: 'rgba(0, 0, 0, 0.6)',
 											fontSize: '12px',
 										}}
 									>
@@ -263,23 +251,23 @@ export default function IdeaDetailView() {
 	const renderCardContent = () => {
 		return (
 			<CardContent sx={{ fontFamily: 'Poppins, sans-serif' }}>
-				<Tippy content={'Detail idea'}>
-					<RouterLink
-						to={`${URL_PATHS.IDEA}/${data?.id}`}
-						style={{
-							textDecoration: 'none',
-							color: 'rgba(0, 1, 17, 0.8)',
-							fontSize: '1.2rem',
-							lineHeight: '44px',
-							fontWeight: '600',
-							cursor: 'pointer',
-						}}
-					>
-						{data?.title}
-					</RouterLink>
-				</Tippy>
+				<span
+					style={{
+						textDecoration: 'none',
+						color: 'rgba(0, 1, 17, 0.8)',
+						fontSize: '1.2rem',
+						lineHeight: '44px',
+						fontWeight: '600',
+					}}
+				>
+					{data?.title}
+				</span>
 
-				<Typography variant='body2' color='text.secondary'>
+				<Typography
+					variant='body2'
+					color='text.secondary '
+					style={{ whiteSpace: 'pre-line' }}
+				>
 					{data?.content}
 				</Typography>
 			</CardContent>
@@ -318,13 +306,15 @@ export default function IdeaDetailView() {
 					{`${data?.likes}`}
 				</Button>
 				<Button
-					className='idea_action'
 					fullWidth
+					size='large'
+					color='inherit'
+					className='idea_action'
 					aria-label='down vote'
+					style={{ marginRight: 20, marginLeft: 20 }}
 					onClick={() =>
 						handleOnLikeness(data?.requester_is_like === false ? null : false)
 					}
-					style={{ marginRight: 20, marginLeft: 20 }}
 					startIcon={
 						<IoMdArrowRoundDown
 							style={{
@@ -332,23 +322,9 @@ export default function IdeaDetailView() {
 							}}
 						/>
 					}
-					color={'inherit'}
-					size={'large'}
 				>
 					{`${data?.dislikes}`}
 				</Button>
-				<ExpandMore
-					disabled
-					className='idea_action'
-					fullWidth
-					style={{ marginRight: 20, marginLeft: 20 }}
-					color={'inherit'}
-					size={'large'}
-					startIcon={<BiCommentDetail />}
-					aria-label='show more'
-				>
-					{data?.comments_count}
-				</ExpandMore>
 			</CardActions>
 		);
 	};
@@ -369,14 +345,10 @@ export default function IdeaDetailView() {
 
 					if (!exs.includes(fileEx[fileEx?.length - 1])) return <></>;
 					return (
-						<img
+						<UimImage
 							alt={_.name}
 							src={`https://drive.google.com//uc?export=view&id=${_.file_id}`}
 							className='idea-attachment_img'
-							onError={({ currentTarget }) => {
-								currentTarget.onerror = null;
-								currentTarget.src = imgPlaceholder;
-							}}
 						/>
 					);
 				})}
@@ -424,8 +396,8 @@ export default function IdeaDetailView() {
 
 				<ActionButton />
 
-				<Collapse in={comments} timeout='auto' unmountOnExit>
-					<CommentIdea data={data} ideaId={data?.id} />
+				<Collapse in={comments}>
+					<CommentIdea idea={data} />
 				</Collapse>
 			</Card>
 		) : (

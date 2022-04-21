@@ -25,7 +25,8 @@ const ContentHeader = ({
 			<Button
 				endIcon={<AddCircleOutlineIcon />}
 				onClick={onOpenModal}
-				variant='contained'>
+				variant='contained'
+			>
 				Create
 			</Button>
 		</Tippy>

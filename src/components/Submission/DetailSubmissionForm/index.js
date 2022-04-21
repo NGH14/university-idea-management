@@ -2,34 +2,29 @@ import './style.css';
 
 import { TextField } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
-import { useFormik } from 'formik';
 import moment from 'moment';
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { UserContext } from 'context/AppContext';
-
-function DetailSubmissionForm({ initialValue }) {
-	const formik = useFormik({ initialValues: initialValue });
-	const { state } = useContext(UserContext);
+function DetailSubmissionForm({ submission }) {
 	return (
-		<form onSubmit={formik.handleSubmit}>
+		<>
 			<div className='form_group-submis-submis' style={{ marginBottom: 12 }}>
 				<div className='form_content' style={{ display: 'flex' }}>
 					<InputLabel
 						style={{
-							width: 110,
+							width: 130,
 							marginBottom: 'auto',
 							marginTop: 'auto',
 						}}
 					>
-						Title{' '}
+						Title
 					</InputLabel>
 					<TextField
 						inputProps={{ readOnly: true }}
 						style={{ width: '100%', pointerEvents: 'none' }}
+						value={submission?.title}
 						variant='standard'
-						name={'title'}
-						value={formik.values.title}
+						name='title'
 					/>
 				</div>
 			</div>
@@ -57,8 +52,8 @@ function DetailSubmissionForm({ initialValue }) {
 							inputProps={{ readOnly: true }}
 							style={{ width: '100%', pointerEvents: 'none' }}
 							variant='standard'
-							name={'initial_date'}
-							value={formik.values.created_by}
+							name='initial_date'
+							value={submission?.created_by}
 						/>
 					</div>
 					<div
@@ -80,8 +75,8 @@ function DetailSubmissionForm({ initialValue }) {
 							inputProps={{ readOnly: true }}
 							style={{ width: '100%', pointerEvents: 'none' }}
 							variant='standard'
-							name={'final_date'}
-							value={formik.values.modified_by}
+							name='final_date'
+							value={submission?.modified_by}
 						/>
 					</div>
 				</div>
@@ -105,8 +100,8 @@ function DetailSubmissionForm({ initialValue }) {
 						inputProps={{ readOnly: true }}
 						style={{ width: '100%', pointerEvents: 'none' }}
 						variant='standard'
-						name={'initial_date'}
-						value={moment(formik.values.initial_date).format(
+						name='initial_date'
+						value={moment(submission?.initial_date).format(
 							'DD/MM/YYYY hh:mm A',
 						)}
 					/>
@@ -126,8 +121,8 @@ function DetailSubmissionForm({ initialValue }) {
 						inputProps={{ readOnly: true }}
 						style={{ width: '100%', pointerEvents: 'none' }}
 						variant='standard'
-						name={'final_date'}
-						value={moment(formik.values.final_date).format(
+						name='final_date'
+						value={moment(submission?.final_date).format(
 							'DD/MM/YYYY hh:mm A',
 						)}
 					/>
@@ -138,7 +133,7 @@ function DetailSubmissionForm({ initialValue }) {
 				<div className='form_content' style={{ display: 'flex' }}>
 					<InputLabel
 						style={{
-							width: 110,
+							width: 130,
 							marginBottom: 'auto',
 							marginTop: 'auto',
 						}}
@@ -149,12 +144,12 @@ function DetailSubmissionForm({ initialValue }) {
 						inputProps={{ readOnly: true }}
 						style={{ width: '100%', pointerEvents: 'none' }}
 						variant='standard'
-						name={'description'}
-						value={formik.values.description}
+						name='description'
+						value={submission?.description}
 					/>
 				</div>
 			</div>
-		</form>
+		</>
 	);
 }
 export default DetailSubmissionForm;

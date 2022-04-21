@@ -430,7 +430,7 @@ function IdeaSubViewStaff({ ideaData, subData, paginationIdea }) {
 	const renderComment = (item) => {
 		return (
 			<Collapse in={expanded[item.id]} timeout='auto' unmountOnExit>
-				<CommentIdea data={item} ideaId={item.id} />
+				<CommentIdea idea={item} />
 			</Collapse>
 		);
 	};
@@ -441,7 +441,7 @@ function IdeaSubViewStaff({ ideaData, subData, paginationIdea }) {
 					<IconButton>
 						<AttachFileIcon />
 					</IconButton>
-					<a href={''}>demo.doc</a>
+					<a href='#/'>demo.doc</a>
 				</Card>
 			);
 		} else {

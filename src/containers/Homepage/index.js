@@ -476,16 +476,14 @@ export default function Homepage(props) {
 					size={'large'}
 					startIcon={<BiCommentDetail />}
 					aria-label='show more'
-				>
-					{item.comments_count}
-				</ExpandMore>
+				></ExpandMore>
 			</CardActions>
 		);
 	};
 
 	const renderComment = (item, index) => (
 		<Collapse in={comments[index]} timeout='auto' unmountOnExit>
-			<CommentIdea data={item} />
+			<CommentIdea idea={item} />
 		</Collapse>
 	);
 

@@ -153,7 +153,7 @@ export default function Submission() {
 					)}
 				</div>
 
-				<DetailSubmissionForm initialValue={data} />
+				<DetailSubmissionForm submission={data} />
 			</fieldset>
 		);
 	};

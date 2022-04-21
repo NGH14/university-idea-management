@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import '../../containers/UserManagement/style.css';
+import moment from 'moment';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Button from '@mui/material/Button';
@@ -127,6 +128,15 @@ export default function DetailView() {
 						}}
 					>
 						submission details
+						<span>
+							{data?.is_fully_close !== true
+								? data?.is_fully_close === false
+									? `[pass initial deadline (${moment(
+											data?.initial_date,
+									  ).format('DD/MM/YYYY')})]`
+									: '[fully closed]'
+								: ''}
+						</span>
 					</legend>
 					<Button
 						variant='contained'
@@ -137,7 +147,7 @@ export default function DetailView() {
 					</Button>
 				</div>
 
-				<DetailSubmissionForm initialValue={data} />
+				<DetailSubmissionForm submission={data} />
 			</fieldset>
 		);
 	};

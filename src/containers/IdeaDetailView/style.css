@@ -1,0 +1,74 @@
+.idea-attachment_img {
+	width: 100%;
+	height: 100%;
+	max-height: 300px;
+	object-fit: cover;
+}
+
+.gridimg-collection_attach {
+	display: grid;
+}
+
+.idea-attachment_img:first-child {
+	grid-column: 1 / -1;
+}
+
+.view-idea {
+	margin: 10px;
+
+	opacity: 0.5;
+	display: flex;
+	align-items: center;
+}
+
+.view-idea_count {
+	font-size: 12px;
+	font-family: "Poppins", sans-serif;
+	font-weight: 700;
+}
+
+.idea_action.MuiButton-root {
+	font-family: 'Poppins', sans-serif;
+}
+
+.idea_action.MuiButton-root:hover {
+	background-color: rgb(240, 242, 245);
+}
+
+.idea_header .MuiCardHeader-subheader {
+	font-size: 12px;
+}
+
+.multiLineEllipsis {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: --webkit-box;
+	--webkit-line-clamp: 1;
+	--webkit-box-orient: vertical;
+}
+
+.maxWidth300 {
+	max-width: 15ch;
+}
+
+@media (max-width: 800px) {
+	* {
+		font-size: 10px;
+	}
+
+	.homepage_heading {
+		text-align: center;
+		font-size: 1rem;
+		width: fit-content;
+	}
+
+	.homepage_title {
+		align-items: flex-start;
+		justify-content: flex-start;
+	}
+
+	.homepage_wrapper {
+		margin-inline: 0;
+	}
+}

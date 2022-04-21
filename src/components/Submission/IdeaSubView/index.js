@@ -164,12 +164,18 @@ function IdeaSubView({ submission: exSubData }) {
 			/>
 
 			<FloatButton
-				onClick={() => onOpenModal(null, 'create')}
-				tippy={{ placement: 'left' }}
+				icon={<Add />}
 				size='medium'
 				color='primary'
-				ariaLabel='submit new idea'
-				icon={<Add />}
+				tippy={{
+					placement: 'left',
+					content:
+						exSubData?.is_fully_close != null
+							? "Submission's close"
+							: 'Submit new idea',
+				}}
+				disabled={exSubData?.is_fully_close != null}
+				onClick={() => onOpenModal(null, 'create')}
 			/>
 
 			{status.visibleModal && (

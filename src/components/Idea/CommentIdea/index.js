@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Divider, Grid } from '@material-ui/core';
-import { Button, InputBase } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
+import { IconButton, InputBase, Typography } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Paper from '@mui/material/Paper';
 import { API_PATHS, axioc, toastMessages } from 'common';
@@ -18,30 +19,40 @@ const validationSchema = yup.object({
 	content: yup.string().required('PLease comment something before submit'),
 });
 
-function CommentIdea({ data }) {
-	const [commentsData, setCommentsData] = useState();
+function CommentIdea({ idea }) {
+	const [commentsList, setCommentsList] = useState([]);
+	const [commentsTotal, setCommentsTotal] = useState(0);
+	const [showMore, setShowMore] = useState(false);
 
 	const formik = useFormik({
 		initialValues: initialValues,
 		validationSchema: validationSchema,
+		onSubmit: (values) => handleSubmitComment(values.content),
 	});
 
-	useEffect(() => loadData(), []);
+	useEffect(() => loadData(false), [showMore]);
 
-	const loadData = async (minItems) => {
+	const loadData = async (reload) => {
 		await axioc
-			.get(`${API_PATHS.SHARED.COMMENT}/list/${data.id}`, {
-				params: { minItems },
+			.get(`${API_PATHS.SHARED.COMMENT}/list/${idea?.id}`, {
+				params: { is_initial: !showMore },
 			})
 			.catch(() => toast.error(toastMessages.errs.UNEXPECTED))
-			.then((res) => setCommentsData(res?.data?.result));
+			.then((res) => {
+				const newComments = reload
+					? res?.data?.result?.rows
+					: [...commentsList, ...res?.data?.result?.rows];
+
+				setCommentsTotal(res?.data?.result?.total);
+				setCommentsList(newComments);
+			});
 	};
 
 	const handleSubmitComment = async (values) =>
 		await axioc
 			.post(`${API_PATHS.SHARED.COMMENT}`, {
 				content: values,
-				idea_id: data.id,
+				idea_id: idea?.id,
 			})
 			.catch(() => {
 				toast.error(toastMessages.errs.UNEXPECTED);
@@ -49,19 +60,19 @@ function CommentIdea({ data }) {
 			})
 			.then(() => {
 				formik.resetForm();
-				loadData();
+				loadData(true);
 			});
 
 	const renderContent = () => (
 		<div>
-			{_.map(commentsData, (item) => (
+			{_.map(commentsList, (item) => (
 				<Paper
 					style={{
-						padding: 15,
+						padding: 5,
 						boxShadow: 'none',
 					}}
 				>
-					<Grid container wrap='nowrap' spacing={2}>
+					<Grid container wrap='nowrap' spacing={1}>
 						<Grid item>
 							<Avatar aria-label='avatar'>
 								{item?.is_anonymous || item?.user?.avatar
@@ -89,6 +100,17 @@ function CommentIdea({ data }) {
 									}}
 								>
 									{item?.user?.full_name ?? '[anonymous]'}
+									<span
+										style={{
+											fontFamily: 'Helvetica',
+											textAlign: 'left',
+											marginLeft: 10,
+											color: 'rgba(0,0,0,.4)',
+											fontSize: 10,
+										}}
+									>
+										{moment(item?.created_date).fromNow()}
+									</span>
 								</p>
 								<p
 									style={{
@@ -102,34 +124,48 @@ function CommentIdea({ data }) {
 									{item?.content}
 								</p>
 							</div>
-							<p
-								style={{
-									textAlign: 'left',
-									color: 'gray',
-									marginLeft: 10,
-									fontSize: 12,
-									fontFamily: 'Helvetica',
-								}}
-							>
-								{moment(item?.created_date).fromNow()}
-							</p>
 						</Grid>
 					</Grid>
 				</Paper>
 			))}
+
+			{commentsTotal > 3 ? (
+				<Typography
+					onClick={handleOnClickShowMore}
+					sx={{
+						cursor: 'pointer',
+						'&:hover': { textDecoration: 'underline' },
+					}}
+				>
+					{showMore ? 'View less' : 'View more'} {commentsList?.length} of{' '}
+					{commentsTotal}
+				</Typography>
+			) : (
+				<></>
+			)}
 		</div>
 	);
+
+	const handleOnClickShowMore = () => {
+		if (showMore) {
+			setCommentsList([]);
+			setShowMore(false);
+		} else {
+			setShowMore(true);
+		}
+	};
 
 	return (
 		<>
 			<div>
 				<Paper
 					component='form'
+					onSubmit={formik.handleSubmit}
 					sx={{
 						p: '2px 4px',
+						width: '100%',
 						display: 'flex',
 						alignItems: 'center',
-						width: '100%',
 						border: '0.5px solid rgba(0,0,0,0.1)',
 					}}
 				>
@@ -137,22 +173,27 @@ function CommentIdea({ data }) {
 						fullWidth
 						id='content'
 						name='content'
+						sx={{ ml: 1, flex: 1 }}
+						value={formik.values.content}
 						onBlur={formik.handleBlur}
 						onChange={formik.handleChange}
-						value={formik.values.content}
-						sx={{ ml: 1, flex: 1 }}
 						placeholder='Write a comment ...'
 						helperText={formik.touched.content && formik.errors.content}
 						error={formik.touched.content && Boolean(formik.errors.content)}
 					/>
 					<Divider sx={{ height: 28, m: 0.5 }} orientation='vertical' />
-					<Button
-						sx={{ p: '10px' }}
-						aria-label='directions'
-						onClick={() => handleSubmitComment(formik.values.content)}
+					<IconButton
+						type='submit'
+						sx={{
+							p: '10px',
+							color: '#9ba6e0',
+							'&:hover': { backgroundColor: 'rgb(240, 242, 245)' },
+						}}
+						aria-label='post new comment'
+						component='button'
 					>
-						Post
-					</Button>
+						<SendIcon />
+					</IconButton>
 				</Paper>
 			</div>
 

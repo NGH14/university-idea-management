@@ -15,7 +15,7 @@ export default function FloatButton({
 		<Zoom in={true}>
 			<Tippy placement={placement} content={content}>
 				<Box
-					onClick={handleClick}
+					onClick={disabled ? null : handleClick}
 					role='presentation'
 					sx={{ position: 'fixed', bottom: 30, right: 30 }}
 				>

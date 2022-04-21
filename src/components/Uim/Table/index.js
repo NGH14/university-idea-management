@@ -12,18 +12,26 @@ export function UimTable(props) {
 	const {
 		pagination: { page, pageSize, onPageChange, onPageSizeChange },
 		classes: { tableClassNames, paginationClassNames },
+		autoHeight = false,
 		showTableToolBar,
 		totalItems,
 		columns,
-		rows,
 		height,
-		autoHeight = false,
+		rows,
 	} = props;
 
 	return (
 		<div className={tableClassNames}>
 			<DataGridPro
 				hideFooter
+				rows={rows ?? []}
+				columns={columns}
+				autoHeight={autoHeight}
+				isRowSelectable={false}
+				hideFooterRowCount={true}
+				hideFooterPagination={true}
+				hideFooterSelectedRowCount={true}
+				style={!autoHeight ? { minHeight: height ?? '68.5vh' } : {}}
 				components={{
 					NoRowsOverlay: CustomNoRowsOverlay,
 					NoResultsOverlay: CustomNoRowsOverlay,
@@ -31,13 +39,6 @@ export function UimTable(props) {
 					ColumnSortedAscendingIcon: () => <ExpandLessIcon className='icon' />,
 					Toolbar: showTableToolBar && UimTableToolBar,
 				}}
-				rows={rows ?? []}
-				columns={columns}
-				hideFooterRowCount={true}
-				autoHeight={autoHeight}
-				hideFooterPagination={true}
-				hideFooterSelectedRowCount={true}
-				style={!autoHeight ? { minHeight: height ?? '68.5vh' } : {}}
 			/>
 			<div className={paginationClassNames ?? 'table_footer'}>
 				<UimPagination
