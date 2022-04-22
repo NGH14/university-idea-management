@@ -1,5 +1,6 @@
 export { axioc } from './AxiosClient';
 export { CrudRequests } from './CrudRequests';
+export { RsaHelper } from './RsaHelper';
 export { getGuid } from './Guid';
 export { toReadableFileSize } from './FileSizeReading';
 export { sleep } from './Sleep';

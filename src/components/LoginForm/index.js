@@ -5,7 +5,7 @@ import SendIcon from '@mui/icons-material/Send';
 import Button from '@mui/lab/LoadingButton';
 import { TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { axioc, toastMessages } from 'common';
+import { axioc, RsaHelper, toastMessages } from 'common';
 import { API_PATHS, GAPI_CLIENT_ID, STORAGE_VARS, URL_PATHS } from 'common/env';
 import { UserContext } from 'context/AppContext';
 import { useFormik } from 'formik';
@@ -105,17 +105,22 @@ const LoginForm = ({ returnUrl = URL_PATHS.ANY }) => {
 	const onLogin = (value) =>
 		toast
 			.promise(
-				axioc.post(API_PATHS.SHARED.AUTH.LOGIN, value).then((res) => {
-					localStorage.setItem(
-						STORAGE_VARS.JWT,
-						res?.data?.result?.access_token?.token,
-					);
-					localStorage.setItem(
-						STORAGE_VARS.REFRESH,
-						res?.data?.result?.refresh_token,
-					);
-					setState({ ...state, isLogin: true });
-				}),
+				axioc
+					.post(API_PATHS.SHARED.AUTH.LOGIN, {
+						email: value?.email,
+						password: RsaHelper.encryptPayload(value.password),
+					})
+					.then((res) => {
+						localStorage.setItem(
+							STORAGE_VARS.JWT,
+							res?.data?.result?.access_token?.token,
+						);
+						localStorage.setItem(
+							STORAGE_VARS.REFRESH,
+							res?.data?.result?.refresh_token,
+						);
+						setState({ ...state, isLogin: true });
+					}),
 				{
 					pending: toastMessages.WAIT,
 					error: toastMessages.errs.INVALID_LOGIN,

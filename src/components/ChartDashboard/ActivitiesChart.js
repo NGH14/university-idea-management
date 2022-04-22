@@ -87,7 +87,6 @@ function ActivitiesChart({ timeKey, data }) {
 		return `${textFrom} to ${textTo}`;
 	};
 
-	console.log(newData);
 	const onMonthYearIdeaInfoChange = async (value) => {
 		axioc
 			.get(

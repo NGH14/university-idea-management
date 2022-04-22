@@ -53,10 +53,8 @@ export default function IdeaDetailView() {
 		loadData();
 	}, []);
 
-	const view = async () => {
-		console.log('hello');
+	const view = async () =>
 		await axioc.post(`${API_PATHS.SHARED.VIEW}/${id}`).catch(() => {});
-	};
 
 	const loadData = async () => {
 		setStatus({ ...data, loading: true });

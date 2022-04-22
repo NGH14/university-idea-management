@@ -1,5 +1,9 @@
 export const GAPI_CLIENT_ID = process.env.REACT_APP_GAPI_CLIENT_ID;
 
+export const RSA = {
+	PUBLIC_KEY: process.env.REACT_APP_RSA_PUBLIC_KEY,
+};
+
 export const API_PATHS = {
 	SHARED: {
 		AUTH: {
