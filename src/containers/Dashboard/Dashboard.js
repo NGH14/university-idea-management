@@ -10,7 +10,7 @@ import TotalSubmissionChart from 'components/ChartDashboard/TotalSubmissionChart
 import moment from 'moment';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { AiOutlineComment } from 'react-icons/ai';
+import { AiOutlineComment, AiOutlineFundView } from 'react-icons/ai';
 import { BsFileRichtext } from 'react-icons/bs';
 import { CgArrowDownR, CgArrowUpR } from 'react-icons/cg';
 import { TiLightbulb } from 'react-icons/ti';
@@ -58,14 +58,15 @@ export default function Dashboard() {
 				}),
 			])
 			.then(
-				axios.spread((resTotal, resSubsCount, resTopIdeas, resActivities) =>
-					setData({
-						...data,
-						total: resTotal?.data?.result,
-						topIdeas: resTopIdeas?.data?.result,
-						activities: resActivities?.data?.result,
-						subsCountEachMonth: resSubsCount?.data?.result,
-					}),
+				axios.spread(
+					(resTotal, resSubsCount, resTopIdeas, resActivities) =>
+						setData({
+							...data,
+							total: resTotal?.data?.result,
+							topIdeas: resTopIdeas?.data?.result,
+							activities: resActivities?.data?.result,
+							subsCountEachMonth: resSubsCount?.data?.result,
+						}),
 				),
 			);
 	};
@@ -99,7 +100,7 @@ export default function Dashboard() {
 		{
 			name: 'Total Views',
 			value: data?.total?.total_views ?? 0,
-			icon: <AiOutlineComment className='dataCardItems' />,
+			icon: <AiOutlineFundView className='dataCardItems' />,
 		},
 	];
 
@@ -116,7 +117,10 @@ export default function Dashboard() {
 
 	const renderPopularIdea = () => {
 		return (
-			<IdeaPopularChart timeKey={filter.monthYearTopIdeas} data={data?.topIdeas} />
+			<IdeaPopularChart
+				timeKey={filter.monthYearTopIdeas}
+				data={data?.topIdeas}
+			/>
 		);
 	};
 
@@ -142,8 +146,7 @@ export default function Dashboard() {
 								fontSize: 14,
 								color: '#999',
 								opacity: '0.7',
-							}}
-						>
+							}}>
 							UIM Card
 						</i>
 					</div>
@@ -165,11 +168,14 @@ export default function Dashboard() {
 										alignItems: 'flex-start',
 										flexDirection: 'column',
 										borderRadius: '15px',
-									}}
-								>
+									}}>
 									{item.icon}
-									<p className='dashboard_textname'>{item.name}</p>
-									<strong className='value'>{item.value}</strong>
+									<p className='dashboard_textname'>
+										{item.name}
+									</p>
+									<strong className='value'>
+										{item.value}
+									</strong>
 								</Card>
 							</div>
 						);
@@ -191,8 +197,7 @@ export default function Dashboard() {
 							color: '#999',
 							opacity: '0.7',
 							marginTop: '30px',
-						}}
-					>
+						}}>
 						UIM Chart
 					</i>
 				</div>
@@ -207,8 +212,7 @@ export default function Dashboard() {
 					alignContent: 'center',
 					flexWrap: 'wrap-reverse',
 					gap: 15,
-				}}
-			>
+				}}>
 				{renderPopularIdea()}
 				{renderActivites()}
 			</div>

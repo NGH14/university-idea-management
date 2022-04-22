@@ -8,15 +8,14 @@ import React from 'react';
 function DetailSubmissionForm({ submission }) {
 	return (
 		<>
-			<div className='form_group-submis-submis' style={{ marginBottom: 12 }}>
-				<div className='form_content' style={{ display: 'flex' }}>
+			<div className='form_group-submis' style={{ marginBottom: 12 }}>
+				<div className='form_content'>
 					<InputLabel
 						style={{
 							width: 130,
 							marginBottom: 'auto',
 							marginTop: 'auto',
-						}}
-					>
+						}}>
 						Title
 					</InputLabel>
 					<TextField
@@ -30,22 +29,15 @@ function DetailSubmissionForm({ submission }) {
 			</div>
 
 			{
-				<div
-					className='form_group-submis'
-					style={{ marginBottom: 12, display: 'flex' }}
-				>
-					<div
-						className='form_content'
-						style={{ display: 'flex', width: '100%' }}
-					>
+				<div className='form_group-submis' style={{ marginBottom: 12 }}>
+					<div className='form_content' style={{ width: '100%' }}>
 						<InputLabel
 							InputProps={{ disableUnderline: true }}
 							style={{
 								width: 150,
 								marginBottom: 'auto',
 								marginTop: 'auto',
-							}}
-						>
+							}}>
 							Create By
 						</InputLabel>
 						<TextField
@@ -56,19 +48,14 @@ function DetailSubmissionForm({ submission }) {
 							value={submission?.created_by}
 						/>
 					</div>
-					<div
-						className='form_content'
-						style={{ display: 'flex', width: '100%' }}
-					>
+					<div className='form_content' style={{ width: '100%' }}>
 						<InputLabel
 							InputProps={{ disableUnderline: true }}
 							style={{
 								width: 150,
 								marginBottom: 'auto',
 								marginTop: 'auto',
-								marginLeft: 10,
-							}}
-						>
+							}}>
 							Modified By
 						</InputLabel>
 						<TextField
@@ -82,18 +69,14 @@ function DetailSubmissionForm({ submission }) {
 				</div>
 			}
 
-			<div
-				className='form_group-submis'
-				style={{ marginBottom: 12, display: 'flex' }}
-			>
-				<div className='form_content' style={{ display: 'flex', width: '100%' }}>
+			<div className='form_group-submis' style={{ marginBottom: 12 }}>
+				<div className='form_content' style={{ width: '100%' }}>
 					<InputLabel
 						style={{
 							width: 150,
 							marginBottom: 'auto',
 							marginTop: 'auto',
-						}}
-					>
+						}}>
 						Initial Deadline
 					</InputLabel>
 					<TextField
@@ -106,15 +89,13 @@ function DetailSubmissionForm({ submission }) {
 						)}
 					/>
 				</div>
-				<div className='form_content' style={{ display: 'flex', width: '100%' }}>
+				<div className='form_content' style={{ width: '100%' }}>
 					<InputLabel
 						style={{
 							width: 150,
 							marginBottom: 'auto',
 							marginTop: 'auto',
-							marginLeft: 10,
-						}}
-					>
+						}}>
 						Final Deadline
 					</InputLabel>
 					<TextField
@@ -130,14 +111,13 @@ function DetailSubmissionForm({ submission }) {
 			</div>
 
 			<div className='form_group-submis' style={{ marginBottom: 12 }}>
-				<div className='form_content' style={{ display: 'flex' }}>
+				<div className='form_content'>
 					<InputLabel
 						style={{
 							width: 130,
 							marginBottom: 'auto',
 							marginTop: 'auto',
-						}}
-					>
+						}}>
 						Description
 					</InputLabel>
 					<TextField

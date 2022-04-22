@@ -23,7 +23,7 @@
 .dashgrid_collection {
 	display: flex;
 	gap: 30px;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
 	flex-wrap: wrap;
     font-family: "Poppins", sans-serif;
