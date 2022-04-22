@@ -28,10 +28,11 @@ import React, { useEffect, useState } from 'react';
 import { axioc } from 'common';
 
 const energySources = [
-	{ value: 'total_ideas', name: 'total Idea' },
-	{ value: 'total_comments', name: 'Total Comment' },
-	{ value: 'total_likes', name: 'Total like' },
-	{ value: 'total_dislikes', name: 'Total Dislike' },
+	{ value: 'total_ideas', name: 'Total Ideas' },
+	{ value: 'total_comments', name: 'Total Comments' },
+	{ value: 'total_likes', name: 'Total Likes' },
+	{ value: 'total_dislikes', name: 'Total Dislikes' },
+	{ value: 'total_views', name: 'Total Views' },
 ];
 
 const customizeTooltip = (arg) => {
@@ -40,7 +41,7 @@ const customizeTooltip = (arg) => {
 	};
 };
 
-function IdeaInfoChart({ timeKey, data, loading }) {
+function ActivitiesChart({ timeKey, data }) {
 	const [newData, setNewData] = useState([]);
 	const [newFilter, setNewFilter] = useState({
 		timeKey: new Date(timeKey),
@@ -86,6 +87,7 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 		return `${textFrom} to ${textTo}`;
 	};
 
+	console.log(newData);
 	const onMonthYearIdeaInfoChange = async (value) => {
 		axioc
 			.get(
@@ -158,7 +160,7 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 							<Typography
 								id='input-slider'
 								gutterBottom
-								textAlign={'left'}
+								textAlign='left'
 								style={{ margin: 0 }}
 							>
 								Day: {newFilter.display[0]} -{newFilter.display[1]}
@@ -213,36 +215,27 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 					>
 						{renderPickerMonthYearInfoIdea()}
 					</div>
-					<Chart
-						className={'chart'}
-						palette={'Soft Pastel'}
-						dataSource={newData}
-					>
-						<CommonSeriesSettings
-							argumentField={'date'}
-							type={'stackedBar'}
-						/>
-						{energySources.map(function (item, _) {
-							return (
-								<Series
-									key={item.value}
-									valueField={item.value}
-									name={item.name}
-								/>
-							);
-						})}
+					<Chart className='chart' palette='Soft Pastel' dataSource={newData}>
+						<CommonSeriesSettings argumentField='date' type='stackedBar' />
+						{energySources.map((item, _) => (
+							<Series
+								key={item.value}
+								valueField={item.value}
+								name={item.name}
+							/>
+						))}
 
 						<Margin bottom={20} />
 						<ArgumentAxis
 							valueMarginsEnabled={false}
-							discreteAxisDivisionMode={'crossLabels'}
+							discreteAxisDivisionMode='crossLabels'
 						>
 							<Grid visible={true} />
 						</ArgumentAxis>
 						<Legend
-							verticalAlignment={'top'}
-							horizontalAlignment={'center'}
-							itemTextPosition={'right'}
+							verticalAlignment='top'
+							horizontalAlignment='center'
+							itemTextPosition='right'
 						/>
 						<Export enabled={true} />
 						<Title text={`${_.toUpper('Information idea')}`}>
@@ -260,4 +253,4 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 		</>
 	);
 }
-export default IdeaInfoChart;
+export default ActivitiesChart;

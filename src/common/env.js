@@ -21,7 +21,8 @@ export const API_PATHS = {
 	},
 	ADMIN: {
 		DASHBOAD: {
-			SUM_SUBS: 'dashboard/sum-submissions',
+			TOTAL: 'dashboard/total-all',
+			SUBS_COUNT: 'dashboard/sum-submissions',
 			TOP_IDEAS: 'dashboard/top-ideas',
 			ACTIVITIES: 'dashboard/activities',
 		},

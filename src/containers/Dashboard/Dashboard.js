@@ -2,60 +2,69 @@
 import './style.css';
 
 import Card from '@mui/material/Card';
-import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
 import axios from 'axios';
-import { axioc } from 'common';
-import IdeaInfoChart from 'components/ChartDashboard/IdeaInfoChart';
+import { API_PATHS, axioc } from 'common';
+import ActivitiesChart from 'components/ChartDashboard/ActivitiesChart';
 import IdeaPopularChart from 'components/ChartDashboard/IdeaPopularChart';
 import TotalSubmissionChart from 'components/ChartDashboard/TotalSubmissionChart';
 import moment from 'moment';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
+import { AiOutlineComment } from 'react-icons/ai';
 import { BsFileRichtext } from 'react-icons/bs';
 import { CgArrowDownR, CgArrowUpR } from 'react-icons/cg';
 import { TiLightbulb } from 'react-icons/ti';
-import { AiOutlineComment } from 'react-icons/ai';
 
 export default function Dashboard() {
 	const [data, setData] = useState({
-		totalAll: {},
-		totalSub: [],
-		topIdea: [],
-		infoData: [],
+		total: {},
+		subsCountEachMonth: [],
+		topIdeas: [],
+		activities: [],
 	});
+
 	const [display] = useState({
-		sub: [1, 6],
-		ideaInfo: [1, 15],
+		subsCountInRangeMonths: [1, 6],
+		activitiesInRangeMonths: [1, 15],
 	});
+
 	let today = new Date();
 	const [filter, setFilter] = useState({
 		year: new Date(today.getFullYear(), 0, 1),
-		monthYearIdea: new Date(today.getFullYear(), 0, 1),
-		monthYearIdeaInfo: new Date(today.getFullYear(), 0, 1),
+		monthYearTopIdeas: new Date(today.getFullYear(), 0, 1),
+		monthYearActivities: new Date(today.getFullYear(), 0, 1),
 	});
 
 	useEffect(() => loadData(), [filter]);
 
 	const loadData = async () => {
 		const year = moment(filter.year).format('YYYY');
-		const monthIdea = moment(filter.monthYearIdea).format('MM');
-		const monthInfo = moment(filter.monthYearIdeaInfo).format('MM');
+		const monthTopIdeas = moment(filter.monthYearTopIdeas).format('MM');
+		const monthActivities = moment(filter.monthYearActivities).format('MM');
+
 		axios
 			.all([
-				axioc.get('dashboard/total-all'),
-				axioc.get(`dashboard/sum-submissions?year=${year}`),
-				axioc.get(`dashboard/top-ideas?month=${monthIdea}&year=${year}`),
-				axioc.get(`dashboard/activities?month=${monthInfo}&year=${year}`),
+				axioc.get(API_PATHS.ADMIN.DASHBOAD.TOTAL),
+				axioc.get(API_PATHS.ADMIN.DASHBOAD.SUBS_COUNT, {
+					params: {
+						year,
+					},
+				}),
+				axioc.get(API_PATHS.ADMIN.DASHBOAD.TOP_IDEAS, {
+					params: { month: monthTopIdeas, year },
+				}),
+				axioc.get(API_PATHS.ADMIN.DASHBOAD.ACTIVITIES, {
+					params: { month: monthActivities, year },
+				}),
 			])
 			.then(
-				axios.spread((resTotal, resSub, resIdeas, resAct) =>
+				axios.spread((resTotal, resSubsCount, resTopIdeas, resActivities) =>
 					setData({
 						...data,
-						totalAll: resTotal?.data?.result,
-						totalSub: resSub?.data?.result,
-						topIdea: resIdeas?.data?.result,
-						infoData: resAct?.data?.result,
+						total: resTotal?.data?.result,
+						topIdeas: resTopIdeas?.data?.result,
+						activities: resActivities?.data?.result,
+						subsCountEachMonth: resSubsCount?.data?.result,
 					}),
 				),
 			);
@@ -64,27 +73,32 @@ export default function Dashboard() {
 	const dataCardItems = [
 		{
 			name: 'Total Up Vote',
-			value: data?.totalAll?.total_likes ?? 0,
+			value: data?.total?.total_likes ?? 0,
 			icon: <CgArrowUpR className='dataCardItems' />,
 		},
 		{
 			name: 'Total Down Vote',
-			value: data?.totalAll?.total_dislikes ?? 0,
+			value: data?.total?.total_dislikes ?? 0,
 			icon: <CgArrowDownR className='dataCardItems' />,
 		},
 		{
 			name: 'Total Submissions',
-			value: data?.totalAll?.total_submissions ?? 0,
+			value: data?.total?.total_submissions ?? 0,
 			icon: <BsFileRichtext className='dataCardItems' />,
 		},
 		{
 			name: 'Total Ideas',
-			value: data?.totalAll?.total_ideas ?? 0,
+			value: data?.total?.total_ideas ?? 0,
 			icon: <TiLightbulb className='dataCardItems' />,
 		},
 		{
 			name: 'Total Comments',
-			value: data?.totalAll?.total_comments ?? 0,
+			value: data?.total?.total_comments ?? 0,
+			icon: <AiOutlineComment className='dataCardItems' />,
+		},
+		{
+			name: 'Total Views',
+			value: data?.total?.total_views ?? 0,
 			icon: <AiOutlineComment className='dataCardItems' />,
 		},
 	];
@@ -94,32 +108,28 @@ export default function Dashboard() {
 			<TotalSubmissionChart
 				filter={filter}
 				setFilter={setFilter}
-				data={data.totalSub}
+				data={data.subsCountEachMonth}
 				loadData={loadData}
 			/>
 		);
 	};
 
 	const renderPopularIdea = () => {
-		return <IdeaPopularChart timeKey={filter.monthYearIdea} data={data?.topIdea} />;
+		return (
+			<IdeaPopularChart timeKey={filter.monthYearTopIdeas} data={data?.topIdeas} />
+		);
 	};
 
-	const renderIdeaInfo = () => {
+	const renderActivites = () => {
 		return (
-			<IdeaInfoChart
-				timeKey={filter.monthYearIdea}
-				data={data.infoData}
-				display={display.ideaInfo}
+			<ActivitiesChart
+				timeKey={filter.monthYearTopIdeas}
+				data={data.activities}
+				display={display.activitiesInRangeMonths}
 			/>
 		);
 	};
-	const Item = styled(Paper)(({ theme }) => ({
-		// backgroundColor: theme.palette.mode === '#ffc107' ? '#ffc107' : '#ffc107',
-		...theme.typography.body2,
-		padding: theme.spacing(2),
-		textAlign: 'center',
-		color: theme.palette.text.secondary,
-	}));
+
 	const renderTop = () => {
 		return (
 			<>
@@ -200,7 +210,7 @@ export default function Dashboard() {
 				}}
 			>
 				{renderPopularIdea()}
-				{renderIdeaInfo()}
+				{renderActivites()}
 			</div>
 		</div>
 	);
