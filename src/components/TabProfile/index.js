@@ -76,7 +76,8 @@ function GeneralList() {
 				fontSize: 18,
 				maxWidth: '100%',
 				bgcolor: 'background.paper',
-			}}>
+			}}
+		>
 			{GeneralListItems.map((_value, _index) => {
 				const { text, describe } = _value;
 
@@ -84,10 +85,12 @@ function GeneralList() {
 					<>
 						<ListItem
 							alignItems='flex-start'
-							sx={{ flexWrap: 'wrap', gap: 1, flex: '1 1 auto' }}>
+							sx={{ flexWrap: 'wrap', gap: 1, flex: '1 1 auto' }}
+						>
 							<ListItemText
 								disableTypography
-								sx={{ fontWeight: '700', maxWidth: '200px' }}>
+								sx={{ fontWeight: '700', maxWidth: '200px' }}
+							>
 								{text}
 							</ListItemText>
 							<ListItemText
@@ -114,7 +117,7 @@ function ContactList() {
 	const ContactListItems = [
 		{
 			text: 'Phone Number:',
-			describe: state.dataUser.phone_number,
+			describe: state.dataUser.phone,
 		},
 		{
 			text: 'Email:',
@@ -128,17 +131,20 @@ function ContactList() {
 				maxWidth: '100%',
 				bgcolor: 'background.paper',
 				fontSize: 18,
-			}}>
+			}}
+		>
 			{ContactListItems.map((_value, _index) => {
 				const { text, describe } = _value;
 				return (
 					<>
 						<ListItem
 							alignItems='flex-start'
-							sx={{ flexWrap: 'wrap', gap: 1, flex: '1 1 auto' }}>
+							sx={{ flexWrap: 'wrap', gap: 1, flex: '1 1 auto' }}
+						>
 							<ListItemText
 								disableTypography
-								sx={{ fontWeight: '700', maxWidth: '250px' }}>
+								sx={{ fontWeight: '700', maxWidth: '250px' }}
+							>
 								{text}
 							</ListItemText>
 							<ListItemText
@@ -163,11 +169,10 @@ function TabPanel(props) {
 			hidden={value !== index}
 			id={`simple-tabpanel-${index}`}
 			aria-labelledby={`simple-tab-${index}`}
-			{...other}>
+			{...other}
+		>
 			{value === index && (
-				<Box
-					style={{ display: 'inline-block', width: '100%' }}
-					sx={{ pt: 3 }}>
+				<Box style={{ display: 'inline-block', width: '100%' }} sx={{ pt: 3 }}>
 					{children}
 				</Box>
 			)}
@@ -205,7 +210,8 @@ function PasswordTab() {
 					open={visibleModal}
 					onClose={() => onClose()}
 					aria-labelledby='modal-modal-title'
-					aria-describedby='modal-modal-description'>
+					aria-describedby='modal-modal-description'
+				>
 					<Box
 						sx={{
 							position: 'relative',
@@ -226,7 +232,8 @@ function PasswordTab() {
 								width: '100%',
 								height: '100%',
 							},
-						}}>
+						}}
+					>
 						<UpdatePasswordForm onClose={onClose} />
 					</Box>
 				</Modal>
@@ -244,7 +251,8 @@ function PasswordTab() {
 					fontFamily: 'Poppins',
 				}}
 				sx={{ p: 3 }}
-				fullWidth>
+				fullWidth
+			>
 				<CardHeader
 					sx={{
 						flexWrap: 'wrap-reverse',
@@ -264,7 +272,8 @@ function PasswordTab() {
 								fontFamily: 'Poppins',
 							}}
 							fullWidth
-							onClick={onOpen}>
+							onClick={onOpen}
+						>
 							Change your password
 						</Button>
 					}
@@ -274,13 +283,15 @@ function PasswordTab() {
 								display: 'flex',
 								alignItems: 'center',
 								gap: '10px',
-							}}>
+							}}
+						>
 							<VscKey />
 							<p
 								style={{
 									fontWeight: '600',
 									fontFamily: 'Poppins',
-								}}>
+								}}
+							>
 								Password
 							</p>
 						</div>
@@ -290,9 +301,10 @@ function PasswordTab() {
 					<Typography
 						variant='body2'
 						color='text.secondary'
-						sx={{ fontSize: 16, fontFamily: 'Poppins' }}>
-						You should change your password every three months and
-						after create account to avoid security issues.
+						sx={{ fontSize: 16, fontFamily: 'Poppins' }}
+					>
+						You should change your password every three months and after
+						create account to avoid security issues.
 					</Typography>
 				</CardContent>
 			</Card>
@@ -310,7 +322,8 @@ function AboutTab() {
 					gridTemplateColumns: 'repeat(auto-fit, minmax(300px,1fr))',
 
 					gap: 1,
-				}}>
+				}}
+			>
 				{tabUserItems.map((_value, _index) => {
 					const { text, component, icon } = _value;
 					return (
@@ -320,7 +333,8 @@ function AboutTab() {
 								fontFamily: 'Poppins',
 							}}
 							sx={{ p: 3, mb: 2 }}
-							fullWidth>
+							fullWidth
+						>
 							<CardHeader
 								sx={{ flexWrap: 'wrap-reverse', gap: '10px' }}
 								title={
@@ -329,14 +343,16 @@ function AboutTab() {
 											display: 'flex',
 											alignItems: 'center',
 											gap: '10px',
-										}}>
+										}}
+									>
 										{icon && icon}
 										<p
 											style={{
 												fontSize: 20,
 												fontWeight: '600',
 												fontFamily: 'Poppins',
-											}}>
+											}}
+										>
 											{text && text}
 										</p>
 									</div>
@@ -361,10 +377,7 @@ function TabProfile() {
 	return (
 		<Box sx={{ width: '100%' }}>
 			<Box sx={{ borderTop: 2, borderColor: 'divider' }}>
-				<Tabs
-					value={value}
-					onChange={handleChange}
-					aria-label='usertab'>
+				<Tabs value={value} onChange={handleChange} aria-label='usertab'>
 					{tabItems.map((value, index) => {
 						const { text } = value;
 						return (

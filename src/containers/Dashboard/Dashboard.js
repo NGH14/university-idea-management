@@ -25,7 +25,7 @@ export default function Dashboard() {
 
 	const [display] = useState({
 		subsCountInRangeMonths: [1, 6],
-		activitiesInRangeMonths: [1, 15],
+		activitiesInRangeDays: [1, 15],
 	});
 
 	let today = new Date();
@@ -58,15 +58,14 @@ export default function Dashboard() {
 				}),
 			])
 			.then(
-				axios.spread(
-					(resTotal, resSubsCount, resTopIdeas, resActivities) =>
-						setData({
-							...data,
-							total: resTotal?.data?.result,
-							topIdeas: resTopIdeas?.data?.result,
-							activities: resActivities?.data?.result,
-							subsCountEachMonth: resSubsCount?.data?.result,
-						}),
+				axios.spread((resTotal, resSubsCount, resTopIdeas, resActivities) =>
+					setData({
+						...data,
+						total: resTotal?.data?.result,
+						topIdeas: resTopIdeas?.data?.result,
+						activities: resActivities?.data?.result,
+						subsCountEachMonth: resSubsCount?.data?.result,
+					}),
 				),
 			);
 	};
@@ -117,19 +116,16 @@ export default function Dashboard() {
 
 	const renderPopularIdea = () => {
 		return (
-			<IdeaPopularChart
-				timeKey={filter.monthYearTopIdeas}
-				data={data?.topIdeas}
-			/>
+			<IdeaPopularChart timeKey={filter.monthYearTopIdeas} data={data?.topIdeas} />
 		);
 	};
 
 	const renderActivites = () => {
 		return (
 			<ActivitiesChart
-				timeKey={filter.monthYearTopIdeas}
+				timeKey={filter.monthYearActivities}
 				data={data.activities}
-				display={display.activitiesInRangeMonths}
+				display={display.activitiesInRangeDays}
 			/>
 		);
 	};
@@ -146,7 +142,8 @@ export default function Dashboard() {
 								fontSize: 14,
 								color: '#999',
 								opacity: '0.7',
-							}}>
+							}}
+						>
 							UIM Card
 						</i>
 					</div>
@@ -168,14 +165,11 @@ export default function Dashboard() {
 										alignItems: 'flex-start',
 										flexDirection: 'column',
 										borderRadius: '15px',
-									}}>
+									}}
+								>
 									{item.icon}
-									<p className='dashboard_textname'>
-										{item.name}
-									</p>
-									<strong className='value'>
-										{item.value}
-									</strong>
+									<p className='dashboard_textname'>{item.name}</p>
+									<strong className='value'>{item.value}</strong>
 								</Card>
 							</div>
 						);
@@ -197,7 +191,8 @@ export default function Dashboard() {
 							color: '#999',
 							opacity: '0.7',
 							marginTop: '30px',
-						}}>
+						}}
+					>
 						UIM Chart
 					</i>
 				</div>
@@ -212,7 +207,8 @@ export default function Dashboard() {
 					alignContent: 'center',
 					flexWrap: 'wrap-reverse',
 					gap: 15,
-				}}>
+				}}
+			>
 				{renderPopularIdea()}
 				{renderActivites()}
 			</div>

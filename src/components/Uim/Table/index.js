@@ -46,7 +46,7 @@ export function UimTable(props) {
 					onChange={onPageChange}
 					pageSize={pageSize}
 					total={totalItems}
-					appeared={rows?.length > 1}
+					appeared={rows?.length > 0}
 					page={page}
 				/>
 			</div>

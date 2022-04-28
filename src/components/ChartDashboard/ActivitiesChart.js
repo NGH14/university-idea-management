@@ -65,8 +65,11 @@ function ActivitiesChart({ timeKey, data }) {
 	const onFilterDisplay = (value) => {
 		let arrDate = _.cloneDeep(data);
 		const newArray = [];
-		_.map(arrDate, (x, index) => {
-			if (index + 1 >= value[0] && index + 1 <= value[1]) {
+
+		arrDate.forEach((x, index) => {
+			const day = _.toNumber(moment(x.date).format('DD'));
+
+			if (day >= value[0] && day <= value[1]) {
 				x.date = moment(x.date).format('DD/MM/YYYY');
 				newArray.push(x);
 			}
@@ -87,7 +90,7 @@ function ActivitiesChart({ timeKey, data }) {
 		return `${textFrom} to ${textTo}`;
 	};
 
-	const onMonthYearIdeaInfoChange = async (value) => {
+	const onMonthYearActivitiesChange = async (value) => {
 		axioc
 			.get(
 				`dashboard/activities?month=${moment(value).format('MM')}&year=${moment(
@@ -98,7 +101,8 @@ function ActivitiesChart({ timeKey, data }) {
 				let arrDate = _.cloneDeep(res?.data?.result);
 				const newArray = [];
 				_.map(arrDate, (x, index) => {
-					if (index + 1 >= 1 && index + 1 <= 15) {
+					const day = _.toNumber(moment(x.date).format('DD'));
+					if (day >= 1 && day <= 15) {
 						x.date = moment(x.date).format('DD/MM/YYYY');
 						newArray.push(x);
 					}
@@ -132,7 +136,7 @@ function ActivitiesChart({ timeKey, data }) {
 							label='Month year'
 							value={newFilter.timeKey}
 							onChange={(value) => {
-								onMonthYearIdeaInfoChange(value);
+								onMonthYearActivitiesChange(value);
 							}}
 							renderInput={(params) => (
 								<TextField
@@ -162,24 +166,22 @@ function ActivitiesChart({ timeKey, data }) {
 								textAlign='left'
 								style={{ margin: 0 }}
 							>
-								Day: {newFilter.display[0]} -{newFilter.display[1]}
+								Day: {newFilter.display[0]} - {newFilter.display[1]}
 							</Typography>
 							<Slider
+								min={1}
+								step={1}
+								disableSwap
+								valueLabelDisplay='auto'
 								aria-label='Small steps'
 								value={newFilter.display}
-								onChange={(value) => {
-									onFilterDisplay(value.target.value);
-								}}
 								sx={{ color: '#4295D1', width: 100 }}
-								valueLabelDisplay='auto'
-								disableSwap
-								min={1}
+								onChange={(_, value) => onFilterDisplay(value)}
 								max={new Date(
 									newFilter.timeKey.getFullYear(),
 									_.toNumber(moment(newFilter.timeKey).format('MM')),
 									0,
 								).getDate()}
-								step={1}
 							/>
 						</Box>
 					</div>
@@ -237,7 +239,7 @@ function ActivitiesChart({ timeKey, data }) {
 							itemTextPosition='right'
 						/>
 						<Export enabled={true} />
-						<Title text={`${_.toUpper('Information idea')}`}>
+						<Title text={`${_.toUpper('Activities')}`}>
 							<Subtitle text={renderText()} />
 							<Font color='#000' size='20' weight='700' />
 						</Title>

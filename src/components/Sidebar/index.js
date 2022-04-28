@@ -74,6 +74,7 @@ export default function Sidebar(props) {
 	];
 
 	const navItems = {
+		// TODO: @henry, pls add subs
 		generals: [
 			{
 				text: 'Home',
