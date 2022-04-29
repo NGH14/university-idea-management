@@ -4,7 +4,7 @@ import './style.css';
 import Card from '@mui/material/Card';
 import axios from 'axios';
 import { API_PATHS, axioc } from 'common';
-import ActivitiesChart from 'components/ChartDashboard/ActivitiesChart';
+import IdeaInfoChart from 'components/ChartDashboard/IdeaInfoChart';
 import IdeaPopularChart from 'components/ChartDashboard/IdeaPopularChart';
 import TotalSubmissionChart from 'components/ChartDashboard/TotalSubmissionChart';
 import moment from 'moment';
@@ -122,7 +122,7 @@ export default function Dashboard() {
 
 	const renderActivites = () => {
 		return (
-			<ActivitiesChart
+			<IdeaInfoChart
 				timeKey={filter.monthYearActivities}
 				data={data.activities}
 				display={display.activitiesInRangeDays}

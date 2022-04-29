@@ -28,11 +28,10 @@ import React, { useEffect, useState } from 'react';
 import { axioc } from 'common';
 
 const energySources = [
-	{ value: 'total_ideas', name: 'Total Ideas' },
-	{ value: 'total_comments', name: 'Total Comments' },
-	{ value: 'total_likes', name: 'Total Likes' },
-	{ value: 'total_dislikes', name: 'Total Dislikes' },
-	{ value: 'total_views', name: 'Total Views' },
+	{ value: 'total_ideas', name: 'total Idea' },
+	{ value: 'total_comments', name: 'Total Comment' },
+	{ value: 'total_likes', name: 'Total like' },
+	{ value: 'total_dislikes', name: 'Total Dislike' },
 ];
 
 const customizeTooltip = (arg) => {
@@ -41,8 +40,9 @@ const customizeTooltip = (arg) => {
 	};
 };
 
-function ActivitiesChart({ timeKey, data }) {
-	const [newData, setNewData] = useState([]);
+function IdeaInfoChart({ timeKey, data, loading }) {
+	const [newData, setNewData] = useState(data);
+	const [dataFilter, setDataFilter] = useState([]);
 	const [newFilter, setNewFilter] = useState({
 		timeKey: new Date(timeKey),
 		display: [1, 15],
@@ -59,38 +59,43 @@ function ActivitiesChart({ timeKey, data }) {
 			}
 		});
 		setNewFilter({ display: [1, 15], timeKey: new Date(timeKey) });
-		setNewData(newArray);
+		setDataFilter(newArray);
 	}, [data]);
 
 	const onFilterDisplay = (value) => {
-		let arrDate = _.cloneDeep(data);
+		let arrDate = _.cloneDeep(newData);
 		const newArray = [];
-
-		arrDate.forEach((x, index) => {
-			const day = _.toNumber(moment(x.date).format('DD'));
-
-			if (day >= value[0] && day <= value[1]) {
+		_.map(arrDate, (x, index) => {
+			if (index + 1 >= value[0] && index + 1 <= value[1]) {
 				x.date = moment(x.date).format('DD/MM/YYYY');
 				newArray.push(x);
 			}
 		});
-		setNewData(newArray);
+		setDataFilter(newArray);
 		setNewFilter({ ...newFilter, display: value });
 	};
 
 	const renderText = () => {
-		let textFrom = `${newFilter.display[0]}/${moment(timeKey).format('MM/YYYY')}`;
-		let textTo = `${newFilter.display[1]}/${moment(timeKey).format('MM/YYYY')}`;
+		let textFrom = `${newFilter.display[0]}/${moment(newFilter.timeKey).format(
+			'MM/YYYY',
+		)}`;
+		let textTo = `${newFilter.display[1]}/${moment(newFilter.timeKey).format(
+			'MM/YYYY',
+		)}`;
 		if (newFilter.display[0] < 10) {
-			textFrom = `0${newFilter.display[0]}/${moment(timeKey).format('MM/YYYY')}`;
+			textFrom = `0${newFilter.display[0]}/${moment(newFilter.timeKey).format(
+				'MM/YYYY',
+			)}`;
 		}
 		if (newFilter.display[1] < 10) {
-			textTo = `0${newFilter.display[1]}/${moment(timeKey).format('MM/YYYY')}`;
+			textTo = `0${newFilter.display[1]}/${moment(newFilter.timeKey).format(
+				'MM/YYYY',
+			)}`;
 		}
 		return `${textFrom} to ${textTo}`;
 	};
 
-	const onMonthYearActivitiesChange = async (value) => {
+	const onMonthYearIdeaInfoChange = async (value) => {
 		axioc
 			.get(
 				`dashboard/activities?month=${moment(value).format('MM')}&year=${moment(
@@ -101,8 +106,7 @@ function ActivitiesChart({ timeKey, data }) {
 				let arrDate = _.cloneDeep(res?.data?.result);
 				const newArray = [];
 				_.map(arrDate, (x, index) => {
-					const day = _.toNumber(moment(x.date).format('DD'));
-					if (day >= 1 && day <= 15) {
+					if (index + 1 >= 1 && index + 1 <= 15) {
 						x.date = moment(x.date).format('DD/MM/YYYY');
 						newArray.push(x);
 					}
@@ -112,7 +116,8 @@ function ActivitiesChart({ timeKey, data }) {
 					display: [1, 15],
 					timeKey: value,
 				});
-				setNewData(newArray);
+				setDataFilter(newArray);
+				setNewData(res?.data?.result);
 			});
 	};
 
@@ -136,7 +141,7 @@ function ActivitiesChart({ timeKey, data }) {
 							label='Month year'
 							value={newFilter.timeKey}
 							onChange={(value) => {
-								onMonthYearActivitiesChange(value);
+								onMonthYearIdeaInfoChange(value);
 							}}
 							renderInput={(params) => (
 								<TextField
@@ -163,25 +168,27 @@ function ActivitiesChart({ timeKey, data }) {
 							<Typography
 								id='input-slider'
 								gutterBottom
-								textAlign='left'
+								textAlign={'left'}
 								style={{ margin: 0 }}
 							>
-								Day: {newFilter.display[0]} - {newFilter.display[1]}
+								Day: {newFilter.display[0]} -{newFilter.display[1]}
 							</Typography>
 							<Slider
-								min={1}
-								step={1}
-								disableSwap
-								valueLabelDisplay='auto'
 								aria-label='Small steps'
 								value={newFilter.display}
+								onChange={(value) => {
+									onFilterDisplay(value.target.value);
+								}}
 								sx={{ color: '#4295D1', width: 100 }}
-								onChange={(_, value) => onFilterDisplay(value)}
+								valueLabelDisplay='auto'
+								disableSwap
+								min={1}
 								max={new Date(
 									newFilter.timeKey.getFullYear(),
 									_.toNumber(moment(newFilter.timeKey).format('MM')),
 									0,
 								).getDate()}
+								step={1}
 							/>
 						</Box>
 					</div>
@@ -216,30 +223,39 @@ function ActivitiesChart({ timeKey, data }) {
 					>
 						{renderPickerMonthYearInfoIdea()}
 					</div>
-					<Chart className='chart' palette='Soft Pastel' dataSource={newData}>
-						<CommonSeriesSettings argumentField='date' type='stackedBar' />
-						{energySources.map((item, _) => (
-							<Series
-								key={item.value}
-								valueField={item.value}
-								name={item.name}
-							/>
-						))}
+					<Chart
+						className={'chart'}
+						palette={'Soft Pastel'}
+						dataSource={dataFilter}
+					>
+						<CommonSeriesSettings
+							argumentField={'date'}
+							type={'stackedBar'}
+						/>
+						{energySources.map(function (item, _) {
+							return (
+								<Series
+									key={item.value}
+									valueField={item.value}
+									name={item.name}
+								/>
+							);
+						})}
 
 						<Margin bottom={20} />
 						<ArgumentAxis
 							valueMarginsEnabled={false}
-							discreteAxisDivisionMode='crossLabels'
+							discreteAxisDivisionMode={'crossLabels'}
 						>
 							<Grid visible={true} />
 						</ArgumentAxis>
 						<Legend
-							verticalAlignment='top'
-							horizontalAlignment='center'
-							itemTextPosition='right'
+							verticalAlignment={'top'}
+							horizontalAlignment={'center'}
+							itemTextPosition={'right'}
 						/>
 						<Export enabled={true} />
-						<Title text={`${_.toUpper('Activities')}`}>
+						<Title text={`${_.toUpper('Information idea')}`}>
 							<Subtitle text={renderText()} />
 							<Font color='#000' size='20' weight='700' />
 						</Title>
@@ -254,4 +270,4 @@ function ActivitiesChart({ timeKey, data }) {
 		</>
 	);
 }
-export default ActivitiesChart;
+export default IdeaInfoChart;
