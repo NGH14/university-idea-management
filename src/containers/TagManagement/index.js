@@ -25,7 +25,6 @@ function TagManagement() {
 		await axioc
 			.get(API_PATHS.ADMIN.MANAGE_TAG + '/table/list', {
 				params: {
-					sorts: 'Name',
 					page: pagination.page,
 					page_size: pagination.pageSize,
 				},

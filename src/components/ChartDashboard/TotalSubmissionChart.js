@@ -37,10 +37,7 @@ function TotalSubmissionChart({ data, setFilter, filter }) {
 	useEffect(() => {
 		const newArray = [];
 		_.map(data, (x, index) => {
-			if (
-				index + 1 >= filterDisplay[0] &&
-				index + 1 <= filterDisplay[1]
-			) {
+			if (index + 1 >= filterDisplay[0] && index + 1 <= filterDisplay[1]) {
 				newArray.push(x);
 			}
 		});
@@ -81,7 +78,8 @@ function TotalSubmissionChart({ data, setFilter, filter }) {
 						gap: 10,
 						marginInline: 10,
 						fontFamily: 'Poppins',
-					}}>
+					}}
+				>
 					<div
 						style={{
 							marginInline: 10,
@@ -92,7 +90,8 @@ function TotalSubmissionChart({ data, setFilter, filter }) {
 							alignItems: 'center',
 							gap: 10,
 							fontFamily: 'Poppins',
-						}}>
+						}}
+					>
 						<DatePicker
 							label='Year'
 							sx={{ border: 'none' }}
@@ -124,7 +123,8 @@ function TotalSubmissionChart({ data, setFilter, filter }) {
 								alignItems: 'center',
 								gap: 3,
 								marginBlock: '20px',
-							}}>
+							}}
+						>
 							<Typography
 								sx={{
 									width: 250,
@@ -133,7 +133,8 @@ function TotalSubmissionChart({ data, setFilter, filter }) {
 								id='input-slider'
 								gutterBottom
 								textAlign={'left'}
-								style={{ margin: 0 }}>
+								style={{ margin: 0 }}
+							>
 								Month: {filterDisplay[0]} - {filterDisplay[1]}
 							</Typography>
 							<Slider
@@ -159,7 +160,8 @@ function TotalSubmissionChart({ data, setFilter, filter }) {
 		<div
 			style={{
 				width: '100%',
-			}}>
+			}}
+		>
 			<Paper elevation={0}>
 				<div
 					style={{
@@ -172,32 +174,22 @@ function TotalSubmissionChart({ data, setFilter, filter }) {
 						paddingTop: 10,
 						marginBottom: 10,
 					}}
-					className='uim_chart'>
+					className='uim_chart'
+				>
 					{renderPickerYear()}
 				</div>
-				<Chart
-					className={'chart'}
-					dataSource={newData}
-					palette={'Soft Pastel'}>
-					<CommonSeriesSettings
-						argumentField={'month'}
-						type={'stackedBar'}
-					/>
+				<Chart className={'chart'} dataSource={newData} palette={'Soft Pastel'}>
+					<CommonSeriesSettings argumentField={'month'} type={'stackedBar'} />
 					<Title
-						text={`${_.toUpper(
-							'Total submission in year',
-						)} ${moment(filter.year).format('YYYY')}`}>
+						text={`${_.toUpper('Total submission in year')} ${moment(
+							filter.year,
+						).format('YYYY')}`}
+					>
 						<Font color='#000' size='20' weight='700' />
 					</Title>
 
-					<Series
-						valueField={'active_submissions'}
-						name={'Disable Active'}
-					/>
-					<Series
-						valueField={'inactive_submissions'}
-						name={'Active'}
-					/>
+					<Series valueField={'active_submissions'} name={'Active'} />
+					<Series valueField={'inactive_submissions'} name={'Inactive'} />
 					<ValueAxis position={'left'}>
 						<Title text={'Total'} />
 					</ValueAxis>

@@ -8,6 +8,7 @@ import { Slider, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import { axioc } from 'common';
 import { Font } from 'devextreme-react/bar-gauge';
 import {
 	ArgumentAxis,
@@ -25,13 +26,12 @@ import {
 import _ from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { axioc } from 'common';
 
 const energySources = [
-	{ value: 'total_ideas', name: 'total Idea' },
-	{ value: 'total_comments', name: 'Total Comment' },
-	{ value: 'total_likes', name: 'Total like' },
-	{ value: 'total_dislikes', name: 'Total Dislike' },
+	{ value: 'total_ideas', name: 'Total Ideas' },
+	{ value: 'total_comments', name: 'Total Comments' },
+	{ value: 'total_likes', name: 'Total Likes' },
+	{ value: 'total_dislikes', name: 'Total Dislikes' },
 ];
 
 const customizeTooltip = (arg) => {
@@ -171,7 +171,7 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 								textAlign={'left'}
 								style={{ margin: 0 }}
 							>
-								Day: {newFilter.display[0]} -{newFilter.display[1]}
+								Day: {newFilter.display[0]} - {newFilter.display[1]}
 							</Typography>
 							<Slider
 								aria-label='Small steps'
@@ -255,7 +255,7 @@ function IdeaInfoChart({ timeKey, data, loading }) {
 							itemTextPosition={'right'}
 						/>
 						<Export enabled={true} />
-						<Title text={`${_.toUpper('Information idea')}`}>
+						<Title text={`${_.toUpper('activities chart')}`}>
 							<Subtitle text={renderText()} />
 							<Font color='#000' size='20' weight='700' />
 						</Title>
