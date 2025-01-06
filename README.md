@@ -4,7 +4,7 @@ UIM is a secure web-enabled role-based system to collect improvement ideas from 
 
 ## UIM Client [🔗](https://github.com/NGH14/university-idea-management-client/)
 
-UIM API is the Front-End of the University Idea Management system, which uses React JavaScript framework. It uses Axios, a simple promise-based HTTP client framework. It provides a simple to communicate RESTfully in a small package with extensible interfaces.
+UIM Client is the Front-End of the University Idea Management system. 
 
 ### Features
 - User authentication
