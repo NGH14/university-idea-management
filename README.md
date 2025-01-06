@@ -33,25 +33,25 @@ UIM Client is the Front-End of the University Idea Management system.
 ### Some Screenshot:
 
 1. **Login Page**
-![Desktop](https://github.com/user-attachments/assets/1deeaf42-f733-4261-8a8c-15456abd68b0)
+![Login](./public/Loginpage.png)
 
 2. **Home Page**
-![image 1](https://github.com/user-attachments/assets/528d813c-535a-4669-a029-4a159f64a013)
+![Home](./public/homepage.png)
 
 3.1 **Idea Page Staff View**
-![image 9](https://github.com/user-attachments/assets/aeb33574-f6e6-406f-9046-f6c5c8582210)
+![Idea Page](./public/ideabystaff.png)
 
 3.2 **Idea Page Admin View**
-![image 7](https://github.com/user-attachments/assets/fae7fee6-0ba5-4034-959b-d7110c5aab6c)
+![Idea Page](./public/ideabyadmin.png)
 
 4. **Not Found Page**
-![notfound](https://github.com/user-attachments/assets/ee01d0ea-97d5-4451-903c-43fb36dfb9d9)
+![notfound](./public/404.png)
 
 5. **Unauthorized Page**
-![401](https://github.com/user-attachments/assets/542f6c3b-1ce5-48f1-93c0-4cfaac23ca3c)
+![401](./public/notfound.png)
 
 6. **User Profile**
-![profile](https://github.com/user-attachments/assets/0e02d985-70ca-42ea-af5f-ac9740ce6b4b)
+![profile](./public/profile.png)
 
 ## UIM API [🔗](https://github.com/Henry-idiotium/university-idea-management-api/)
 🔗 Link back end repo: https://github.com/Henry-idiotium/university-idea-management-api/
