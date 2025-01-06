@@ -45,10 +45,10 @@ UIM Client is the Front-End of the University Idea Management system.
 ![Idea Page](./public/ideabyadmin.png)
 
 4. **Not Found Page**
-![notfound](./public/404.png)
+![notfound](./public/notfound.png)
 
 5. **Unauthorized Page**
-![401](./public/notfound.png)
+![401](./public/401.png)
 
 6. **User Profile**
 ![profile](./public/profile.png)
