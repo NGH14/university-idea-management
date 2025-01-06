@@ -6,7 +6,7 @@ UIM is a secure web-enabled role-based system to collect improvement ideas from 
 
 UIM API is the Front-End of the University Idea Management system, which uses React JavaScript framework. It uses Axios, a simple promise-based HTTP client framework. It provides a simple to communicate RESTfully in a small package with extensible interfaces.
 
-🔗 [Figma (_design by me_)](🔗 [Figma (_design by me_)](https://www.figma.com/design/PrvDwHZIg5nXfvGLEKlb9W/UIM-Project?node-id=105-182&t=w1haTiGwJIkdYTQ0-1))
+🔗 [Figma (_design by me_)](https://www.figma.com/design/PrvDwHZIg5nXfvGLEKlb9W/UIM-Project?node-id=307-4&t=w1haTiGwJIkdYTQ0-1)
 
 
 ## UIM API [🔗](https://github.com/Henry-idiotium/university-idea-management-api/)
