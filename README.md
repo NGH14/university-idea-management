@@ -33,25 +33,25 @@ UIM Client is the Front-End of the University Idea Management system.
 ### Some Screenshot:
 
 1. **Login Page**
-![Login](./public/Loginpage.png)
+<img src="./public/Loginpage.png" width="500"/>
 
 2. **Home Page**
-![Home](./public/homepage.png)
+<img src="./public/homepage.png" width="500" />
 
-3.1 **Idea Page Staff View**
-![Idea Page](./public/ideabystaff.png)
+3. **Idea Page Staff View**
+<img src="./public/ideabystaff.png" width="500" />
 
-3.2 **Idea Page Admin View**
-![Idea Page](./public/ideabyadmin.png)
+4. **Idea Page Admin View**
+<img src="./public/ideabyadmin.png" width="500" />
 
-4. **Not Found Page**
-![notfound](./public/notfound.png)
+5. **Not Found Page**
+<img src="./public/notfound.png" width="500" />
 
-5. **Unauthorized Page**
-![401](./public/401.png)
+6. **Unauthorized Page**
+<img src="./public/401.png" width="500" />
 
-6. **User Profile**
-![profile](./public/profile.png)
+7. **User Profile**
+<img src="./public/profile.png" width="500" />
 
 ## UIM API [🔗](https://github.com/Henry-idiotium/university-idea-management-api/)
 🔗 Link back end repo: https://github.com/Henry-idiotium/university-idea-management-api/
